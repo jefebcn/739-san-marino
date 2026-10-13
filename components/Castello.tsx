@@ -26,7 +26,7 @@ function imposta(slug: string | null) {
   window.dispatchEvent(new Event(EVENTO));
 }
 
-function useCastelloScelto() {
+export function useCastelloScelto() {
   const [slug, setSlug] = useState<string | null>(null);
   useEffect(() => {
     const agg = () => setSlug(leggi());
@@ -35,6 +35,29 @@ function useCastelloScelto() {
     return () => window.removeEventListener(EVENTO, agg);
   }, []);
   return slug;
+}
+
+/** Chip dell'HUD in alto: il tuo castello con posizione e metri, sempre visibile. */
+export function HudCastello({ classifica }: { classifica: Castello[] }) {
+  const slug = useCastelloScelto();
+  const [pronto, setPronto] = useState(false);
+  useEffect(() => setPronto(true), []);
+  const pos = classifica.findIndex((c) => c.slug === slug);
+  const c = classifica[pos];
+
+  if (!pronto) return <span className="hud-chip" aria-hidden="true" style={{ width: 120, opacity: 0.4 }} />;
+  if (!c) {
+    return (
+      <Link href="/#scegli" className="hud-chip vuota premibile">Scegli il castello</Link>
+    );
+  }
+  return (
+    <Link href={`/castelli/${c.slug}`} className="hud-chip premibile" aria-label={`${c.nome}, ${pos + 1}° posto, ${fmt.format(c.metri ?? 0)} metri`}>
+      <span className="stemma-mini" style={{ background: c.colore, color: testoSu(c.colore) }}>{pos + 1}°</span>
+      <span className="nome">{c.nome}</span>
+      <span className="num">{fmt.format(c.metri ?? 0)} m</span>
+    </Link>
+  );
 }
 
 /** Griglia per scegliere il proprio castello (per i nuovi utenti). */

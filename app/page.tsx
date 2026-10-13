@@ -4,6 +4,11 @@ import { Cime } from "@/components/Logo";
 import { Icona } from "@/components/Icona";
 import Installa from "@/components/Installa";
 import { MioCastello, RiapriGuida, ScegliCastello } from "@/components/Castello";
+import { EtichetteScala, Scala } from "@/components/Quota";
+import { ProssimaPartenza } from "@/components/Partenze";
+import { livello } from "@/lib/quota";
+import { ConteggioAperte } from "@/components/Farmacie";
+import { getFarmacie, getLinee } from "@/lib/servizi";
 
 export const revalidate = 60;
 
@@ -23,13 +28,17 @@ const PASSI = [
 ];
 
 export default async function Home() {
-  const [eventi, classifica] = await Promise.all([getEventi(6), getClassifica()]);
+  const [eventi, classifica, farmacie, linee] = await Promise.all([getEventi(6), getClassifica(), getFarmacie(), getLinee()]);
   const podio = classifica.slice(0, 3);
+  const funivia = linee.find((l) => l.tipo === "funivia");
+  // I metri personali arriveranno con l'accesso.
+  const metri = 0;
+  const { prossimo, mancano } = livello(metri);
 
   return (
     <>
       {/* ——— Per chi arriva la prima volta ——— */}
-      <section className="benvenuto per-nuovi">
+      <section className="benvenuto topo per-nuovi">
         <span className="etichetta" style={{ color: "#9CCDEA" }}>Benvenuto su 739</span>
         <h1>Tutto San Marino in un&apos;app</h1>
         <p>Cosa succede, dove andare, cosa serve. E una sfida tra i nove castelli: chi arriva più in alto?</p>
@@ -85,10 +94,43 @@ export default async function Home() {
         <h1 className="titolo">{saluto()}!</h1>
       </section>
 
+      <section className="pannello quota topo cornice per-tornati" aria-label="La tua quota">
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12 }}>
+          <span className="etichetta">La tua quota</span>
+          <span className="etichetta">Vetta 739 m</span>
+        </div>
+        <span className="quota-num">{metri}<small>m</small></span>
+        <div style={{ color: "var(--pannello-testo)" }}>
+          <Scala metri={metri} grande />
+          <EtichetteScala />
+        </div>
+        <p style={{ fontSize: 14, color: "var(--pannello-testo)" }}>
+          {prossimo ? <>Mancano <b style={{ color: "#fff" }}>{mancano} m</b> a {prossimo.nome}. </> : null}
+          I check-in agli eventi si attivano con l&apos;accesso, in arrivo.
+        </p>
+        <span className="cime"><Cime width={170} /></span>
+      </section>
+
       <div className="per-tornati" style={{ display: "contents" }}>
         <Installa />
         <MioCastello classifica={classifica} />
       </div>
+
+      <section className="sezione per-tornati" aria-labelledby="t-adesso">
+        <div className="sezione-head"><h2 id="t-adesso">Adesso</h2><Link href="/utili">Utili</Link></div>
+        <div className="adesso">
+          <Link href="/utili/farmacie" className="premibile">
+            <span className="etichetta" style={{ color: "var(--segnale)" }}>Farmacie</span>
+            <ConteggioAperte farmacie={farmacie} />
+            <span className="meta">Cailungo sempre aperta</span>
+          </Link>
+          <Link href="/utili/trasporti" className="premibile">
+            <span className="etichetta">Prossima funivia</span>
+            {funivia ? <ProssimaPartenza partenze={funivia.partenze.filter((p) => p.direzione === "Borgo Maggiore → Città")} /> : <b>Orari in arrivo</b>}
+            <span className="meta">da Borgo a Città</span>
+          </Link>
+        </div>
+      </section>
 
       {/* ——— Per tutti ——— */}
       <section className="sezione" id="in-arrivo">

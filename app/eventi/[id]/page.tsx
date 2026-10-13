@@ -23,7 +23,7 @@ export default async function DettaglioEvento({ params }: Props) {
 
   return (
     <>
-      <section className="copertina" style={{ background: `linear-gradient(160deg, #0B1F2E 55%, ${colore})` }}>
+      <section className="copertina topo" style={{ background: `linear-gradient(160deg, #0B1F2E 55%, ${colore})` }}>
         <Link href="/eventi" className="indietro"><Icona nome="freccia" size={18} /> Eventi</Link>
         <span className="meta">{formatData(e.inizio)}</span>
         <h1 className="titolo">{e.titolo}</h1>
@@ -34,7 +34,7 @@ export default async function DettaglioEvento({ params }: Props) {
         <span style={{ position: "absolute", right: -12, bottom: -8, opacity: 0.16 }}><Cime width={170} /></span>
       </section>
 
-      {e.descrizione ? <p style={{ fontSize: 16, color: "#304556" }}>{e.descrizione}</p> : null}
+      {e.descrizione ? <p className="descrizione">{e.descrizione}</p> : null}
 
       <section className="dati">
         <div>
@@ -44,7 +44,7 @@ export default async function DettaglioEvento({ params }: Props) {
         {e.luogo ? (
           <div>
             <Icona nome="pin" />
-            <span><b>{e.luogo.nome}</b><Link href={`/mappa?luogo=${e.luogo.id}`} className="meta" style={{ color: "#2C79AE" }}>Vedi sulla mappa</Link></span>
+            <span><b>{e.luogo.nome}</b><Link href={`/mappa?luogo=${e.luogo.id}`} className="meta" style={{ color: "var(--accento)" }}>Vedi sulla mappa</Link></span>
           </div>
         ) : null}
         {e.organizzatore ? (

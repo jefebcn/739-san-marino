@@ -2,7 +2,9 @@
   "name": "739-san-marino",
   "version": "0.1.0",
   "scripts": {
+    "predev": "node scripts/worker-mappa.mjs",
     "dev": "next dev",
+    "prebuild": "node scripts/worker-mappa.mjs",
     "build": "next build",
     "start": "next start"
   },

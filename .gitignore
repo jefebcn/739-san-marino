@@ -6,3 +6,6 @@ out
 .vercel
 *.tsbuildinfo
 next-env.d.ts
+
+# Copiato da node_modules prima di dev e build (scripts/worker-mappa.mjs)
+public/maplibre-gl-worker.mjs

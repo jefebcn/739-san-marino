@@ -1,4 +1,12 @@
-import { Icona } from "@/components/Icona";
+import Link from "next/link";
+import { Icona, type NomeIcona } from "@/components/Icona";
+import { TestoProssima } from "@/components/Partenze";
+import { RaccoltaBreve } from "@/components/Raccolta";
+import { ConteggioAperte } from "@/components/Farmacie";
+import { getClassifica } from "@/lib/data";
+import { getFarmacie, getLinee, getParcheggi, getRaccolta } from "@/lib/servizi";
+
+export const revalidate = 60;
 
 export const metadata = { title: "Utili · 739 San Marino" };
 
@@ -9,14 +17,24 @@ const numeri = [
   { numero: "118", nome: "Ambulanza" },
 ];
 
-const inArrivo = [
-  { titolo: "Farmacie di turno", dettaglio: "Aggiornate ogni settimana" },
-  { titolo: "Raccolta rifiuti", dettaglio: "Calendario per castello" },
-  { titolo: "Orari di bus e funivia", dettaglio: "Prossime partenze" },
-  { titolo: "Parcheggi", dettaglio: "Posizioni e tariffe" },
-];
+function Servizio({ href, icona, titolo, allerta, children }: { href: string; icona: NomeIcona; titolo: string; allerta?: boolean; children: React.ReactNode }) {
+  return (
+    <Link href={href} className="servizio premibile">
+      <span className={allerta ? "icona-tonda allerta" : "icona-tonda"}><Icona nome={icona} /></span>
+      <span style={{ minWidth: 0 }}>
+        <h3>{titolo}</h3>
+        <span className="stato">{children}</span>
+      </span>
+      <Icona nome="avanti" size={20} />
+    </Link>
+  );
+}
 
-export default function Utili() {
+export default async function Utili() {
+  const [farmacie, linee, parcheggi, raccolta, castelli] = await Promise.all([getFarmacie(), getLinee(), getParcheggi(), getRaccolta(), getClassifica()]);
+  const funivia = linee.find((l) => l.tipo === "funivia");
+  const bus = linee.filter((l) => l.tipo === "bus");
+
   return (
     <>
       <section className="intro">
@@ -38,14 +56,20 @@ export default function Utili() {
       </section>
 
       <section className="sezione">
-        <div className="sezione-head"><h2>In arrivo</h2></div>
+        <div className="sezione-head"><h2>Servizi</h2><span className="meta">aggiornati adesso</span></div>
         <div className="lista">
-          {inArrivo.map((s) => (
-            <div key={s.titolo} className="card">
-              <div><h3>{s.titolo}</h3><div className="meta">{s.dettaglio}</div></div>
-              <span className="presto">Presto</span>
-            </div>
-          ))}
+          <Servizio href="/utili/farmacie" icona="farmacia" titolo="Farmacie aperte" allerta>
+            {farmacie.length ? <ConteggioAperte farmacie={farmacie} testo /> : "Farmacie e orari"}
+          </Servizio>
+          <Servizio href="/utili/trasporti" icona="funivia" titolo="Bus e funivia">
+            {funivia ? <>Funivia <TestoProssima partenze={funivia.partenze} /></> : bus.length ? `${bus.length} linee bus` : "Orari in arrivo"}
+          </Servizio>
+          <Servizio href="/utili/rifiuti" icona="rifiuti" titolo="Raccolta rifiuti">
+            <RaccoltaBreve raccolta={raccolta} castelli={castelli} />
+          </Servizio>
+          <Servizio href="/utili/parcheggi" icona="parcheggio" titolo="Parcheggi">
+            {parcheggi.length ? <><b>{parcheggi.length}</b> parcheggi con tariffe e indicazioni</> : "Posizioni e tariffe"}
+          </Servizio>
         </div>
       </section>
     </>

@@ -10,17 +10,17 @@ type Props = { searchParams: Promise<{ luogo?: string }> };
 export default async function Mappa({ searchParams }: Props) {
   const [{ luogo }, luoghi] = await Promise.all([searchParams, getLuoghi()]);
 
-  return (
-    <>
-      <section className="intro">
-        <span className="etichetta">Mappa del territorio</span>
-        <h1 className="titolo">Tutto quello che c&apos;è, e dove</h1>
-      </section>
-      {luoghi.length === 0 ? (
+  if (luoghi.length === 0) {
+    return (
+      <>
+        <section className="intro">
+          <span className="etichetta">Mappa del territorio</span>
+          <h1 className="titolo">Tutto quello che c&apos;è, e dove</h1>
+        </section>
         <p className="vuoto">Nessun luogo ancora sulla mappa.</p>
-      ) : (
-        <MappaTerritorio luoghi={luoghi} focus={luogo} />
-      )}
-    </>
-  );
+      </>
+    );
+  }
+
+  return <MappaTerritorio luoghi={luoghi} focus={luogo} />;
 }
