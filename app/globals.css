@@ -34,7 +34,7 @@ button { font: inherit; color: inherit; }
 .app { height: 100dvh; width: 100%; background: var(--bianco); display: flex; flex-direction: column; overflow: hidden; position: relative; }
 .top { flex: none; background: rgba(255, 255, 255, 0.96); backdrop-filter: saturate(1.4) blur(12px); border-bottom: 1px solid var(--linea); padding: calc(10px + env(safe-area-inset-top, 0px)) 18px 10px; display: flex; align-items: center; justify-content: space-between; gap: 12px; user-select: none; z-index: 5; }
 .main { flex: 1; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; padding: 18px 18px 32px; display: flex; flex-direction: column; gap: 26px; }
-.main > * { animation: entra 0.22s ease both; }
+.main > * { flex-shrink: 0; animation: entra 0.22s ease both; }
 @keyframes entra { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
 @media (min-width: 640px) {
@@ -169,6 +169,48 @@ button { font: inherit; color: inherit; }
 .nav a[aria-current="page"] { color: var(--notte); }
 .nav a[aria-current="page"]::before { background: var(--azzurro); }
 .nav svg { width: 24px; height: 24px; }
+
+/* Home: nuovi utenti e utenti che tornano */
+html:not([data-utente="tornato"]) .per-tornati { display: none !important; }
+html[data-utente="tornato"] .per-nuovi { display: none !important; }
+
+.benvenuto { margin: -18px -18px 0; padding: 30px 20px 26px; background: var(--notte); color: var(--bianco); display: flex; flex-direction: column; gap: 14px; position: relative; overflow: hidden; }
+.benvenuto h1 { font-size: 38px; font-weight: 900; line-height: 1.02; letter-spacing: -0.035em; max-width: 12ch; }
+.benvenuto p { font-size: 17px; line-height: 1.45; color: #CFE3F0; max-width: 34ch; position: relative; }
+.benvenuto .cta { display: flex; flex-direction: column; gap: 10px; margin-top: 6px; position: relative; z-index: 1; }
+.benvenuto .cime-sfondo { position: absolute; right: -40px; bottom: -14px; opacity: 0.16; }
+.bottone.primario-chiaro { background: var(--azzurro); color: var(--notte); }
+.bottone.fantasma { background: rgba(255, 255, 255, 0.08); color: var(--bianco); border: 1px solid rgba(255, 255, 255, 0.22); }
+
+.spiega { display: flex; gap: 14px; align-items: flex-start; padding: 14px; background: var(--nebbia); border-radius: 18px; }
+.spiega b { display: block; font-size: 16px; }
+.spiega span span { display: block; font-size: 14px; color: var(--testo-2); line-height: 1.4; margin-top: 2px; }
+.icona-tonda { flex: none; width: 44px; height: 44px; border-radius: 14px; background: var(--bianco); display: grid; place-items: center; color: var(--azzurro-scuro); border: 1px solid var(--linea); }
+
+.passi { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+.passi li { display: flex; gap: 14px; align-items: flex-start; }
+.passi .numero { flex: none; width: 32px; height: 32px; border-radius: 50%; background: var(--notte); color: var(--bianco); display: grid; place-items: center; font-weight: 800; font-size: 15px; }
+.passi b { display: block; font-size: 16px; }
+.passi span span { display: block; font-size: 14px; color: var(--testo-2); line-height: 1.4; }
+
+.salita { background: var(--nebbia); border-radius: 18px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.salita-barra { display: grid; grid-template-columns: 27fr 34fr 39fr 6fr; gap: 3px; height: 10px; }
+.salita-barra span { border-radius: 3px; }
+.salita-barra span:nth-child(1) { background: #B9DCF0; }
+.salita-barra span:nth-child(2) { background: var(--azzurro); }
+.salita-barra span:nth-child(3) { background: var(--azzurro-scuro); }
+.salita-barra span:nth-child(4) { background: var(--notte); }
+.salita-livelli { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); font-weight: 700; font-size: 14px; }
+.salita-livelli small { display: block; font-family: var(--mono); font-weight: 500; font-size: 11px; color: var(--testo-2); }
+
+.scegli { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.scegli button { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; padding: 12px 10px; min-height: 76px; border-radius: 16px; border: 1.5px solid var(--linea); background: var(--bianco); font-size: 14px; font-weight: 700; text-align: left; line-height: 1.2; cursor: pointer; }
+.scegli button[aria-pressed="true"] { border-color: var(--notte); background: var(--nebbia); }
+
+.mio-castello { border: 1px solid var(--linea); border-radius: 20px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+.stemma { flex: none; width: 52px; height: 52px; border-radius: 16px; display: grid; place-items: center; font-weight: 900; font-size: 20px; }
+.vai { font-size: 14px; font-weight: 700; color: var(--azzurro-scuro); }
+.link { appearance: none; background: none; border: 0; padding: 6px 0; font-size: 14px; font-weight: 600; color: var(--azzurro-scuro); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
 
 /* Caricamento */
 .scheletro { background: linear-gradient(90deg, var(--nebbia) 25%, #E8EDF1 50%, var(--nebbia) 75%); background-size: 200% 100%; animation: luce 1.2s infinite linear; border-radius: 16px; }

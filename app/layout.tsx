@@ -27,8 +27,13 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="it">
+    <html lang="it" suppressHydrationWarning>
       <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{document.documentElement.dataset.utente=localStorage.getItem("739-castello")?"tornato":"nuovo"}catch(e){document.documentElement.dataset.utente="nuovo"}`,
+          }}
+        />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link
@@ -42,7 +47,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Link href="/" aria-label="Home">
               <Logo />
             </Link>
-            <span className="etichetta">San Marino</span>
           </header>
           <main className="main">
             {children}
