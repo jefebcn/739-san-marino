@@ -1,27 +1,42 @@
 import { supabase } from "./supabase";
 
 export type Castello = { id: number; slug: string; nome: string; colore: string; metri?: number };
-export type Luogo = { id: string; nome: string; categoria: string; descrizione: string | null; lat: number; lng: number };
+export type Luogo = {
+  id: string;
+  nome: string;
+  categoria: string;
+  descrizione: string | null;
+  lat: number;
+  lng: number;
+  castello_id: number | null;
+};
 export type Evento = {
   id: string;
   titolo: string;
   descrizione: string | null;
   inizio: string;
+  fine: string | null;
   metri: number;
   organizzatore: string | null;
-  luogo: { nome: string } | null;
-  castello: { nome: string; colore: string } | null;
+  luogo: { id: string; nome: string; lat: number; lng: number } | null;
+  castello: { id: number; slug: string; nome: string; colore: string } | null;
 };
 
-export async function getEventi(limite = 20): Promise<Evento[]> {
+const CAMPI_EVENTO =
+  "id, titolo, descrizione, inizio, fine, metri, organizzatore, luogo:luoghi(id, nome, lat, lng), castello:castelli(id, slug, nome, colore)";
+
+const TZ = "Europe/San_Marino";
+
+function daOra() {
+  return new Date(Date.now() - 6 * 3600 * 1000).toISOString();
+}
+
+export async function getEventi(limite = 50, castelloId?: number): Promise<Evento[]> {
   const db = supabase();
   if (!db) return [];
-  const { data, error } = await db
-    .from("eventi")
-    .select("id, titolo, descrizione, inizio, metri, organizzatore, luogo:luoghi(nome), castello:castelli(nome, colore)")
-    .gte("inizio", new Date(Date.now() - 6 * 3600 * 1000).toISOString())
-    .order("inizio", { ascending: true })
-    .limit(limite);
+  let q = db.from("eventi").select(CAMPI_EVENTO).gte("inizio", daOra()).order("inizio", { ascending: true }).limit(limite);
+  if (castelloId) q = q.eq("castello_id", castelloId);
+  const { data, error } = await q;
   if (error) {
     console.error("eventi", error.message);
     return [];
@@ -29,10 +44,23 @@ export async function getEventi(limite = 20): Promise<Evento[]> {
   return (data ?? []) as unknown as Evento[];
 }
 
-export async function getLuoghi(): Promise<Luogo[]> {
+export async function getEvento(id: string): Promise<Evento | null> {
+  const db = supabase();
+  if (!db || !/^[0-9a-f-]{36}$/i.test(id)) return null;
+  const { data, error } = await db.from("eventi").select(CAMPI_EVENTO).eq("id", id).maybeSingle();
+  if (error) {
+    console.error("evento", error.message);
+    return null;
+  }
+  return (data as unknown as Evento) ?? null;
+}
+
+export async function getLuoghi(castelloId?: number): Promise<Luogo[]> {
   const db = supabase();
   if (!db) return [];
-  const { data, error } = await db.from("luoghi").select("id, nome, categoria, descrizione, lat, lng").order("nome");
+  let q = db.from("luoghi").select("id, nome, categoria, descrizione, lat, lng, castello_id").order("nome");
+  if (castelloId) q = q.eq("castello_id", castelloId);
+  const { data, error } = await q;
   if (error) {
     console.error("luoghi", error.message);
     return [];
@@ -51,13 +79,90 @@ export async function getClassifica(): Promise<Castello[]> {
   return (data ?? []).map((c: Castello & { metri: number | string }) => ({ ...c, metri: Number(c.metri) }));
 }
 
-export function formatData(iso: string) {
-  return new Intl.DateTimeFormat("it-IT", {
-    weekday: "short",
-    day: "numeric",
-    month: "short",
-    hour: "2-digit",
-    minute: "2-digit",
-    timeZone: "Europe/San_Marino",
-  }).format(new Date(iso));
+/* Date e orari, sempre nel fuso di San Marino */
+
+function parti(d: Date) {
+  const p = new Intl.DateTimeFormat("it-IT", { timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(d);
+  const v = (t: string) => p.find((x) => x.type === t)?.value ?? "";
+  return `${v("year")}-${v("month")}-${v("day")}`;
 }
+
+export function chiaveGiorno(iso: string) {
+  return parti(new Date(iso));
+}
+
+export function etichettaGiorno(iso: string) {
+  const oggi = parti(new Date());
+  const domani = parti(new Date(Date.now() + 86400000));
+  const k = chiaveGiorno(iso);
+  if (k === oggi) return "Oggi";
+  if (k === domani) return "Domani";
+  return new Intl.DateTimeFormat("it-IT", { timeZone: TZ, weekday: "long", day: "numeric", month: "long" }).format(new Date(iso));
+}
+
+export function ora(iso: string) {
+  return new Intl.DateTimeFormat("it-IT", { timeZone: TZ, hour: "2-digit", minute: "2-digit" }).format(new Date(iso));
+}
+
+export function giornoNumero(iso: string) {
+  return new Intl.DateTimeFormat("it-IT", { timeZone: TZ, day: "numeric" }).format(new Date(iso));
+}
+
+export function meseBreve(iso: string) {
+  return new Intl.DateTimeFormat("it-IT", { timeZone: TZ, month: "short" }).format(new Date(iso)).replace(".", "");
+}
+
+export function formatData(iso: string) {
+  return `${etichettaGiorno(iso)} · ${ora(iso)}`;
+}
+
+export function oggiLungo() {
+  return new Intl.DateTimeFormat("it-IT", { timeZone: TZ, weekday: "long", day: "numeric", month: "long" }).format(new Date());
+}
+
+export function saluto() {
+  const h = Number(new Intl.DateTimeFormat("it-IT", { timeZone: TZ, hour: "2-digit", hourCycle: "h23" }).format(new Date()));
+  if (h < 5) return "Buonanotte";
+  if (h < 12) return "Buongiorno";
+  if (h < 18) return "Buon pomeriggio";
+  return "Buonasera";
+}
+
+export function linkCalendario(e: Evento) {
+  const f = (d: Date) => d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+  const inizio = new Date(e.inizio);
+  const fine = e.fine ? new Date(e.fine) : new Date(inizio.getTime() + 2 * 3600 * 1000);
+  const p = new URLSearchParams({
+    action: "TEMPLATE",
+    text: e.titolo,
+    dates: `${f(inizio)}/${f(fine)}`,
+    details: e.descrizione ?? "",
+    location: e.luogo ? `${e.luogo.nome}, San Marino` : "San Marino",
+  });
+  return `https://calendar.google.com/calendar/render?${p.toString()}`;
+}
+
+export function linkIndicazioni(lat: number, lng: number) {
+  return `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+}
+
+/** Colore del testo leggibile sopra un colore di sfondo (bianco o notte). */
+export function testoSu(hex: string) {
+  const n = parseInt(hex.replace("#", ""), 16);
+  const [r, g, b] = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map((v) => {
+    const c = v / 255;
+    return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+  });
+  const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  return lum > 0.3 ? "#0B1F2E" : "#FFFFFF";
+}
+
+export const CATEGORIE: Record<string, string> = {
+  luogo: "Luoghi",
+  trasporti: "Trasporti",
+  parcheggio: "Parcheggi",
+  farmacia: "Farmacie",
+  impianto: "Sport",
+  locale: "Locali",
+  servizio: "Servizi",
+};

@@ -3,7 +3,6 @@ import Link from "next/link";
 import "./globals.css";
 import { Logo } from "@/components/Logo";
 import Nav from "@/components/Nav";
-import Installa from "@/components/Installa";
 
 export const metadata: Metadata = {
   title: "739 San Marino",
@@ -43,10 +42,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Link href="/" aria-label="Home">
               <Logo />
             </Link>
-            <span className="etichetta">IT · EN</span>
+            <span className="etichetta">San Marino</span>
           </header>
           <main className="main">
-            <Installa />
             {children}
           </main>
           <Nav />

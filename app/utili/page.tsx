@@ -1,3 +1,5 @@
+import { Icona } from "@/components/Icona";
+
 export const metadata = { title: "Utili · 739 San Marino" };
 
 const numeri = [
@@ -7,33 +9,43 @@ const numeri = [
   { numero: "118", nome: "Ambulanza" },
 ];
 
+const inArrivo = [
+  { titolo: "Farmacie di turno", dettaglio: "Aggiornate ogni settimana" },
+  { titolo: "Raccolta rifiuti", dettaglio: "Calendario per castello" },
+  { titolo: "Orari di bus e funivia", dettaglio: "Prossime partenze" },
+  { titolo: "Parcheggi", dettaglio: "Posizioni e tariffe" },
+];
+
 export default function Utili() {
   return (
     <>
-      <section style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+      <section className="intro">
         <span className="etichetta">Utili ed emergenze</span>
         <h1 className="titolo">Quello che serve, quando serve</h1>
       </section>
 
-      <section style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-        <h2 style={{ fontSize: 20 }}>Numeri di emergenza</h2>
+      <section className="sezione">
+        <div className="sezione-head"><h2>Numeri di emergenza</h2></div>
         <div className="emergenza">
           {numeri.map((n) => (
-            <a key={n.numero} href={`tel:${n.numero}`}>
+            <a key={n.numero} href={`tel:${n.numero}`} className="premibile">
               <strong>{n.numero}</strong>
               <span>{n.nome}</span>
             </a>
           ))}
         </div>
-        <p className="meta">Tocca un numero per chiamare.</p>
+        <p className="meta" style={{ display: "flex", gap: 6, alignItems: "center" }}><Icona nome="telefono" size={14} /> Tocca un numero per chiamare.</p>
       </section>
 
-      <section style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-        <h2 style={{ fontSize: 20 }}>In arrivo</h2>
+      <section className="sezione">
+        <div className="sezione-head"><h2>In arrivo</h2></div>
         <div className="lista">
-          <div className="card"><div><h3>Farmacie di turno</h3><div className="meta">Aggiornate ogni settimana</div></div></div>
-          <div className="card"><div><h3>Raccolta rifiuti</h3><div className="meta">Calendario per castello</div></div></div>
-          <div className="card"><div><h3>Orari di bus e funivia</h3><div className="meta">Prossime partenze</div></div></div>
+          {inArrivo.map((s) => (
+            <div key={s.titolo} className="card">
+              <div><h3>{s.titolo}</h3><div className="meta">{s.dettaglio}</div></div>
+              <span className="presto">Presto</span>
+            </div>
+          ))}
         </div>
       </section>
     </>

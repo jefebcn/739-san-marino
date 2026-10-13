@@ -1,38 +1,42 @@
-import { getEventi, formatData } from "@/lib/data";
+import { chiaveGiorno, etichettaGiorno, getEventi, type Evento } from "@/lib/data";
+import EventoRiga from "@/components/EventoRiga";
 
 export const revalidate = 60;
 
 export const metadata = { title: "Eventi · 739 San Marino" };
 
 export default async function Eventi() {
-  const eventi = await getEventi(50);
+  const eventi = await getEventi(80);
+
+  const gruppi: { chiave: string; etichetta: string; eventi: Evento[] }[] = [];
+  for (const e of eventi) {
+    const k = chiaveGiorno(e.inizio);
+    const ultimo = gruppi[gruppi.length - 1];
+    if (ultimo && ultimo.chiave === k) ultimo.eventi.push(e);
+    else gruppi.push({ chiave: k, etichetta: etichettaGiorno(e.inizio), eventi: [e] });
+  }
 
   return (
     <>
-      <section style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+      <section className="intro">
         <span className="etichetta">Calendario</span>
         <h1 className="titolo">Eventi sul Titano</h1>
         <p className="sottotitolo">Ogni check-in vale metri per te e per il tuo castello.</p>
       </section>
 
-      {eventi.length === 0 ? (
-        <p className="vuoto">Nessun evento in calendario. Aggiungili dal database Supabase, tabella eventi.</p>
+      {gruppi.length === 0 ? (
+        <p className="vuoto">Nessun evento in calendario per ora.</p>
       ) : (
-        <div className="lista">
-          {eventi.map((e) => (
-            <article key={e.id} className="card" style={{ alignItems: "flex-start" }}>
-              <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                <h3>{e.titolo}</h3>
-                <div className="meta">
-                  {formatData(e.inizio)}
-                  {e.luogo ? ` · ${e.luogo.nome}` : ""}
-                </div>
-                {e.descrizione ? <p style={{ margin: 0, fontSize: 14, color: "#304556" }}>{e.descrizione}</p> : null}
-              </div>
-              <span className="metri">+{e.metri} m</span>
-            </article>
-          ))}
-        </div>
+        gruppi.map((g) => (
+          <section key={g.chiave} className="sezione" style={{ gap: 10 }}>
+            <h2 className="giorno">{g.etichetta}</h2>
+            <div className="lista">
+              {g.eventi.map((e) => (
+                <EventoRiga key={e.id} e={e} />
+              ))}
+            </div>
+          </section>
+        ))
       )}
     </>
   );
