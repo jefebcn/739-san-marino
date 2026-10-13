@@ -3,12 +3,17 @@ import Link from "next/link";
 import "./globals.css";
 import { Logo } from "@/components/Logo";
 import Nav from "@/components/Nav";
+import { HudCastello } from "@/components/Castello";
+import { Altimetro } from "@/components/Quota";
+import { getClassifica } from "@/lib/data";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "739 San Marino",
   description: "Tutto San Marino, dalla vetta. Eventi, mappa, castelli e servizi utili in un'unica app.",
   applicationName: "739",
-  appleWebApp: { capable: true, title: "739", statusBarStyle: "black-translucent" },
+  appleWebApp: { capable: true, title: "739", statusBarStyle: "default" },
   formatDetection: { telephone: false },
   icons: {
     icon: [{ url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" }],
@@ -17,7 +22,11 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0B1F2E",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#FFFFFF" },
+    { media: "(prefers-color-scheme: dark)", color: "#071621" },
+  ],
+  colorScheme: "light dark",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
@@ -25,7 +34,11 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const classifica = await getClassifica();
+  // I metri personali arriveranno con l'accesso: fino ad allora la quota parte da 0.
+  const metriPersonali = 0;
+
   return (
     <html lang="it" suppressHydrationWarning>
       <head>
@@ -38,15 +51,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link
           rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@500&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
         />
       </head>
       <body>
         <div className="app">
           <header className="top">
-            <Link href="/" aria-label="Home">
-              <Logo />
-            </Link>
+            <div className="top-riga">
+              <Link href="/" aria-label="Home">
+                <Logo />
+              </Link>
+              <HudCastello classifica={classifica} />
+            </div>
+            <Altimetro metri={metriPersonali} />
           </header>
           <main className="main">
             {children}

@@ -13,10 +13,14 @@ Tutto San Marino, dalla vetta. App del territorio: eventi, mappa, castelli e ser
 | Pagina | Cosa mostra | Dati |
 |---|---|---|
 | `/` | Prossimi eventi, la tua quota, scorciatoie | `eventi` |
-| `/mappa` | Mappa con i luoghi | `luoghi` |
+| `/mappa` | Mappa a tutto schermo con pannello dal basso | `luoghi` |
 | `/eventi` | Calendario completo | `eventi` |
 | `/castelli` | Classifica dei nove castelli in metri | `classifica_castelli_totali()` |
-| `/utili` | Numeri di emergenza (112, 113, 115, 118) | statici |
+| `/utili` | Numeri di emergenza e stato dei servizi | vari |
+| `/utili/farmacie` | Farmacie aperte adesso | `luoghi` (farmacia) |
+| `/utili/trasporti` | Funivia e bus Rimini–San Marino, prossime partenze | `linee`, `partenze` |
+| `/utili/rifiuti` | Calendario della raccolta per castello e zona | `raccolta_rifiuti` |
+| `/utili/parcheggi` | Parcheggi con posti e tariffe | `luoghi` (parcheggio) |
 
 ## Avvio in locale
 
@@ -28,7 +32,7 @@ npm run dev
 
 ## Database
 
-Lo schema è in `supabase/migrations/0001_schema_iniziale.sql` ed è già applicato.
+Lo schema è in `supabase/migrations/` (0001–0004 già applicati; 0005 da applicare a mano).
 Tabelle: `castelli`, `profili`, `luoghi`, `eventi`, `checkin`, `metri_movimenti`.
 Ogni check-in aggiunge in automatico i metri dell'evento all'utente.
 

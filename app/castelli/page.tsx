@@ -15,7 +15,7 @@ export default async function Castelli() {
   return (
     <>
       <section className="intro">
-        <span className="etichetta">Classifica in metri</span>
+        <span className="etichetta">Classifica in metri · live</span>
         <h1 className="titolo">I nove castelli</h1>
         <p className="sottotitolo">I metri di ogni persona si sommano a quelli del suo castello. Chi arriva più in alto?</p>
       </section>
@@ -40,10 +40,10 @@ export default async function Castelli() {
             {classifica.map((c, i) => (
               <li key={c.id}>
                 <Link href={`/castelli/${c.slug}`} className="riga premibile">
-                  <span className="meta" style={{ color: "#0B1F2E", fontWeight: 600 }}>{i + 1}</span>
+                  <span className="pos">{String(i + 1).padStart(2, "0")}</span>
                   <span className="punto" style={{ background: c.colore }} />
                   <div style={{ minWidth: 0 }}>
-                    <div style={{ fontWeight: 700 }}>{c.nome}</div>
+                    <div style={{ fontWeight: 600 }}>{c.nome}</div>
                     <div className="barra">
                       <span style={{ width: `${Math.max(2, ((c.metri ?? 0) / max) * 100)}%`, background: c.colore }} />
                     </div>

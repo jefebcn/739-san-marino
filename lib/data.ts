@@ -9,7 +9,17 @@ export type Luogo = {
   lat: number;
   lng: number;
   castello_id: number | null;
+  indirizzo: string | null;
+  telefono: string | null;
+  orari: string | null;
+  tariffa: string | null;
+  posti: number | null;
+  da_verificare: boolean;
+  /** Orari settimanali: {"1": [["08:00","19:30"]], …} con 1 = lunedì */
+  orari_settimana: Record<string, [string, string][]> | null;
 };
+
+export const CAMPI_LUOGO = "id, nome, categoria, descrizione, lat, lng, castello_id, indirizzo, telefono, orari, tariffa, posti, da_verificare, orari_settimana";
 export type Evento = {
   id: string;
   titolo: string;
@@ -58,14 +68,14 @@ export async function getEvento(id: string): Promise<Evento | null> {
 export async function getLuoghi(castelloId?: number): Promise<Luogo[]> {
   const db = supabase();
   if (!db) return [];
-  let q = db.from("luoghi").select("id, nome, categoria, descrizione, lat, lng, castello_id").order("nome");
+  let q = db.from("luoghi").select(CAMPI_LUOGO).order("nome");
   if (castelloId) q = q.eq("castello_id", castelloId);
   const { data, error } = await q;
   if (error) {
     console.error("luoghi", error.message);
     return [];
   }
-  return data ?? [];
+  return (data ?? []) as Luogo[];
 }
 
 export async function getClassifica(): Promise<Castello[]> {

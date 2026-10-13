@@ -12,6 +12,12 @@ const PATH = {
   telefono: "M5 4h4l2 5-3 2a11 11 0 005 5l2-3 5 2v4a2 2 0 01-2 2A17 17 0 013 6a2 2 0 012-2z",
   persona: "M12 12a4 4 0 100-8 4 4 0 000 8zM4 21a8 8 0 0116 0",
   scudo: "M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z",
+  avanti: "M9 6l6 6-6 6",
+  farmacia: "M9.5 3h5v6.5H21v5h-6.5V21h-5v-6.5H3v-5h6.5z",
+  bus: "M6 3h12a2 2 0 012 2v12H4V5a2 2 0 012-2zM4 11h16M7 17v3M17 17v3M8 14h.01M16 14h.01",
+  funivia: "M3 4l18 4M12 6v4M7 10h10a2 2 0 012 2v6a2 2 0 01-2 2H7a2 2 0 01-2-2v-6a2 2 0 012-2zM5 14h14",
+  rifiuti: "M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6",
+  parcheggio: "M5 3h14v18H5zM10 17V8h3a2.5 2.5 0 010 5h-3",
 } as const;
 
 export type NomeIcona = keyof typeof PATH;

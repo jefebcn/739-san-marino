@@ -28,13 +28,13 @@ export default async function Castello({ params }: Props) {
 
   return (
     <>
-      <section className="copertina" style={{ background: `linear-gradient(165deg, #0B1F2E 40%, ${c.colore})` }}>
+      <section className="copertina topo" style={{ background: `linear-gradient(165deg, #0B1F2E 40%, ${c.colore})` }}>
         <Link href="/castelli" className="indietro"><Icona nome="freccia" size={18} /> Castelli</Link>
         <span className="meta">Castello di San Marino</span>
         <h1 className="titolo">{c.nome}</h1>
         <div style={{ display: "flex", gap: 18, alignItems: "baseline" }}>
-          <span style={{ fontSize: 40, fontWeight: 900, letterSpacing: "-0.04em", lineHeight: 1 }}>{posizione + 1}°</span>
-          <span style={{ fontFamily: "var(--mono)", fontSize: 14 }}>{fmt.format(c.metri ?? 0)} m in classifica</span>
+          <span style={{ fontFamily: "var(--mono)", fontSize: 44, fontWeight: 700, letterSpacing: "-0.05em", lineHeight: 1 }}>{posizione + 1}°</span>
+          <span style={{ fontFamily: "var(--mono)", fontSize: 14 }}>{fmt.format(c.metri ?? 0)} m · su {classifica.length}</span>
         </div>
         <span style={{ position: "absolute", right: -12, bottom: -8, opacity: 0.3 }}><Cime width={170} color={c.colore} /></span>
       </section>

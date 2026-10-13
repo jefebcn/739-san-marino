@@ -19,7 +19,7 @@ export default function Nav() {
     <nav className="nav" aria-label="Sezioni">
       {voci.map((v) => (
         <Link key={v.href} href={v.href} aria-current={attivo(v.href) ? "page" : undefined}>
-          <Icona nome={v.icona} />
+          <span className="ico"><Icona nome={v.icona} /></span>
           {v.nome}
         </Link>
       ))}
