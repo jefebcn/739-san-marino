@@ -76,5 +76,5 @@ Tabelle: `castelli` (i 9 castelli con colore), `profili`, `luoghi`, `eventi`, `c
 ## Regole di lavoro
 
 - Prima di pubblicare: `npm run build` deve passare.
-- Ogni push su `main` va online da solo: per prove più grandi usa un branch, che Vercel pubblica come anteprima.
+- Pubblica sempre direttamente su `main` (scelta di Alex): niente branch, anteprime o pull request. Ogni push su `main` va online da solo, quindi prima di pushare la build deve passare e le pagine toccate vanno controllate.
 - Le modifiche al database vanno anche salvate come file in `supabase/migrations/`.
