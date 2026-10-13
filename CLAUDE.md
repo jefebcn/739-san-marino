@@ -12,7 +12,7 @@ App del territorio di San Marino: eventi, mappa, castelli e servizi utili in un'
 ## Stack
 
 - Next.js 15 (App Router, React 19, TypeScript).
-- Tailwind CSS 4 (`postcss.config.mjs`, `tailwind.config.ts` caricato da `app/globals.css` con `@config`). Per ora senza il reset di base (preflight): le pagine esistenti usano ancora le classi CSS in `globals.css`.
+- Tailwind CSS 4 (`postcss.config.mjs`, `tailwind.config.ts` caricato da `app/globals.css` con `@config`). Le classi CSS storiche di `globals.css` stanno in `@layer components`, quindi le utility Tailwind le sovrascrivono sempre. Il codice nuovo si scrive in Tailwind; le classi composte vanno scritte per intero (Tailwind non vede `bg-ottone-${n}`).
 - Zustand per lo stato globale; ogni modulo ha il suo store in `modules/<modulo>/store.ts` (oggi `modules/core/store.ts`, la sessione SMR ID).
 - `@supabase/supabase-js` con la chiave publishable (pubblica per natura; la sicurezza la fanno le regole RLS). URL e chiave hanno un valore di riserva in `lib/supabase.ts`, quindi su Vercel non servono variabili d'ambiente.
 - Mappa: MapLibre GL + stile OpenFreeMap (`https://tiles.openfreemap.org/styles/liberty`), nessuna chiave.
@@ -31,6 +31,8 @@ App del territorio di San Marino: eventi, mappa, castelli e servizi utili in un'
 | `app/utili/trasporti` | Funivia e bus: conto alla rovescia e tabellone delle prossime partenze |
 | `app/utili/rifiuti` | Calendario della raccolta per castello (parte dal castello scelto) |
 | `app/utili/parcheggi` | Parcheggi con posti, tariffe e indicazioni |
+| `components/ui/` | Componenti base del design system: `PrimaryButton`, `ActionCard`, `BottomNav` |
+| `app/design` | Vetrina del design system (non nel menu, non indicizzata) |
 | `components/Quota.tsx` | Altimetro: scala 0–739 m con le tacche dei livelli, usata nell'HUD e in Home |
 | `components/Castello.tsx` | Scelta del castello salvata in `localStorage` (`739-castello`) e chip del castello nell'HUD |
 | `lib/data.ts` | Letture di eventi, luoghi e classifica, funzioni per date e orari (fuso `Europe/San_Marino`) |
@@ -58,9 +60,10 @@ Tabelle: `castelli` (i 9 castelli con colore), `profili`, `luoghi`, `eventi`, `c
 
 ## Identità visiva
 
-- Colori: Notte `#0B1F2E`, Azzurro `#5EB6E4`, Azzurro scuro `#2C79AE`, Nebbia `#F3F6F8`, Segnale `#E8573A` (solo emergenze e avvisi). Un colore per castello, usato solo in classifiche e badge.
-- Tema automatico: chiaro di giorno, scuro se il telefono è in modalità scura. I colori si usano solo tramite le variabili di ruolo in `globals.css` (`--sfondo`, `--superficie`, `--testo`, `--testo-2`, `--linea`, `--accento`, `--pannello`…), mai esadecimali fissi nelle pagine, altrimenti il tema scuro si rompe.
-- Caratteri: Space Grotesk (testi e titoli, peso massimo 700), JetBrains Mono (numeri, orari, metri, etichette; cifre a larghezza fissa).
+- Stile "fintech locale": base zinc profonda (`zinc-950`), accento **ottone** (scala `ottone-50…900` in `tailwind.config.ts`, finitura `bg-metallo` per i bottoni primari), Segnale `#E8573A` solo per emergenze e avvisi, azzurro `#5EB6E4` solo per informazioni e mappa. Un colore per castello, usato solo in classifiche e badge.
+- Tema: scuro di default, chiaro solo se il telefono è in modalità chiara (scelta di Alex). I colori si usano tramite i ruoli (`bg-fondo`, `bg-superficie`, `text-testo`, `text-testo-2`, `border-linea`, `text-accento`, `bg-accento-tenue`… o le variabili CSS corrispondenti), mai esadecimali fissi nelle pagine.
+- Schede `rounded-2xl` con bordo sottile, ombre minime, vetro smerigliato (`backdrop-blur`) solo per barre e pannelli sopra mappe o immagini.
+- Caratteri: Inter (testi e titoli, gerarchia bold/`text-testo-2`), JetBrains Mono (numeri, orari, metri, rating, etichette; cifre a larghezza fissa). Caricati con `next/font` in `app/layout.tsx`.
 - Stile HUD, da strumento di montagna: in alto sempre visibili il castello (posizione e metri) e l'altimetro della quota personale. Elementi ricorrenti: `.pannello` (scheda scura), `.topo` (curve di livello sullo sfondo), `.cornice` (angoli da mirino), numeri grandi in mono. Usarli con misura: non su ogni scheda.
 - Logo: il numero 739 con le tre cime del Titano (`components/Logo.tsx`). Mai usare torri, corona o stemma della Repubblica.
 - I punti si chiamano **metri**: livelli Valle (0), Mura (200), Torri (450), Vetta (739). Non chiamarli "punti": esiste già la SMaC dello Stato.

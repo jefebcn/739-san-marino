@@ -19,16 +19,16 @@ export default async function DettaglioEvento({ params }: Props) {
   const e = await getEvento(id);
   if (!e) notFound();
 
-  const colore = e.castello?.colore ?? "#0B1F2E";
+  const colore = e.castello?.colore ?? "#3F3F46";
 
   return (
     <>
-      <section className="copertina topo" style={{ background: `linear-gradient(160deg, #0B1F2E 55%, ${colore})` }}>
+      <section className="copertina topo" style={{ background: `linear-gradient(160deg, #141416 55%, ${colore})` }}>
         <Link href="/eventi" className="indietro"><Icona nome="freccia" size={18} /> Eventi</Link>
         <span className="meta">{formatData(e.inizio)}</span>
         <h1 className="titolo">{e.titolo}</h1>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-          <span className="metri" style={{ background: "rgba(94,182,228,.22)", color: "#DDF0FA" }}>+{e.metri} m al check-in</span>
+          <span className="metri" style={{ background: "rgba(201,164,92,.22)", color: "var(--ottone-chiaro)" }}>+{e.metri} m al check-in</span>
           {e.castello ? <span className="metri" style={{ background: "rgba(255,255,255,.14)", color: "#FFFFFF" }}>{e.castello.nome}</span> : null}
         </div>
         <span style={{ position: "absolute", right: -12, bottom: -8, opacity: 0.16 }}><Cime width={170} /></span>

@@ -28,7 +28,7 @@ export default async function Castello({ params }: Props) {
 
   return (
     <>
-      <section className="copertina topo" style={{ background: `linear-gradient(165deg, #0B1F2E 40%, ${c.colore})` }}>
+      <section className="copertina topo" style={{ background: `linear-gradient(165deg, #141416 40%, ${c.colore})` }}>
         <Link href="/castelli" className="indietro"><Icona nome="freccia" size={18} /> Castelli</Link>
         <span className="meta">Castello di San Marino</span>
         <h1 className="titolo">{c.nome}</h1>

@@ -1,13 +1,25 @@
 import type { Metadata, Viewport } from "next";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import Link from "next/link";
 import "./globals.css";
 import { Logo } from "@/components/Logo";
-import Nav from "@/components/Nav";
+import BottomNav, { type VoceNav } from "@/components/ui/BottomNav";
 import { HudCastello } from "@/components/Castello";
 import { Altimetro } from "@/components/Quota";
 import { getClassifica } from "@/lib/data";
 
 export const revalidate = 60;
+
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
+const jetbrains = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains", display: "swap" });
+
+const VOCI: VoceNav[] = [
+  { href: "/", nome: "Home", icona: "home" },
+  { href: "/mappa", nome: "Mappa", icona: "mappa" },
+  { href: "/eventi", nome: "Eventi", icona: "eventi" },
+  { href: "/castelli", nome: "Castelli", icona: "castelli" },
+  { href: "/utili", nome: "Utili", icona: "utili" },
+];
 
 export const metadata: Metadata = {
   title: "739 San Marino",
@@ -23,10 +35,10 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#FFFFFF" },
-    { media: "(prefers-color-scheme: dark)", color: "#071621" },
+    { media: "(prefers-color-scheme: light)", color: "#FAFAFA" },
+    { media: "(prefers-color-scheme: dark)", color: "#09090B" },
   ],
-  colorScheme: "light dark",
+  colorScheme: "dark light",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
@@ -40,18 +52,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const metriPersonali = 0;
 
   return (
-    <html lang="it" suppressHydrationWarning>
+    <html lang="it" className={`${inter.variable} ${jetbrains.variable}`} suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{
             __html: `try{document.documentElement.dataset.utente=localStorage.getItem("739-castello")?"tornato":"nuovo"}catch(e){document.documentElement.dataset.utente="nuovo"}`,
           }}
-        />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
         />
       </head>
       <body>
@@ -68,7 +74,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <main className="main">
             {children}
           </main>
-          <Nav />
+          <BottomNav voci={VOCI} />
         </div>
       </body>
     </html>

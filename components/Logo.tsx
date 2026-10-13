@@ -1,4 +1,4 @@
-export function Cime({ width = 34, color = "#5EB6E4" }: { width?: number; color?: string }) {
+export function Cime({ width = 34, color = "#C9A45C" }: { width?: number; color?: string }) {
   return (
     <svg width={width} height={(width * 48) / 120} viewBox="0 0 120 48" aria-hidden="true">
       <path d="M2 46 L26 22 L36 30 L58 4 L78 26 L90 16 L118 46 Z" fill={color} />

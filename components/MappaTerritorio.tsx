@@ -43,7 +43,7 @@ export default function MappaTerritorio({ luoghi, focus }: { luoghi: Luogo[]; fo
       if (annullato || !box.current) return;
       // Il worker è copiato in public/ da scripts/worker-mappa.mjs
       ml.setWorkerUrl(new URL("/maplibre-gl-worker.mjs", window.location.origin).href);
-      const scuro = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const scuro = !window.matchMedia("(prefers-color-scheme: light)").matches;
       const iniziale = luoghi.find((l) => l.id === focus);
       const m = new ml.Map({
         container: box.current,

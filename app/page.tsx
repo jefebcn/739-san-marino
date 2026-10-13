@@ -39,7 +39,7 @@ export default async function Home() {
     <>
       {/* ——— Per chi arriva la prima volta ——— */}
       <section className="benvenuto topo per-nuovi">
-        <span className="etichetta" style={{ color: "#9CCDEA" }}>Benvenuto su 739</span>
+        <span className="etichetta" style={{ color: "var(--ottone-chiaro)" }}>Benvenuto su 739</span>
         <h1>Tutto San Marino in un&apos;app</h1>
         <p>Cosa succede, dove andare, cosa serve. E una sfida tra i nove castelli: chi arriva più in alto?</p>
         <div className="cta">
