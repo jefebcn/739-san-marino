@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import ActionCard from "@/components/ui/ActionCard";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import { Icona } from "@/components/Icona";
+import SmrCard from "@/modules/core/components/SmrCard";
 
 export const metadata: Metadata = { title: "Design system · 739", robots: { index: false } };
 
@@ -92,8 +93,14 @@ export default function DesignSystem() {
       </section>
 
       <section className="flex flex-col gap-3">
+        <h2 className="text-lg font-semibold">Card SMR ID</h2>
+        <p className="text-sm text-testo-2">Esempio con dati finti. Tocca il QR per ingrandirlo.</p>
+        <SmrCard nome="Nome Cognome" tessera="739-A3F9-K2" castello={{ id: 2, slug: "borgo-maggiore", nome: "Borgo Maggiore", colore: "#F3A712" }} rating={1500} />
+      </section>
+
+      <section className="flex flex-col gap-3">
         <h2 className="text-lg font-semibold">BottomNav</h2>
-        <p className="text-sm text-testo-2">È la barra in fondo a questa pagina: vetro smerigliato, voce attiva in ottone. Con lo step 3 diventa Home · Sport · Mappa · Eventi · ID.</p>
+        <p className="text-sm text-testo-2">È la barra in fondo a questa pagina: vetro smerigliato, voce attiva in ottone. Voci: Home · Sport · Mappa · Eventi · ID.</p>
       </section>
     </div>
   );

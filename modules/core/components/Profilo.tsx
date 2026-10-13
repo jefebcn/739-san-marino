@@ -1,0 +1,117 @@
+"use client";
+
+import { useState } from "react";
+import ActionCard from "@/components/ui/ActionCard";
+import PrimaryButton from "@/components/ui/PrimaryButton";
+import { Icona } from "@/components/Icona";
+import { impostaCastello } from "@/components/Castello";
+import type { Castello } from "@/lib/data";
+import { esci, salvaProfilo } from "../auth";
+import { useSessione } from "../store";
+import Accesso, { Campo, NuovaPassword } from "./Accesso";
+import SmrCard from "./SmrCard";
+
+function Intestazione({ titolo, testo }: { titolo: string; testo: string }) {
+  return (
+    <header className="flex flex-col gap-1.5">
+      <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-testo-2">SMR ID</span>
+      <h1 className="text-[34px] font-bold leading-[1.02] tracking-tight">{titolo}</h1>
+      <p className="text-[15px] text-testo-2">{testo}</p>
+    </header>
+  );
+}
+
+/** Pagina profilo: accesso per gli ospiti, Card SMR ID e impostazioni per chi è connesso. */
+export default function Profilo({ castelli }: { castelli: Castello[] }) {
+  const { stato, utente, profilo, recupero, impostaRecupero, aggiornaProfilo } = useSessione();
+  const [nome, setNome] = useState<string | null>(null);
+  const [salvataggio, setSalvataggio] = useState<"fermo" | "in-corso" | "fatto" | "errore">("fermo");
+
+  if (stato === "caricamento") {
+    return (
+      <div className="flex flex-col gap-5" aria-busy="true" aria-label="Caricamento">
+        <div className="h-4 w-24 animate-pulse rounded bg-superficie" />
+        <div className="aspect-[1.586] w-full animate-pulse rounded-3xl bg-superficie" />
+      </div>
+    );
+  }
+
+  if (stato === "ospite" || !utente) {
+    return (
+      <div className="flex flex-col gap-7">
+        <Intestazione titolo="Entra in 739" testo="Un account, la tua tessera digitale: QR personale, castello e rating sportivo in un posto solo." />
+        <Accesso castelli={castelli} />
+      </div>
+    );
+  }
+
+  if (!profilo) {
+    return (
+      <div className="flex flex-col gap-5">
+        <Intestazione titolo="Quasi pronto" testo="Il tuo profilo non è ancora disponibile. Riprova tra qualche secondo." />
+        <PrimaryButton variante="secondario" onClick={() => esci()}>Esci</PrimaryButton>
+      </div>
+    );
+  }
+
+  const castello = castelli.find((c) => c.id === profilo.castello_id) ?? null;
+  const ordinati = [...castelli].sort((a, b) => a.id - b.id);
+  const nomeCorrente = nome ?? profilo.nome ?? "";
+
+  const salvaNome = async () => {
+    const pulito = nomeCorrente.trim().slice(0, 60) || null;
+    setSalvataggio("in-corso");
+    const r = await salvaProfilo(profilo.id, { nome: pulito });
+    if (r.errore) return setSalvataggio("errore");
+    aggiornaProfilo({ nome: pulito });
+    setNome(null);
+    setSalvataggio("fatto");
+  };
+
+  return (
+    <div className="flex flex-col gap-7">
+      <Intestazione titolo={profilo.nome ? `Ciao, ${profilo.nome}` : "Il tuo SMR ID"} testo="Mostra il QR agli eventi e nei luoghi 739: tocca il codice per ingrandirlo." />
+
+      {recupero ? <NuovaPassword fatto={() => impostaRecupero(false)} /> : null}
+
+      <SmrCard nome={profilo.nome} tessera={profilo.tessera} castello={castello} rating={null} />
+
+      <section className="flex flex-col gap-3">
+        <h2 className="text-xl font-semibold tracking-tight">Profilo</h2>
+        <div className="flex items-end gap-2">
+          <div className="flex-1">
+            <Campo etichetta="Nome sulla card" maxLength={60} value={nomeCorrente} onChange={(e) => { setNome(e.target.value); setSalvataggio("fermo"); }} />
+          </div>
+          <PrimaryButton variante="secondario" disabled={nome === null || salvataggio === "in-corso"} onClick={salvaNome}>
+            {salvataggio === "in-corso" ? "…" : "Salva"}
+          </PrimaryButton>
+        </div>
+        {salvataggio === "fatto" ? <p role="status" className="text-sm text-accento">Nome aggiornato.</p> : null}
+        {salvataggio === "errore" ? <p role="alert" className="text-sm text-segnale">Non sono riuscito a salvare. Riprova.</p> : null}
+
+        <span className="mt-2 text-[13px] font-medium text-testo-2">Castello</span>
+        <div className="flex flex-wrap gap-1.5">
+          {ordinati.map((c) => (
+            <button
+              key={c.id}
+              type="button"
+              aria-pressed={profilo.castello_id === c.id}
+              onClick={() => impostaCastello(c.slug)}
+              className="flex items-center gap-1.5 rounded-xl border border-linea bg-superficie px-3 py-2 text-left text-[13px] font-medium aria-pressed:border-accento aria-pressed:bg-accento-tenue"
+            >
+              <span className="size-2.5 shrink-0 rounded-[3px]" style={{ background: c.colore }} />
+              <span>{c.nome}</span>
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <section className="flex flex-col gap-3">
+        <h2 className="text-xl font-semibold tracking-tight">Account</h2>
+        <ActionCard icona={<Icona nome="persona" />} tono="neutro" titolo={utente.email ?? "Email"} descrizione="Email di accesso" />
+        <PrimaryButton variante="secondario" pieno onClick={() => esci()}>Esci</PrimaryButton>
+        <p className="text-center text-xs text-testo-2">SMR ID è la tessera digitale di 739: non è un documento d&apos;identità.</p>
+      </section>
+    </div>
+  );
+}

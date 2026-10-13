@@ -5,34 +5,34 @@ import { useEffect, useState } from "react";
 import type { Castello } from "@/lib/data";
 import { testoSu } from "@/lib/colore";
 
-const CHIAVE = "739-castello";
-const EVENTO = "739-castello-cambiato";
+export const CHIAVE_CASTELLO = "739-castello";
+export const EVENTO_CASTELLO = "739-castello-cambiato";
 const fmt = new Intl.NumberFormat("it-IT");
 
-function leggi(): string | null {
+export function leggiCastello(): string | null {
   try {
-    return localStorage.getItem(CHIAVE);
+    return localStorage.getItem(CHIAVE_CASTELLO);
   } catch {
     return null;
   }
 }
 
-function imposta(slug: string | null) {
+export function impostaCastello(slug: string | null) {
   try {
-    if (slug) localStorage.setItem(CHIAVE, slug);
-    else localStorage.removeItem(CHIAVE);
+    if (slug) localStorage.setItem(CHIAVE_CASTELLO, slug);
+    else localStorage.removeItem(CHIAVE_CASTELLO);
   } catch {}
   document.documentElement.dataset.utente = slug ? "tornato" : "nuovo";
-  window.dispatchEvent(new Event(EVENTO));
+  window.dispatchEvent(new Event(EVENTO_CASTELLO));
 }
 
 export function useCastelloScelto() {
   const [slug, setSlug] = useState<string | null>(null);
   useEffect(() => {
-    const agg = () => setSlug(leggi());
+    const agg = () => setSlug(leggiCastello());
     agg();
-    window.addEventListener(EVENTO, agg);
-    return () => window.removeEventListener(EVENTO, agg);
+    window.addEventListener(EVENTO_CASTELLO, agg);
+    return () => window.removeEventListener(EVENTO_CASTELLO, agg);
   }, []);
   return slug;
 }
@@ -73,7 +73,7 @@ export function ScegliCastello({ castelli }: { castelli: Castello[] }) {
           className="premibile"
           aria-pressed={scelto === c.slug}
           onClick={() => {
-            imposta(c.slug);
+            impostaCastello(c.slug);
             document.querySelector(".main")?.scrollTo({ top: 0, behavior: "smooth" });
           }}
         >
@@ -95,7 +95,7 @@ export function MioCastello({ classifica }: { classifica: Castello[] }) {
     <section className="mio-castello">
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
         <span className="etichetta">Il tuo castello</span>
-        <button type="button" className="link" onClick={() => imposta(null)}>Cambia</button>
+        <button type="button" className="link" onClick={() => impostaCastello(null)}>Cambia</button>
       </div>
       <Link href={`/castelli/${c.slug}`} className="premibile" style={{ display: "flex", alignItems: "center", gap: 14 }}>
         <span className="stemma" style={{ background: c.colore, color: testoSu(c.colore) }}>{pos + 1}°</span>

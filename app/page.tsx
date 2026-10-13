@@ -177,11 +177,11 @@ export default async function Home() {
         </section>
       ) : null}
 
-      <section className="griglia per-tornati" aria-label="Sezioni">
-        <Link href="/mappa" className="tasto premibile"><Icona nome="mappa" /><span>Mappa<small>Luoghi e servizi</small></span></Link>
-        <Link href="/eventi" className="tasto premibile"><Icona nome="eventi" /><span>Eventi<small>Il calendario</small></span></Link>
-        <Link href="/castelli" className="tasto premibile"><Icona nome="castelli" /><span>Castelli<small>La classifica</small></span></Link>
+      <section className="griglia" aria-label="Sezioni">
         <Link href="/utili" className="tasto allerta premibile"><Icona nome="scudo" /><span>Utili<small>Emergenze e servizi</small></span></Link>
+        <Link href="/castelli" className="tasto premibile"><Icona nome="castelli" /><span>Castelli<small>La classifica</small></span></Link>
+        <Link href="/food" className="tasto premibile"><Icona nome="food" /><span>Food<small>In arrivo</small></span></Link>
+        <Link href="/business" className="tasto premibile"><Icona nome="business" /><span>Business<small>In arrivo</small></span></Link>
       </section>
 
       <a href="tel:112" className="sos premibile">

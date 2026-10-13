@@ -22,6 +22,11 @@ App del territorio di San Marino: eventi, mappa, castelli e servizi utili in un'
 
 | Percorso | Cosa fa |
 |---|---|
+| `app/profile` | SMR ID: accesso/registrazione con email e password, Card digitale con QR, modifica di nome e castello |
+| `app/sport` | Modulo 1 Sport & Eventi (per ora schermata "in arrivo", arriva con lo step 4) |
+| `app/food`, `app/business` | Moduli 2 e 3, schermate "Coming Soon" (`components/ui/ComingSoon.tsx`) |
+| `modules/core` | Core SMR ID: store Zustand della sessione, funzioni di accesso (`auth.ts`), `SessioneSync` (nel layout), `SmrCard`, `Accesso`, `Profilo` |
+| `lib/supabase/browser.ts` | Client Supabase per il browser con la sessione nei cookie (`@supabase/ssr`); `lib/supabase.ts` resta per le letture pubbliche lato server |
 | `app/page.tsx` | Home a due versioni: guida di benvenuto per chi arriva la prima volta, Home personale per chi ha scelto un castello |
 | `app/eventi`, `app/eventi/[id]` | Calendario raggruppato per giorno e dettaglio evento (calendario, indicazioni, check-in disattivato) |
 | `app/mappa` | Mappa a tutto schermo con filtri in alto e pannello che sale dal basso (3 altezze); `?luogo=<id>` apre quel luogo |
@@ -41,6 +46,8 @@ App del territorio di San Marino: eventi, mappa, castelli e servizi utili in un'
 | `lib/fonti.ts` | Link alle fonti ufficiali mostrati in fondo alle pagine dei servizi |
 | `supabase/migrations/` | Schema del database già applicato |
 
+Navigazione in basso: Home · Sport · Mappa · Eventi · ID. Castelli, Utili, Food e Business si raggiungono dalla Home.
+
 La Home sceglie la versione con l'attributo `data-utente` su `<html>` ("nuovo" o "tornato"), impostato da uno script in `app/layout.tsx` prima che la pagina compaia, per evitare lampeggi.
 
 ## Database
@@ -52,7 +59,8 @@ Tabelle: `castelli` (i 9 castelli con colore), `profili`, `luoghi`, `eventi`, `c
 - `raccolta_rifiuti` (castello, zona, frazione, giorni, note). Serravalle e Domagnano non hanno il porta a porta.
 - `0005_stazione_funivia.sql` è da applicare a mano (corregge la posizione della stazione della funivia).
 - `da_verificare = true` mostra l'etichetta "Da verificare": toglierla solo dopo aver controllato il dato alla fonte.
-- Un trigger crea il profilo a ogni nuova registrazione.
+- Un trigger crea il profilo a ogni nuova registrazione, con nome e castello presi dai metadati del modulo di iscrizione e un numero tessera univoco `739-XXXX-XX` (`nuova_tessera()`, migrazione 0006). L'utente può modificare solo `nome`, `castello_id` e `lingua` del proprio profilo (permessi per colonna), non la tessera.
+- Il QR della Card contiene `739ID:<tessera>`: lo leggeranno gli scanner di 739.
 - Un trigger aggiunge i metri dell'evento a ogni check-in.
 - `classifica_castelli_totali()` restituisce solo i totali per castello (funzione pubblica voluta, nessun dato personale).
 - Esiste anche una vecchia vista `classifica_castelli`, resa sicura e non più usata: si può eliminare.
@@ -71,7 +79,7 @@ Tabelle: `castelli` (i 9 castelli con colore), `profili`, `luoghi`, `eventi`, `c
 
 ## Prossimi passi
 
-1. Accesso con email (Supabase Auth). Prima va impostato in Supabase l'URL del sito (`https://739-san-marino.vercel.app`) tra gli indirizzi di ritorno consentiti.
+1. Accesso con email e password fatto (`/profile`). Da fare in Supabase (Authentication → URL Configuration): Site URL `https://739-san-marino.vercel.app` e `https://739-san-marino.vercel.app/profile` tra i Redirect URL, altrimenti i link di conferma e di recupero password portano a localhost. Per l'uso reale serve un SMTP proprio: quello di Supabase invia pochissime email l'ora.
 2. Check-in agli eventi con QR, che attiva i metri (la logica nel database c'è già). I metri personali vanno poi passati all'altimetro (`metriPersonali` in `app/layout.tsx` e `metri` in `app/page.tsx`, oggi fissi a 0).
 3. Pannello per inserire eventi, luoghi, turni delle farmacie, partenze e calendario della raccolta (le tabelle ci sono già).
 4. Ispirazione approvata da Alex per Eventi (non per la Home): schede evento con foto grande. La mappa a tutto schermo con pannello dal basso è fatta.

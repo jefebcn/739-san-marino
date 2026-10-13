@@ -4,6 +4,7 @@ import Link from "next/link";
 import "./globals.css";
 import { Logo } from "@/components/Logo";
 import BottomNav, { type VoceNav } from "@/components/ui/BottomNav";
+import SessioneSync from "@/modules/core/components/SessioneSync";
 import { HudCastello } from "@/components/Castello";
 import { Altimetro } from "@/components/Quota";
 import { getClassifica } from "@/lib/data";
@@ -15,10 +16,10 @@ const jetbrains = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrai
 
 const VOCI: VoceNav[] = [
   { href: "/", nome: "Home", icona: "home" },
+  { href: "/sport", nome: "Sport", icona: "sport" },
   { href: "/mappa", nome: "Mappa", icona: "mappa" },
   { href: "/eventi", nome: "Eventi", icona: "eventi" },
-  { href: "/castelli", nome: "Castelli", icona: "castelli" },
-  { href: "/utili", nome: "Utili", icona: "utili" },
+  { href: "/profile", nome: "ID", icona: "id" },
 ];
 
 export const metadata: Metadata = {
@@ -75,6 +76,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             {children}
           </main>
           <BottomNav voci={VOCI} />
+          <SessioneSync castelli={classifica} />
         </div>
       </body>
     </html>
