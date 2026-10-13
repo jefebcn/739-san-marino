@@ -11,7 +11,9 @@ App del territorio di San Marino: eventi, mappa, castelli e servizi utili in un'
 
 ## Stack
 
-- Next.js 15 (App Router, React 19, TypeScript), niente Tailwind: stili in `app/globals.css` con variabili CSS.
+- Next.js 15 (App Router, React 19, TypeScript).
+- Tailwind CSS 4 (`postcss.config.mjs`, `tailwind.config.ts` caricato da `app/globals.css` con `@config`). Per ora senza il reset di base (preflight): le pagine esistenti usano ancora le classi CSS in `globals.css`.
+- Zustand per lo stato globale; ogni modulo ha il suo store in `modules/<modulo>/store.ts` (oggi `modules/core/store.ts`, la sessione SMR ID).
 - `@supabase/supabase-js` con la chiave publishable (pubblica per natura; la sicurezza la fanno le regole RLS). URL e chiave hanno un valore di riserva in `lib/supabase.ts`, quindi su Vercel non servono variabili d'ambiente.
 - Mappa: MapLibre GL + stile OpenFreeMap (`https://tiles.openfreemap.org/styles/liberty`), nessuna chiave.
 - App installabile (PWA): `app/manifest.ts`, icone in `public/icons` generate da `scripts/icone.mjs`.

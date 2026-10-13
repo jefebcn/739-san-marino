@@ -1,3 +1,9 @@
+/* Tailwind CSS 4: tema e utility. Il reset di base (preflight) è escluso finché
+   il design system non viene rifatto (step 2), così le pagine attuali non cambiano. */
+@import "tailwindcss/theme" layer(theme);
+@import "tailwindcss/utilities" layer(utilities);
+@config "../tailwind.config.ts";
+
 /* ——— Gettoni di design ———
    Colori del marchio fissi, più colori "di ruolo" che cambiano tra tema chiaro e scuro. */
 :root {
