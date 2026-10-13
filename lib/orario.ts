@@ -76,6 +76,17 @@ export function partenzeVicine(partenze: Partenza[], ora: Date = new Date()) {
   return partenze.filter((p) => (!p.al || p.al >= data) && (!p.dal || p.dal <= domani));
 }
 
+/** Da data e ora scritte a San Marino ("2026-10-16", "20:30") all'istante ISO, ora legale compresa. */
+export function dataOraSM(data: string, ora: string) {
+  const [y, m, d] = data.split("-").map(Number);
+  const [h, mi] = ora.split(":").map(Number);
+  const ipotesi = Date.UTC(y, m - 1, d, h, mi);
+  const p = new Intl.DateTimeFormat("en-GB", { timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).formatToParts(new Date(ipotesi));
+  const v = (t: string) => Number(p.find((x) => x.type === t)?.value);
+  const comeSM = Date.UTC(v("year"), v("month") - 1, v("day"), v("hour"), v("minute"));
+  return new Date(ipotesi - (comeSM - ipotesi)).toISOString();
+}
+
 export function testoTra(tra: number) {
   if (tra <= 0) return "adesso";
   if (tra < 60) return `tra ${tra} min`;

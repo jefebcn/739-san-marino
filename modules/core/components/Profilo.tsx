@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ActionCard from "@/components/ui/ActionCard";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import { Icona } from "@/components/Icona";
@@ -10,6 +10,7 @@ import { esci, salvaProfilo } from "../auth";
 import { useSessione } from "../store";
 import Accesso, { Campo, NuovaPassword } from "./Accesso";
 import SmrCard from "./SmrCard";
+import { mioRating } from "@/modules/sport/api";
 
 function Intestazione({ titolo, testo }: { titolo: string; testo: string }) {
   return (
@@ -26,6 +27,11 @@ export default function Profilo({ castelli }: { castelli: Castello[] }) {
   const { stato, utente, profilo, recupero, impostaRecupero, aggiornaProfilo } = useSessione();
   const [nome, setNome] = useState<string | null>(null);
   const [salvataggio, setSalvataggio] = useState<"fermo" | "in-corso" | "fatto" | "errore">("fermo");
+  const [rating, setRating] = useState<number | null>(null);
+  const idUtente = utente?.id;
+  useEffect(() => {
+    if (idUtente) mioRating(idUtente).then(setRating);
+  }, [idUtente]);
 
   if (stato === "caricamento") {
     return (
@@ -74,7 +80,7 @@ export default function Profilo({ castelli }: { castelli: Castello[] }) {
 
       {recupero ? <NuovaPassword fatto={() => impostaRecupero(false)} /> : null}
 
-      <SmrCard nome={profilo.nome} tessera={profilo.tessera} castello={castello} rating={null} />
+      <SmrCard nome={profilo.nome} tessera={profilo.tessera} castello={castello} rating={rating} />
 
       <section className="flex flex-col gap-3">
         <h2 className="text-xl font-semibold tracking-tight">Profilo</h2>

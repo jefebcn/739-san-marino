@@ -23,7 +23,8 @@ App del territorio di San Marino: eventi, mappa, castelli e servizi utili in un'
 | Percorso | Cosa fa |
 |---|---|
 | `app/profile` | SMR ID: accesso/registrazione con email e password, Card digitale con QR, modifica di nome e castello |
-| `app/sport` | Modulo 1 Sport & Eventi (per ora schermata "in arrivo", arriva con lo step 4) |
+| `app/sport`, `app/sport/[id]` | Modulo 1 Sport & Eventi: partite con filtro per sport e "Vicino a me" (posizione), organizza una partita, iscrizione, squadre bilanciate, risultato, classifiche giocatori e castelli |
+| `modules/sport` | Codice del modulo Sport: `api.ts` (chiamate alle funzioni del database), `store.ts` (sport scelto, scheda, posizione), `glicko.ts` (probabilità di vittoria), `geo.ts` (distanze), `components/` |
 | `app/food`, `app/business` | Moduli 2 e 3, schermate "Coming Soon" (`components/ui/ComingSoon.tsx`) |
 | `modules/core` | Core SMR ID: store Zustand della sessione, funzioni di accesso (`auth.ts`), `SessioneSync` (nel layout), `SmrCard`, `Accesso`, `Profilo` |
 | `lib/supabase/browser.ts` | Client Supabase per il browser con la sessione nei cookie (`@supabase/ssr`); `lib/supabase.ts` resta per le letture pubbliche lato server |
@@ -61,6 +62,8 @@ Tabelle: `castelli` (i 9 castelli con colore), `profili`, `luoghi`, `eventi`, `c
 - `da_verificare = true` mostra l'etichetta "Da verificare": toglierla solo dopo aver controllato il dato alla fonte.
 - Un trigger crea il profilo a ogni nuova registrazione, con nome e castello presi dai metadati del modulo di iscrizione e un numero tessera univoco `739-XXXX-XX` (`nuova_tessera()`, migrazione 0006). L'utente può modificare solo `nome`, `castello_id` e `lingua` del proprio profilo (permessi per colonna), non la tessera.
 - Il QR della Card contiene `739ID:<tessera>`: lo leggeranno gli scanner di 739.
+- Sport (migrazioni 0007 e 0008): tabelle `sport` (calcetto, padel, tennis, basket 3x3, pallavolo), `partite`, `iscrizioni`, `rating_sport` (Glicko-2 per utente e sport: rating, rd, volatilità). Partite e iscrizioni non si leggono direttamente: passano dalle funzioni `elenco_partite`, `dettaglio_partita`, `giocatori_partita` (solo con accesso), `classifica_sport` (solo con accesso), `classifica_castelli_sport`; le scritture da `crea_partita`, `iscriviti_partita`, `ritirati_partita`, `annulla_partita`, `forma_squadre`, `registra_risultato`. `glicko2()` è l'algoritmo di Glickman (verificato con l'esempio dell'articolo); ogni giocatore viene aggiornato contro la media della squadra avversaria. Le squadre si bilanciano dando i giocatori, dal rating più alto, alla squadra con la somma più bassa.
+- **`0008_sport_azioni.sql` è da applicare a mano** dall'SQL Editor di Supabase (contiene update/delete e l'applicazione automatica chiede una conferma): finché manca, ritirarsi, annullare, formare le squadre e registrare il risultato rispondono "azione non ancora attiva".
 - Un trigger aggiunge i metri dell'evento a ogni check-in.
 - `classifica_castelli_totali()` restituisce solo i totali per castello (funzione pubblica voluta, nessun dato personale).
 - Esiste anche una vecchia vista `classifica_castelli`, resa sicura e non più usata: si può eliminare.
