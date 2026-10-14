@@ -16,7 +16,7 @@ function useAdesso() {
   return ora;
 }
 
-/** Prossima partenza in una riga, per le tessere di Home e Utili. */
+/** Prossima partenza in una riga, per le tessere di Oggi e Vivere. */
 export function ProssimaPartenza({ partenze }: { partenze: Partenza[] }) {
   const ora = useAdesso();
   if (!ora) return <span className="grande">--:--</span>;

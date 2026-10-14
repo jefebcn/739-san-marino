@@ -28,7 +28,10 @@ App del territorio di San Marino: eventi, mappa, castelli e servizi utili in un'
 | `app/sport`, `app/sport/[id]` | Modulo 1 Sport & Eventi: partite con filtro per sport e "Vicino a me" (posizione), organizza una partita, iscrizione, squadre bilanciate, risultato, classifiche giocatori e castelli |
 | `modules/sport` | Codice del modulo Sport: `api.ts` (chiamate alle funzioni del database), `store.ts` (sport scelto, scheda, posizione), `glicko.ts` (probabilità di vittoria), `geo.ts` (distanze), `components/` |
 | `app/admin/coda`, `modules/coda` | Coda delle bozze (motore dati): solo per gli amministratori (`e_amministratore()`). Schede Da vedere / Pubblicate / Scartate; ogni bozza si completa (giorno, ora, luogo dall'elenco, castello, organizzatore, metri) e si pubblica nel calendario, si scarta, si segna come doppione o si rimette in coda. `date.ts` precompila giorno e ora leggendo il testo («venerdì 16 ottobre, alle ore 21»). Il link compare nel profilo SMR ID degli amministratori. Non indicizzata |
-| `app/food`, `app/business` | Moduli 2 e 3, schermate "Coming Soon" (`components/ui/ComingSoon.tsx`) |
+| `lib/aree.ts` | **Elenco unico delle cinque aree** (Vivere, Uscire, Sport, Comunità, Lavorare) e delle loro sezioni: nome, icona, una riga, `href` (senza `href` la sezione è «in arrivo»), `categorie` di luoghi. Lo usano Esplora, le pagine delle aree, la ricerca, la fila in Oggi, la guida e i filtri della mappa: una sezione nuova si aggiunge solo qui |
+| `app/esplora` | Le cinque aree come schede grandi, ognuna con un dato vivo (farmacie aperte, eventi della settimana, partite aperte, castello in vetta) |
+| `app/vivere`, `app/uscire`, `app/comunita`, `app/lavorare` | Pagine delle aree (`components/aree/PaginaArea.tsx`): sezioni attive con lo stato di adesso, poi «In arrivo» con la riga su cosa conterranno. Vivere ha in cima i numeri di emergenza (ha preso il posto di Utili). Sport resta `/sport`, con «Anche in Sport» in fondo |
+| `app/vivere/[sezione]`, `app/uscire/[sezione]`, `app/sport/impianti` | Sezioni fatte di luoghi (`components/aree/PaginaSezione.tsx`): bagni, fontanelle e ricarica; musei e monumenti; panorami; impianti sportivi |
 | `modules/core` | Core SMR ID: store Zustand della sessione, funzioni di accesso (`auth.ts`), `SessioneSync` (nel layout), `SmrCard`, `Accesso`, `Profilo` |
 | `lib/supabase/browser.ts` | Client Supabase per il browser con la sessione nei cookie (`@supabase/ssr`); `lib/supabase.ts` resta per le letture pubbliche lato server |
 | `app/page.tsx` | Home: saluto e ricerca, banner (benvenuto per chi arriva, evento in evidenza per chi torna), fila di categorie, "Adesso a San Marino" (farmacie, funivia, raccolta, parcheggi), eventi e partite a scorrimento, castelli in vetta, emergenza |
@@ -37,7 +40,6 @@ App del territorio di San Marino: eventi, mappa, castelli e servizi utili in un'
 | `app/eventi`, `app/eventi/[id]` | Calendario raggruppato per giorno e dettaglio evento (calendario, indicazioni, check-in disattivato) |
 | `app/mappa` | Mappa a tutto schermo con filtri in alto e pannello che sale dal basso (3 altezze); `?luogo=<id>` apre quel luogo |
 | `app/castelli`, `app/castelli/[slug]` | Classifica con podio e pagina del singolo castello |
-| `app/utili` | Numeri di emergenza e i servizi con il loro stato attuale |
 | `app/utili/farmacie` | Farmacie aperte adesso (calcolate dagli orari settimanali) ed elenco completo |
 | `app/utili/trasporti` | Funivia e bus: conto alla rovescia e tabellone delle prossime partenze |
 | `app/utili/rifiuti` | Calendario della raccolta per castello (parte dal castello scelto) |
@@ -55,7 +57,7 @@ App del territorio di San Marino: eventi, mappa, castelli e servizi utili in un'
 | `lib/stampa.ts` | Articoli su spettacoli, mostre e cultura dal feed RSS di Libertas (cache 3 ore), in fondo alla pagina Eventi: solo titolo, data e link |
 | `supabase/migrations/` | Schema del database già applicato |
 
-In alto: selettore del castello a sinistra (`components/SceltaCastello.tsx`, si apre dal basso), ricerca e SMR ID a destra (`components/AzioniTesta.tsx`). Navigazione in basso: Home · Mappa · **+** · Sport · Eventi; il **+** centrale apre le azioni rapide (`components/AzioniRapide.tsx`: organizza partita `/sport?nuova=1`, il mio QR `/profile?qr=1`, cerca, farmacie, 112). Castelli, Utili, Food e Business dalla fila di categorie in Home.
+In alto: selettore del castello a sinistra (`components/SceltaCastello.tsx`, si apre dal basso), ricerca e SMR ID a destra (`components/AzioniTesta.tsx`). Navigazione in basso: **Oggi · Mappa · + · Sport · Esplora** (Oggi è la Home). Il **+** centrale apre le azioni rapide (`components/AzioniRapide.tsx`: organizza partita `/sport?nuova=1`, cosa succede, il mio QR `/profile?qr=1`, cerca, farmacie, 112). In Oggi la fila in alto porta alle cinque aree. Vecchi indirizzi (in `next.config.ts`): `/utili` → `/vivere`, `/food` → `/uscire#mangiare`, `/business` → `/lavorare#aziende`; `/utili/farmacie`, `/utili/trasporti`, `/utili/rifiuti`, `/utili/parcheggi`, `/utili/meteo`, `/castelli` ed `/eventi` restano dove sono, collegati dalle aree. La mappa filtra prima per area, poi per categoria.
 
 L'app si adatta allo schermo che la apre: a tutto schermo sul telefono (rispettando tacca e bordi con le safe area), e su schermi larghi i contenuti stanno in una colonna centrata di 640 px (`--colonna`, `--lato` in `globals.css`). Niente cornice da telefono finto.
 

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getClassifica, getEventi, oggiLungo, ora, etichettaGiorno, saluto, giornoNumero, meseBreve } from "@/lib/data";
 import { Icona, type NomeIcona } from "@/components/Icona";
+import { AREE } from "@/lib/aree";
 import Installa from "@/components/Installa";
 import { ScegliCastello } from "@/components/Castello";
 import { ProssimaPartenza } from "@/components/Partenze";
@@ -15,16 +16,8 @@ export const revalidate = 60;
 
 const fmt = new Intl.NumberFormat("it-IT");
 
-const CATEGORIE: { href: string; nome: string; icona: NomeIcona }[] = [
-  { href: "/sport", nome: "Sport", icona: "sport" },
-  { href: "/eventi", nome: "Eventi", icona: "eventi" },
-  { href: "/mappa", nome: "Mappa", icona: "mappa" },
-  { href: "/utili", nome: "Utili", icona: "utili" },
-  { href: "/castelli", nome: "Castelli", icona: "castelli" },
-  { href: "/utili/trasporti", nome: "Funivia", icona: "funivia" },
-  { href: "/food", nome: "Food", icona: "food" },
-  { href: "/business", nome: "Business", icona: "business" },
-];
+// La fila in alto porta alle cinque aree (lib/aree.ts)
+const CATEGORIE: { href: string; nome: string; icona: NomeIcona }[] = AREE.map((a) => ({ href: a.href, nome: a.nome, icona: a.icona }));
 
 const maiuscola = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
@@ -110,7 +103,7 @@ export default async function Home() {
         </Link>
       )}
 
-      <nav aria-label="Sezioni" className="grid grid-cols-4 gap-x-2 gap-y-4">
+      <nav aria-label="Aree" className="grid grid-cols-5 gap-x-1.5">
         {CATEGORIE.map((c) => (
           <Link key={c.href} href={c.href} className="group flex flex-col items-center gap-1.5 text-center">
             <span className="grid size-14 place-items-center rounded-2xl bg-superficie text-testo transition-colors group-hover:bg-superficie-2 group-active:scale-95">
@@ -128,7 +121,7 @@ export default async function Home() {
       </section>
 
       <section className="flex flex-col gap-3">
-        <Titolo href="/utili">Adesso</Titolo>
+        <Titolo href="/vivere">Adesso</Titolo>
         <div className="grid grid-cols-2 gap-2.5">
           <Link href="/utili/farmacie" className="row-span-2 flex flex-col rounded-2xl bg-superficie p-4 transition-colors hover:bg-superficie-2">
             <span className="flex items-center gap-2 text-sm font-medium text-testo-2"><Icona nome="farmacia" size={18} /> Farmacie</span>

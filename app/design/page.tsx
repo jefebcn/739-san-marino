@@ -84,7 +84,7 @@ export default function DesignSystem() {
       <section className="flex flex-col gap-3">
         <h2 className="text-lg font-semibold">ActionCard</h2>
         <ActionCard href="/eventi" icona={<Icona nome="eventi" />} titolo="Calcetto a Serravalle" descrizione="Giovedì alle 20:30, mancano 3 giocatori" extra={<span className="rounded-md bg-accento-tenue px-2 py-0.5 font-mono text-[11px] font-semibold text-accento">+25 m</span>} />
-        <ActionCard href="/utili" icona={<Icona nome="mappa" />} tono="neutro" titolo="Campi vicini" descrizione="Scansione della posizione per trovare dove si gioca" />
+        <ActionCard href="/sport" icona={<Icona nome="mappa" />} tono="neutro" titolo="Campi vicini" descrizione="Scansione della posizione per trovare dove si gioca" />
         <ActionCard icona={<Icona nome="scudo" />} tono="allerta" titolo="Emergenza" descrizione="Chiama il 112" />
         <div className="relative overflow-hidden rounded-3xl bg-[radial-gradient(circle_at_20%_20%,#C9A45C55,transparent_55%),radial-gradient(circle_at_80%_70%,#5EB6E455,transparent_50%)] p-4">
           <ActionCard vetro href="/mappa" icona={<Icona nome="pin" />} titolo="Scheda in vetro" descrizione="Per pannelli sopra mappe e immagini" />
@@ -99,7 +99,7 @@ export default function DesignSystem() {
 
       <section className="flex flex-col gap-3">
         <h2 className="text-lg font-semibold">BottomNav</h2>
-        <p className="text-sm text-testo-2">È la barra in fondo a questa pagina: vetro smerigliato, icone piene, voce attiva in chiaro. Voci: Home, Mappa, il + centrale, Sport, Eventi.</p>
+        <p className="text-sm text-testo-2">È la barra in fondo a questa pagina: vetro smerigliato, icone piene, voce attiva in chiaro. Voci: Oggi, Mappa, il + centrale, Sport, Esplora.</p>
       </section>
     </div>
   );

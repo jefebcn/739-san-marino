@@ -15,10 +15,10 @@ const geist = Geist({ subsets: ["latin"], variable: "--font-geist", display: "sw
 const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono", display: "swap" });
 
 const VOCI: VoceNav[] = [
-  { href: "/", nome: "Home", icona: "home" },
+  { href: "/", nome: "Oggi", icona: "home" },
   { href: "/mappa", nome: "Mappa", icona: "mappa" },
   { href: "/sport", nome: "Sport", icona: "sport" },
-  { href: "/eventi", nome: "Eventi", icona: "eventi" },
+  { href: "/esplora", nome: "Esplora", icona: "esplora" },
 ];
 
 export const metadata: Metadata = {
@@ -62,7 +62,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <div className="app">
           <header className="top">
             <div className="top-riga mx-auto max-w-[var(--colonna)]">
-              <Link href="/" aria-label="739, torna alla Home" className="shrink-0">
+              <Link href="/" aria-label="739, torna a Oggi" className="shrink-0">
                 <Logo />
               </Link>
               <AzioniTesta classifica={classifica} />

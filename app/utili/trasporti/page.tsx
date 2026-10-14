@@ -11,7 +11,7 @@ export default async function Trasporti() {
   const linee = await getLinee();
   return (
     <>
-      <TestaPagina href="/utili" verso="Utili" etichetta="Muoversi" titolo="Bus e funivia" />
+      <TestaPagina href="/vivere" verso="Vivere" etichetta="Muoversi" titolo="Bus e funivia" />
       <Partenze linee={linee} />
       <section className="card">
         <h3>Bus interni e bus a chiamata</h3>

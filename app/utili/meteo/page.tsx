@@ -21,7 +21,7 @@ export default async function Meteo() {
   if (!m) {
     return (
       <>
-        <TestaPagina href="/utili" verso="Utili" titolo="Meteo" />
+        <TestaPagina href="/vivere" verso="Vivere" titolo="Meteo" />
         <p className="vuoto">Il meteo non è disponibile in questo momento. Riprova tra qualche minuto.</p>
       </>
     );
@@ -36,7 +36,7 @@ export default async function Meteo() {
 
   return (
     <>
-      <TestaPagina href="/utili" verso="Utili" titolo="Meteo sul Titano" />
+      <TestaPagina href="/vivere" verso="Vivere" titolo="Meteo sul Titano" />
 
       <section className="flex items-center gap-5 rounded-2xl bg-superficie p-5">
         <span className="text-testo"><Icona nome={ora.icona} size={64} /></span>

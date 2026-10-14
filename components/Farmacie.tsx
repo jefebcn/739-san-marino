@@ -24,11 +24,13 @@ function Stato({ l, ora }: { l: Luogo; ora: Date | null }) {
   return <span className="spia-mini">Chiusa{a.riapre ? `, riapre ${a.riapre}` : ""}</span>;
 }
 
-/** Numero di farmacie aperte adesso, per le tessere di Home e Utili. */
-export function ConteggioAperte({ farmacie, testo = false }: { farmacie: Luogo[]; testo?: boolean }) {
+/** Numero di farmacie aperte adesso, per le tessere di Oggi e Vivere. */
+export function ConteggioAperte({ farmacie, testo = false, breve = false }: { farmacie: Luogo[]; testo?: boolean; breve?: boolean }) {
   const ora = useAdesso();
-  if (!ora) return testo ? <>…</> : <span className="grande">–</span>;
+  if (!ora) return testo || breve ? <>…</> : <span className="grande">–</span>;
   const n = farmacie.filter((f) => apertura(f.orari_settimana, ora)?.aperta).length;
+  // Fuori dalla sezione farmacie (es. Esplora) serve dire di cosa si parla
+  if (breve) return <><b className="font-mono font-medium text-testo">{n}</b> {n === 1 ? "farmacia aperta" : "farmacie aperte"} adesso</>;
   if (testo) return <><b>{n}</b> {n === 1 ? "aperta" : "aperte"} adesso, Cailungo sempre</>;
   return <span className="grande">{n}<small>{n === 1 ? "aperta" : "aperte"}</small></span>;
 }

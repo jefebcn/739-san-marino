@@ -12,7 +12,7 @@ export default async function Rifiuti() {
   const [raccolta, castelli] = await Promise.all([getRaccolta(), getClassifica()]);
   return (
     <>
-      <TestaPagina href="/utili" verso="Utili" etichetta="Casa" titolo="Raccolta rifiuti">
+      <TestaPagina href="/vivere" verso="Vivere" etichetta="Casa" titolo="Raccolta rifiuti">
         <p className="sottotitolo">Il calendario del tuo castello: cosa si raccoglie oggi, domani e nella settimana.</p>
       </TestaPagina>
       <CalendarioRaccolta raccolta={raccolta} castelli={castelli} />

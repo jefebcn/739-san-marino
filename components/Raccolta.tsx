@@ -45,7 +45,7 @@ function Elenco({ righe }: { righe: Raccolta[] }) {
   );
 }
 
-/** Riga breve per la tessera in Utili: cosa si raccoglie domani nel tuo castello. */
+/** Riga breve per la riga in Vivere: cosa si raccoglie domani nel tuo castello. */
 export function RaccoltaBreve({ raccolta, castelli, compatto = false }: { raccolta: Raccolta[]; castelli: Castello[]; compatto?: boolean }) {
   const slug = useCastelloScelto();
   const [stato, setStato] = useState<{ dow: number; zona: string | null } | null>(null);

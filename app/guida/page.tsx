@@ -1,18 +1,17 @@
 import Link from "next/link";
 import TestaPagina from "@/components/Indietro";
-import { Icona } from "@/components/Icona";
+import { Icona, type NomeIcona } from "@/components/Icona";
 import PrimaryButton from "@/components/ui/PrimaryButton";
+import { AREE } from "@/lib/aree";
 
 export const metadata = { title: "Come funziona · 739 San Marino" };
 
-const COSA_TROVI = [
-  { href: "/sport", icona: "sport", titolo: "Sport", testo: "Partite e tornei locali, squadre bilanciate dal tuo rating." },
-  { href: "/eventi", icona: "eventi", titolo: "Eventi", testo: "Cosa succede oggi e nel weekend, in tutti i castelli." },
+const COSA_TROVI: { href: string; icona: NomeIcona; titolo: string; testo: string }[] = [
+  { href: "/", icona: "home", titolo: "Oggi", testo: "La porta: cosa succede adesso, il meteo, i servizi aperti." },
+  ...AREE.map((a) => ({ href: a.href, icona: a.icona, titolo: a.nome, testo: a.descrizione })),
   { href: "/mappa", icona: "mappa", titolo: "Mappa", testo: "Luoghi, parcheggi, farmacie e servizi, con le indicazioni." },
-  { href: "/utili", icona: "scudo", titolo: "Utili", testo: "Emergenze, farmacie aperte, funivia, bus, raccolta rifiuti." },
-  { href: "/castelli", icona: "castelli", titolo: "Castelli", testo: "La sfida tra i nove castelli: chi sale più in alto?" },
   { href: "/profile", icona: "id", titolo: "SMR ID", testo: "La tua tessera digitale con QR personale." },
-] as const;
+];
 
 const PASSI = [
   { titolo: "Crea il tuo SMR ID", testo: "Nome, email e castello: ricevi la tessera digitale con il QR." },
@@ -24,7 +23,7 @@ const PASSI = [
 export default function Guida() {
   return (
     <>
-      <TestaPagina href="/" verso="Home" etichetta="Benvenuto" titolo="Come funziona 739">
+      <TestaPagina href="/" verso="Oggi" titolo="Come funziona 739">
         <p className="sottotitolo">Tutto San Marino in un&apos;app: cosa succede, dove andare, cosa serve. E una sfida tra i nove castelli.</p>
       </TestaPagina>
 

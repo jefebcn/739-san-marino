@@ -230,7 +230,7 @@ li:last-child > .riga { border-bottom: 0; }
 .mappa-filtri { position: absolute; top: 10px; left: 0; right: 0; z-index: 3; }
 .mappa-filtri .chip { box-shadow: var(--ombra); background: var(--vetro); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
 .mappa-filtri .chip[aria-pressed="true"] { background: var(--testo); }
-.mappa-piena .maplibregl-ctrl-top-right { top: 56px; }
+.mappa-piena .maplibregl-ctrl-top-right { top: 104px; }
 .mappa-piena .maplibregl-ctrl-group { border-radius: 12px; overflow: hidden; box-shadow: var(--ombra); }
 .marcatore { width: 18px; height: 18px; border-radius: 6px; border: 3px solid #fff; box-shadow: 0 1px 6px rgba(11, 31, 46, 0.45); cursor: pointer; padding: 0; transition: transform 0.16s cubic-bezier(0.2, 0.7, 0.2, 1); }
 .marcatore[aria-current="true"] { transform: scale(1.5) rotate(45deg); }

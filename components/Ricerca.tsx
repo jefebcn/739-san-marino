@@ -4,23 +4,30 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { CATEGORIE, etichettaGiorno, ora, type Castello, type Evento, type Luogo } from "@/lib/data";
 import { Icona, type NomeIcona } from "./Icona";
+import { AREE } from "@/lib/aree";
 
 type Voce = { href: string; titolo: string; sotto: string; icona: NomeIcona; testo: string };
 
-const PAGINE: { href: string; titolo: string; sotto: string; icona: NomeIcona; parole: string }[] = [
-  { href: "/utili/farmacie", titolo: "Farmacie aperte", sotto: "Chi è aperto adesso", icona: "farmacia", parole: "farmacia farmacie medicine turno cailungo" },
-  { href: "/utili/trasporti", titolo: "Funivia e bus", sotto: "Prossime partenze", icona: "funivia", parole: "funivia bus autobus rimini orari trasporti smuvi" },
-  { href: "/utili/rifiuti", titolo: "Raccolta rifiuti", sotto: "Calendario per castello", icona: "rifiuti", parole: "rifiuti raccolta spazzatura differenziata carta plastica vetro organico" },
-  { href: "/utili/parcheggi", titolo: "Parcheggi", sotto: "Posti e tariffe", icona: "parcheggio", parole: "parcheggi parcheggio auto camper bus p9 multipiano" },
-  { href: "/utili", titolo: "Numeri di emergenza", sotto: "112, 113, 115, 118", icona: "scudo", parole: "emergenza emergenze 112 113 115 118 polizia ambulanza vigili fuoco" },
-  { href: "/sport", titolo: "Sport e partite", sotto: "Partite, squadre e classifiche", icona: "sport", parole: "sport partita partite calcetto padel tennis basket pallavolo rating classifica" },
-  { href: "/eventi", titolo: "Calendario eventi", sotto: "Cosa succede", icona: "eventi", parole: "eventi calendario concerti serate" },
+// Pagine fisse; aree e sezioni arrivano da lib/aree.ts
+const FISSE: { href: string; titolo: string; sotto: string; icona: NomeIcona; parole: string }[] = [
+  { href: "/vivere", titolo: "Numeri di emergenza", sotto: "112, 113, 115, 118", icona: "scudo", parole: "emergenza emergenze 112 113 115 118 polizia ambulanza vigili fuoco" },
   { href: "/mappa", titolo: "Mappa", sotto: "Luoghi e servizi", icona: "mappa", parole: "mappa luoghi dove" },
-  { href: "/castelli", titolo: "Classifica dei castelli", sotto: "La sfida in metri", icona: "castelli", parole: "castelli classifica metri sfida" },
   { href: "/profile", titolo: "Il mio SMR ID", sotto: "Tessera, QR e profilo", icona: "id", parole: "smr id profilo tessera qr account accesso password" },
   { href: "/guida", titolo: "Come funziona 739", sotto: "Guida", icona: "utili", parole: "guida aiuto come funziona metri" },
-  { href: "/food", titolo: "Food", sotto: "Ristoranti e negozi, in arrivo", icona: "food", parole: "food ristoranti bar negozi mangiare" },
-  { href: "/business", titolo: "Business", sotto: "Network aziendale, in arrivo", icona: "business", parole: "business aziende imprese lavoro" },
+];
+
+const PAGINE = [
+  ...AREE.map((a) => ({ href: a.href, titolo: a.nome, sotto: a.descrizione, icona: a.icona, parole: `area ${a.sezioni.map((x) => x.nome).join(" ")}` })),
+  ...AREE.flatMap((a) =>
+    a.sezioni.map((x) => ({
+      href: x.href ?? `${a.href}#${x.slug}`,
+      titolo: x.nome,
+      sotto: x.href ? `${a.nome}, ${x.descrizione}` : `${a.nome}, in arrivo`,
+      icona: x.icona,
+      parole: `${a.nome} ${x.descrizione} ${x.parole ?? ""}`,
+    })),
+  ),
+  ...FISSE,
 ];
 
 const SUGGERIMENTI = ["Farmacie", "Funivia", "Parcheggi", "Calcetto", "Raccolta"];
@@ -102,7 +109,7 @@ export default function Ricerca({ eventi, luoghi, castelli }: { eventi: Evento[]
             <h2 className="text-sm font-medium text-testo-2">{g.nome}</h2>
             <ul className="flex flex-col gap-1.5">
               {g.voci.map((v) => (
-                <li key={v.href}>
+                <li key={`${v.href}-${v.titolo}`}>
                   <Link href={v.href} className="flex items-center gap-3 rounded-xl bg-superficie p-3 transition-colors hover:bg-superficie-2 active:scale-[0.98]">
                     <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-fondo text-testo"><Icona nome={v.icona} size={20} /></span>
                     <span className="flex min-w-0 flex-col">

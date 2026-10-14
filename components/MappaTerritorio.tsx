@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "maplibre-gl/dist/maplibre-gl.css";
 import type { Map as MLMap, Marker } from "maplibre-gl";
 import { CATEGORIE, linkIndicazioni, type Luogo } from "@/lib/data";
 import { Icona } from "./Icona";
+import { AREE, areaDiCategoria, type SlugArea } from "@/lib/aree";
 
 const COLORI: Record<string, string> = {
   luogo: "#0B1F2E",
@@ -35,11 +36,22 @@ export default function MappaTerritorio({ luoghi, focus }: { luoghi: Luogo[]; fo
   const marcatori = useRef<Map<string, Marker>>(new Map());
   const trascina = useRef<{ y: number; dy: number } | null>(null);
   const [filtro, setFiltro] = useState<string>("tutti");
+  // Prima si sceglie l'area (Vivere, Uscire, Sport), poi una categoria di quell'area
+  const [areaFiltro, setAreaFiltro] = useState<SlugArea | "tutte">("tutte");
   const [scelto, setScelto] = useState<string | undefined>(focus);
   const [livelloFoglio, setLivelloFoglio] = useState<Livello>(focus ? 1 : 0);
 
-  const categorie = useMemo(() => Array.from(new Set(luoghi.map((l) => l.categoria))), [luoghi]);
-  const visibili = useMemo(() => (filtro === "tutti" ? luoghi : luoghi.filter((l) => l.categoria === filtro)), [luoghi, filtro]);
+  const tutteCategorie = useMemo(() => Array.from(new Set(luoghi.map((l) => l.categoria))), [luoghi]);
+  const areeMappa = useMemo(() => AREE.filter((a) => tutteCategorie.some((c) => areaDiCategoria(c) === a.slug)), [tutteCategorie]);
+  const categorie = useMemo(
+    () => (areaFiltro === "tutte" ? [] : tutteCategorie.filter((c) => areaDiCategoria(c) === areaFiltro)),
+    [tutteCategorie, areaFiltro],
+  );
+  const visibile = useCallback(
+    (l: Luogo) => (filtro !== "tutti" ? l.categoria === filtro : areaFiltro === "tutte" || areaDiCategoria(l.categoria) === areaFiltro),
+    [filtro, areaFiltro],
+  );
+  const visibili = useMemo(() => luoghi.filter(visibile), [luoghi, visibile]);
   const dettaglio = luoghi.find((l) => l.id === scelto);
 
   useEffect(() => {
@@ -90,10 +102,10 @@ export default function MappaTerritorio({ luoghi, focus }: { luoghi: Luogo[]; fo
     for (const [id, mk] of marcatori.current) {
       const l = luoghi.find((x) => x.id === id);
       const el = mk.getElement();
-      el.style.display = !l || filtro === "tutti" || l.categoria === filtro ? "" : "none";
+      el.style.display = !l || visibile(l) ? "" : "none";
       el.setAttribute("aria-current", id === scelto ? "true" : "false");
     }
-  }, [filtro, luoghi, scelto]);
+  }, [visibile, luoghi, scelto]);
 
   const vaiA = (l: Luogo) => {
     setScelto(l.id);
@@ -139,17 +151,26 @@ export default function MappaTerritorio({ luoghi, focus }: { luoghi: Luogo[]; fo
     <div className="mappa-piena">
       <div ref={box} className="mappa" role="region" aria-label="Mappa di San Marino" />
 
-      {categorie.length > 1 ? (
-        <div className="mappa-filtri">
-          <div className="chips" role="group" aria-label="Filtra per categoria" style={{ margin: 0, padding: "0 var(--gutter)" }}>
-            <button type="button" className="chip" aria-pressed={filtro === "tutti"} onClick={() => setFiltro("tutti")}>Tutti</button>
-            {categorie.map((c) => (
-              <button key={c} type="button" className="chip" aria-pressed={filtro === c} onClick={() => setFiltro(c)}>
-                <span className="punto" style={{ background: COLORI[c] ?? "#0B1F2E", width: 10, height: 10, borderRadius: 3 }} />
-                {CATEGORIE[c] ?? c}
+      {areeMappa.length > 1 ? (
+        <div className="mappa-filtri flex flex-col gap-2">
+          <div className="chips" role="group" aria-label="Filtra per area" style={{ margin: 0, padding: "0 var(--gutter)" }}>
+            <button type="button" className="chip" aria-pressed={areaFiltro === "tutte"} onClick={() => { setAreaFiltro("tutte"); setFiltro("tutti"); }}>Tutto</button>
+            {areeMappa.map((a) => (
+              <button key={a.slug} type="button" className="chip" aria-pressed={areaFiltro === a.slug} onClick={() => { setAreaFiltro(a.slug); setFiltro("tutti"); }}>
+                <Icona nome={a.icona} size={16} /> {a.nome}
               </button>
             ))}
           </div>
+          {categorie.length > 1 ? (
+            <div className="chips" role="group" aria-label={`Categorie di ${areeMappa.find((a) => a.slug === areaFiltro)?.nome ?? ""}`} style={{ margin: 0, padding: "0 var(--gutter)" }}>
+              {categorie.map((c) => (
+                <button key={c} type="button" className="chip" aria-pressed={filtro === c} onClick={() => setFiltro(filtro === c ? "tutti" : c)}>
+                  <span className="punto" style={{ background: COLORI[c] ?? "#0B1F2E", width: 10, height: 10, borderRadius: 3 }} />
+                  {CATEGORIE[c] ?? c}
+                </button>
+              ))}
+            </div>
+          ) : null}
         </div>
       ) : null}
 
@@ -178,7 +199,7 @@ export default function MappaTerritorio({ luoghi, focus }: { luoghi: Luogo[]; fo
           ) : (
             <>
               <span className="etichetta">Mappa del territorio</span>
-              <h2>{filtro === "tutti" ? "Tutto quello che c'è" : CATEGORIE[filtro] ?? filtro} <span className="meta">{conteggio}</span></h2>
+              <h2>{filtro !== "tutti" ? CATEGORIE[filtro] ?? filtro : areaFiltro !== "tutte" ? AREE.find((a) => a.slug === areaFiltro)?.nome : "Tutto quello che c'è"} <span className="meta">{conteggio}</span></h2>
             </>
           )}
         </div>
