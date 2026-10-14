@@ -14,7 +14,8 @@ import { mioRating } from "@/modules/sport/api";
 import { EtichetteScala, Scala } from "@/components/Quota";
 import { Cime } from "@/components/Logo";
 import { livello } from "@/lib/quota";
-import { conteggioBozze, sonoAmministratore } from "@/modules/coda/api";
+import { conteggioBozze } from "@/modules/coda/api";
+import { mieiRuoli, NESSUN_RUOLO, type Ruoli } from "../ruoli";
 
 function Intestazione({ titolo, testo }: { titolo: string; testo: string }) {
   return (
@@ -63,14 +64,16 @@ export default function Profilo({ castelli }: { castelli: Castello[] }) {
   useEffect(() => {
     if (idUtente) mioRating(idUtente).then(setRating);
   }, [idUtente]);
-  // Gli amministratori vedono il collegamento alla coda delle bozze, con quante ne aspettano
+  // Redazione e amministratori vedono i loro pannelli; la coda dice quante bozze aspettano
+  const [ruoli, setRuoli] = useState<Ruoli>(NESSUN_RUOLO);
   const [daVedere, setDaVedere] = useState<number | null>(null);
   useEffect(() => {
     if (!idUtente) return;
-    sonoAmministratore().then(async (si) => {
-      if (!si) return;
+    mieiRuoli().then(async (r) => {
+      setRuoli(r);
+      if (!r.amministratore) return;
       const { conteggio } = await conteggioBozze();
-      setDaVedere(conteggio?.nuovo ?? 0);
+      setDaVedere((conteggio?.nuovo ?? 0) + (conteggio?.segnalazioni ?? 0));
     });
   }, [idUtente]);
 
@@ -158,15 +161,25 @@ export default function Profilo({ castelli }: { castelli: Castello[] }) {
       <section className="flex flex-col gap-3">
         <h2 className="text-xl font-semibold tracking-tight">Account</h2>
         <ActionCard icona={<Icona nome="persona" />} tono="neutro" titolo={utente.email ?? "Email"} descrizione="Email di accesso" />
-        {daVedere !== null ? (
-          <ActionCard
-            href="/admin/coda"
-            icona={<Icona nome="stampa" />}
-            tono="neutro"
-            titolo="Coda delle bozze"
-            descrizione={daVedere === 1 ? "1 bozza da vedere" : `${daVedere} bozze da vedere`}
-          />
-        ) : null}
+      </section>
+
+      {ruoli.redattore || ruoli.organizzatore ? (
+        <section className="flex flex-col gap-3">
+          <h2 className="text-xl font-semibold tracking-tight">{ruoli.amministratore ? "Amministrazione" : ruoli.redattore ? "Redazione" : "Organizzatore"}</h2>
+          {ruoli.amministratore ? (
+            <ActionCard
+              href="/admin/coda"
+              icona={<Icona nome="stampa" />}
+              tono="neutro"
+              titolo="Coda delle bozze"
+              descrizione={daVedere === null ? "Bozze e segnalazioni" : daVedere === 1 ? "1 da vedere" : `${daVedere} da vedere`}
+            />
+          ) : null}
+          <p className="text-[13px] text-testo-2">{ruoli.amministratore ? "Sei amministratore: vedi anche i pannelli della redazione." : ruoli.redattore ? "Sei nella redazione di 739." : "Sei organizzatore di eventi su 739."}</p>
+        </section>
+      ) : null}
+
+      <section className="flex flex-col gap-3">
         <PrimaryButton variante="secondario" pieno onClick={() => esci()}>Esci</PrimaryButton>
         <p className="text-center text-xs text-testo-2">SMR ID è la tessera digitale di 739: non è un documento d&apos;identità.</p>
       </section>
