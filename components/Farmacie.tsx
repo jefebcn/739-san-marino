@@ -1,20 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import type { Luogo } from "@/lib/data";
 import { apertura } from "@/lib/orario";
 import SchedaLuogo from "./SchedaLuogo";
+import { useAdesso } from "@/lib/useAdesso";
 import { Icona } from "./Icona";
 
-function useAdesso() {
-  const [ora, setOra] = useState<Date | null>(null);
-  useEffect(() => {
-    setOra(new Date());
-    const t = setInterval(() => setOra(new Date()), 60000);
-    return () => clearInterval(t);
-  }, []);
-  return ora;
-}
 
 function Stato({ l, ora }: { l: Luogo; ora: Date | null }) {
   const a = ora ? apertura(l.orari_settimana, ora) : null;

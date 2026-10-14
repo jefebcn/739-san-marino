@@ -19,9 +19,27 @@ export type Luogo = {
   orari_settimana: Record<string, [string, string][]> | null;
   /** "manuale" se inserito da 739, "osm" se importato ogni notte da OpenStreetMap (migrazione 0010) */
   fonte: string;
+} & Partial<CampiScheda>;
+
+/** Una pratica che si fa in un luogo (uffici): «Cosa posso fare qui» */
+export type Pratica = { titolo: string; testo?: string; documenti?: string[]; link?: string };
+
+/** Campi della scheda unica (migrazione 0013) */
+export type CampiScheda = {
+  area: string | null;
+  sottocategoria: string | null;
+  sito: string | null;
+  email: string | null;
+  foto_url: string | null;
+  foto_credito: string | null;
+  fonte_nome: string | null;
+  fonte_link: string | null;
+  verificato_il: string | null;
+  cosa_fare: Pratica[] | null;
 };
 
 export const CAMPI_LUOGO = "id, nome, categoria, descrizione, lat, lng, castello_id, indirizzo, telefono, orari, tariffa, posti, da_verificare, orari_settimana, fonte";
+export const CAMPI_SCHEDA = `${CAMPI_LUOGO}, area, sottocategoria, sito, email, foto_url, foto_credito, fonte_nome, fonte_link, verificato_il, cosa_fare`;
 export type Evento = {
   id: string;
   titolo: string;
@@ -81,6 +99,19 @@ export async function getLuoghi(castelloId?: number): Promise<Luogo[]> {
     return [];
   }
   return (data ?? []) as Luogo[];
+}
+
+/** Un luogo con tutti i campi della scheda. Finché la migrazione 0013 non c'è, legge solo i campi di base. */
+export async function getLuogo(id: string): Promise<Luogo | null> {
+  const db = supabase();
+  if (!db || !/^[0-9a-f-]{36}$/i.test(id)) return null;
+  let r = await db.from("luoghi").select(CAMPI_SCHEDA).eq("id", id).maybeSingle();
+  if (r.error?.code === "42703") r = await db.from("luoghi").select(CAMPI_LUOGO).eq("id", id).maybeSingle();
+  if (r.error) {
+    console.error("luogo", r.error.message);
+    return null;
+  }
+  return (r.data as Luogo | null) ?? null;
 }
 
 export async function getClassifica(): Promise<Castello[]> {

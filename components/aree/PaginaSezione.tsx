@@ -59,12 +59,12 @@ export default async function PaginaSezione({ area, sezione }: { area: string; s
 function RigaLuogo({ l }: { l: Luogo }) {
   const sotto = [l.indirizzo, l.descrizione].filter(Boolean).join(", ");
   return (
-    <Link href={`/mappa?luogo=${l.id}`} className="flex items-center gap-3 px-4 py-3.5 transition-colors hover:bg-superficie-2">
+    <Link href={`/luoghi/${l.id}`} className="flex items-center gap-3 px-4 py-3.5 transition-colors hover:bg-superficie-2">
       <span className="flex min-w-0 flex-1 flex-col gap-0.5">
         <span className="text-[15px] font-medium leading-snug">{l.nome}</span>
         {sotto ? <span className="line-clamp-1 text-[13px] text-testo-2">{sotto}</span> : null}
       </span>
-      <span className="shrink-0 text-testo-2"><Icona nome="pin" size={18} /></span>
+      <span className="shrink-0 text-testo-2"><Icona nome="avanti" size={18} /></span>
     </Link>
   );
 }

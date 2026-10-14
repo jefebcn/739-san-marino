@@ -7,7 +7,7 @@ export default function NonTrovato() {
       <Cime width={90} />
       <h1 className="titolo">Qui non c&apos;è niente</h1>
       <p className="sottotitolo">La pagina che cerchi non esiste o è stata spostata.</p>
-      <Link href="/" className="bottone primario premibile" style={{ width: "100%" }}>Torna alla home</Link>
+      <Link href="/" className="bottone primario premibile" style={{ width: "100%" }}>Torna a Oggi</Link>
     </section>
   );
 }

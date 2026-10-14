@@ -55,7 +55,7 @@ export default async function Castello({ params }: Props) {
         ) : (
           <div className="lista">
             {luoghi.map((l) => (
-              <Link key={l.id} href={`/mappa?luogo=${l.id}`} className="luogo premibile">
+              <Link key={l.id} href={`/luoghi/${l.id}`} className="luogo premibile">
                 <Icona nome="pin" size={20} />
                 <div style={{ minWidth: 0 }}>
                   <h3>{l.nome}</h3>

@@ -119,3 +119,11 @@ export function areaDiCategoria(categoria: string): SlugArea | null {
   for (const a of AREE) for (const s of a.sezioni) if (s.categorie?.includes(categoria)) return a.slug;
   return null;
 }
+
+/** Dove torna indietro la scheda di un luogo: la sezione che lo elenca, altrimenti la sua area, altrimenti la mappa. */
+export function ritornoDiCategoria(categoria: string): { href: string; nome: string } {
+  for (const a of AREE)
+    for (const s of a.sezioni)
+      if (s.categorie?.includes(categoria)) return s.href ? { href: s.href, nome: s.nome } : { href: a.href, nome: a.nome };
+  return { href: "/mappa", nome: "Mappa" };
+}

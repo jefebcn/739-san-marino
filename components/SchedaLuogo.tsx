@@ -7,7 +7,7 @@ export default function SchedaLuogo({ l, children }: { l: Luogo; children?: Reac
   return (
     <article className="card">
       <div className="card-testa">
-        <h3>{l.nome}</h3>
+        <h3><Link href={`/luoghi/${l.id}`}>{l.nome}</Link></h3>
         {l.da_verificare ? <span className="verifica">Posizione da verificare</span> : null}
       </div>
       {l.indirizzo ? <span className="meta">{l.indirizzo}</span> : null}

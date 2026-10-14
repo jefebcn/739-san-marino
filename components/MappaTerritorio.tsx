@@ -230,10 +230,13 @@ export default function MappaTerritorio({ luoghi, focus }: { luoghi: Luogo[]; fo
                 <a className="bottone primario piccolo premibile" href={linkIndicazioni(dettaglio.lat, dettaglio.lng)} target="_blank" rel="noopener">
                   <Icona nome="indicazioni" size={18} /> Indicazioni
                 </a>
-                <button type="button" className="bottone secondario piccolo premibile" onClick={() => setScelto(undefined)}>
-                  Tutti i luoghi
-                </button>
+                <a className="bottone secondario piccolo premibile" href={`/luoghi/${dettaglio.id}`}>
+                  Apri la scheda
+                </a>
               </div>
+              <button type="button" className="w-fit self-center py-2 text-sm font-medium text-testo-2" onClick={() => setScelto(undefined)}>
+                Torna a tutti i luoghi
+              </button>
             </>
           ) : visibili.length === 0 ? (
             <p className="vuoto">Nessun luogo in questa categoria.</p>

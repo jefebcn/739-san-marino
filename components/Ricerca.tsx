@@ -56,7 +56,7 @@ export default function Ricerca({ eventi, luoghi, castelli }: { eventi: Evento[]
       {
         nome: "Luoghi",
         voci: luoghi.map((l) => ({
-          href: `/mappa?luogo=${l.id}`,
+          href: `/luoghi/${l.id}`,
           titolo: l.nome,
           sotto: [CATEGORIE[l.categoria] ?? l.categoria, l.indirizzo].filter(Boolean).join(", "),
           icona: (l.categoria === "farmacia" ? "farmacia" : l.categoria === "parcheggio" ? "parcheggio" : l.categoria === "trasporti" ? "funivia" : "pin") as NomeIcona,
