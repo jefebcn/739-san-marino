@@ -12,6 +12,7 @@
     --notte: #09090B;
     --azzurro: #5EB6E4;
     --azzurro-scuro: #2C79AE;
+    --icona-accento: #018EFD; /* il blu delle icone disegnate per Alex */
     --segnale: #E8573A;
     --bianco: #FFFFFF;
 
@@ -223,6 +224,10 @@
 .sos strong { font-family: var(--mono); font-size: 30px; font-weight: 500; letter-spacing: -0.04em; }
 
 /* ——— Classifica ——— */
+.icona-propria { display: inline-block; position: relative; flex: none; vertical-align: middle; }
+.icona-propria::before, .icona-propria::after { content: ""; position: absolute; inset: 0; -webkit-mask: var(--m) center / contain no-repeat; mask: var(--m) center / contain no-repeat; }
+.icona-propria::before { --m: var(--base); background: currentColor; }
+.icona-propria::after { --m: var(--accento-icona); background: var(--icona-accento); }
 .podio { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; align-items: end; }
 .podio a { border-radius: 16px; padding: 12px; display: flex; flex-direction: column; gap: 4px; align-items: flex-start; min-height: 104px; justify-content: flex-end; position: relative; overflow: hidden; background: var(--superficie); color: var(--testo); }
 .podio a:nth-child(2) { min-height: 136px; }

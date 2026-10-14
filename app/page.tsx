@@ -156,7 +156,7 @@ export default async function Home() {
               {CATEGORIE.map((c) => (
                 <Link key={c.href} href={c.href} className="group flex flex-col items-center gap-1.5 text-center">
                   <span className="grid size-14 place-items-center rounded-2xl bg-superficie text-testo transition-colors group-hover:bg-superficie-2 group-active:scale-95">
-                    <Icona nome={c.icona} size={26} />
+                    <Icona nome={c.icona} size={32} />
                   </span>
                   <span className="text-xs font-medium text-testo-2">{c.nome}</span>
                 </Link>

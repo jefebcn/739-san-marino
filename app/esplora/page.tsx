@@ -48,7 +48,7 @@ export default async function Esplora() {
               className={`flex flex-col gap-3 rounded-2xl bg-superficie p-4 transition-colors hover:bg-superficie-2 active:scale-[0.99] ${i === 0 ? "col-span-2 lg:col-span-1" : ""}`}
             >
               <span className="flex items-center justify-between">
-                <span className="grid size-11 place-items-center rounded-xl bg-fondo text-testo"><Icona nome={a.icona} size={24} /></span>
+                <span className="grid size-11 place-items-center rounded-xl bg-fondo text-testo"><Icona nome={a.icona} size={30} /></span>
                 <span className="text-testo-2"><Icona nome="avanti" size={18} /></span>
               </span>
               <span className="flex flex-col gap-1">

@@ -1,3 +1,4 @@
+import type React from "react";
 import type { Icon, IconWeight } from "@phosphor-icons/react";
 import {
   ArrowRight,
@@ -108,6 +109,8 @@ const ICONE = {
   piu: Plus,
   qr: QrCode,
   // Aree e sezioni (lib/aree.ts)
+  vivere: House,
+  lavorare: Briefcase,
   esplora: Compass,
   uscire: Ticket,
   comunita: UsersThree,
@@ -163,7 +166,20 @@ export type NomeIcona = keyof typeof ICONE;
 // Frecce, "+" e lente sono segni a linea: piene diventerebbero triangoli o macchie, quindi restano a tratto spesso
 const LINEARI = new Set<NomeIcona>(["freccia", "avanti", "vai", "piu", "cerca", "chiudi"]);
 
+// Icone disegnate per Alex (ottobre 2026) per le cinque aree, la mappa e gli eventi: prendono il posto di Phosphor.
+// Due maschere in public/icone (node scripts/icone-aree.mjs): la base prende il colore del testo, l'accento resta blu.
+const PROPRIE = new Set<NomeIcona>(["vivere", "uscire", "sport", "comunita", "lavorare", "mappa", "eventi"]);
+
 export function Icona({ nome, size = 24, peso }: { nome: NomeIcona; size?: number; peso?: IconWeight }) {
+  if (PROPRIE.has(nome)) {
+    return (
+      <span
+        aria-hidden="true"
+        className="icona-propria"
+        style={{ width: size, height: size, "--base": `url(/icone/${nome}-base.png)`, "--accento-icona": `url(/icone/${nome}-accento.png)` } as React.CSSProperties}
+      />
+    );
+  }
   const Componente = ICONE[nome];
   return <Componente size={size} weight={peso ?? (LINEARI.has(nome) ? "bold" : "fill")} aria-hidden="true" />;
 }

@@ -33,7 +33,7 @@ export const AREE: Area[] = [
     slug: "vivere",
     nome: "Vivere",
     descrizione: "Servizi, uffici, salute, trasporti: quello che serve ogni giorno.",
-    icona: "utili",
+    icona: "vivere",
     href: "/vivere",
     sezioni: [
       { slug: "avvisi", nome: "Avvisi e chiusure", descrizione: "Strade chiuse, servizi sospesi, allerte meteo.", icona: "avvisi", href: "/vivere/avvisi", categorie: ["avviso"], parole: "avvisi chiusure strade lavori allerta" },
@@ -95,7 +95,7 @@ export const AREE: Area[] = [
     slug: "lavorare",
     nome: "Lavorare",
     descrizione: "Aziende, professionisti, offerte di lavoro e bandi.",
-    icona: "business",
+    icona: "lavorare",
     href: "/lavorare",
     sezioni: [
       { slug: "aziende", nome: "Aziende", descrizione: "Le imprese del territorio, con contatti e cosa fanno.", icona: "business", parole: "aziende imprese ditte business" },
