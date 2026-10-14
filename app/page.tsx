@@ -183,7 +183,7 @@ export default async function Home() {
                 <Titolo href="/eventi">Prossimi eventi</Titolo>
                 <div className="-mx-[var(--lato)] flex snap-x scroll-px-[var(--lato)] gap-2.5 overflow-x-auto px-[var(--lato)] pb-1 [scrollbar-width:none] lg:mx-0 lg:grid lg:grid-cols-2 lg:overflow-visible lg:px-0">
                   {altri.map((e) => (
-                    <Link key={e.id} href={`/eventi/${e.id}`} className="flex w-[264px] shrink-0 snap-start items-start gap-3.5 rounded-2xl lg:w-auto bg-superficie p-4 transition-colors hover:bg-superficie-2">
+                    <Link key={e.id} href={`/eventi/${e.id}`} className="flex w-[264px] shrink-0 snap-start only:w-full only:shrink lg:only:col-span-2 items-start gap-3.5 rounded-2xl lg:w-auto bg-superficie p-4 transition-colors hover:bg-superficie-2">
                       <span className="flex w-10 shrink-0 flex-col items-center leading-none">
                         <b className="font-mono text-[22px] font-medium tracking-[-0.05em]">{giornoNumero(e.inizio)}</b>
                         <span className="mt-1 text-xs text-testo-2">{meseBreve(e.inizio)}</span>
