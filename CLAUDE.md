@@ -28,7 +28,9 @@ App del territorio di San Marino: eventi, mappa, castelli e servizi utili in un'
 | `app/food`, `app/business` | Moduli 2 e 3, schermate "Coming Soon" (`components/ui/ComingSoon.tsx`) |
 | `modules/core` | Core SMR ID: store Zustand della sessione, funzioni di accesso (`auth.ts`), `SessioneSync` (nel layout), `SmrCard`, `Accesso`, `Profilo` |
 | `lib/supabase/browser.ts` | Client Supabase per il browser con la sessione nei cookie (`@supabase/ssr`); `lib/supabase.ts` resta per le letture pubbliche lato server |
-| `app/page.tsx` | Home a due versioni: guida di benvenuto per chi arriva la prima volta, Home personale per chi ha scelto un castello |
+| `app/page.tsx` | Home: saluto e ricerca, banner (benvenuto per chi arriva, evento in evidenza per chi torna), fila di categorie, "Adesso a San Marino" (farmacie, funivia, raccolta, parcheggi), eventi e partite a scorrimento, castelli in vetta, emergenza |
+| `app/cerca` | Ricerca unica su servizi, eventi, luoghi e castelli (`components/Ricerca.tsx`, senza accenti e maiuscole) |
+| `app/guida` | Come funziona 739: sezioni, metri e livelli |
 | `app/eventi`, `app/eventi/[id]` | Calendario raggruppato per giorno e dettaglio evento (calendario, indicazioni, check-in disattivato) |
 | `app/mappa` | Mappa a tutto schermo con filtri in alto e pannello che sale dal basso (3 altezze); `?luogo=<id>` apre quel luogo |
 | `app/castelli`, `app/castelli/[slug]` | Classifica con podio e pagina del singolo castello |
@@ -39,15 +41,17 @@ App del territorio di San Marino: eventi, mappa, castelli e servizi utili in un'
 | `app/utili/parcheggi` | Parcheggi con posti, tariffe e indicazioni |
 | `components/ui/` | Componenti base del design system: `PrimaryButton`, `ActionCard`, `BottomNav` |
 | `app/design` | Vetrina del design system (non nel menu, non indicizzata) |
-| `components/Quota.tsx` | Altimetro: scala 0–739 m con le tacche dei livelli, usata nell'HUD e in Home |
-| `components/Castello.tsx` | Scelta del castello salvata in `localStorage` (`739-castello`) e chip del castello nell'HUD |
+| `components/Quota.tsx` | Altimetro: scala 0–739 m con le tacche dei livelli, usata nella pagina SMR ID |
+| `components/Castello.tsx` | Scelta del castello salvata in `localStorage` (`739-castello`) e griglia di scelta per i nuovi |
 | `lib/data.ts` | Letture di eventi, luoghi e classifica, funzioni per date e orari (fuso `Europe/San_Marino`) |
 | `lib/servizi.ts` | Letture dei servizi (turni, linee e partenze, raccolta, parcheggi) |
 | `lib/orario.ts` | Prossime partenze e giorno della settimana a San Marino; senza dipendenze, gira anche nel browser |
 | `lib/fonti.ts` | Link alle fonti ufficiali mostrati in fondo alle pagine dei servizi |
 | `supabase/migrations/` | Schema del database già applicato |
 
-Navigazione in basso: Home · Sport · Mappa · Eventi · ID. Castelli, Utili, Food e Business si raggiungono dalla Home.
+In alto: selettore del castello a sinistra (`components/SceltaCastello.tsx`, si apre dal basso), ricerca e SMR ID a destra (`components/AzioniTesta.tsx`). Navigazione in basso: Home · Mappa · **+** · Sport · Eventi; il **+** centrale apre le azioni rapide (`components/AzioniRapide.tsx`: organizza partita `/sport?nuova=1`, il mio QR `/profile?qr=1`, cerca, farmacie, 112). Castelli, Utili, Food e Business dalla fila di categorie in Home.
+
+L'app si adatta allo schermo che la apre: a tutto schermo sul telefono (rispettando tacca e bordi con le safe area), e su schermi larghi i contenuti stanno in una colonna centrata di 640 px (`--colonna`, `--lato` in `globals.css`). Niente cornice da telefono finto.
 
 La Home sceglie la versione con l'attributo `data-utente` su `<html>` ("nuovo" o "tornato"), impostato da uno script in `app/layout.tsx` prima che la pagina compaia, per evitare lampeggi.
 
@@ -75,7 +79,7 @@ Tabelle: `castelli` (i 9 castelli con colore), `profili`, `luoghi`, `eventi`, `c
 - Tema: scuro di default, chiaro solo se il telefono è in modalità chiara (scelta di Alex). I colori si usano tramite i ruoli (`bg-fondo`, `bg-superficie`, `text-testo`, `text-testo-2`, `border-linea`, `text-accento`, `bg-accento-tenue`… o le variabili CSS corrispondenti), mai esadecimali fissi nelle pagine.
 - Schede `rounded-2xl` con bordo sottile, ombre minime, vetro smerigliato (`backdrop-blur`) solo per barre e pannelli sopra mappe o immagini.
 - Caratteri: Inter (testi e titoli, gerarchia bold/`text-testo-2`), JetBrains Mono (numeri, orari, metri, rating, etichette; cifre a larghezza fissa). Caricati con `next/font` in `app/layout.tsx`.
-- Stile HUD, da strumento di montagna: in alto sempre visibili il castello (posizione e metri) e l'altimetro della quota personale. Elementi ricorrenti: `.pannello` (scheda scura), `.topo` (curve di livello sullo sfondo), `.cornice` (angoli da mirino), numeri grandi in mono. Usarli con misura: non su ogni scheda.
+- Stile HUD, da strumento di montagna, usato con misura: niente striscia dell'altimetro in alto (scelta di Alex); la quota personale sta nella pagina SMR ID. Elementi ricorrenti: `.pannello` (scheda scura), `.topo` (curve di livello sullo sfondo), `.cornice` (angoli da mirino), numeri grandi in mono. Usarli con misura: non su ogni scheda.
 - Logo: il numero 739 con le tre cime del Titano (`components/Logo.tsx`). Mai usare torri, corona o stemma della Repubblica.
 - I punti si chiamano **metri**: livelli Valle (0), Mura (200), Torri (450), Vetta (739). Non chiamarli "punti": esiste già la SMaC dello Stato.
 - Tono: diretto, "di casa" con i residenti, chiaro per i turisti. Italiano prima, inglese in arrivo.
@@ -83,7 +87,7 @@ Tabelle: `castelli` (i 9 castelli con colore), `profili`, `luoghi`, `eventi`, `c
 ## Prossimi passi
 
 1. Accesso con email e password fatto (`/profile`). Da fare in Supabase (Authentication → URL Configuration): Site URL `https://739-san-marino.vercel.app` e `https://739-san-marino.vercel.app/profile` tra i Redirect URL, altrimenti i link di conferma e di recupero password portano a localhost. Per l'uso reale serve un SMTP proprio: quello di Supabase invia pochissime email l'ora.
-2. Check-in agli eventi con QR, che attiva i metri (la logica nel database c'è già). I metri personali vanno poi passati all'altimetro (`metriPersonali` in `app/layout.tsx` e `metri` in `app/page.tsx`, oggi fissi a 0).
+2. Check-in agli eventi con QR, che attiva i metri (la logica nel database c'è già). I metri personali vanno poi passati alla quota nella pagina SMR ID (`metri` in `modules/core/components/Profilo.tsx`, oggi fisso a 0).
 3. Pannello per inserire eventi, luoghi, turni delle farmacie, partenze e calendario della raccolta (le tabelle ci sono già).
 4. Ispirazione approvata da Alex per Eventi (non per la Home): schede evento con foto grande. La mappa a tutto schermo con pannello dal basso è fatta.
 5. Versione inglese.

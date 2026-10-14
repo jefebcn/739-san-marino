@@ -11,6 +11,9 @@ import { useSessione } from "../store";
 import Accesso, { Campo, NuovaPassword } from "./Accesso";
 import SmrCard from "./SmrCard";
 import { mioRating } from "@/modules/sport/api";
+import { EtichetteScala, Scala } from "@/components/Quota";
+import { Cime } from "@/components/Logo";
+import { livello } from "@/lib/quota";
 
 function Intestazione({ titolo, testo }: { titolo: string; testo: string }) {
   return (
@@ -22,12 +25,40 @@ function Intestazione({ titolo, testo }: { titolo: string; testo: string }) {
   );
 }
 
+/** La quota personale in metri: si muove con i check-in agli eventi. */
+function Quota() {
+  // I metri personali arriveranno con i check-in: fino ad allora la quota parte da 0
+  const metri = 0;
+  const { prossimo, mancano } = livello(metri);
+  return (
+    <section className="pannello quota topo cornice" aria-label="La tua quota">
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12 }}>
+        <span className="etichetta">La tua quota</span>
+        <span className="etichetta">Vetta 739 m</span>
+      </div>
+      <span className="quota-num">{metri}<small>m</small></span>
+      <div style={{ color: "var(--pannello-testo)" }}>
+        <Scala metri={metri} grande />
+        <EtichetteScala />
+      </div>
+      <p style={{ fontSize: 14, color: "var(--pannello-testo)" }}>
+        {prossimo ? <>Mancano <b style={{ color: "#fff" }}>{mancano} m</b> a {prossimo.nome}. </> : null}
+        Sali facendo check-in agli eventi: in arrivo.
+      </p>
+      <span className="cime"><Cime width={170} /></span>
+    </section>
+  );
+}
+
 /** Pagina profilo: accesso per gli ospiti, Card SMR ID e impostazioni per chi è connesso. */
 export default function Profilo({ castelli }: { castelli: Castello[] }) {
   const { stato, utente, profilo, recupero, impostaRecupero, aggiornaProfilo } = useSessione();
   const [nome, setNome] = useState<string | null>(null);
   const [salvataggio, setSalvataggio] = useState<"fermo" | "in-corso" | "fatto" | "errore">("fermo");
   const [rating, setRating] = useState<number | null>(null);
+  // Dalle azioni rapide: /profile?qr=1 apre subito il QR
+  const [apriQr, setApriQr] = useState(false);
+  useEffect(() => setApriQr(new URLSearchParams(window.location.search).get("qr") === "1"), []);
   const idUtente = utente?.id;
   useEffect(() => {
     if (idUtente) mioRating(idUtente).then(setRating);
@@ -80,7 +111,9 @@ export default function Profilo({ castelli }: { castelli: Castello[] }) {
 
       {recupero ? <NuovaPassword fatto={() => impostaRecupero(false)} /> : null}
 
-      <SmrCard nome={profilo.nome} tessera={profilo.tessera} castello={castello} rating={rating} />
+      <SmrCard nome={profilo.nome} tessera={profilo.tessera} castello={castello} rating={rating} apriQr={apriQr} key={apriQr ? "qr" : "card"} />
+
+      <Quota />
 
       <section className="flex flex-col gap-3">
         <h2 className="text-xl font-semibold tracking-tight">Profilo</h2>

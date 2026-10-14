@@ -38,11 +38,13 @@ type Props = {
   castello: Castello | null;
   /** Rating sportivo (Glicko-2): arriva con il modulo Sport */
   rating: number | null;
+  /** Apre subito il QR a schermo intero (dalle azioni rapide) */
+  apriQr?: boolean;
 };
 
 /** La Card SMR ID: sempre scura, come una carta fisica, con QR personale. */
-export default function SmrCard({ nome, tessera, castello, rating }: Props) {
-  const [grande, setGrande] = useState(false);
+export default function SmrCard({ nome, tessera, castello, rating, apriQr = false }: Props) {
+  const [grande, setGrande] = useState(apriQr);
 
   useEffect(() => {
     if (!grande) return;

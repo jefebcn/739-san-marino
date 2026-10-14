@@ -1,4 +1,4 @@
-import { LIVELLI, livello, percentuale } from "@/lib/quota";
+import { LIVELLI, percentuale } from "@/lib/quota";
 
 const TACCHE = Array.from({ length: 14 }, (_, i) => (i + 1) * 50);
 
@@ -29,18 +29,6 @@ export function EtichetteScala() {
           <small>{l.da} m</small>
         </span>
       ))}
-    </div>
-  );
-}
-
-/** Striscia dell'altimetro nella barra in alto: sempre visibile. */
-export function Altimetro({ metri }: { metri: number }) {
-  const { attuale } = livello(metri);
-  return (
-    <div className="altimetro">
-      <span>Quota <b>{metri} m</b></span>
-      <Scala metri={metri} />
-      <span>{attuale.nome}</span>
     </div>
   );
 }

@@ -37,6 +37,11 @@ export default function ListaPartite({ sport }: { sport: Sport[] }) {
   const [errore, setErrore] = useState<string | null>(null);
   const [nuova, setNuova] = useState(false);
 
+  // Dalle azioni rapide: /sport?nuova=1 apre subito il modulo
+  useEffect(() => {
+    if (stato === "connesso" && new URLSearchParams(window.location.search).get("nuova") === "1") setNuova(true);
+  }, [stato]);
+
   useEffect(() => {
     if (stato === "caricamento") return;
     let attivo = true;

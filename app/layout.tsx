@@ -1,12 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
-import Link from "next/link";
 import "./globals.css";
-import { Logo } from "@/components/Logo";
 import BottomNav, { type VoceNav } from "@/components/ui/BottomNav";
 import SessioneSync from "@/modules/core/components/SessioneSync";
-import { HudCastello } from "@/components/Castello";
-import { Altimetro } from "@/components/Quota";
+import SceltaCastello from "@/components/SceltaCastello";
+import AzioniTesta from "@/components/AzioniTesta";
+import AzioniRapide from "@/components/AzioniRapide";
 import { getClassifica } from "@/lib/data";
 
 export const revalidate = 60;
@@ -16,10 +15,9 @@ const jetbrains = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrai
 
 const VOCI: VoceNav[] = [
   { href: "/", nome: "Home", icona: "home" },
-  { href: "/sport", nome: "Sport", icona: "sport" },
   { href: "/mappa", nome: "Mappa", icona: "mappa" },
+  { href: "/sport", nome: "Sport", icona: "sport" },
   { href: "/eventi", nome: "Eventi", icona: "eventi" },
-  { href: "/profile", nome: "ID", icona: "id" },
 ];
 
 export const metadata: Metadata = {
@@ -49,8 +47,6 @@ export const viewport: Viewport = {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const classifica = await getClassifica();
-  // I metri personali arriveranno con l'accesso: fino ad allora la quota parte da 0.
-  const metriPersonali = 0;
 
   return (
     <html lang="it" className={`${inter.variable} ${jetbrains.variable}`} suppressHydrationWarning>
@@ -64,18 +60,15 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body>
         <div className="app">
           <header className="top">
-            <div className="top-riga">
-              <Link href="/" aria-label="Home">
-                <Logo />
-              </Link>
-              <HudCastello classifica={classifica} />
+            <div className="top-riga mx-auto max-w-[var(--colonna)]">
+              <SceltaCastello classifica={classifica} />
+              <AzioniTesta />
             </div>
-            <Altimetro metri={metriPersonali} />
           </header>
           <main className="main">
             {children}
           </main>
-          <BottomNav voci={VOCI} />
+          <BottomNav voci={VOCI} centro={<AzioniRapide />} />
           <SessioneSync castelli={classifica} />
         </div>
       </body>
