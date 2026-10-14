@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Scheda from "@/components/Scheda";
+import SegnalaErrore from "@/components/SegnalaErrore";
 import { Icona } from "@/components/Icona";
 import { getClassifica, getLuogo } from "@/lib/data";
 import { ritornoDiCategoria } from "@/lib/aree";
@@ -28,7 +29,7 @@ export default async function PaginaLuogo({ params }: Props) {
       <Link href={ritorno.href} className="-mb-2 flex w-fit items-center gap-1 text-sm font-medium text-accento">
         <Icona nome="freccia" size={16} /> {ritorno.nome}
       </Link>
-      <Scheda l={l} castello={castello} />
+      <Scheda l={l} castello={castello} azioni={<SegnalaErrore luogo={l.id} />} />
     </>
   );
 }

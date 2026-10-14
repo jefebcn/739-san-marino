@@ -3,7 +3,7 @@ import { supabaseBrowser } from "@/lib/supabase/browser";
 // Coda delle bozze (motore dati): tutto passa dalle funzioni del database (migrazione 0012),
 // che controllano da sole se chi chiama è un amministratore.
 
-export type StatoBozza = "nuovo" | "approvato" | "scartato";
+export type StatoBozza = "nuovo" | "segnalazioni" | "approvato" | "scartato";
 
 export type DatiEvento = {
   titolo?: string;
@@ -15,6 +15,9 @@ export type DatiEvento = {
   castello_id?: string;
   organizzatore?: string;
   metri?: string;
+  /** Solo nelle segnalazioni */
+  motivo?: "orario" | "posizione" | "chiuso" | "altro";
+  testo?: string | null;
   /** Solo dalle fonti RSS */
   pubblicato_il?: string;
   categorie?: string[];
@@ -22,7 +25,7 @@ export type DatiEvento = {
 
 export type Bozza = {
   id: string;
-  tipo: "evento" | "luogo" | "avviso";
+  tipo: "evento" | "luogo" | "avviso" | "segnalazione" | "contenuto";
   dati: DatiEvento;
   fonte: string;
   link_fonte: string | null;
@@ -35,6 +38,10 @@ export type Bozza = {
   simile_id: string | null;
   simile_titolo: string | null;
   simile_inizio: string | null;
+  /** Solo per le segnalazioni (migrazione 0014) */
+  luogo_id?: string | null;
+  evento_id?: string | null;
+  segnalato_da?: string | null;
 };
 
 export type Conteggio = Record<StatoBozza, number>;
@@ -78,5 +85,17 @@ export async function scartaBozza(id: string, nota: string | null, doppioneDi: s
 
 export async function ripristinaBozza(id: string) {
   const { error } = await db().rpc("ripristina_bozza", { p_id: id });
+  return { errore: messaggio(error) };
+}
+
+export async function chiudiSegnalazione(id: string, corretta: boolean) {
+  const { error } = await db().rpc("chiudi_segnalazione", { p_id: id, p_corretta: corretta });
+  return { errore: messaggio(error) };
+}
+
+/** «Segnala un errore»: si può anche senza accesso (con un limite anti-spam nel database). */
+export async function segnalaErrore(dove: { luogo?: string; evento?: string }, motivo: string, testo: string) {
+  const { error } = await db().rpc("segnala_errore", { p_luogo: dove.luogo ?? null, p_evento: dove.evento ?? null, p_motivo: motivo, p_testo: testo });
+  if (error?.code === "PGRST202") return { errore: "Le segnalazioni non sono ancora attive. Riprova tra qualche giorno." };
   return { errore: messaggio(error) };
 }

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { formatData, getEvento, linkCalendario, linkIndicazioni, ora } from "@/lib/data";
 import { Icona } from "@/components/Icona";
 import { Cime } from "@/components/Logo";
+import SegnalaErrore from "@/components/SegnalaErrore";
 
 export const revalidate = 60;
 
@@ -68,11 +69,14 @@ export default async function DettaglioEvento({ params }: Props) {
         ) : null}
       </section>
 
-      {e.fonte ? (
-        <p className="fonte">
-          Fonte: {e.link_fonte ? <a href={e.link_fonte} target="_blank" rel="noopener">{e.fonte}</a> : e.fonte}
-        </p>
-      ) : null}
+      <footer className="flex flex-col gap-2 border-t border-linea pt-4">
+        {e.fonte ? (
+          <p className="text-[13px] text-testo-2">
+            Fonte: {e.link_fonte ? <a href={e.link_fonte} target="_blank" rel="noopener" className="underline">{e.fonte}</a> : e.fonte}
+          </p>
+        ) : null}
+        <SegnalaErrore evento={e.id} />
+      </footer>
     </>
   );
 }

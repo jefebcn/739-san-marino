@@ -7,6 +7,7 @@ import PrimaryButton from "@/components/ui/PrimaryButton";
 import { useSessione } from "@/modules/core/store";
 import {
   approvaBozza,
+  chiudiSegnalazione,
   codaBozze,
   conteggioBozze,
   ripristinaBozza,
@@ -24,6 +25,7 @@ export type CastelloScelta = { id: number; nome: string };
 
 const SCHEDE: { stato: StatoBozza; nome: string }[] = [
   { stato: "nuovo", nome: "Da vedere" },
+  { stato: "segnalazioni", nome: "Segnalazioni" },
   { stato: "approvato", nome: "Pubblicate" },
   { stato: "scartato", nome: "Scartate" },
 ];
@@ -164,6 +166,55 @@ function Completa({
   );
 }
 
+const MOTIVI: Record<string, string> = {
+  orario: "Orario sbagliato",
+  posizione: "Posizione sbagliata",
+  chiuso: "Non esiste più o è chiuso",
+  altro: "Altro",
+};
+
+/** Una segnalazione «Segnala un errore»: si apre la scheda, si corregge, poi «Corretto» o «Ignora». */
+function SchedaSegnalazione({ bozza, aggiorna }: { bozza: Bozza; aggiorna: (testo: string) => void }) {
+  const [occupato, setOccupato] = useState(false);
+  const [errore, setErrore] = useState<string | null>(null);
+  const link = bozza.luogo_id ? `/luoghi/${bozza.luogo_id}` : bozza.evento_id ? `/eventi/${bozza.evento_id}` : null;
+
+  const chiudi = async (corretta: boolean) => {
+    setOccupato(true);
+    setErrore(null);
+    const r = await chiudiSegnalazione(bozza.id, corretta);
+    setOccupato(false);
+    if (r.errore) return setErrore(r.errore);
+    aggiorna(corretta ? "Segnalazione chiusa: la scheda risulta controllata oggi." : "Segnalazione ignorata.");
+  };
+
+  return (
+    <article className="flex flex-col gap-3 rounded-2xl bg-superficie p-4">
+      <div className="flex items-center justify-between gap-3 text-[13px] text-testo-2">
+        <span>{bozza.segnalato_da ? `Da ${bozza.segnalato_da}` : "Senza accesso"}, {giornoOra.format(new Date(bozza.creato_il))}</span>
+        {bozza.stato !== "nuovo" ? <span className="font-medium text-testo">{bozza.stato === "approvato" ? "Corretta" : "Ignorata"}</span> : null}
+      </div>
+      <h2 className="text-[17px] font-semibold leading-snug tracking-tight">{bozza.dati.titolo ?? "Scheda"}</h2>
+      <p className="text-sm">
+        <b className="font-semibold">{MOTIVI[bozza.dati.motivo ?? ""] ?? "Segnalazione"}</b>
+        {bozza.dati.testo ? <span className="text-testo-2">: {bozza.dati.testo}</span> : null}
+      </p>
+      {link ? (
+        <Link href={link} className="flex w-fit items-center gap-1 text-sm font-medium text-accento">
+          Apri la scheda <Icona nome="avanti" size={14} />
+        </Link>
+      ) : null}
+      {errore ? <p role="alert" className="rounded-xl bg-segnale/12 px-4 py-3 text-sm text-segnale">{errore}</p> : null}
+      {bozza.stato === "nuovo" ? (
+        <div className="grid grid-cols-2 gap-2">
+          <PrimaryButton variante="interno" disabled={occupato} onClick={() => chiudi(false)}>Ignora</PrimaryButton>
+          <PrimaryButton disabled={occupato} onClick={() => chiudi(true)}>Corretto</PrimaryButton>
+        </div>
+      ) : null}
+    </article>
+  );
+}
+
 function Scheda({
   bozza,
   luoghi,
@@ -179,6 +230,7 @@ function Scheda({
   const [occupato, setOccupato] = useState(false);
   const [errore, setErrore] = useState<string | null>(null);
   const quando = bozza.dati.pubblicato_il ?? bozza.creato_il;
+  if (bozza.tipo === "segnalazione") return <SchedaSegnalazione bozza={bozza} aggiorna={aggiorna} />;
 
   const esegui = async (azione: () => Promise<{ errore: string | null }>, testo: string) => {
     setOccupato(true);
@@ -303,7 +355,7 @@ export default function Coda({ luoghi, castelli }: { luoghi: LuogoScelta[]; cast
 
   return (
     <div className="flex flex-col gap-4">
-      <div role="tablist" aria-label="Stato delle bozze" className="grid grid-cols-3 gap-1 rounded-xl bg-superficie p-1">
+      <div role="tablist" aria-label="Stato delle bozze" className="grid grid-cols-2 gap-1 rounded-xl bg-superficie p-1">
         {SCHEDE.map((s) => (
           <button
             key={s.stato}
@@ -334,7 +386,9 @@ export default function Coda({ luoghi, castelli }: { luoghi: LuogoScelta[]; cast
         <p className="rounded-2xl bg-superficie p-5 text-[15px] text-testo-2">
           {scheda === "nuovo"
             ? "Niente da vedere. Gli articoli di Libertas su spettacoli, mostre e cultura arrivano qui da soli due volte al giorno."
-            : scheda === "approvato"
+            : scheda === "segnalazioni"
+              ? "Nessuna segnalazione da vedere. Arrivano da «Segnala un errore» su schede ed eventi."
+              : scheda === "approvato"
               ? "Nessuna bozza pubblicata finora."
               : "Nessuna bozza scartata."}
         </p>
