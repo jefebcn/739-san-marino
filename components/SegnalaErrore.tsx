@@ -55,13 +55,13 @@ export default function SegnalaErrore({ luogo, evento }: { luogo?: string; event
 
       {/* Nel body: dentro la pagina il contenitore che scorre taglierebbe il pannello */}
       {aperto ? createPortal(
-        <div role="dialog" aria-modal="true" aria-label="Segnala un errore" className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 backdrop-blur-sm" onClick={() => setAperto(false)}>
+        <div role="dialog" aria-modal="true" aria-label="Segnala un errore" className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 backdrop-blur-sm lg:items-center lg:p-6" onClick={() => setAperto(false)}>
           <form
             onSubmit={invia}
             onClick={(e) => e.stopPropagation()}
-            className="flex w-full max-w-[var(--colonna)] flex-col gap-4 rounded-t-3xl border border-linea bg-fondo px-[var(--gutter)] pt-3 pb-[calc(20px+env(safe-area-inset-bottom,0px))]"
+            className="flex w-full max-w-[var(--colonna)] flex-col gap-4 rounded-t-3xl border border-linea bg-fondo px-[var(--gutter)] pt-3 pb-[calc(20px+env(safe-area-inset-bottom,0px))] lg:max-w-[520px] lg:rounded-3xl lg:px-6 lg:pb-6"
           >
-            <span aria-hidden="true" className="mx-auto h-1 w-10 rounded-full bg-linea" />
+            <span aria-hidden="true" className="mx-auto h-1 w-10 rounded-full bg-linea lg:hidden" />
             <div className="flex flex-col gap-1">
               <h2 className="text-[19px] font-semibold tracking-tight">Cosa non torna?</h2>
               <p className="text-sm text-testo-2">La redazione controlla ogni segnalazione e corregge la scheda.</p>

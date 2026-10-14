@@ -41,12 +41,12 @@ export default function SceltaCastello({ classifica }: { classifica: Castello[] 
       </button>
 
       {aperto ? (
-        <div role="dialog" aria-modal="true" aria-label="Scegli il tuo castello" className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 backdrop-blur-sm" onClick={() => setAperto(false)}>
+        <div role="dialog" aria-modal="true" aria-label="Scegli il tuo castello" className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 backdrop-blur-sm lg:items-center lg:p-6" onClick={() => setAperto(false)}>
           <div
             onClick={(e) => e.stopPropagation()}
-            className="flex max-h-[85dvh] w-full max-w-[var(--colonna)] flex-col gap-4 overflow-y-auto rounded-t-3xl border border-linea bg-fondo px-[var(--gutter)] pt-3 pb-[calc(20px+env(safe-area-inset-bottom,0px))]"
+            className="flex max-h-[85dvh] w-full max-w-[var(--colonna)] flex-col gap-4 overflow-y-auto rounded-t-3xl border border-linea bg-fondo px-[var(--gutter)] pt-3 pb-[calc(20px+env(safe-area-inset-bottom,0px))] lg:max-w-[520px] lg:rounded-3xl lg:px-6 lg:pb-6"
           >
-            <span aria-hidden="true" className="mx-auto h-1 w-10 rounded-full bg-linea" />
+            <span aria-hidden="true" className="mx-auto h-1 w-10 rounded-full bg-linea lg:hidden" />
             <div className="flex items-baseline justify-between">
               <h2 className="text-[19px] font-semibold tracking-tight">Il tuo castello</h2>
               <Link href="/castelli" onClick={() => setAperto(false)} className="text-sm font-medium text-testo-2 hover:text-testo">Classifica</Link>

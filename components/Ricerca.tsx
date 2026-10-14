@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CATEGORIE, etichettaGiorno, ora, type Castello, type Evento, type Luogo, type PraticaDi } from "@/lib/data";
 import { Icona, type NomeIcona } from "./Icona";
 import { AREE } from "@/lib/aree";
@@ -41,6 +41,11 @@ function pulisci(s: string) {
 
 export default function Ricerca({ eventi, luoghi, castelli, pratiche = [] }: { eventi: Evento[]; luoghi: Luogo[]; castelli: Castello[]; pratiche?: PraticaDi[] }) {
   const [q, setQ] = useState("");
+  // Dalla casella della testata su computer si arriva con /cerca?q=…
+  useEffect(() => {
+    const iniziale = new URLSearchParams(window.location.search).get("q");
+    if (iniziale) setQ(iniziale);
+  }, []);
 
   const indice = useMemo(() => {
     const gruppi: { nome: string; voci: Voce[] }[] = [

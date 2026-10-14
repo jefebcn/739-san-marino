@@ -48,6 +48,9 @@
     --colonna: 640px;
     /* Margine dei contenuti: almeno il gutter, e sugli schermi larghi quanto basta a centrare la colonna */
     --lato: max(var(--gutter), calc((100vw - var(--colonna)) / 2));
+    /* Computer: testata e pagine larghe (quelle che contengono .larga) */
+    --larga: 1180px;
+    --lato-largo: max(32px, calc((100vw - var(--larga)) / 2));
     color-scheme: dark;
   }
 
@@ -103,6 +106,16 @@
 .main { flex: 1; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; padding: 18px var(--lato) 32px; display: flex; flex-direction: column; gap: 28px; position: relative; }
 .main > * { flex-shrink: 0; animation: entra 0.24s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
 @keyframes entra { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+/* Computer (da 1024 px): testata larga; le pagine pronte per lo schermo largo lo dicono con un elemento .larga */
+@media (min-width: 1024px) {
+  .top { padding-inline: var(--lato-largo); padding-block: 12px; }
+  .main { padding-bottom: 40px; }
+  .main:has(.larga) { --lato: var(--lato-largo); gap: 36px; }
+  .main:has(.mappa-piena) .piede { display: none !important; }
+  /* Il piè di pagina è largo come la testata anche sotto le pagine a colonna stretta */
+  .piede { margin-inline: calc(var(--lato-largo) - var(--lato)); }
+}
 
 /* Schermi larghi: i pannelli a tutta larghezza diventano schede, il foglio della mappa resta in colonna */
 @media (min-width: 700px) {

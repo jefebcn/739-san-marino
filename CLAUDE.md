@@ -68,7 +68,13 @@ App del territorio di San Marino: eventi, mappa, castelli e servizi utili in un'
 
 In alto: selettore del castello a sinistra (`components/SceltaCastello.tsx`, si apre dal basso), ricerca e SMR ID a destra (`components/AzioniTesta.tsx`). Navigazione in basso: **Oggi · Mappa · + · Sport · Esplora** (Oggi è la Home). Il **+** centrale apre le azioni rapide (`components/AzioniRapide.tsx`: organizza partita `/sport?nuova=1`, cosa succede, il mio QR `/profile?qr=1`, cerca, farmacie, 112). In Oggi la fila in alto porta alle cinque aree. Vecchi indirizzi (in `next.config.ts`): `/utili` → `/vivere`, `/food` → `/uscire#mangiare`, `/business` → `/lavorare#aziende`; `/utili/farmacie`, `/utili/trasporti`, `/utili/rifiuti`, `/utili/parcheggi`, `/utili/meteo`, `/castelli` ed `/eventi` restano dove sono, collegati dalle aree. La mappa filtra prima per area, poi per categoria.
 
-L'app si adatta allo schermo che la apre: a tutto schermo sul telefono (rispettando tacca e bordi con le safe area), e su schermi larghi i contenuti stanno in una colonna centrata di 640 px (`--colonna`, `--lato` in `globals.css`). Niente cornice da telefono finto.
+L'app si adatta allo schermo che la apre: a tutto schermo sul telefono (rispettando tacca e bordi con le safe area), su tablet i contenuti stanno in una colonna centrata di 640 px (`--colonna`, `--lato` in `globals.css`). Niente cornice da telefono finto.
+
+**Su computer (da 1024 px, `lg:` di Tailwind) 739 si presenta come un sito** (scelta di Alex del 14/10/2026), con gli stessi indirizzi e gli stessi dati:
+- in alto la testata con Oggi, le cinque aree e Mappa (`components/NavDesktop.tsx`, la voce attiva vale anche per le sezioni dell'area), la ricerca (casella da 1280 px, icona sotto; porta a `/cerca?q=`), castello e SMR ID; la barra in basso e il + spariscono;
+- in fondo il piè di pagina (`components/PiedePagina.tsx`, largo come la testata, nascosto sulla mappa);
+- i pannelli dal basso (castello, segnala un errore) diventano finestre al centro;
+- le pagine restano nella colonna da 640 px finché non sono pronte per lo schermo largo: allora contengono un elemento con classe `larga` e `.main:has(.larga)` porta `--lato` a `--lato-largo` (colonna `--larga`, 1180 px). Dentro, le griglie a più colonne si scrivono con `lg:`.
 
 La Home sceglie la versione con l'attributo `data-utente` su `<html>` ("nuovo" o "tornato"), impostato da uno script in `app/layout.tsx` prima che la pagina compaia, per evitare lampeggi.
 

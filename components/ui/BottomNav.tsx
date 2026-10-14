@@ -35,7 +35,7 @@ export default function BottomNav({ voci, centro }: { voci: VoceNav[]; centro?: 
   return (
     <nav
       aria-label="Sezioni"
-      className="z-10 flex-none select-none border-t border-linea bg-[var(--vetro)] px-1.5 pt-1.5 pb-[calc(6px+env(safe-area-inset-bottom,0px))] backdrop-blur-xl backdrop-saturate-150"
+      className="z-10 flex-none select-none border-t lg:hidden border-linea bg-[var(--vetro)] px-1.5 pt-1.5 pb-[calc(6px+env(safe-area-inset-bottom,0px))] backdrop-blur-xl backdrop-saturate-150"
     >
       <div className="mx-auto grid max-w-[var(--colonna)] items-start" style={{ gridTemplateColumns: `repeat(${voci.length + (centro ? 1 : 0)}, minmax(0, 1fr))` }}>
         {voci.slice(0, meta).map(voce)}

@@ -8,6 +8,8 @@ import { Logo } from "@/components/Logo";
 import Link from "next/link";
 import AzioniTesta from "@/components/AzioniTesta";
 import AzioniRapide from "@/components/AzioniRapide";
+import { CercaDesktop, NavDesktop } from "@/components/NavDesktop";
+import PiedePagina from "@/components/PiedePagina";
 import { getClassifica } from "@/lib/data";
 
 export const revalidate = 60;
@@ -62,15 +64,21 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body>
         <div className="app">
           <header className="top">
-            <div className="top-riga mx-auto max-w-[var(--colonna)]">
+            {/* Telefono: logo e azioni. Computer (da 1024 px): testata da sito con aree e ricerca */}
+            <div className="top-riga mx-auto max-w-[var(--colonna)] lg:max-w-[var(--larga)] lg:gap-6">
               <Link href="/" aria-label="739, torna a Oggi" className="shrink-0">
                 <Logo />
               </Link>
-              <AzioniTesta classifica={classifica} />
+              <NavDesktop />
+              <div className="flex min-w-0 items-center gap-2">
+                <CercaDesktop />
+                <AzioniTesta classifica={classifica} />
+              </div>
             </div>
           </header>
           <main className="main">
             {children}
+            <PiedePagina />
           </main>
           <BottomNav voci={VOCI} centro={<AzioniRapide />} />
           <SessioneSync castelli={classifica} />
