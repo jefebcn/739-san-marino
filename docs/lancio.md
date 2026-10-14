@@ -8,12 +8,11 @@ Cosa deve fare Alex prima di aprire 739 a tutti (passo 1.8, 14/10/2026). In ordi
 - [ ] **SMTP proprio** (Supabase, Authentication, Emails, SMTP Settings). Quello di Supabase manda pochissime email l'ora: al lancio molte iscrizioni resterebbero senza email di conferma. Consiglio Resend (piano gratuito: 3.000 email al mese, 100 al giorno); vuole un dominio verificato, quindi va fatto dopo il punto 3. Mittente per esempio `739 <ciao@739sanmarino.com>`.
 - [ ] **Testi delle email in italiano** (Authentication, Emails, Templates): conferma, recupero password, cambio email. Se vuoi li scrivo io e te li passo da incollare.
 
-## 2. Privacy e termini (bloccante)
+## 2. Privacy e termini
 
-- [ ] Far rivedere `/privacy` e `/termini` a un professionista (bozze in `app/privacy/page.tsx` e `app/termini/page.tsx`).
-- [ ] Completare le parti tra [quadre]: titolare del trattamento (nome o società, indirizzo), email per la privacy e per i contatti, età minima, tempi di conservazione, foro competente.
-- [ ] Decidere chi è il titolare: Alex come persona o una società. Cambia cosa si scrive e le responsabilità.
-- [ ] Oggi la cancellazione dell'account si chiede per email. Se il professionista lo chiede, aggiungo «Cancella il mio SMR ID» nel profilo.
+- [x] Testi approvati da Alex il 14/10/2026 (età minima 16 anni, foro di San Marino).
+- [ ] Dati della società titolare (ragione sociale, sede, email): si scrivono in `lib/legale.ts` e compaiono in Privacy e Termini. Fino ad allora le pagine dicono «[in arrivo]».
+- [ ] Oggi la cancellazione dell'account si chiede per email. Se serve, aggiungo «Cancella il mio SMR ID» nel profilo.
 
 ## 3. Dominio
 

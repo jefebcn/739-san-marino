@@ -1,13 +1,13 @@
 import PaginaLegale from "@/components/PaginaLegale";
+import { emailContatto, titolare } from "@/lib/legale";
 
 export const metadata = { title: "Termini d'uso · 739 San Marino", description: "Le regole per usare 739 San Marino." };
 
-// Bozza del passo 1.8: da rivedere con un professionista prima del lancio pubblico.
-// Le parti tra [quadre] vanno completate da Alex.
+// Passo 1.8, approvati da Alex il 14/10/2026. Titolare ed email in lib/legale.ts.
 const TESTO = `
 ## Cos'è 739
 
-739 San Marino è un'app gratuita con eventi, servizi, luoghi, sport e la sfida tra i nove castelli. Non è un servizio della Repubblica di San Marino né di un ente pubblico: è gestita da [nome e cognome o ragione sociale]. Usandola accetti queste regole.
+739 San Marino è un'app gratuita con eventi, servizi, luoghi, sport e la sfida tra i nove castelli. Non è un servizio della Repubblica di San Marino né di un ente pubblico: è gestita da ${titolare()}. Usandola accetti queste regole.
 
 ## Le informazioni
 
@@ -46,15 +46,15 @@ Logo, nome 739, Tano e testi della redazione sono di 739 San Marino. I loghi dei
 
 ## Responsabilità
 
-739 è offerta così com'è. Nei limiti della legge non rispondiamo di danni dovuti a informazioni non aggiornate, a interruzioni del servizio o a quello che pubblicano gli utenti. [Clausola da rivedere con il professionista.]
+739 è offerta così com'è. Nei limiti della legge non rispondiamo di danni dovuti a informazioni non aggiornate, a interruzioni del servizio o a quello che pubblicano gli utenti.
 
 ## Modifiche e legge
 
-Possiamo cambiare queste regole: la data in cima dice quando. Per i cambiamenti importanti ti avvisiamo nell'app. Vale la legge della Repubblica di San Marino. [Foro competente da definire.]
+Possiamo cambiare queste regole: la data in cima dice quando. Per i cambiamenti importanti ti avvisiamo nell'app. Vale la legge della Repubblica di San Marino e per le controversie è competente il foro di San Marino.
 
 ## Contatti
 
-Per domande scrivi a [indirizzo email di contatto]. Per i tuoi dati personali leggi la [Privacy](/privacy).
+Per domande scrivi a ${emailContatto()}. Per i tuoi dati personali leggi la [Privacy](/privacy).
 `;
 
 export default function Termini() {

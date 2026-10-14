@@ -1,9 +1,9 @@
 import PaginaLegale from "@/components/PaginaLegale";
+import { emailContatto, titolare } from "@/lib/legale";
 
 export const metadata = { title: "Privacy · 739 San Marino", description: "Quali dati usa 739 San Marino, perché e per quanto tempo." };
 
-// Bozza del passo 1.8: da rivedere con un professionista prima del lancio pubblico.
-// Le parti tra [quadre] vanno completate da Alex.
+// Passo 1.8, approvata da Alex il 14/10/2026. Titolare ed email in lib/legale.ts.
 const TESTO = `
 ## In breve
 
@@ -15,7 +15,7 @@ const TESTO = `
 
 ## Chi tratta i dati
 
-Il titolare del trattamento è [nome e cognome o ragione sociale, indirizzo], che gestisce 739 San Marino. Per qualsiasi domanda sui tuoi dati scrivi a [indirizzo email per la privacy].
+Il titolare del trattamento è ${titolare()}. Per qualsiasi domanda sui tuoi dati scrivi a ${emailContatto()}.
 
 Le regole di riferimento sono la Legge della Repubblica di San Marino n. 171 del 21 dicembre 2018 sulla protezione dei dati personali e, per chi usa 739 dall'Unione europea, il Regolamento (UE) 2016/679 (GDPR).
 
@@ -48,7 +48,6 @@ Meteo (Open-Meteo), articoli di Libertas e luoghi di OpenStreetMap li legge il n
 - Account, check-in, partite e metri: finché tieni l'SMR ID. Se ci chiedi di cancellarlo, cancelliamo anche i dati collegati, tranne i totali anonimi dei castelli.
 - Iscrizioni alle notifiche: finché non le spegni o il telefono smette di accettarle.
 - Impronte anti abuso: restano con la proposta o la segnalazione e contano solo nel giorno in cui sono create.
-- [Tempi di conservazione da confermare con il professionista.]
 
 ## Cookie
 
@@ -56,13 +55,13 @@ Meteo (Open-Meteo), articoli di Libertas e luoghi di OpenStreetMap li legge il n
 
 ## I tuoi diritti
 
-Puoi chiedere di vedere i tuoi dati, correggerli, cancellarli, limitarne l'uso, riceverne una copia o opporti al trattamento. Nome e castello li cambi da solo nella pagina SMR ID; per tutto il resto scrivi a [indirizzo email per la privacy]. Rispondiamo entro 30 giorni.
+Puoi chiedere di vedere i tuoi dati, correggerli, cancellarli, limitarne l'uso, riceverne una copia o opporti al trattamento. Nome e castello li cambi da solo nella pagina SMR ID; per tutto il resto scrivi a ${emailContatto()}. Rispondiamo entro 30 giorni.
 
 Se pensi che i tuoi dati non siano trattati bene puoi rivolgerti all'Autorità Garante per la protezione dei dati personali della Repubblica di San Marino.
 
 ## Minori
 
-Per creare un SMR ID devi avere almeno [16] anni. [Età minima da verificare con il professionista.]
+Per creare un SMR ID devi avere almeno 16 anni.
 
 ## Modifiche
 
