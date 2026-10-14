@@ -19,7 +19,7 @@ Raccolte a mano il 13/10/2026 e caricate con `supabase/migrations/0004_dati_serv
 
 ## 1. Collegate in automatico
 
-Collegate il 14/10/2026: meteo in Home e in `/utili/meteo`, luoghi OSM su mappa e ricerca, articoli di Libertas in fondo a `/eventi` (vedi `lib/meteo.ts`, `lib/osm.ts`, `lib/stampa.ts`).
+Collegate il 14/10/2026: meteo in Home e in `/utili/meteo` (`lib/meteo.ts`), articoli di Libertas in fondo a `/eventi` (`lib/stampa.ts`), luoghi OSM su mappa e ricerca scaricati ogni notte dal database (`supabase/migrations/0010_osm_automatico.sql`).
 
 | Fonte | Cosa prendere | Aggiornamento | Come collegarla |
 |---|---|---|---|
@@ -64,7 +64,7 @@ Ogni dato che arriva da fuori (evento, luogo, orario, avviso) entra prima in una
 
 ### Canale 1: dati aperti con API (automatico, già avviato)
 
-- OpenStreetMap: da Vercel l'Overpass API non risponde in tempo reale. Soluzione: un'importazione programmata (Vercel Cron, una volta a settimana, oppure una GitHub Action) che salva i luoghi OSM in `luoghi` con `fonte = 'osm'` e l'id OSM, così la mappa legge solo dal database. Aggiungere ristoranti, bar, negozi e hotel con `opening_hours`: sono la base dei moduli Food e Business.
+- OpenStreetMap: da Vercel l'Overpass API non risponde in tempo reale. Fatto il 14/10/2026: il database scarica i luoghi ogni notte (`aggiorna_luoghi_osm()` con `pg_cron`, migrazione 0010) e li salva in `luoghi` con `fonte = 'osm'` e `id_esterno`, così la mappa legge solo dal database. Prossimo passo: aggiungere ristoranti, bar, negozi e hotel con `opening_hours`, base dei moduli Food e Business.
 - Wikidata e Wikimedia Commons: monumenti e luoghi storici con descrizione e **foto a licenza libera** (con autore e licenza da citare). Risolve le foto grandi delle schede.
 - Open-Meteo: già collegato.
 - Open Charge Map (chiave gratuita): colonnine di ricarica con potenza e stato.
@@ -104,7 +104,7 @@ Ufficio del Turismo (calendario eventi), AASS (funivia, bus, rifiuti, avvisi), I
 ### Ordine di lavoro
 
 1. Tabella `importazioni` e pannello `/admin/coda`.
-2. Importazione OSM programmata nel database (sistema anche la mappa) con ristoranti, bar e negozi.
+2. Importazione OSM programmata nel database: fatta per bagni, fontanelle, ricarica, impianti, cultura e panorami (migrazione 0010); da estendere a ristoranti, bar e negozi.
 3. Estrazione AI degli eventi dal feed di Libertas verso la coda.
 4. «Proponi un evento» e «Segnala un errore».
 5. Casella email + email in arrivo verso la coda.

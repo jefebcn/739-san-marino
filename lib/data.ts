@@ -17,11 +17,11 @@ export type Luogo = {
   da_verificare: boolean;
   /** Orari settimanali: {"1": [["08:00","19:30"]], …} con 1 = lunedì */
   orari_settimana: Record<string, [string, string][]> | null;
-  /** "osm" se il luogo viene da OpenStreetMap e non dal database */
-  fonte?: "osm";
+  /** "manuale" se inserito da 739, "osm" se importato ogni notte da OpenStreetMap (migrazione 0010) */
+  fonte: string;
 };
 
-export const CAMPI_LUOGO = "id, nome, categoria, descrizione, lat, lng, castello_id, indirizzo, telefono, orari, tariffa, posti, da_verificare, orari_settimana";
+export const CAMPI_LUOGO = "id, nome, categoria, descrizione, lat, lng, castello_id, indirizzo, telefono, orari, tariffa, posti, da_verificare, orari_settimana, fonte";
 export type Evento = {
   id: string;
   titolo: string;

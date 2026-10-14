@@ -49,7 +49,6 @@ App del territorio di San Marino: eventi, mappa, castelli e servizi utili in un'
 | `lib/orario.ts` | Prossime partenze e giorno della settimana a San Marino; senza dipendenze, gira anche nel browser |
 | `lib/fonti.ts` | Link alle fonti ufficiali mostrati in fondo alle pagine dei servizi |
 | `lib/meteo.ts` | Meteo da Open-Meteo (nessuna chiave, cache 15 minuti) e codici meteo in italiano con icona |
-| `lib/osm.ts` | Luoghi da OpenStreetMap (Overpass): bagni, fontanelle, ricarica auto, impianti, musei e monumenti, panorami. Cache di un giorno, non salvati nel database, uniti ai luoghi del database su mappa e ricerca (id `osm-…`, campo `fonte: "osm"`) senza doppioni |
 | `lib/stampa.ts` | Articoli su spettacoli, mostre e cultura dal feed RSS di Libertas (cache 3 ore), in fondo alla pagina Eventi: solo titolo, data e link |
 | `supabase/migrations/` | Schema del database già applicato |
 
@@ -72,6 +71,7 @@ Tabelle: `castelli` (i 9 castelli con colore), `profili`, `luoghi`, `eventi`, `c
 - Il QR della Card contiene `739ID:<tessera>`: lo leggeranno gli scanner di 739.
 - Sport (migrazioni 0007 e 0008): tabelle `sport` (calcetto, padel, tennis, basket 3x3, pallavolo), `partite`, `iscrizioni`, `rating_sport` (Glicko-2 per utente e sport: rating, rd, volatilità). Partite e iscrizioni non si leggono direttamente: passano dalle funzioni `elenco_partite`, `dettaglio_partita`, `giocatori_partita` (solo con accesso), `classifica_sport` (solo con accesso), `classifica_castelli_sport`; le scritture da `crea_partita`, `iscriviti_partita`, `ritirati_partita`, `annulla_partita`, `forma_squadre`, `registra_risultato`. `glicko2()` è l'algoritmo di Glickman (verificato con l'esempio dell'articolo); ogni giocatore viene aggiornato contro la media della squadra avversaria. Le squadre si bilanciano dando i giocatori, dal rating più alto, alla squadra con la somma più bassa.
 - `0008_sport_azioni.sql` (ritirarsi, annullare, formare le squadre, registrare il risultato) è stata applicata a mano da Alex dall'SQL Editor il 14/10/2026: l'applicazione automatica chiede una conferma che scade. Per le prossime migrazioni con update/delete, dare ad Alex il link al file "raw" su GitHub: copiato dalla chat il testo può arrivare tagliato.
+- `luoghi.fonte` ("manuale" o "osm"), `id_esterno` (es. `node/123`) e `aggiornato_il` (migrazione 0009). I luoghi OSM (bagni, fontanelle, ricarica auto, impianti, musei e monumenti, panorami, info turistiche) arrivano ogni notte alle 3.23 UTC da `aggiorna_luoghi_osm()` (migrazione 0010, **da applicare a mano**): non duplicano quelli manuali della stessa categoria entro 60 m e spariscono se tolti da OSM. Non modificarli a mano: l'aggiornamento successivo li riscrive.
 - Un trigger aggiunge i metri dell'evento a ogni check-in.
 - `classifica_castelli_totali()` restituisce solo i totali per castello (funzione pubblica voluta, nessun dato personale).
 - Esiste anche una vecchia vista `classifica_castelli`, resa sicura e non più usata: si può eliminare.
@@ -109,7 +109,10 @@ Tabelle: `castelli` (i 9 castelli con colore), `profili`, `luoghi`, `eventi`, `c
 
 ## Fonti di dati
 
-L'elenco dei siti da cui prendere informazioni, con quelli già usati, come collegare gli altri e cosa richiede un accordo, è in `docs/fonti.md`. Non leggere in automatico i siti che lo vietano nel loro robots.txt. Collegate in automatico (ottobre 2026): Open-Meteo, OpenStreetMap e il feed di Libertas. Sono letture dirette dal server Next.js con la cache di `fetch` (`next.revalidate`): niente cron, niente chiavi. Se una fonte non risponde la sua sezione sparisce senza errori. Alex vuole integrare più dati possibili: il piano in sei canali (coda unica delle bozze con approvazione, API aperte, RSS, newsletter via email, contributi di organizzatori e utenti, pagine consentite dal robots.txt, accordi con gli enti) e l'ordine di lavoro sono nella sezione «Motore dati» di `docs/fonti.md`. Da questa sessione cloud Open-Meteo e Overpass non si raggiungono (rete del container): si verificano sul sito online.
+L'elenco dei siti da cui prendere informazioni, con quelli già usati, come collegare gli altri e cosa richiede un accordo, è in `docs/fonti.md`. Non leggere in automatico i siti che lo vietano nel loro robots.txt. Alex vuole integrare più dati possibili: il piano in sei canali (coda unica delle bozze con approvazione, API aperte, RSS, newsletter via email, contributi di organizzatori e utenti, pagine consentite dal robots.txt, accordi con gli enti) e l'ordine di lavoro sono nella sezione «Motore dati» di `docs/fonti.md`. Collegate in automatico (ottobre 2026):
+- **Open-Meteo** e **feed di Libertas**: letture dirette dal server Next.js con la cache di `fetch` (`next.revalidate`), niente cron né chiavi. Se la fonte non risponde la sezione sparisce senza errori.
+- **OpenStreetMap**: da Vercel i server Overpass non rispondono (la mappa aspettava 22 secondi), quindi i luoghi li scarica il database ogni notte (`aggiorna_luoghi_osm()`, migrazione 0010, con `pg_cron` ed estensione `http`) e li salva in `luoghi` con `fonte = 'osm'`. I server Overpass pubblici sono spesso sovraccarichi (504): la funzione ne prova tre e, se nessuno risponde, lascia tutto com'era. Per aggiungere ristoranti, bar e negozi (moduli Food e Business) basta estendere la query e le categorie in quella funzione.
+- Da questa sessione cloud Open-Meteo e Overpass non si raggiungono (rete del container): Overpass si prova dall'SQL di Supabase, Open-Meteo sul sito online.
 
 ## Regole di lavoro
 
