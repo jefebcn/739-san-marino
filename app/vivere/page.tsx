@@ -35,6 +35,7 @@ export default async function Vivere() {
         parcheggi: parcheggi.length ? <><b className="font-mono font-medium text-testo">{parcheggi.length}</b> parcheggi con tariffe e indicazioni</> : undefined,
         rifiuti: <RaccoltaBreve raccolta={raccolta} castelli={castelli} />,
         meteo: meteo ? <><b className="font-mono font-medium text-testo">{gradi(meteo.temperatura)}</b>, {cielo(meteo.codice, meteo.giorno).testo.toLowerCase()}. Previsioni per 7 giorni</> : undefined,
+        "poste-banche": n("posta") + n("banca") + n("carburante") ? <>{n("posta")} uffici postali, {n("banca")} tra banche e bancomat, {n("carburante")} distributori</> : "Arrivano da OpenStreetMap",
         servizi: <>{n("bagni")} bagni, {n("acqua")} fontanelle, {n("ricarica")} colonnine</>,
       }}
     />

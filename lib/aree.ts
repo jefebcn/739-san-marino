@@ -43,6 +43,7 @@ export const AREE: Area[] = [
       { slug: "parcheggi", nome: "Parcheggi", descrizione: "Posti, tariffe e indicazioni.", icona: "parcheggio", href: "/utili/parcheggi", categorie: ["parcheggio"], parole: "parcheggi parcheggio auto camper p9 multipiano" },
       { slug: "rifiuti", nome: "Raccolta rifiuti", descrizione: "Il calendario del tuo castello.", icona: "rifiuti", href: "/utili/rifiuti", parole: "rifiuti raccolta spazzatura differenziata carta plastica vetro organico" },
       { slug: "meteo", nome: "Meteo", descrizione: "Adesso, prossime ore e settimana.", icona: "meteo", href: "/utili/meteo", parole: "meteo tempo pioggia previsioni temperatura" },
+      { slug: "poste-banche", nome: "Poste, banche e carburante", descrizione: "Uffici postali, banche, bancomat e distributori.", icona: "banca", href: "/vivere/poste-banche", categorie: ["posta", "banca", "carburante"], parole: "poste posta ufficio postale banca banche bancomat atm soldi prelievo benzina carburante distributore gasolio diesel gpl metano" },
       { slug: "servizi", nome: "Bagni, fontanelle e ricarica", descrizione: "Bagni pubblici, acqua potabile e colonnine per l'auto elettrica.", icona: "servizi", href: "/vivere/servizi", categorie: ["bagni", "acqua", "ricarica", "servizio"], parole: "bagni toilette fontanelle acqua ricarica colonnine elettrica" },
       { slug: "scuola", nome: "Scuola e famiglia", descrizione: "Scuole, nidi, calendario scolastico e servizi per le famiglie.", icona: "scuola", parole: "scuola scuole nido asilo famiglia bambini" },
     ],

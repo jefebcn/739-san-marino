@@ -2,6 +2,7 @@ import type React from "react";
 import type { Icon, IconWeight } from "@phosphor-icons/react";
 import {
   ArrowRight,
+  Wallet,
   ShareNetwork,
   LinkSimple,
   Article,
@@ -167,6 +168,7 @@ const ICONE = {
   stampa: Newspaper,
   importa: FileArrowUp,
   scarica: DownloadSimple,
+  banca: Wallet,
   numeri: ChartBar,
 } satisfies Record<string, Icon>;
 

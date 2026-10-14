@@ -243,4 +243,7 @@ export const CATEGORIE: Record<string, string> = {
   avviso: "Avvisi",
   ufficio: "Uffici pubblici",
   salute: "Salute",
+  posta: "Uffici postali",
+  banca: "Banche e bancomat",
+  carburante: "Distributori di carburante",
 };

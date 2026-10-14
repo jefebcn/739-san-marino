@@ -17,6 +17,9 @@ export const COLORI: Record<string, string> = {
   avviso: "#E8573A",
   ufficio: "#3F5B73",
   salute: "#E8573A",
+  posta: "#3F5B73",
+  banca: "#3F5B73",
+  carburante: "#6B7280",
 };
 
 export const CENTRO: [number, number] = [12.4578, 43.9424];
