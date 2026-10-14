@@ -34,6 +34,26 @@ export default async function Rubriche({ searchParams }: Props) {
         </Link>
       ) : null}
 
+      {!tipo || tipo === "partite_settimana" || tipo === "vetta_mese" ? (
+        <div className="flex flex-col gap-2">
+          {[
+            !tipo || tipo === "partite_settimana" ? { href: "/rubriche/partite-della-settimana", icona: "sport" as const, titolo: "Le partite di questa settimana", riga: "Risultati, tornei finiti e castelli che sono saliti" } : null,
+            !tipo || tipo === "vetta_mese" ? { href: "/rubriche/vetta-del-mese", icona: "castelli" as const, titolo: "La vetta di questo mese", riga: "I metri guadagnati da ogni castello nel mese" } : null,
+          ]
+            .filter((x) => x !== null)
+            .map((x) => (
+              <Link key={x.href} href={x.href} className="flex items-center gap-3.5 rounded-2xl bg-superficie p-4 transition-colors hover:bg-superficie-2">
+                <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-fondo text-testo"><Icona nome={x.icona} size={22} /></span>
+                <span className="flex min-w-0 flex-col">
+                  <span className="text-[15px] font-semibold">{x.titolo}</span>
+                  <span className="text-[13px] text-testo-2">{x.riga}</span>
+                </span>
+                <span className="ml-auto text-testo-2"><Icona nome="avanti" size={18} /></span>
+              </Link>
+            ))}
+        </div>
+      ) : null}
+
       <nav aria-label="Rubriche" className="-mx-[var(--lato)] flex gap-2 overflow-x-auto px-[var(--lato)] pb-1 [scrollbar-width:none]">
         <Link href="/rubriche" aria-current={!tipo ? "page" : undefined} className="h-10 shrink-0 content-center rounded-xl bg-superficie px-3.5 text-sm font-medium text-testo-2 aria-[current=page]:bg-testo aria-[current=page]:text-fondo">
           Tutte
@@ -53,7 +73,7 @@ export default async function Rubriche({ searchParams }: Props) {
         <ul className="flex flex-col gap-2.5">
           {contenuti.map((c) => (
             <li key={c.id}>
-              <Link href={`/storie/${c.slug}`} className="flex gap-3.5 rounded-2xl bg-superficie p-3.5 transition-colors hover:bg-superficie-2">
+              <Link href={c.tipo === "speciale" ? `/speciali/${c.slug}` : `/storie/${c.slug}`} className="flex gap-3.5 rounded-2xl bg-superficie p-3.5 transition-colors hover:bg-superficie-2">
                 {c.foto_url ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={c.foto_url} alt="" loading="lazy" className="size-20 shrink-0 rounded-xl bg-fondo object-cover" />

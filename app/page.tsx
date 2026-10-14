@@ -21,6 +21,7 @@ import { fasciaDi, nelPeriodo } from "@/lib/oggi";
 import { getUltimo } from "@/lib/contenuti";
 import { getSpecialeInCorso } from "@/lib/speciali";
 import SpecialeOggi from "@/components/oggi/SpecialeOggi";
+import RubricheOggi from "@/components/oggi/RubricheOggi";
 
 export const revalidate = 60;
 
@@ -96,6 +97,9 @@ export default async function Home() {
 
       {/* Uno speciale in corso (Natale delle Meraviglie, Giornate Medievali…) sta in cima, sopra a tutto il resto */}
       {speciale ? <SpecialeOggi s={speciale} /> : null}
+
+      {/* Le rubriche nel loro giorno: lunedì il castello, giovedì il weekend, domenica sera le partite, fine mese la vetta */}
+      <RubricheOggi castelli={classifica} adesso={adesso} />
 
       {/* Di mattina gli avvisi stanno dentro il Bollettino */}
       {mattina ? null : <AvvisiOggi avvisi={avvisi} castelli={classifica} />}
