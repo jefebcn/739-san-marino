@@ -115,7 +115,7 @@ Tabelle: `castelli` (i 9 castelli con colore), `profili`, `luoghi`, `eventi`, `c
 - Un trigger aggiunge i metri dell'evento a ogni check-in.
 - `classifica_castelli_totali()` restituisce solo i totali per castello (funzione pubblica voluta, nessun dato personale).
 - Esiste anche una vecchia vista `classifica_castelli`, resa sicura e non più usata: si può eliminare.
-- Colori dei castelli presi dai loghi (migrazione 0024, **da applicare a mano**): Città #0255FA, Borgo Maggiore #FDC844, Serravalle #FC0A12, Domagnano #CA071D, Fiorentino #B637FB, Acquaviva #1BF7FD, Faetano #229557, Chiesanuova #02F378, Montegiardino #27F9B9.
+- Colori dei castelli presi dai loghi (migrazione 0024, applicata a mano da Alex il 14/10/2026): Città #0255FA, Borgo Maggiore #FDC844, Serravalle #FC0A12, Domagnano #CA071D, Fiorentino #B637FB, Acquaviva #1BF7FD, Faetano #229557, Chiesanuova #02F378, Montegiardino #27F9B9.
 - Dati di prova: 2 eventi con titolo "Esempio · …" e 3 luoghi con "Posizione da verificare". Vanno sostituiti con dati veri.
 
 ## Identità visiva
