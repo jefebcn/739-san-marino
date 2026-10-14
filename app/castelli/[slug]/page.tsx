@@ -32,8 +32,8 @@ export default async function Castello({ params }: Props) {
         <Link href="/castelli" className="indietro"><Icona nome="freccia" size={18} /> Castelli</Link>
         {haLogo(c.slug) ? (
           <>
-            <LogoCastello c={c} className="mx-auto w-full max-w-[400px]" />
-            <h1 className="sr-only">{c.nome}</h1>
+            <LogoCastello c={c} className="mx-auto w-full max-w-[360px]" />
+            <h1 className="titolo text-center">{c.nome}</h1>
           </>
         ) : (
           <>

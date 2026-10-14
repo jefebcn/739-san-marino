@@ -62,7 +62,7 @@ App del territorio di San Marino: eventi, mappa, castelli e servizi utili in un'
 | `app/opengraph-image.tsx`, `app/twitter-image.tsx` | Anteprima dei link a 739 (1200×630): marchio Completo bianco su zinc-950 e «Tutto San Marino, dalla vetta». Le anteprime per eventi, contenuti e speciali arrivano col passo 1.7 |
 | `components/Quota.tsx` | Altimetro: scala 0–739 m con le tacche dei livelli, usata nella pagina SMR ID |
 | `components/Castello.tsx` | Scelta del castello salvata in `localStorage` (`739-castello`) e griglia di scelta per i nuovi |
-| `components/LogoCastello.tsx`, `public/castelli/` | Loghi dei 9 castelli forniti da Alex il 14/10/2026 (non sono gli stemmi ufficiali, che per la legge 190/2011 sono riservati alle Giunte di Castello). Originali in `docs/castelli/<slug>.webp`, file per l'app generati con `node scripts/castelli.mjs`: sempre il logo intero con il nome, **mai ritagliato** (scelta di Alex), solo il nero in eccesso tolto; sempre su fondo nero. `LogoCastello` (640×480) in testa alla pagina del castello, `EmblemaCastello` (quadrato) in classifica, podio, scelta del castello; senza logo resta il punto colore |
+| `components/LogoCastello.tsx`, `public/castelli/` | Loghi dei 9 castelli forniti da Alex il 14/10/2026 (seconda versione, senza scritta, dello stesso giorno) (non sono gli stemmi ufficiali, che per la legge 190/2011 sono riservati alle Giunte di Castello). Originali in `docs/castelli/<slug>.webp`, file per l'app generati con `node scripts/castelli.mjs`: sempre il logo intero, **mai ritagliato** (scelta di Alex), solo il nero in eccesso tolto; sempre su fondo nero. `LogoCastello` (640×480) in testa alla pagina del castello, con il nome sotto, `EmblemaCastello` (quadrato) in classifica, podio, scelta del castello; senza logo resta il punto colore |
 | `lib/data.ts` | Letture di eventi, luoghi e classifica, funzioni per date e orari (fuso `Europe/San_Marino`) |
 | `lib/servizi.ts` | Letture dei servizi (turni, linee e partenze, raccolta, parcheggi) |
 | `lib/orario.ts` | Prossime partenze e giorno della settimana a San Marino; senza dipendenze, gira anche nel browser |
@@ -115,7 +115,7 @@ Tabelle: `castelli` (i 9 castelli con colore), `profili`, `luoghi`, `eventi`, `c
 - Un trigger aggiunge i metri dell'evento a ogni check-in.
 - `classifica_castelli_totali()` restituisce solo i totali per castello (funzione pubblica voluta, nessun dato personale).
 - Esiste anche una vecchia vista `classifica_castelli`, resa sicura e non più usata: si può eliminare.
-- Colori dei castelli presi dai loghi (migrazione 0024, applicata a mano da Alex il 14/10/2026): Città #0255FA, Borgo Maggiore #FDC844, Serravalle #FC0A12, Domagnano #CA071D, Fiorentino #B637FB, Acquaviva #1BF7FD, Faetano #229557, Chiesanuova #02F378, Montegiardino #27F9B9.
+- Colori dei castelli presi dai loghi: migrazione 0024 (prima versione dei loghi, applicata a mano da Alex il 14/10/2026) e 0026 (loghi nuovi, **da applicare a mano**): Città #014BFB, Borgo Maggiore #FBB908, Serravalle #FA0716, Domagnano #FC6705, Fiorentino #8A02FA, Acquaviva #04E4FC, Faetano #02B866, Chiesanuova #03C749, Montegiardino #06F9C8.
 - Dati di prova: 2 eventi con titolo "Esempio · …" e 3 luoghi con "Posizione da verificare". Vanno sostituiti con dati veri.
 
 ## Identità visiva
