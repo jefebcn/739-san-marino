@@ -22,7 +22,7 @@ Cosa deve fare Alex prima di aprire 739 a tutti (passo 1.8, 14/10/2026). In ordi
 ## 4. Notifiche (passo 1.6)
 
 - [x] Migrazione 0029 applicata da Alex il 14/10/2026.
-- [ ] Mettere su Vercel le chiavi VAPID (`NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`) e rifare il deploy. Senza chiavi la scheda Notifiche non compare e l'invio risponde 503: l'app funziona lo stesso.
+- [x] Chiavi VAPID su Vercel messe da Alex il 14/10/2026; provata la catena completa (pg_cron, segreto, /api/notifiche: risposta 200). Non cambiarle più: chi ha acceso le notifiche dovrebbe riaccenderle.
 - [ ] Provarle su un iPhone (con 739 sulla schermata Home) e su un Android.
 
 ## 5. Persone
