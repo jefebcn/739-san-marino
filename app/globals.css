@@ -224,6 +224,11 @@
 .sos strong { font-family: var(--mono); font-size: 30px; font-weight: 500; letter-spacing: -0.04em; }
 
 /* ——— Classifica ——— */
+.icona-colore { display: inline-block; flex: none; vertical-align: middle; object-fit: contain; user-select: none; }
+/* Nel tema chiaro le parti bianche delle icone a colori hanno bisogno di un bordo leggero per staccarsi dal fondo */
+@media (prefers-color-scheme: light) { .icona-colore { filter: drop-shadow(0 0 0.5px rgb(9 9 11 / 0.45)) drop-shadow(0 1px 1.5px rgb(9 9 11 / 0.18)); } }
+/* Barra in basso: la voce non attiva è più spenta, quella attiva a colori pieni */
+nav a:not([aria-current="page"]) > .icona-colore { opacity: 0.55; filter: grayscale(0.85); }
 .icona-propria { display: inline-block; position: relative; flex: none; vertical-align: middle; }
 .icona-propria::before, .icona-propria::after { content: ""; position: absolute; inset: 0; -webkit-mask: var(--m) center / contain no-repeat; mask: var(--m) center / contain no-repeat; }
 .icona-propria::before { --m: var(--base); background: currentColor; }

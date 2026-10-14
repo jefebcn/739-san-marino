@@ -111,6 +111,8 @@ const ICONE = {
   // Aree e sezioni (lib/aree.ts)
   vivere: House,
   lavorare: Briefcase,
+  partite: SoccerBall,
+  coda: FileText,
   servizi: Toilet,
   meteo: CloudSun,
   trasporti: CableCar,
@@ -169,14 +171,44 @@ export type NomeIcona = keyof typeof ICONE;
 // Frecce, "+" e lente sono segni a linea: piene diventerebbero triangoli o macchie, quindi restano a tratto spesso
 const LINEARI = new Set<NomeIcona>(["freccia", "avanti", "vai", "piu", "cerca", "chiudi"]);
 
-// Icone disegnate per Alex (ottobre 2026) per le cinque aree, la mappa, gli eventi e le sezioni di Vivere: prendono il posto di Phosphor.
+// Icone piatte disegnate per Alex (ottobre 2026) per quattro aree e la mappa: prendono il posto di Phosphor.
 // Due maschere in public/icone (node scripts/icone-aree.mjs): la base prende il colore del testo, l'accento resta blu.
-const PROPRIE = new Set<NomeIcona>([
-  "vivere", "uscire", "sport", "comunita", "lavorare", "mappa", "eventi",
-  "scuola", "servizi", "meteo", "parcheggio", "rifiuti", "trasporti", "farmacia", "avvisi", "uffici",
-]);
+const PROPRIE = new Set<NomeIcona>(["vivere", "uscire", "comunita", "lavorare", "mappa"]);
+
+// Icone a colori disegnate per Alex (ottobre 2026, stile 3D): si usano così come sono, in public/icone-colore
+// (node scripts/icone-colore.mjs). Più nomi possono usare lo stesso disegno.
+const COLORE: Partial<Record<NomeIcona, string>> = {
+  sport: "sport",
+  partite: "partite",
+  tornei: "tornei",
+  impianti: "impianti",
+  cerca: "cerca",
+  qr: "qr",
+  calendario: "calendario",
+  eventi: "eventi",
+  esplora: "esplora",
+  persona: "persona",
+  scuola: "scuola",
+  meteo: "meteo",
+  servizi: "servizi",
+  rifiuti: "rifiuti",
+  parcheggio: "parcheggio",
+  trasporti: "trasporti",
+  farmacia: "farmacia",
+  uffici: "uffici",
+  avvisi: "avvisi",
+  storie: "giornale",
+  stampa: "giornale",
+  numeri: "numeri",
+  coda: "coda",
+};
 
 export function Icona({ nome, size = 24, peso }: { nome: NomeIcona; size?: number; peso?: IconWeight }) {
+  const colore = COLORE[nome];
+  if (colore) {
+    // eslint-disable-next-line @next/next/no-img-element
+    return <img src={`/icone-colore/${colore}.webp`} alt="" aria-hidden="true" width={size} height={size} draggable={false} className="icona-colore" style={{ width: size, height: size }} />;
+  }
   if (PROPRIE.has(nome)) {
     return (
       <span

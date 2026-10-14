@@ -23,7 +23,7 @@ export default async function Sport() {
             <li key={s.slug}>
               {s.href ? (
                 <Link href={s.href} className="flex items-center gap-3 px-4 py-3.5 transition-colors hover:bg-superficie-2">
-                  <span className="text-testo"><Icona nome={s.icona} size={20} /></span>
+                  <span className="text-testo"><Icona nome={s.icona} size={26} /></span>
                   <span className="flex min-w-0 flex-1 flex-col"><span className="text-[15px] font-medium">{s.nome}</span><span className="text-[13px] text-testo-2">{s.descrizione}</span></span>
                   <span className="text-testo-2"><Icona nome="avanti" size={18} /></span>
                 </Link>

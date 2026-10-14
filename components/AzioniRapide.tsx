@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { Icona, type NomeIcona } from "./Icona";
 
 const AZIONI: { href: string; icona: NomeIcona; titolo: string; testo: string; allerta?: boolean }[] = [
-  { href: "/sport?nuova=1", icona: "sport", titolo: "Organizza una partita", testo: "Le squadre le bilancia 739" },
+  { href: "/sport?nuova=1", icona: "partite", titolo: "Organizza una partita", testo: "Le squadre le bilancia 739" },
   { href: "/eventi", icona: "eventi", titolo: "Cosa succede", testo: "Il calendario degli eventi" },
   { href: "/eventi/proponi", icona: "calendario", titolo: "Proponi un evento", testo: "Organizzi qualcosa? Mettilo su 739" },
   { href: "/profile?qr=1", icona: "qr", titolo: "Mostra il mio QR", testo: "Il tuo SMR ID, pronto da scansionare" },
@@ -47,7 +47,7 @@ export default function AzioniRapide() {
                 <li key={a.href}>
                   <Link href={a.href} onClick={() => setAperto(false)} className="flex items-center gap-3.5 rounded-xl bg-superficie p-3 transition-colors hover:bg-superficie-2 active:scale-[0.98]">
                     <span className={`grid size-11 shrink-0 place-items-center rounded-xl ${a.allerta ? "bg-segnale/15 text-segnale" : "bg-fondo text-testo"}`}>
-                      <Icona nome={a.icona} size={22} />
+                      <Icona nome={a.icona} size={30} />
                     </span>
                     <span className="flex flex-col">
                       <span className="text-[15px] font-semibold">{a.titolo}</span>

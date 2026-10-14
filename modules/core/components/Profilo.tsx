@@ -206,7 +206,7 @@ export default function Profilo({ castelli }: { castelli: Castello[] }) {
           {ruoli.redattore ? (
             <ActionCard
               href="/admin/coda"
-              icona={<Icona nome="stampa" />}
+              icona={<Icona nome="coda" />}
               tono="neutro"
               titolo="Coda delle bozze"
               descrizione={daVedere === null ? "Bozze e segnalazioni" : daVedere === 1 ? "1 da vedere" : `${daVedere} da vedere`}
