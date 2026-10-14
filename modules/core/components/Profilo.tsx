@@ -15,6 +15,7 @@ import { EtichetteScala, Scala } from "@/components/Quota";
 import { livello } from "@/lib/quota";
 import { conteggioBozze } from "@/modules/coda/api";
 import { mieiRuoli, NESSUN_RUOLO, type Ruoli } from "../ruoli";
+import { mieiMetri, type Movimento } from "@/modules/eventi/api";
 
 function Intestazione({ titolo, testo }: { titolo: string; testo: string }) {
   return (
@@ -25,27 +26,50 @@ function Intestazione({ titolo, testo }: { titolo: string; testo: string }) {
   );
 }
 
-/** La quota personale in metri: si muove con i check-in agli eventi. */
+const giornoBreve = new Intl.DateTimeFormat("it-IT", { day: "numeric", month: "short", timeZone: "Europe/San_Marino" });
+
+/** La quota personale in metri: sale con i check-in agli eventi (miei_metri, migrazione 0023). */
 function Quota() {
-  // I metri personali arriveranno con i check-in: fino ad allora la quota parte da 0
-  const metri = 0;
-  const { prossimo, mancano } = livello(metri);
+  const [dati, setDati] = useState<{ totale: number; movimenti: Movimento[] } | null>(null);
+  useEffect(() => {
+    mieiMetri().then((r) => setDati({ totale: r.totale, movimenti: r.movimenti }));
+  }, []);
+  const metri = dati?.totale ?? 0;
+  const { attuale, prossimo, mancano } = livello(metri);
   return (
-    <section className="pannello quota topo" aria-label="La tua quota">
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12 }}>
-        <span className="etichetta">La tua quota</span>
-        <span className="etichetta">Vetta 739 m</span>
-      </div>
-      <span className="quota-num">{metri}<small>m</small></span>
-      <div style={{ color: "var(--pannello-testo)" }}>
-        <Scala metri={metri} grande />
-        <EtichetteScala />
-      </div>
-      <p style={{ fontSize: 14, color: "var(--pannello-testo)" }}>
-        {prossimo ? <>Mancano <b style={{ color: "#fff" }}>{mancano} m</b> a {prossimo.nome}. </> : null}
-        Sali facendo check-in agli eventi: in arrivo.
-      </p>
-    </section>
+    <>
+      <section className="pannello quota topo" aria-label="La tua quota" aria-busy={!dati}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12 }}>
+          <span className="etichetta">La tua quota, {attuale.nome}</span>
+          <span className="etichetta">Vetta 739 m</span>
+        </div>
+        <span className="quota-num">{dati ? metri : "–"}<small>m</small></span>
+        <div style={{ color: "var(--pannello-testo)" }}>
+          <Scala metri={metri} grande />
+          <EtichetteScala />
+        </div>
+        <p style={{ fontSize: 14, color: "var(--pannello-testo)" }}>
+          {prossimo ? <>Mancano <b style={{ color: "#fff" }}>{mancano} m</b> a {prossimo.nome}. </> : <>Sei in vetta. </>}
+          Sali facendo check-in agli eventi: inquadra il QR di 739 che trovi sul posto.
+        </p>
+      </section>
+      {dati?.movimenti.length ? (
+        <section className="flex flex-col gap-3" aria-labelledby="titolo-movimenti">
+          <h2 id="titolo-movimenti" className="text-xl font-semibold tracking-tight">Ultimi metri</h2>
+          <ul className="divide-y divide-linea overflow-hidden rounded-2xl bg-superficie">
+            {dati.movimenti.map((m, i) => (
+              <li key={`${m.creato_il}-${i}`} className="flex items-center gap-3 px-4 py-3">
+                <span className="flex min-w-0 flex-1 flex-col">
+                  <span className="truncate text-[15px] font-medium">{m.titolo ?? (m.motivo === "checkin" ? "Check-in" : m.motivo)}</span>
+                  <span className="text-[13px] text-testo-2">{giornoBreve.format(new Date(m.creato_il))}</span>
+                </span>
+                <span className="font-mono text-[15px] font-medium text-accento">{m.metri > 0 ? "+" : ""}{m.metri} m</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+    </>
   );
 }
 
@@ -58,6 +82,21 @@ export default function Profilo({ castelli }: { castelli: Castello[] }) {
   // Dalle azioni rapide: /profile?qr=1 apre subito il QR
   const [apriQr, setApriQr] = useState(false);
   useEffect(() => setApriQr(new URLSearchParams(window.location.search).get("qr") === "1"), []);
+  // Dal QR di un evento: /profile?torna=/eventi/<id>/checkin?c=… riporta lì appena l'accesso è fatto
+  // (ricordato anche nella scheda del browser, per chi conferma la registrazione dal link nell'email)
+  useEffect(() => {
+    const valido = (t: string | null) => (t && t.startsWith("/") && !t.startsWith("//") ? t : null);
+    let torna = valido(new URLSearchParams(window.location.search).get("torna"));
+    try {
+      if (torna) sessionStorage.setItem("739-torna", torna);
+      else torna = valido(sessionStorage.getItem("739-torna"));
+    } catch {}
+    if (stato !== "connesso" || !torna) return;
+    try {
+      sessionStorage.removeItem("739-torna");
+    } catch {}
+    window.location.replace(torna);
+  }, [stato]);
   const idUtente = utente?.id;
   useEffect(() => {
     if (idUtente) mioRating(idUtente).then(setRating);

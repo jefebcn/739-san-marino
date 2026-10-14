@@ -16,6 +16,7 @@ import {
   CaretLeft,
   CaretRight,
   ChargingStation,
+  DownloadSimple,
   ChartBar,
   FileArrowUp,
   Church,
@@ -153,6 +154,7 @@ const ICONE = {
   panorama: Binoculars,
   stampa: Newspaper,
   importa: FileArrowUp,
+  scarica: DownloadSimple,
   numeri: ChartBar,
 } satisfies Record<string, Icon>;
 

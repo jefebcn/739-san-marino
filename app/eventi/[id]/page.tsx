@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { formatData, getEvento, linkCalendario, linkIndicazioni, ora } from "@/lib/data";
 import { Icona } from "@/components/Icona";
 import SegnalaErrore from "@/components/SegnalaErrore";
+import QrCheckin from "@/modules/eventi/components/QrCheckin";
 
 export const revalidate = 60;
 
@@ -103,8 +104,14 @@ export default async function DettaglioEvento({ params }: Props) {
       </section>
 
       <section className="azioni">
-        <button type="button" className="bottone primario" disabled>Fai check-in (+{e.metri} m)</button>
-        <p className="nota">Il check-in si attiva con l&apos;accesso, in arrivo a breve.</p>
+        {e.metri > 0 ? (
+          <div className="flex items-start gap-3 rounded-2xl bg-accento-tenue p-4">
+            <span className="mt-0.5 text-accento"><Icona nome="qr" size={22} /></span>
+            <p className="text-sm leading-relaxed text-testo">
+              <b className="font-semibold">+{e.metri} m con il check-in.</b> All&apos;evento inquadra con la fotocamera il QR di 739: i metri vanno a te e al tuo castello.
+            </p>
+          </div>
+        ) : null}
         <a href={linkCalendario(e)} target="_blank" rel="noopener" className="bottone secondario premibile">
           <Icona nome="calendario" size={20} /> Aggiungi al calendario
         </a>
@@ -114,6 +121,8 @@ export default async function DettaglioEvento({ params }: Props) {
           </a>
         ) : null}
       </section>
+
+      <QrCheckin evento={e.id} titolo={e.titolo} />
 
       <footer className="flex flex-col gap-2 border-t border-linea pt-4">
         {e.fonte ? (
