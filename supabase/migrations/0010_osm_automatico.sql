@@ -3,7 +3,8 @@
 -- Dati © OpenStreetMap contributors, licenza ODbL: l'app cita la fonte nella scheda del luogo.
 -- DA APPLICARE A MANO dall'SQL Editor di Supabase (contiene insert e delete): copiare il file da
 -- https://raw.githubusercontent.com/jefebcn/739-san-marino/main/supabase/migrations/0010_osm_automatico.sql
--- L'ultima istruzione esegue subito il primo aggiornamento e mostra quanti luoghi ha importato.
+-- Il primo aggiornamento non è nel file: se i server OSM sono lenti supererebbe il tempo massimo dell'SQL Editor
+-- e annullerebbe tutto. Si lancia a parte con «select public.aggiorna_luoghi_osm();» o si aspetta la notte.
 
 create extension if not exists http with schema extensions;
 create extension if not exists pg_cron;
@@ -53,7 +54,7 @@ declare
   dati jsonb;
   n integer;
 begin
-  perform extensions.http_set_curlopt('CURLOPT_TIMEOUT', '60');
+  perform extensions.http_set_curlopt('CURLOPT_TIMEOUT', '45');
   foreach server in array array[
     'https://overpass-api.de/api/interpreter',
     'https://overpass.kumi.systems/api/interpreter',
@@ -171,5 +172,3 @@ revoke execute on function public.aggiorna_luoghi_osm() from public, anon, authe
 select cron.unschedule(jobid) from cron.job where jobname = 'aggiorna-luoghi-osm';
 select cron.schedule('aggiorna-luoghi-osm', '23 3 * * *', 'select public.aggiorna_luoghi_osm()');
 
--- Primo aggiornamento subito: se risponde 0, i server di OpenStreetMap erano occupati e ci riprova stanotte
-select public.aggiorna_luoghi_osm() as luoghi_importati;
