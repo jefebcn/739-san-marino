@@ -116,6 +116,14 @@
   /* Il piè di pagina è largo come la testata anche sotto le pagine a colonna stretta */
   .piede { margin-inline: calc(var(--lato-largo) - var(--lato)); }
   .main .emergenza { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  /* Mappa: il pannello dei luoghi diventa una colonna fissa a sinistra, i filtri gli stanno accanto */
+  .mappa-piena .foglio, .mappa-piena .foglio[data-livello] { left: 16px; top: 16px; bottom: 16px; right: auto; width: 400px; height: auto; max-width: none; margin: 0; transform: none; translate: none; border-radius: 16px; border: 1px solid var(--linea); box-shadow: var(--ombra); }
+  .mappa-piena .foglio[data-livello] .foglio-corpo { overflow-y: auto; visibility: visible; }
+  .mappa-piena .foglio-testa { cursor: default; padding-top: 16px; }
+  .mappa-piena .foglio-testa::before { display: none; }
+  .mappa-piena .mappa-filtri { left: 432px; top: 16px; }
+  .mappa-piena .mappa-filtri .chips { padding-left: 0 !important; }
+
 }
 
 /* Schermi larghi: i pannelli a tutta larghezza diventano schede, il foglio della mappa resta in colonna */
@@ -244,8 +252,6 @@ li:last-child > .riga { border-bottom: 0; }
 .mappa-filtri { position: absolute; top: 10px; left: 0; right: 0; z-index: 3; }
 .mappa-filtri .chip { box-shadow: var(--ombra); background: var(--vetro); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
 .mappa-filtri .chip[aria-pressed="true"] { background: var(--testo); }
-.mappa-piena .maplibregl-ctrl-top-right { top: 104px; }
-.mappa-piena .maplibregl-ctrl-group { border-radius: 12px; overflow: hidden; box-shadow: var(--ombra); }
 .marcatore { width: 18px; height: 18px; border-radius: 6px; border: 3px solid #fff; box-shadow: 0 1px 6px rgba(11, 31, 46, 0.45); cursor: pointer; padding: 0; transition: transform 0.16s cubic-bezier(0.2, 0.7, 0.2, 1); }
 .marcatore[aria-current="true"] { transform: scale(1.5) rotate(45deg); }
 
@@ -414,4 +420,13 @@ html[data-utente="tornato"] .per-nuovi { display: none !important; }
   .premibile, .main > *, .foglio, .marcatore, .nav a span.ico { transition: none; animation: none; }
   .scheletro, .spia::before { animation: none; }
 }
+}
+
+/* ——— MapLibre ———
+   Il suo CSS non sta nei layer di Tailwind e vince su tutto quello che è in @layer:
+   le regole che lo correggono devono stare fuori dai layer, come queste. */
+.mappa-piena .maplibregl-ctrl-top-right { top: 104px; }
+.mappa-piena .maplibregl-ctrl-group { border-radius: 12px; overflow: hidden; box-shadow: var(--ombra); }
+@media (min-width: 1024px) {
+  .mappa-piena .maplibregl-ctrl-top-right { top: 16px; }
 }

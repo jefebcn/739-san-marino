@@ -6,28 +6,10 @@ import type { Map as MLMap, Marker } from "maplibre-gl";
 import { CATEGORIE, linkIndicazioni, type Luogo } from "@/lib/data";
 import { Icona } from "./Icona";
 import { AREE, areaDiCategoria, type SlugArea } from "@/lib/aree";
+import { CENTRO, COLORI, STILE_CHIARO, STILE_SCURO } from "@/lib/mappa";
 
-const COLORI: Record<string, string> = {
-  luogo: "#0B1F2E",
-  trasporti: "#2C79AE",
-  parcheggio: "#5EB6E4",
-  farmacia: "#E8573A",
-  servizio: "#E8573A",
-  impianto: "#2BA84A",
-  locale: "#F3A712",
-  cultura: "#C9A45C",
-  panorama: "#5C9E8F",
-  bagni: "#9AA0A6",
-  acqua: "#4FC3F7",
-  ricarica: "#7CB342",
-  avviso: "#E8573A",
-  ufficio: "#3F5B73",
-  salute: "#E8573A",
-};
 
-const CENTRO: [number, number] = [12.4578, 43.9424];
-const STILE_CHIARO = "https://tiles.openfreemap.org/styles/liberty";
-const STILE_SCURO = "https://tiles.openfreemap.org/styles/dark";
+
 
 /** 0 = solo intestazione, 1 = metà schermo, 2 = quasi tutto lo schermo */
 type Livello = 0 | 1 | 2;
@@ -72,8 +54,9 @@ export default function MappaTerritorio({ luoghi, focus }: { luoghi: Luogo[]; fo
         zoom: iniziale ? 15.5 : 11.4,
         attributionControl: { compact: true },
       });
-      // Il pannello in basso copre parte della mappa: il centro va spostato più in alto
-      m.setPadding({ top: 50, right: 0, left: 0, bottom: Math.round(box.current.clientHeight * 0.45) });
+      // Il pannello copre parte della mappa: in basso sul telefono, a sinistra su computer
+      const computer = window.matchMedia("(min-width: 1024px)").matches;
+      m.setPadding(computer ? { top: 60, right: 0, left: 432, bottom: 0 } : { top: 50, right: 0, left: 0, bottom: Math.round(box.current.clientHeight * 0.45) });
       m.addControl(new ml.NavigationControl({ showCompass: false }), "top-right");
       m.addControl(new ml.GeolocateControl({ positionOptions: { enableHighAccuracy: true } }), "top-right");
       mappa.current = m;
@@ -152,7 +135,8 @@ export default function MappaTerritorio({ luoghi, focus }: { luoghi: Luogo[]; fo
 
   return (
     <div className="mappa-piena">
-      <div ref={box} className="mappa" role="region" aria-label="Mappa di San Marino" />
+      {/* Posizione in linea: il CSS di MapLibre (fuori dai layer di Tailwind) vincerebbe su globals.css e la mappa resterebbe alta 0 */}
+      <div ref={box} className="mappa" role="region" aria-label="Mappa di San Marino" style={{ position: "absolute", inset: 0 }} />
 
       {areeMappa.length > 1 ? (
         <div className="mappa-filtri flex flex-col gap-2">
