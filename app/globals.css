@@ -13,7 +13,9 @@
     --azzurro: #5EB6E4;
     --azzurro-scuro: #2C79AE;
     --icona-accento: #018EFD; /* il blu delle icone disegnate per Alex */
-    --segnale: #E8573A;
+    /* Segnale #E8573A; nel chiaro un tono più scuro per leggere il testo (passo 1.8, contrasto AA) */
+    --segnale: #C23F27;
+    --segnale-pieno: #C23F27; /* fondo delle schede del 112 con testo bianco, in tutti e due i temi */
     --bianco: #FFFFFF;
 
     /* Ottone: finitura metallica per azioni primarie e dettagli */
@@ -29,7 +31,7 @@
     --testo: #09090B;
     --testo-2: #52525B;       /* zinc-600 */
     --linea: #E4E4E7;         /* zinc-200 */
-    --accento: #8A6A2E;
+    --accento: #7A5C24;
     --accento-tenue: #F4EBD3;
     --pannello: #27272A;      /* i pannelli strumento restano scuri, ma più morbidi del nero */
     --pannello-2: #3F3F46;
@@ -39,7 +41,7 @@
     --vetro: rgba(250, 250, 250, 0.78);
     --griglia: rgba(9, 9, 11, 0.04);
     --ombra: 0 1px 2px rgba(9, 9, 11, 0.06);
-    --ok: #1E8E3E;
+    --ok: #18793A;
     --su-accento: #09090B;      /* testo sopra l'ottone */
     --tessera: #27272A;         /* fondo dei loghi dei castelli */
 
@@ -70,6 +72,7 @@
       --pannello: #141416;        /* pannelli "strumento" */
       --pannello-2: #3F3F46;
       --pannello-testo: #D4D4D8;
+      --segnale: #E8573A;
       --segnale-tenue: rgba(232, 87, 58, 0.14);
       --segnale-bordo: rgba(232, 87, 58, 0.4);
       --vetro: rgba(9, 9, 11, 0.72);
@@ -223,7 +226,7 @@
 .tasto.allerta { border-color: var(--segnale-bordo); background: var(--segnale-tenue); }
 .tasto.allerta svg { color: var(--segnale); }
 
-.sos { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--segnale); color: var(--bianco); border-radius: var(--r); padding: 14px 16px; font-weight: 600; }
+.sos { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--segnale-pieno); color: var(--bianco); border-radius: var(--r); padding: 14px 16px; font-weight: 600; }
 .sos strong { font-family: var(--mono); font-size: 30px; font-weight: 500; letter-spacing: -0.04em; }
 
 /* ——— Classifica ——— */
@@ -253,7 +256,7 @@ li:last-child > .riga { border-bottom: 0; }
 .chips { display: flex; gap: 8px; overflow-x: auto; margin-inline: calc(var(--gutter) * -1); padding: 0 var(--gutter) 2px; scrollbar-width: none; }
 .chips::-webkit-scrollbar { display: none; }
 .chip { flex: none; appearance: none; border: 1px solid var(--linea); background: var(--sfondo); border-radius: 12px; padding: 8px 14px; font-size: 14px; font-weight: 600; cursor: pointer; min-height: 38px; display: inline-flex; align-items: center; gap: 7px; }
-.chip[aria-pressed="true"] { background: var(--testo); border-color: var(--testo); color: var(--sfondo); }
+.chip[aria-pressed="true"], .chip[aria-selected="true"] { background: var(--testo); border-color: var(--testo); color: var(--sfondo); }
 
 /* ——— Mappa a tutto schermo con pannello dal basso ——— */
 .mappa-piena { position: absolute; inset: 0; animation: none !important; overflow: hidden; }
@@ -261,7 +264,7 @@ li:last-child > .riga { border-bottom: 0; }
 .mappa-filtri { position: absolute; top: 10px; left: 0; right: 0; z-index: 3; }
 .mappa-filtri .chip { box-shadow: var(--ombra); background: var(--vetro); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
 .mappa-filtri .chip[aria-pressed="true"] { background: var(--testo); }
-.marcatore { width: 18px; height: 18px; border-radius: 6px; border: 3px solid #fff; box-shadow: 0 1px 6px rgba(11, 31, 46, 0.45); cursor: pointer; padding: 0; transition: transform 0.16s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.marcatore { width: 24px; height: 24px; border-radius: 8px; border: 4px solid #fff; box-shadow: 0 1px 6px rgba(11, 31, 46, 0.45); cursor: pointer; padding: 0; transition: transform 0.16s cubic-bezier(0.2, 0.7, 0.2, 1); }
 .marcatore[aria-current="true"] { transform: scale(1.5) rotate(45deg); }
 
 .foglio { position: absolute; left: 0; right: 0; bottom: 0; height: 88%; z-index: 4; background: var(--sfondo); border-radius: 22px 22px 0 0; box-shadow: 0 -8px 30px rgba(11, 31, 46, 0.18); display: flex; flex-direction: column; transition: transform 0.32s cubic-bezier(0.2, 0.8, 0.2, 1); will-change: transform; }
@@ -308,8 +311,8 @@ li:last-child > .riga { border-bottom: 0; }
 .emergenza a { background-color: var(--pannello); color: var(--bianco); border-radius: var(--r); padding: 14px; display: flex; flex-direction: column; gap: 2px; position: relative; }
 .emergenza a strong { font-family: var(--mono); font-size: 32px; font-weight: 500; letter-spacing: -0.04em; line-height: 1.05; }
 .emergenza a span { font-size: 14px; color: var(--pannello-testo); }
-.emergenza a:first-child { background: var(--segnale); }
-.emergenza a:first-child span { color: #FFE3DA; }
+.emergenza a:first-child { background: var(--segnale-pieno); }
+.emergenza a:first-child span { color: var(--bianco); }
 @media not (prefers-color-scheme: dark) {
   .emergenza a:not(:first-child) { background-color: var(--superficie); color: var(--testo); }
   .emergenza a:not(:first-child) span { color: var(--testo-2); }
@@ -441,4 +444,9 @@ html[data-utente="tornato"] .per-nuovi { display: none !important; }
 .mappa-piena .maplibregl-ctrl-group { border-radius: 12px; overflow: hidden; box-shadow: var(--ombra); }
 @media (min-width: 1024px) {
   .mappa-piena .maplibregl-ctrl-top-right { top: 16px; }
+}
+
+/* Zoom libero (passo 1.8): sul telefono i campi stanno a 16 px, altrimenti iPhone ingrandisce la pagina quando li tocchi */
+@media (pointer: coarse) {
+  input, textarea, select { font-size: max(16px, 1em) !important; }
 }

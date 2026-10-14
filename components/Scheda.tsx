@@ -134,7 +134,7 @@ export default function Scheda({ l, castello, azioni }: { l: Luogo; castello: Ca
           {azioni}
         </footer>
       </div>
-      <aside className="contents lg:sticky lg:top-0 lg:flex lg:flex-col lg:gap-4">
+      <div className="contents lg:sticky lg:top-0 lg:flex lg:flex-col lg:gap-4">
         {l.foto_url ? (
           <figure className="order-first flex flex-col gap-1.5 lg:order-none">
             {/* Foto da fonti esterne con credito: niente ottimizzazione di Next, che chiede di elencare i domini */}
@@ -144,7 +144,7 @@ export default function Scheda({ l, castello, azioni }: { l: Luogo; castello: Ca
           </figure>
         ) : null}
         <MappaPunto lat={l.lat} lng={l.lng} nome={l.nome} categoria={l.categoria} />
-      </aside>
+      </div>
     </article>
   );
 }

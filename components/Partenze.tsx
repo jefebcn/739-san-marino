@@ -55,7 +55,7 @@ export default function Partenze({ linee }: { linee: Linea[] }) {
       {linee.length > 1 ? (
         <div className="chips" role="tablist" aria-label="Linea">
           {linee.map((l) => (
-            <button key={l.id} type="button" role="tab" className="chip" aria-pressed={l.id === linea.id} aria-selected={l.id === linea.id} onClick={() => setLineaId(l.id)}>
+            <button key={l.id} type="button" role="tab" className="chip" aria-selected={l.id === linea.id} onClick={() => setLineaId(l.id)}>
               <Icona nome={l.tipo === "funivia" ? "funivia" : "bus"} size={18} />
               {l.nome}
             </button>

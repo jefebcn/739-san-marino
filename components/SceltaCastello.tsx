@@ -32,7 +32,7 @@ export default function SceltaCastello({ classifica }: { classifica: Castello[] 
         type="button"
         onClick={() => setAperto(true)}
         aria-haspopup="dialog"
-        aria-label={c ? `Il tuo castello: ${c.nome}. Cambia` : "Scegli il tuo castello"}
+        aria-label={c ? `Il tuo castello: ${c.nome}. Cambia` : "Scegli il castello"}
         className="flex h-10 min-w-0 items-center gap-2 rounded-xl bg-superficie pr-2.5 pl-3 text-sm font-medium transition-colors hover:bg-superficie-2 active:scale-[0.97]"
       >
         <span className="size-2.5 shrink-0 rounded-full" style={{ background: c?.colore ?? "var(--testo-2)" }} />

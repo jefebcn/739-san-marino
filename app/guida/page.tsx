@@ -69,6 +69,10 @@ export default function Guida() {
       </section>
 
       <PrimaryButton href="/profile" pieno>Crea il tuo SMR ID</PrimaryButton>
+      <p className="flex justify-center gap-4 text-xs lg:hidden">
+        <Link href="/privacy" className="py-2 text-testo-2 underline underline-offset-2">Privacy</Link>
+        <Link href="/termini" className="py-2 text-testo-2 underline underline-offset-2">Termini d&apos;uso</Link>
+      </p>
     </>
   );
 }

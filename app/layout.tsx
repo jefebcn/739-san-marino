@@ -5,6 +5,7 @@ import BottomNav, { type VoceNav } from "@/components/ui/BottomNav";
 import SessioneSync from "@/modules/core/components/SessioneSync";
 import { Analytics } from "@vercel/analytics/next";
 import RegistraSW from "@/components/RegistraSW";
+import SenzaRete from "@/components/SenzaRete";
 import { Ridotto } from "@/components/Logo";
 import Link from "next/link";
 import AzioniTesta from "@/components/AzioniTesta";
@@ -55,8 +56,6 @@ export const viewport: Viewport = {
   colorScheme: "dark light",
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
   viewportFit: "cover",
 };
 
@@ -88,6 +87,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             </div>
           </header>
           <main className="main">
+            <SenzaRete />
             {children}
             <PiedePagina />
           </main>

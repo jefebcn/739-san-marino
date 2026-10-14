@@ -24,7 +24,7 @@ export default function BottomNav({ voci, centro }: { voci: VoceNav[]; centro?: 
         key={v.href}
         href={v.href}
         aria-current={qui ? "page" : undefined}
-        className="flex min-h-[52px] flex-col items-center justify-center gap-1 text-[11px] font-medium text-testo-2/70 transition-colors aria-[current=page]:text-testo"
+        className="flex min-h-[52px] flex-col items-center justify-center gap-1 text-[11px] font-medium text-testo-2 transition-colors aria-[current=page]:text-testo"
       >
         <Icona nome={v.icona} size={24} />
         {v.nome}

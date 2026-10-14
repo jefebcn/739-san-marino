@@ -1,5 +1,5 @@
 import PaginaArea from "@/components/aree/PaginaArea";
-import { Icona } from "@/components/Icona";
+import NumeriEmergenza from "@/components/NumeriEmergenza";
 import { TestoProssima } from "@/components/Partenze";
 import { RaccoltaBreve } from "@/components/Raccolta";
 import { ConteggioAperte } from "@/components/Farmacie";
@@ -11,30 +11,6 @@ import { getAvvisi } from "@/lib/avvisi";
 export const revalidate = 60;
 
 export const metadata = { title: "Vivere · 739 San Marino" };
-
-const NUMERI = [
-  { numero: "112", nome: "Emergenze e polizia" },
-  { numero: "113", nome: "Polizia" },
-  { numero: "115", nome: "Vigili del fuoco" },
-  { numero: "118", nome: "Ambulanza" },
-];
-
-/** I numeri di emergenza restano in cima a Vivere, a un tocco. */
-function Emergenze() {
-  return (
-    <section className="sezione" aria-label="Numeri di emergenza">
-      <div className="emergenza">
-        {NUMERI.map((n) => (
-          <a key={n.numero} href={`tel:${n.numero}`} className="premibile">
-            <strong>{n.numero}</strong>
-            <span>{n.nome}</span>
-          </a>
-        ))}
-      </div>
-      <p className="meta" style={{ display: "flex", gap: 6, alignItems: "center" }}><Icona nome="telefono" size={14} /> Tocca un numero per chiamare.</p>
-    </section>
-  );
-}
 
 export default async function Vivere() {
   const [farmacie, linee, parcheggi, raccolta, castelli, meteo, luoghi, avvisi] = await Promise.all([
@@ -48,7 +24,7 @@ export default async function Vivere() {
   return (
     <PaginaArea
       slug="vivere"
-      testa={<Emergenze />}
+      testa={<NumeriEmergenza />}
       stato={{
         avvisi: avvisi.length ? (
           <><b className="font-mono font-medium text-testo">{avvisi.length}</b> {avvisi.length === 1 ? "avviso in corso" : "avvisi in corso"}{attenzione ? <span className="text-segnale">, {attenzione} di attenzione</span> : null}</>

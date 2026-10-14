@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState, type FormEvent, type InputHTMLAttributes } from "react";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import { leggiCastello } from "@/components/Castello";
@@ -144,7 +145,9 @@ export default function Accesso({ castelli }: { castelli: Castello[] }) {
       ) : modo === "recupero" ? (
         <PrimaryButton variante="fantasma" dimensione="sm" onClick={() => cambia("accedi")}>Torna all&apos;accesso</PrimaryButton>
       ) : (
-        <p className="text-center text-xs text-testo-2">Creando l&apos;account accetti che 739 salvi nome, email e castello per farti usare l&apos;app.</p>
+        <p className="text-center text-xs leading-relaxed text-testo-2">
+          Creando l&apos;account accetti i <Link href="/termini" className="text-accento underline underline-offset-2">Termini d&apos;uso</Link> e che 739 salvi nome, email e castello per farti usare l&apos;app, come spiegato nella <Link href="/privacy" className="text-accento underline underline-offset-2">Privacy</Link>.
+        </p>
       )}
     </div>
   );

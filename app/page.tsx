@@ -81,7 +81,7 @@ export default async function Home() {
             <p className="text-[15px] text-testo-2">{maiuscola(oggiLungo())}</p>
           </div>
           {meteo && tempo ? (
-            <Link href="/utili/meteo" aria-label={`Meteo: ${tempo.testo}, ${gradi(meteo.temperatura)}`} className="flex shrink-0 items-center gap-2 rounded-xl px-1 py-1 transition-colors hover:text-testo">
+            <Link href="/utili/meteo" aria-label={`${gradi(meteo.temperatura)} ${tempo.testo}, apri il meteo`} className="flex shrink-0 items-center gap-2 rounded-xl px-1 py-1 transition-colors hover:text-testo">
               <Icona nome={tempo.icona} size={30} />
               <span className="flex flex-col leading-tight">
                 <span className="font-mono text-[22px] font-medium tracking-[-0.04em]">{gradi(meteo.temperatura)}</span>
@@ -295,11 +295,11 @@ export default async function Home() {
             ) : null}
           </div>
           <div className="order-9 empty:hidden">
-            <a href="tel:112" className="flex items-center gap-4 rounded-2xl bg-segnale p-4 text-white transition-transform active:scale-[0.99]">
+            <a href="tel:112" className="flex items-center gap-4 rounded-2xl bg-segnale-pieno p-4 text-white transition-transform active:scale-[0.99]">
               <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-white/15"><Icona nome="telefono" size={22} /></span>
               <span className="flex flex-col">
                 <span className="text-[15px] font-semibold">Emergenza</span>
-                <span className="text-[13px] text-white/80">Tocca per chiamare</span>
+                <span className="text-[13px] text-white">Tocca per chiamare</span>
               </span>
               <span className="ml-auto font-mono text-[28px] font-medium tracking-[-0.04em]">112</span>
             </a>

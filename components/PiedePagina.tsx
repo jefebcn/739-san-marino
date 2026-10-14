@@ -18,7 +18,7 @@ export default function PiedePagina() {
     <footer className="piede mt-auto hidden flex-col gap-8 border-t border-linea pt-10 lg:flex">
       <div className="grid grid-cols-[minmax(0,1fr)_auto_auto] items-start gap-x-24">
         <div className="flex max-w-[34ch] flex-col gap-3">
-          <Ridotto etichetta="739 San Marino" className="h-6 w-auto text-testo" />
+          <Ridotto etichetta="739 San Marino" className="h-6 w-auto self-start text-testo" />
           <p className="text-sm leading-relaxed text-testo-2">Tutto San Marino, dalla vetta: eventi, servizi, sport e i nove castelli in un posto solo.</p>
         </div>
         <nav aria-label="Aree" className="flex flex-col gap-2 text-sm">
@@ -36,7 +36,9 @@ export default function PiedePagina() {
       </div>
       <p className="text-[13px] leading-relaxed text-testo-2">
         Dati da fonti ufficiali, OpenStreetMap, Open-Meteo e Libertas, citate in ogni pagina. Se trovi un errore, segnalalo dalla scheda.{" "}
-        © <span className="font-mono">{anno}</span> 739 San Marino
+        © <span className="font-mono">{anno}</span> 739 San Marino.{" "}
+        <Link href="/privacy" className="underline-offset-2 hover:text-testo hover:underline">Privacy</Link>,{" "}
+        <Link href="/termini" className="underline-offset-2 hover:text-testo hover:underline">Termini d&apos;uso</Link>
       </p>
     </footer>
   );

@@ -32,7 +32,7 @@ export default function Tano({ posa, className = "h-36 w-auto", priority = false
       width={p.w}
       height={1200}
       alt={`Tano, la mascotte di 739, ${p.cosa}`}
-      sizes="240px"
+      sizes="160px"
       priority={priority}
       draggable={false}
       className={`shrink-0 select-none object-contain ${className}`}

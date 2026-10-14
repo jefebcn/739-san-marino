@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import ActionCard from "@/components/ui/ActionCard";
 import PrimaryButton from "@/components/ui/PrimaryButton";
@@ -237,6 +238,10 @@ export default function Profilo({ castelli }: { castelli: Castello[] }) {
       <section className="flex flex-col gap-3">
         <PrimaryButton variante="secondario" pieno onClick={() => esci()}>Esci</PrimaryButton>
         <p className="text-center text-xs text-testo-2">SMR ID è la tessera digitale di 739: non è un documento d&apos;identità.</p>
+        <p className="flex justify-center gap-4 text-xs">
+          <Link href="/privacy" className="py-2 text-testo-2 underline underline-offset-2">Privacy</Link>
+          <Link href="/termini" className="py-2 text-testo-2 underline underline-offset-2">Termini d&apos;uso</Link>
+        </p>
       </section>
     </div>
   );

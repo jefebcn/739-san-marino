@@ -57,13 +57,13 @@ export default async function Meteo() {
 
       <section className="flex flex-col gap-3">
         <h2 className="text-[19px] font-semibold tracking-tight">Prossime ore</h2>
-        <div className="-mx-[var(--lato)] flex gap-2 overflow-x-auto px-[var(--lato)] pb-1 [scrollbar-width:none]">
+        <div tabIndex={0} role="group" aria-label="Prossime 12 ore" className="-mx-[var(--lato)] flex gap-2 overflow-x-auto px-[var(--lato)] pb-1 [scrollbar-width:none]">
           {m.ore.map((o) => {
             const c = cielo(o.codice, o.giorno);
             return (
               <div key={o.ora} className="flex w-[64px] shrink-0 flex-col items-center gap-2 rounded-2xl bg-superficie py-3">
                 <span className="font-mono text-xs text-testo-2">{o.ora}</span>
-                <span aria-label={c.testo}><Icona nome={c.icona} size={24} /></span>
+                <span role="img" aria-label={c.testo}><Icona nome={c.icona} size={24} /></span>
                 <span className="font-mono text-[15px] font-medium">{gradi(o.temperatura)}</span>
                 <span className={`font-mono text-[11px] ${o.pioggia >= 30 ? "text-azzurro" : "text-testo-2"}`}>{o.pioggia}%</span>
               </div>
@@ -82,7 +82,7 @@ export default async function Meteo() {
             return (
               <div key={g.data} className="grid grid-cols-[84px_28px_44px_1fr] items-center gap-2 py-3">
                 <span className="text-[15px] font-medium">{nomeGiorno(g.data, i)}</span>
-                <span aria-label={c.testo}><Icona nome={c.icona} size={22} /></span>
+                <span role="img" aria-label={c.testo}><Icona nome={c.icona} size={22} /></span>
                 <span className={`font-mono text-xs ${g.pioggia >= 30 ? "text-azzurro" : "text-testo-2"}`}>{g.pioggia}%</span>
                 <span className="flex items-center gap-2 font-mono text-sm">
                   <span className="w-8 text-right text-testo-2">{gradi(g.min)}</span>
