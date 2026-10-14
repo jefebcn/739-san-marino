@@ -50,6 +50,7 @@ import {
   NavigationArrow,
   Newspaper,
   Path,
+  PencilSimple,
   Phone,
   Plus,
   PushPin,
@@ -68,6 +69,7 @@ import {
   User,
   UsersThree,
   WarningCircle,
+  X,
 } from "@phosphor-icons/react/dist/ssr";
 
 // Una sola famiglia di icone (Phosphor), con nomi italiani usati in tutta l'app.
@@ -126,6 +128,8 @@ const ICONE = {
   impianti: Barbell,
   storie: Article,
   email: EnvelopeSimple,
+  chiudi: X,
+  modifica: PencilSimple,
   sito: Globe,
   // Meteo
   sole: Sun,
@@ -149,7 +153,7 @@ const ICONE = {
 export type NomeIcona = keyof typeof ICONE;
 
 // Frecce, "+" e lente sono segni a linea: piene diventerebbero triangoli o macchie, quindi restano a tratto spesso
-const LINEARI = new Set<NomeIcona>(["freccia", "avanti", "vai", "piu", "cerca"]);
+const LINEARI = new Set<NomeIcona>(["freccia", "avanti", "vai", "piu", "cerca", "chiudi"]);
 
 export function Icona({ nome, size = 24, peso }: { nome: NomeIcona; size?: number; peso?: IconWeight }) {
   const Componente = ICONE[nome];

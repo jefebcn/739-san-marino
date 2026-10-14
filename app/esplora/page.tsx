@@ -62,6 +62,15 @@ export default async function Esplora() {
           );
         })}
       </nav>
+
+      <Link href="/rubriche" className="flex items-center gap-3.5 rounded-2xl border border-linea p-4 transition-colors hover:bg-superficie">
+        <span className="text-testo"><Icona nome="storie" size={22} /></span>
+        <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+          <span className="text-[15px] font-semibold">Le rubriche di 739</span>
+          <span className="text-sm text-testo-2">Il Bollettino, il castello della settimana, il weekend dalla vetta e le storie.</span>
+        </span>
+        <span className="text-testo-2"><Icona nome="avanti" size={18} /></span>
+      </Link>
     </>
   );
 }
