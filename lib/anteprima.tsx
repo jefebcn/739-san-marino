@@ -1,6 +1,5 @@
 import { ImageResponse } from "next/og";
-import { readFile } from "node:fs/promises";
-import { join } from "node:path";
+import { TRACCIATI } from "@/components/Logo";
 
 // Immagini di anteprima dei link (passo 1.7): 1200×630, fondo zinc-950, logo 739 bianco, accento ottone.
 // Se c'è una foto sta a destra; altrimenti il titolo prende tutta la larghezza.
@@ -11,9 +10,12 @@ const FONDO = "#09090B";
 const OTTONE = "#D4B06A";
 const GRIGIO = "#A1A1AA";
 
+// Il logo arriva dai tracciati in components/Logo.tsx: niente letture di file, che sul server di Vercel non ci sono
+const VIEWBOX = { ridotto: "0 0 2847 663", completo: "0 0 2847 2097" } as const;
+
 async function logo(nome: "ridotto" | "completo") {
-  const svg = await readFile(join(process.cwd(), `public/brand/739-${nome}.svg`), "utf8");
-  return `data:image/svg+xml;base64,${Buffer.from(svg.replace('fill="currentColor"', 'fill="#FFFFFF"')).toString("base64")}`;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${VIEWBOX[nome]}"><path fill-rule="evenodd" fill="#FFFFFF" d="${TRACCIATI[nome]}"/></svg>`;
+  return `data:image/svg+xml;base64,${Buffer.from(svg).toString("base64")}`;
 }
 
 export type DatiAnteprima = {
