@@ -17,6 +17,8 @@ export type Luogo = {
   da_verificare: boolean;
   /** Orari settimanali: {"1": [["08:00","19:30"]], …} con 1 = lunedì */
   orari_settimana: Record<string, [string, string][]> | null;
+  /** "osm" se il luogo viene da OpenStreetMap e non dal database */
+  fonte?: "osm";
 };
 
 export const CAMPI_LUOGO = "id, nome, categoria, descrizione, lat, lng, castello_id, indirizzo, telefono, orari, tariffa, posti, da_verificare, orari_settimana";
@@ -166,4 +168,9 @@ export const CATEGORIE: Record<string, string> = {
   impianto: "Sport",
   locale: "Locali",
   servizio: "Servizi",
+  cultura: "Musei e monumenti",
+  panorama: "Panorami",
+  bagni: "Bagni pubblici",
+  acqua: "Fontanelle",
+  ricarica: "Ricarica auto",
 };

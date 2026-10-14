@@ -5,6 +5,7 @@ import { RaccoltaBreve } from "@/components/Raccolta";
 import { ConteggioAperte } from "@/components/Farmacie";
 import { getClassifica } from "@/lib/data";
 import { getFarmacie, getLinee, getParcheggi, getRaccolta } from "@/lib/servizi";
+import { cielo, getMeteo, gradi } from "@/lib/meteo";
 
 export const revalidate = 60;
 
@@ -31,7 +32,7 @@ function Servizio({ href, icona, titolo, allerta, children }: { href: string; ic
 }
 
 export default async function Utili() {
-  const [farmacie, linee, parcheggi, raccolta, castelli] = await Promise.all([getFarmacie(), getLinee(), getParcheggi(), getRaccolta(), getClassifica()]);
+  const [farmacie, linee, parcheggi, raccolta, castelli, meteo] = await Promise.all([getFarmacie(), getLinee(), getParcheggi(), getRaccolta(), getClassifica(), getMeteo()]);
   const funivia = linee.find((l) => l.tipo === "funivia");
   const bus = linee.filter((l) => l.tipo === "bus");
 
@@ -65,6 +66,9 @@ export default async function Utili() {
           </Servizio>
           <Servizio href="/utili/rifiuti" icona="rifiuti" titolo="Raccolta rifiuti">
             <RaccoltaBreve raccolta={raccolta} castelli={castelli} />
+          </Servizio>
+          <Servizio href="/utili/meteo" icona={meteo ? cielo(meteo.codice, meteo.giorno).icona : "sole-nuvole"} titolo="Meteo">
+            {meteo ? <><b>{gradi(meteo.temperatura)}</b>, {cielo(meteo.codice, meteo.giorno).testo.toLowerCase()}. Previsioni per 7 giorni</> : "Previsioni per 7 giorni"}
           </Servizio>
           <Servizio href="/utili/parcheggi" icona="parcheggio" titolo="Parcheggi">
             {parcheggi.length ? <><b>{parcheggi.length}</b> parcheggi con tariffe e indicazioni</> : "Posizioni e tariffe"}

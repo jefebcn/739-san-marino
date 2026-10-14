@@ -39,6 +39,7 @@ App del territorio di San Marino: eventi, mappa, castelli e servizi utili in un'
 | `app/utili/trasporti` | Funivia e bus: conto alla rovescia e tabellone delle prossime partenze |
 | `app/utili/rifiuti` | Calendario della raccolta per castello (parte dal castello scelto) |
 | `app/utili/parcheggi` | Parcheggi con posti, tariffe e indicazioni |
+| `app/utili/meteo` | Meteo attuale, prossime 12 ore e 7 giorni (Open-Meteo); temperatura anche in Home accanto al saluto |
 | `components/ui/` | Componenti base del design system: `PrimaryButton`, `ActionCard`, `BottomNav` |
 | `app/design` | Vetrina del design system (non nel menu, non indicizzata) |
 | `components/Quota.tsx` | Altimetro: scala 0–739 m con le tacche dei livelli, usata nella pagina SMR ID |
@@ -47,6 +48,9 @@ App del territorio di San Marino: eventi, mappa, castelli e servizi utili in un'
 | `lib/servizi.ts` | Letture dei servizi (turni, linee e partenze, raccolta, parcheggi) |
 | `lib/orario.ts` | Prossime partenze e giorno della settimana a San Marino; senza dipendenze, gira anche nel browser |
 | `lib/fonti.ts` | Link alle fonti ufficiali mostrati in fondo alle pagine dei servizi |
+| `lib/meteo.ts` | Meteo da Open-Meteo (nessuna chiave, cache 15 minuti) e codici meteo in italiano con icona |
+| `lib/osm.ts` | Luoghi da OpenStreetMap (Overpass): bagni, fontanelle, ricarica auto, impianti, musei e monumenti, panorami. Cache di un giorno, non salvati nel database, uniti ai luoghi del database su mappa e ricerca (id `osm-…`, campo `fonte: "osm"`) senza doppioni |
+| `lib/stampa.ts` | Articoli su spettacoli, mostre e cultura dal feed RSS di Libertas (cache 3 ore), in fondo alla pagina Eventi: solo titolo, data e link |
 | `supabase/migrations/` | Schema del database già applicato |
 
 In alto: selettore del castello a sinistra (`components/SceltaCastello.tsx`, si apre dal basso), ricerca e SMR ID a destra (`components/AzioniTesta.tsx`). Navigazione in basso: Home · Mappa · **+** · Sport · Eventi; il **+** centrale apre le azioni rapide (`components/AzioniRapide.tsx`: organizza partita `/sport?nuova=1`, il mio QR `/profile?qr=1`, cerca, farmacie, 112). Castelli, Utili, Food e Business dalla fila di categorie in Home.
@@ -105,7 +109,7 @@ Tabelle: `castelli` (i 9 castelli con colore), `profili`, `luoghi`, `eventi`, `c
 
 ## Fonti di dati
 
-L'elenco dei siti da cui prendere informazioni, con quelli già usati, come collegare gli altri e cosa richiede un accordo, è in `docs/fonti.md`. Non leggere in automatico i siti che lo vietano nel loro robots.txt.
+L'elenco dei siti da cui prendere informazioni, con quelli già usati, come collegare gli altri e cosa richiede un accordo, è in `docs/fonti.md`. Non leggere in automatico i siti che lo vietano nel loro robots.txt. Collegate in automatico (ottobre 2026): Open-Meteo, OpenStreetMap e il feed di Libertas. Sono letture dirette dal server Next.js con la cache di `fetch` (`next.revalidate`): niente cron, niente chiavi. Se una fonte non risponde la sua sezione sparisce senza errori. Da questa sessione cloud Open-Meteo e Overpass non si raggiungono (rete del container): si verificano sul sito online.
 
 ## Regole di lavoro
 

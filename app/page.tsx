@@ -9,6 +9,7 @@ import { RaccoltaBreve } from "@/components/Raccolta";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import { getFarmacie, getLinee, getParcheggi, getRaccolta } from "@/lib/servizi";
 import { getPartiteAperte, getSport } from "@/modules/sport/dati";
+import { cielo, getMeteo, gradi } from "@/lib/meteo";
 
 export const revalidate = 60;
 
@@ -41,9 +42,10 @@ function Titolo({ children, href }: { children: React.ReactNode; href?: string }
 }
 
 export default async function Home() {
-  const [eventi, classifica, farmacie, linee, raccolta, parcheggi, partite, sport] = await Promise.all([
-    getEventi(8), getClassifica(), getFarmacie(), getLinee(), getRaccolta(), getParcheggi(), getPartiteAperte(), getSport(),
+  const [eventi, classifica, farmacie, linee, raccolta, parcheggi, partite, sport, meteo] = await Promise.all([
+    getEventi(8), getClassifica(), getFarmacie(), getLinee(), getRaccolta(), getParcheggi(), getPartiteAperte(), getSport(), getMeteo(),
   ]);
+  const tempo = meteo ? cielo(meteo.codice, meteo.giorno) : null;
   const podio = classifica.slice(0, 3);
   const funivia = linee.find((l) => l.tipo === "funivia");
   const evidenza = eventi[0];
@@ -54,9 +56,20 @@ export default async function Home() {
   return (
     <>
       <section className="flex flex-col gap-4">
-        <div>
-          <h1 className="text-[30px] font-semibold leading-tight tracking-[-0.03em]">{saluto()}</h1>
-          <p className="text-[15px] text-testo-2">{maiuscola(oggiLungo())}</p>
+        <div className="flex items-end justify-between gap-4">
+          <div className="min-w-0">
+            <h1 className="text-[30px] font-semibold leading-tight tracking-[-0.03em]">{saluto()}</h1>
+            <p className="text-[15px] text-testo-2">{maiuscola(oggiLungo())}</p>
+          </div>
+          {meteo && tempo ? (
+            <Link href="/utili/meteo" aria-label={`Meteo: ${tempo.testo}, ${gradi(meteo.temperatura)}`} className="flex shrink-0 items-center gap-2 rounded-xl px-1 py-1 transition-colors hover:text-testo">
+              <Icona nome={tempo.icona} size={30} />
+              <span className="flex flex-col leading-tight">
+                <span className="font-mono text-[22px] font-medium tracking-[-0.04em]">{gradi(meteo.temperatura)}</span>
+                <span className="text-xs text-testo-2">{tempo.testo}</span>
+              </span>
+            </Link>
+          ) : null}
         </div>
         <Link href="/cerca" className="flex h-12 items-center gap-3 rounded-xl bg-superficie px-4 text-[15px] text-testo-2 transition-colors hover:bg-superficie-2">
           <Icona nome="cerca" size={20} />

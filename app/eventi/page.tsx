@@ -1,12 +1,16 @@
 import { chiaveGiorno, etichettaGiorno, getEventi, type Evento } from "@/lib/data";
 import EventoRiga from "@/components/EventoRiga";
+import { Icona } from "@/components/Icona";
+import { getNotizieEventi } from "@/lib/stampa";
+
+const dataBreve = new Intl.DateTimeFormat("it-IT", { day: "numeric", month: "long", timeZone: "Europe/San_Marino" });
 
 export const revalidate = 60;
 
 export const metadata = { title: "Eventi · 739 San Marino" };
 
 export default async function Eventi() {
-  const eventi = await getEventi(80);
+  const [eventi, notizie] = await Promise.all([getEventi(80), getNotizieEventi()]);
 
   const gruppi: { chiave: string; etichetta: string; eventi: Evento[] }[] = [];
   for (const e of eventi) {
@@ -37,6 +41,27 @@ export default async function Eventi() {
           </section>
         ))
       )}
+
+      {notizie.length ? (
+        <section className="flex flex-col gap-3">
+          <div>
+            <h2 className="text-[19px] font-semibold tracking-tight">Dalla stampa locale</h2>
+            <p className="text-sm text-testo-2">Articoli su spettacoli, mostre e cultura, aggiornati da soli.</p>
+          </div>
+          <div className="divide-y divide-linea rounded-2xl bg-superficie">
+            {notizie.map((n) => (
+              <a key={n.link} href={n.link} target="_blank" rel="noopener" className="flex items-start gap-3 px-4 py-3.5 transition-colors hover:bg-superficie-2">
+                <span className="mt-0.5 text-testo-2"><Icona nome="stampa" size={20} /></span>
+                <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+                  <span className="text-[15px] font-semibold leading-snug">{n.titolo}</span>
+                  <span className="text-[13px] text-testo-2">{n.fonte}, {dataBreve.format(new Date(n.data))}</span>
+                </span>
+                <span className="mt-0.5 text-testo-2"><Icona nome="avanti" size={16} /></span>
+              </a>
+            ))}
+          </div>
+        </section>
+      ) : null}
     </>
   );
 }

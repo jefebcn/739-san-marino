@@ -17,13 +17,15 @@ Raccolte a mano il 13/10/2026 e caricate con `supabase/migrations/0004_dati_serv
 | Bus interni | [AASS](https://www.aass.sm/site/home/trasporti/servizio-autobus/servizio-autobus-di-linea-e-scolastico.html) | A ogni cambio d'orario |
 | Raccolta rifiuti | [AASS, ecocalendari 2026](https://www.aass.sm/site/home/ambiente/raccolta-differenziata-porta-a-porta.html) | A fine anno, per il 2027 |
 
-## 1. Da collegare subito (automatiche)
+## 1. Collegate in automatico
+
+Collegate il 14/10/2026: meteo in Home e in `/utili/meteo`, luoghi OSM su mappa e ricerca, articoli di Libertas in fondo a `/eventi` (vedi `lib/meteo.ts`, `lib/osm.ts`, `lib/stampa.ts`).
 
 | Fonte | Cosa prendere | Aggiornamento | Come collegarla |
 |---|---|---|---|
 | [OpenStreetMap](https://www.openstreetmap.org) (Overpass API) | Luoghi, bagni pubblici, impianti sportivi, colonnine, monumenti | Continuo, dalla comunità | Overpass API, gratis. Licenza ODbL: va citata la fonte («© OpenStreetMap contributors») |
 | [Open-Meteo](https://open-meteo.com) | Meteo attuale e previsioni per San Marino (lat 43.9355, lng 12.4473) | Ogni ora | API senza chiave. Gratis per uso non commerciale, piano a pagamento per uso commerciale |
-| [Libertas – feed RSS](https://www.libertas.sm/rss-feed-1442/) | Notizie e articoli settimanali «Gli eventi del fine settimana a San Marino» | Quotidiano | Feed RSS. Gli eventi vanno estratti dal testo e confermati a mano prima di pubblicarli |
+| [Libertas – feed RSS](https://www.libertas.sm/rss-feed-1442/) | Notizie e articoli settimanali «Gli eventi del fine settimana a San Marino» | Quotidiano | Feed RSS (`/feed/`, 100 articoli). In app: titolo e link degli articoli di Spettacoli, Cultura, Musica e Arte. Gli eventi con data e luogo vanno estratti dal testo e confermati a mano (pannello). La ricerca e la REST API di WordPress mostrano un controllo anti-bot |
 
 ## 2. Da collegare con un accordo
 

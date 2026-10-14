@@ -14,6 +14,11 @@ const COLORI: Record<string, string> = {
   servizio: "#E8573A",
   impianto: "#2BA84A",
   locale: "#F3A712",
+  cultura: "#C9A45C",
+  panorama: "#5C9E8F",
+  bagni: "#9AA0A6",
+  acqua: "#4FC3F7",
+  ricarica: "#7CB342",
 };
 
 const CENTRO: [number, number] = [12.4578, 43.9424];
@@ -190,6 +195,15 @@ export default function MappaTerritorio({ luoghi, focus }: { luoghi: Luogo[]; fo
                   {dettaglio.tariffa ? <div><Icona nome="parcheggio" /><span><b>Tariffe{dettaglio.posti ? `, ${dettaglio.posti} posti` : ""}</b><span className="meta">{dettaglio.tariffa}</span></span></div> : null}
                   {dettaglio.telefono ? <div><Icona nome="telefono" /><span><b>Telefono</b><a className="meta" href={`tel:${dettaglio.telefono.replace(/\s/g, "")}`}>{dettaglio.telefono}</a></span></div> : null}
                 </div>
+              ) : null}
+              {dettaglio.fonte === "osm" ? (
+                <p className="meta">
+                  Dati ©{" "}
+                  <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener" style={{ textDecoration: "underline" }}>
+                    OpenStreetMap
+                  </a>{" "}
+                  contributors
+                </p>
               ) : null}
               <div className="azioni due">
                 <a className="bottone primario piccolo premibile" href={linkIndicazioni(dettaglio.lat, dettaglio.lng)} target="_blank" rel="noopener">
