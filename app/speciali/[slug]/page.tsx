@@ -7,6 +7,8 @@ import { Icona } from "@/components/Icona";
 import { RigaAvviso } from "@/components/Avvisi";
 import { CATEGORIE, chiaveGiorno, etichettaGiorno, getClassifica } from "@/lib/data";
 import { getSpeciale, perGiorno, testoPeriodo } from "@/lib/speciali";
+import { metadatiCondivisione } from "@/lib/condivisione";
+import Condividi from "@/components/Condividi";
 
 export const revalidate = 300;
 
@@ -15,7 +17,8 @@ type Props = { params: Promise<{ slug: string }> };
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
   const s = await getSpeciale(slug);
-  return { title: s ? `${s.contenuto.titolo} · 739 San Marino` : "Speciale · 739 San Marino", description: s?.contenuto.sommario ?? undefined };
+  if (!s) return { title: "Speciale · 739 San Marino" };
+  return metadatiCondivisione({ titolo: s.contenuto.titolo, descrizione: s.contenuto.sommario ?? s.contenuto.corpo, percorso: `/speciali/${s.contenuto.slug}`, tipo: "article" });
 }
 
 const maiuscola = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
@@ -91,6 +94,7 @@ export default async function PaginaSpeciale({ params }: Props) {
               <a key={href} href={href} className="rounded-xl bg-superficie px-3.5 py-2 text-sm font-medium transition-colors hover:bg-superficie-2">{nome}</a>
             ))}
         </nav>
+        <Condividi titolo={c.titolo} testo={c.sommario ?? undefined} percorso={`/speciali/${c.slug}`} />
       </header>
 
       {c.corpo.trim() ? <Testo>{c.corpo}</Testo> : null}

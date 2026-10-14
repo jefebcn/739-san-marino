@@ -29,6 +29,9 @@ export const metadata: Metadata = {
   title: "739 San Marino",
   description: "Tutto San Marino, dalla vetta. Eventi, mappa, castelli e servizi utili in un'unica app.",
   applicationName: "739",
+  // Anteprima dei link: le pagine con un opengraph-image.tsx proprio (eventi, contenuti, speciali, Bollettino, luoghi) la sostituiscono
+  openGraph: { siteName: "739 San Marino", locale: "it_IT", type: "website", title: "739 San Marino", description: "Tutto San Marino, dalla vetta. Eventi, mappa, castelli e servizi utili in un'unica app." },
+  twitter: { card: "summary_large_image" },
   appleWebApp: { capable: true, title: "739", statusBarStyle: "default" },
   formatDetection: { telephone: false },
   // Icone generate da scripts/icone.mjs: le torri fino a 64 px, il marchio completo sopra

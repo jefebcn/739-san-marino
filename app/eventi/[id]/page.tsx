@@ -4,6 +4,8 @@ import { formatData, getEvento, linkCalendario, linkIndicazioni, ora } from "@/l
 import { Icona } from "@/components/Icona";
 import SegnalaErrore from "@/components/SegnalaErrore";
 import QrCheckin from "@/modules/eventi/components/QrCheckin";
+import { metadatiCondivisione } from "@/lib/condivisione";
+import Condividi from "@/components/Condividi";
 
 export const revalidate = 60;
 
@@ -21,7 +23,13 @@ function linkContatto(c: string) {
 export async function generateMetadata({ params }: Props) {
   const { id } = await params;
   const e = await getEvento(id);
-  return { title: e ? `${e.titolo} · 739 San Marino` : "Evento · 739 San Marino" };
+  if (!e) return { title: "Evento · 739 San Marino" };
+  const dove = e.luogo?.nome ?? e.indirizzo;
+  return metadatiCondivisione({
+    titolo: e.titolo,
+    descrizione: `${formatData(e.inizio).replace(" · ", " alle ").replace(/^./, (x) => x.toUpperCase())}${dove ? `, ${dove}` : ""}. ${e.descrizione ?? ""}`,
+    percorso: `/eventi/${e.id}`,
+  });
 }
 
 export default async function DettaglioEvento({ params }: Props) {
@@ -120,6 +128,7 @@ export default async function DettaglioEvento({ params }: Props) {
             <Icona nome="indicazioni" size={20} /> Indicazioni
           </a>
         ) : null}
+        <Condividi titolo={e.titolo} testo={`${e.titolo}, ${formatData(e.inizio).replace(" · ", " alle ")} su 739`} percorso={`/eventi/${e.id}`} />
       </section>
 
       <QrCheckin evento={e.id} titolo={e.titolo} />

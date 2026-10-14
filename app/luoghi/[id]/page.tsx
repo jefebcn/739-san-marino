@@ -3,8 +3,9 @@ import Link from "next/link";
 import Scheda from "@/components/Scheda";
 import SegnalaErrore from "@/components/SegnalaErrore";
 import { Icona } from "@/components/Icona";
-import { getClassifica, getLuogo } from "@/lib/data";
+import { CATEGORIE, getClassifica, getLuogo } from "@/lib/data";
 import { ritornoDiCategoria } from "@/lib/aree";
+import { metadatiCondivisione } from "@/lib/condivisione";
 
 export const revalidate = 300;
 
@@ -13,7 +14,8 @@ type Props = { params: Promise<{ id: string }> };
 export async function generateMetadata({ params }: Props) {
   const { id } = await params;
   const l = await getLuogo(id);
-  return { title: l ? `${l.nome} · 739 San Marino` : "Luogo · 739 San Marino" };
+  if (!l) return { title: "Luogo · 739 San Marino" };
+  return metadatiCondivisione({ titolo: l.nome, descrizione: [CATEGORIE[l.categoria], l.indirizzo, l.descrizione].filter(Boolean).join(". "), percorso: `/luoghi/${l.id}` });
 }
 
 /** La pagina di un luogo: la scheda unica, aperta dalla mappa, dalla ricerca e dalle sezioni. */

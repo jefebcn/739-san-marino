@@ -1,6 +1,7 @@
 import Link from "next/link";
 import AvvisiOggi from "@/components/AvvisiOggi";
 import Bollettino from "@/components/oggi/Bollettino";
+import Condividi from "@/components/Condividi";
 import { Icona } from "@/components/Icona";
 import { getAvvisi } from "@/lib/avvisi";
 import { getContenuti } from "@/lib/contenuti";
@@ -9,13 +10,15 @@ import { getMeteo } from "@/lib/meteo";
 import { fineGiornata, nelPeriodo } from "@/lib/oggi";
 import { getFarmacie, getLinee, getRaccolta } from "@/lib/servizi";
 import { getPartiteAperte } from "@/modules/sport/dati";
+import { metadatiCondivisione } from "@/lib/condivisione";
 
 export const revalidate = 60;
 
-export const metadata = {
-  title: "Il Bollettino · 739 San Marino",
-  description: "Ogni mattina alle 7:39: meteo, avvisi, eventi di oggi, farmacie aperte, funivia e raccolta dei rifiuti a San Marino.",
-};
+export const metadata = metadatiCondivisione({
+  titolo: "Il Bollettino",
+  descrizione: "Ogni mattina alle 7:39: meteo, avvisi, eventi di oggi, farmacie aperte, funivia e raccolta dei rifiuti a San Marino.",
+  percorso: "/bollettino",
+});
 
 const giorno = new Intl.DateTimeFormat("it-IT", { weekday: "long", day: "numeric", month: "long", timeZone: "Europe/San_Marino" });
 const maiuscola = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
@@ -52,6 +55,8 @@ export default async function PaginaBollettino() {
           scritto,
         }}
       />
+
+      <Condividi titolo="Il Bollettino di 739" testo={`Il Bollettino di oggi, ${oggiLungo()}: le cose da sapere su San Marino`} percorso="/bollettino" />
 
       <section className="flex flex-col gap-3" aria-labelledby="titolo-archivio">
         <h2 id="titolo-archivio" className="text-[19px] font-semibold tracking-tight">I Bollettini scritti</h2>

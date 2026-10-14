@@ -2,6 +2,8 @@ import type React from "react";
 import type { Icon, IconWeight } from "@phosphor-icons/react";
 import {
   ArrowRight,
+  ShareNetwork,
+  LinkSimple,
   Article,
   Bank,
   Barbell,
@@ -142,6 +144,8 @@ const ICONE = {
   email: EnvelopeSimple,
   strada: Barricade,
   chiudi: X,
+  condividi: ShareNetwork,
+  collegamento: LinkSimple,
   modifica: PencilSimple,
   sito: Globe,
   // Meteo

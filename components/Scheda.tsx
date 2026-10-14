@@ -4,6 +4,7 @@ import { Icona, type NomeIcona } from "./Icona";
 import StatoApertura from "./StatoApertura";
 import MappaPunto from "./MappaPunto";
 import { CATEGORIE, linkIndicazioni, type Castello, type Luogo } from "@/lib/data";
+import Condividi from "./Condividi";
 
 const giornoLungo = new Intl.DateTimeFormat("it-IT", { day: "numeric", month: "long", year: "numeric", timeZone: "Europe/San_Marino" });
 
@@ -68,6 +69,7 @@ export default function Scheda({ l, castello, azioni }: { l: Luogo; castello: Ca
           <Link href={`/mappa?luogo=${l.id}`} className="flex h-12 items-center justify-center gap-2 rounded-xl bg-superficie text-[15px] font-semibold hover:bg-superficie-2 active:scale-[0.98]">
             <Icona nome="mappa" size={20} /> Sulla mappa
           </Link>
+          <Condividi titolo={l.nome} testo={`${l.nome} su 739`} percorso={`/luoghi/${l.id}`} className="col-span-2 min-h-12 text-[15px]" />
         </div>
 
         {l.descrizione ? <p className="max-w-[65ch] text-[15px] leading-relaxed text-testo-2">{l.descrizione}</p> : null}

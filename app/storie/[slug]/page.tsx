@@ -5,6 +5,8 @@ import { Icona } from "@/components/Icona";
 import { TIPI, getContenuto } from "@/lib/contenuti";
 import { CAMPI_LUOGO, getClassifica, etichettaGiorno, ora, type Luogo } from "@/lib/data";
 import { supabase } from "@/lib/supabase";
+import { metadatiCondivisione } from "@/lib/condivisione";
+import Condividi from "@/components/Condividi";
 
 export const revalidate = 300;
 
@@ -15,7 +17,8 @@ const giornoLungo = new Intl.DateTimeFormat("it-IT", { day: "numeric", month: "l
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
   const c = await getContenuto(slug);
-  return { title: c ? `${c.titolo} · 739 San Marino` : "Storia · 739 San Marino", description: c?.sommario ?? undefined };
+  if (!c) return { title: "Storia · 739 San Marino" };
+  return metadatiCondivisione({ titolo: c.titolo, descrizione: c.sommario ?? c.corpo, percorso: `/storie/${c.slug}`, tipo: "article" });
 }
 
 /** Luoghi ed eventi collegati a un contenuto, nell'ordine scelto dalla redazione. */
@@ -72,6 +75,8 @@ export default async function Storia({ params }: Props) {
       </header>
 
       {c.corpo.trim() ? <Testo>{c.corpo}</Testo> : null}
+
+      <Condividi titolo={c.titolo} testo={c.sommario ?? undefined} percorso={`/storie/${c.slug}`} />
 
       {extra.eventi.length ? (
         <section className="flex flex-col gap-2.5">
