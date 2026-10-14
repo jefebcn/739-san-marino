@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import QRCode from "qrcode";
-import { Cime } from "@/components/Logo";
+import { Ridotto } from "@/components/Logo";
 import type { Castello } from "@/lib/data";
 
 /** Contenuto del QR personale: lo leggeranno gli scanner di 739 (check-in, partite, negozi). */
@@ -64,9 +64,7 @@ export default function SmrCard({ nome, tessera, castello, rating, apriQr = fals
         <span aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 bg-[repeating-radial-gradient(ellipse_120%_90%_at_90%_120%,transparent_0_18px,rgba(201,164,92,0.07)_18px_19px)]" />
 
         <header className="col-span-2 flex items-center justify-between">
-          <span className="flex items-baseline gap-1.5 text-xl font-bold tracking-tighter">
-            739 <Cime width={26} />
-          </span>
+          <Ridotto etichetta="739" className="h-5 w-auto text-zinc-50" />
           <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-ottone-300">SMR ID</span>
         </header>
 

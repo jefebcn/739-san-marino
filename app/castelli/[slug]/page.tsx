@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import { getClassifica, getEventi, getLuoghi, CATEGORIE } from "@/lib/data";
 import EventoRiga from "@/components/EventoRiga";
 import { Icona } from "@/components/Icona";
-import { Cime } from "@/components/Logo";
 
 export const revalidate = 60;
 
@@ -36,7 +35,6 @@ export default async function Castello({ params }: Props) {
           <span style={{ fontFamily: "var(--mono)", fontSize: 44, fontWeight: 700, letterSpacing: "-0.05em", lineHeight: 1 }}>{posizione + 1}°</span>
           <span style={{ fontFamily: "var(--mono)", fontSize: 14 }}>{fmt.format(c.metri ?? 0)} m in classifica</span>
         </div>
-        <span style={{ position: "absolute", right: -12, bottom: -8, opacity: 0.3 }}><Cime width={170} color={c.colore} /></span>
       </section>
 
       <section className="sezione">

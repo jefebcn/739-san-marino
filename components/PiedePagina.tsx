@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Logo } from "./Logo";
+import { Ridotto } from "./Logo";
 import { AREE } from "@/lib/aree";
 
 const ALTRE = [
@@ -18,7 +18,7 @@ export default function PiedePagina() {
     <footer className="piede mt-auto hidden flex-col gap-8 border-t border-linea pt-10 lg:flex">
       <div className="grid grid-cols-[minmax(0,1fr)_auto_auto] items-start gap-x-24">
         <div className="flex max-w-[34ch] flex-col gap-3">
-          <Logo />
+          <Ridotto etichetta="739 San Marino" className="h-6 w-auto text-testo" />
           <p className="text-sm leading-relaxed text-testo-2">Tutto San Marino, dalla vetta: eventi, servizi, sport e i nove castelli in un posto solo.</p>
         </div>
         <nav aria-label="Aree" className="flex flex-col gap-2 text-sm">

@@ -12,7 +12,6 @@ import Accesso, { Campo, NuovaPassword } from "./Accesso";
 import SmrCard from "./SmrCard";
 import { mioRating } from "@/modules/sport/api";
 import { EtichetteScala, Scala } from "@/components/Quota";
-import { Cime } from "@/components/Logo";
 import { livello } from "@/lib/quota";
 import { conteggioBozze } from "@/modules/coda/api";
 import { mieiRuoli, NESSUN_RUOLO, type Ruoli } from "../ruoli";
@@ -46,7 +45,6 @@ function Quota() {
         {prossimo ? <>Mancano <b style={{ color: "#fff" }}>{mancano} m</b> a {prossimo.nome}. </> : null}
         Sali facendo check-in agli eventi: in arrivo.
       </p>
-      <span className="cime"><Cime width={170} /></span>
     </section>
   );
 }

@@ -4,7 +4,7 @@ import "./globals.css";
 import BottomNav, { type VoceNav } from "@/components/ui/BottomNav";
 import SessioneSync from "@/modules/core/components/SessioneSync";
 import { Analytics } from "@vercel/analytics/next";
-import { Logo } from "@/components/Logo";
+import { Ridotto } from "@/components/Logo";
 import Link from "next/link";
 import AzioniTesta from "@/components/AzioniTesta";
 import AzioniRapide from "@/components/AzioniRapide";
@@ -25,13 +25,20 @@ const VOCI: VoceNav[] = [
 ];
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://739-san-marino.vercel.app"),
   title: "739 San Marino",
   description: "Tutto San Marino, dalla vetta. Eventi, mappa, castelli e servizi utili in un'unica app.",
   applicationName: "739",
   appleWebApp: { capable: true, title: "739", statusBarStyle: "default" },
   formatDetection: { telephone: false },
+  // Icone generate da scripts/icone.mjs: le torri fino a 64 px, il marchio completo sopra
   icons: {
-    icon: [{ url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" }],
+    icon: [
+      { url: "/favicon.ico", sizes: "16x16 32x32 48x48" },
+      { url: "/icons/icon-32.png", sizes: "32x32", type: "image/png" },
+      { url: "/icons/icon-64.png", sizes: "64x64", type: "image/png" },
+      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+    ],
     apple: [{ url: "/icons/apple-touch-icon.png", sizes: "180x180" }],
   },
 };
@@ -67,7 +74,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             {/* Telefono: logo e azioni. Computer (da 1024 px): testata da sito con aree e ricerca */}
             <div className="top-riga mx-auto max-w-[var(--colonna)] lg:max-w-[var(--larga)] lg:gap-6">
               <Link href="/" aria-label="739, torna a Oggi" className="shrink-0">
-                <Logo />
+                <Ridotto etichetta="739 San Marino" className="h-[22px] w-auto text-testo" />
               </Link>
               <NavDesktop />
               <div className="flex min-w-0 items-center gap-2">

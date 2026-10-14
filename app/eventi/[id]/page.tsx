@@ -2,7 +2,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { formatData, getEvento, linkCalendario, linkIndicazioni, ora } from "@/lib/data";
 import { Icona } from "@/components/Icona";
-import { Cime } from "@/components/Logo";
 import SegnalaErrore from "@/components/SegnalaErrore";
 
 export const revalidate = 60;
@@ -49,7 +48,6 @@ export default async function DettaglioEvento({ params }: Props) {
           <span className="metri" style={{ background: "rgba(201,164,92,.22)", color: "var(--ottone-chiaro)" }}>+{e.metri} m al check-in</span>
           {e.castello ? <span className="metri" style={{ background: "rgba(255,255,255,.14)", color: "#FFFFFF" }}>{e.castello.nome}</span> : null}
         </div>
-        <span style={{ position: "absolute", right: -12, bottom: -8, opacity: 0.16 }}><Cime width={170} /></span>
       </section>
 
       {e.descrizione ? <p className="descrizione">{e.descrizione}</p> : null}

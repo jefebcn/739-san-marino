@@ -18,7 +18,7 @@ App del territorio di San Marino: eventi, mappa, castelli e servizi utili in un'
 - Zustand per lo stato globale; ogni modulo ha il suo store in `modules/<modulo>/store.ts` (oggi `modules/core/store.ts`, la sessione SMR ID).
 - `@supabase/supabase-js` con la chiave publishable (pubblica per natura; la sicurezza la fanno le regole RLS). URL e chiave hanno un valore di riserva in `lib/supabase.ts`, quindi su Vercel non servono variabili d'ambiente.
 - Mappa: MapLibre GL + stile OpenFreeMap (`https://tiles.openfreemap.org/styles/liberty`), nessuna chiave.
-- App installabile (PWA): `app/manifest.ts`, icone in `public/icons` generate da `scripts/icone.mjs`.
+- App installabile (PWA): `app/manifest.ts`, icone in `public/icons` e `public/favicon.ico` generate da `scripts/icone.mjs` (`node scripts/icone.mjs`) partendo da `public/brand/`: bianco su zinc-950, marchio Completo per apple-touch-icon, 192, 512 e maskable (dentro il cerchio di sicurezza), Torri per favicon (16, 32, 48) e icone da 32 e 64 px.
 
 ## Struttura
 
@@ -57,6 +57,8 @@ App del territorio di San Marino: eventi, mappa, castelli e servizi utili in un'
 | `app/utili/meteo` | Meteo attuale, prossime 12 ore e 7 giorni (Open-Meteo); temperatura anche in Home accanto al saluto |
 | `components/ui/` | Componenti base del design system: `PrimaryButton`, `ActionCard`, `BottomNav` |
 | `app/design` | Vetrina del design system (non nel menu, non indicizzata) |
+| `components/Logo.tsx` | Il logo come componenti React (`Completo`, `Ridotto`, `Torri`), generati dai tracciati di `public/brand/*.svg`, a un colore con `currentColor`: prendono il colore del testo (bianco su scuro, nero su chiaro). Ridotto nella testata, nel piè di pagina e sulla Card SMR ID; Completo nel benvenuto di Oggi, nella guida e nella pagina «non trovata». Se cambiano gli SVG si rigenera il file |
+| `app/opengraph-image.tsx`, `app/twitter-image.tsx` | Anteprima dei link a 739 (1200×630): marchio Completo bianco su zinc-950 e «Tutto San Marino, dalla vetta». Le anteprime per eventi, contenuti e speciali arrivano col passo 1.7 |
 | `components/Quota.tsx` | Altimetro: scala 0–739 m con le tacche dei livelli, usata nella pagina SMR ID |
 | `components/Castello.tsx` | Scelta del castello salvata in `localStorage` (`739-castello`) e griglia di scelta per i nuovi |
 | `lib/data.ts` | Letture di eventi, luoghi e classifica, funzioni per date e orari (fuso `Europe/San_Marino`) |

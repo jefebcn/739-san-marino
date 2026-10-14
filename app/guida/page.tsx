@@ -1,5 +1,6 @@
 import Link from "next/link";
 import TestaPagina from "@/components/Indietro";
+import { Completo } from "@/components/Logo";
 import { Icona, type NomeIcona } from "@/components/Icona";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import { AREE } from "@/lib/aree";
@@ -26,6 +27,10 @@ export default function Guida() {
       <TestaPagina href="/" verso="Oggi" titolo="Come funziona 739">
         <p className="sottotitolo">Tutto San Marino in un&apos;app: cosa succede, dove andare, cosa serve. E una sfida tra i nove castelli.</p>
       </TestaPagina>
+
+      <div className="flex justify-center rounded-2xl bg-superficie px-6 py-8">
+        <Completo etichetta="739 San Marino" className="h-32 w-auto text-testo" />
+      </div>
 
       <section className="sezione">
         <div className="sezione-head"><h2>Cosa trovi</h2></div>
