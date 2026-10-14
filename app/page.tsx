@@ -240,7 +240,7 @@ export default async function Home() {
                     <span className="mt-1 text-[13px] leading-snug text-testo-2">Cailungo è aperta 24 ore su 24</span>
                   </Link>
                   <Link href="/utili/trasporti" className="flex flex-col gap-3 rounded-2xl bg-superficie p-4 transition-colors hover:bg-superficie-2">
-                    <span className="flex items-center gap-2 text-sm font-medium text-testo-2"><Icona nome="funivia" size={18} /> Funivia</span>
+                    <span className="flex items-center gap-2 text-sm font-medium text-testo-2"><Icona nome="trasporti" size={20} /> Funivia</span>
                     {funivia ? <ProssimaPartenza partenze={funivia.partenze.filter((p) => p.direzione === "Borgo Maggiore → Città")} /> : <span className="text-sm">Orari in arrivo</span>}
                   </Link>
                   <Link href="/utili/rifiuti" className="flex flex-col gap-3 rounded-2xl bg-superficie p-4 transition-colors hover:bg-superficie-2">

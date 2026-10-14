@@ -111,6 +111,9 @@ const ICONE = {
   // Aree e sezioni (lib/aree.ts)
   vivere: House,
   lavorare: Briefcase,
+  servizi: Toilet,
+  meteo: CloudSun,
+  trasporti: CableCar,
   esplora: Compass,
   uscire: Ticket,
   comunita: UsersThree,
@@ -166,9 +169,12 @@ export type NomeIcona = keyof typeof ICONE;
 // Frecce, "+" e lente sono segni a linea: piene diventerebbero triangoli o macchie, quindi restano a tratto spesso
 const LINEARI = new Set<NomeIcona>(["freccia", "avanti", "vai", "piu", "cerca", "chiudi"]);
 
-// Icone disegnate per Alex (ottobre 2026) per le cinque aree, la mappa e gli eventi: prendono il posto di Phosphor.
+// Icone disegnate per Alex (ottobre 2026) per le cinque aree, la mappa, gli eventi e le sezioni di Vivere: prendono il posto di Phosphor.
 // Due maschere in public/icone (node scripts/icone-aree.mjs): la base prende il colore del testo, l'accento resta blu.
-const PROPRIE = new Set<NomeIcona>(["vivere", "uscire", "sport", "comunita", "lavorare", "mappa", "eventi"]);
+const PROPRIE = new Set<NomeIcona>([
+  "vivere", "uscire", "sport", "comunita", "lavorare", "mappa", "eventi",
+  "scuola", "servizi", "meteo", "parcheggio", "rifiuti", "trasporti", "farmacia", "avvisi", "uffici",
+]);
 
 export function Icona({ nome, size = 24, peso }: { nome: NomeIcona; size?: number; peso?: IconWeight }) {
   if (PROPRIE.has(nome)) {

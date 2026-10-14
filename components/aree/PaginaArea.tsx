@@ -46,7 +46,7 @@ export default function PaginaArea({
             className="flex items-center gap-3.5 rounded-2xl bg-superficie p-4 transition-colors hover:bg-superficie-2 active:scale-[0.99]"
           >
             <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-fondo text-testo">
-              <Icona nome={s.icona} size={22} />
+              <Icona nome={s.icona} size={28} />
             </span>
             <span className="flex min-w-0 flex-1 flex-col gap-0.5">
               <span className="text-[15px] font-semibold leading-snug">{s.nome}</span>
