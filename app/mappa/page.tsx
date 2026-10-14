@@ -1,6 +1,5 @@
 import MappaTerritorio from "@/components/MappaTerritorio";
 import { getLuoghi } from "@/lib/data";
-import { getLuoghiOsm } from "@/lib/osm";
 
 export const revalidate = 300;
 
@@ -9,9 +8,7 @@ export const metadata = { title: "Mappa · 739 San Marino" };
 type Props = { searchParams: Promise<{ luogo?: string }> };
 
 export default async function Mappa({ searchParams }: Props) {
-  const [{ luogo }, db] = await Promise.all([searchParams, getLuoghi()]);
-  // Ai luoghi del database si aggiungono quelli di OpenStreetMap (bagni, fontanelle, monumenti, panorami…)
-  const luoghi = [...db, ...(await getLuoghiOsm(db))];
+  const [{ luogo }, luoghi] = await Promise.all([searchParams, getLuoghi()]);
 
   if (luoghi.length === 0) {
     return (
