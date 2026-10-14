@@ -48,7 +48,8 @@ export default function Scheda({ l, castello, azioni }: { l: Luogo; castello: Ca
         <header className="flex flex-col gap-2">
           <h1 className="text-[28px] font-semibold leading-tight tracking-[-0.03em]">{l.nome}</h1>
           <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-testo-2">
-            <span>{l.sottocategoria ? `${categoria}, ${l.sottocategoria}` : categoria}</span>
+            {/* Per i locali basta il tipo («Pizzeria»); per gli altri luoghi categoria e tipo */}
+            <span>{l.sottocategoria ? (l.categoria === "locale" ? l.sottocategoria[0].toUpperCase() + l.sottocategoria.slice(1) : `${categoria}, ${l.sottocategoria}`) : categoria}</span>
             {castello ? (
               <span className="inline-flex items-center gap-1.5">
                 <span aria-hidden="true" className="size-2.5 rounded-full" style={{ background: castello.colore }} />

@@ -55,7 +55,7 @@ export const AREE: Area[] = [
     href: "/uscire",
     sezioni: [
       { slug: "eventi", nome: "Eventi", descrizione: "Il calendario di cosa succede sul Titano.", icona: "eventi", href: "/eventi", parole: "eventi calendario concerti serate spettacoli mostre" },
-      { slug: "mangiare", nome: "Mangiare e bere", descrizione: "Ristoranti, bar e piadinerie aperti adesso, con menu e orari.", icona: "food", categorie: ["locale"], parole: "mangiare bere ristoranti bar pizzeria piadina food" },
+      { slug: "mangiare", nome: "Mangiare e bere", descrizione: "Ristoranti, pizzerie, bar e gelaterie, con indirizzo e orari.", icona: "food", href: "/uscire/mangiare", categorie: ["locale"], parole: "mangiare bere ristoranti ristorante bar caffe pizzeria pizza piadina piadineria gelato gelateria pub cena pranzo food" },
       { slug: "cultura", nome: "Musei e monumenti", descrizione: "Musei, torri, porte e monumenti.", icona: "cultura", href: "/uscire/cultura", categorie: ["cultura", "luogo"], parole: "musei museo monumenti torri guaita cesta montale" },
       { slug: "natura", nome: "Panorami e natura", descrizione: "I punti panoramici del territorio.", icona: "panorama", href: "/uscire/natura", categorie: ["panorama"], parole: "panorama panorami vista natura sentieri" },
       { slug: "dormire", nome: "Dormire", descrizione: "Hotel, b&b e agriturismi.", icona: "dormire", parole: "dormire hotel albergo bed breakfast agriturismo" },

@@ -38,8 +38,8 @@ export type CampiScheda = {
   cosa_fare: Pratica[] | null;
 };
 
-export const CAMPI_LUOGO = "id, nome, categoria, descrizione, lat, lng, castello_id, indirizzo, telefono, orari, tariffa, posti, da_verificare, orari_settimana, fonte";
-export const CAMPI_SCHEDA = `${CAMPI_LUOGO}, area, sottocategoria, sito, email, foto_url, foto_credito, fonte_nome, fonte_link, verificato_il, cosa_fare`;
+export const CAMPI_LUOGO = "id, nome, categoria, descrizione, lat, lng, castello_id, indirizzo, telefono, orari, tariffa, posti, da_verificare, orari_settimana, fonte, sottocategoria";
+export const CAMPI_SCHEDA = `${CAMPI_LUOGO}, area, sito, email, foto_url, foto_credito, fonte_nome, fonte_link, verificato_il, cosa_fare`;
 export type Evento = {
   id: string;
   titolo: string;

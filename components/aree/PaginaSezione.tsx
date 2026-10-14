@@ -6,6 +6,11 @@ import { Icona } from "@/components/Icona";
 import { CATEGORIE, getLuoghi, type Luogo } from "@/lib/data";
 import { area as trovaArea, sezione as trovaSezione } from "@/lib/aree";
 
+const PLURALI: Record<string, string> = {
+  ristorante: "Ristoranti", pizzeria: "Pizzerie", piadineria: "Piadinerie", "cibo veloce": "Cibo veloce",
+  bar: "Bar", gelateria: "Gelaterie", pub: "Pub",
+};
+
 /** Sezione di un'area fatta di luoghi (es. Musei e monumenti): elenco raggruppato per categoria, con la mappa. */
 export default async function PaginaSezione({ area, sezione, prima, vuoto }: { area: string; sezione: string; prima?: ReactNode; vuoto?: string }) {
   const a = trovaArea(area);
@@ -14,9 +19,17 @@ export default async function PaginaSezione({ area, sezione, prima, vuoto }: { a
   if (!a || !s?.categorie) notFound();
 
   const tutti = await getLuoghi();
-  const gruppi = s.categorie
-    .map((c) => ({ categoria: c, luoghi: tutti.filter((l) => l.categoria === c) }))
+  let gruppi = s.categorie
+    .map((c) => ({ categoria: c, nome: CATEGORIE[c] ?? c, luoghi: tutti.filter((l) => l.categoria === c) }))
     .filter((g) => g.luoghi.length);
+  // Una categoria sola con più tipi (Mangiare e bere: ristoranti, pizzerie, bar…): si raggruppa per tipo
+  const tipi = gruppi.length === 1 ? [...new Set(gruppi[0].luoghi.map((l) => l.sottocategoria ?? ""))] : [];
+  if (tipi.filter(Boolean).length > 1) {
+    const luoghi = gruppi[0].luoghi;
+    gruppi = tipi
+      .map((t) => ({ categoria: t || "altro", nome: t ? (PLURALI[t] ?? t[0].toUpperCase() + t.slice(1)) : "Altro", luoghi: luoghi.filter((l) => (l.sottocategoria ?? "") === t) }))
+      .sort((a, b) => (a.categoria === "altro" ? 1 : b.categoria === "altro" ? -1 : b.luoghi.length - a.luoghi.length));
+  }
   const totale = gruppi.reduce((n, g) => n + g.luoghi.length, 0);
 
   return (
@@ -34,7 +47,7 @@ export default async function PaginaSezione({ area, sezione, prima, vuoto }: { a
           <section key={g.categoria} className="flex flex-col gap-2.5">
             {gruppi.length > 1 ? (
               <h2 className="flex items-baseline justify-between text-[17px] font-semibold tracking-tight">
-                {CATEGORIE[g.categoria] ?? g.categoria}
+                {g.nome}
                 <span className="font-mono text-sm font-medium text-testo-2">{g.luoghi.length}</span>
               </h2>
             ) : null}
