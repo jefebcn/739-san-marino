@@ -14,7 +14,7 @@ export function Campo({ etichetta, ...props }: { etichetta: string } & InputHTML
       <span className="text-[13px] font-medium text-testo-2">{etichetta}</span>
       <input
         {...props}
-        className="h-12 w-full rounded-2xl border border-linea bg-superficie px-4 text-[15px] text-testo outline-none transition-colors placeholder:text-testo-2/60 focus:border-accento"
+        className="h-12 w-full rounded-xl border border-linea bg-superficie px-4 text-[15px] text-testo outline-none transition-colors placeholder:text-testo-2/60 focus:border-accento"
       />
     </label>
   );
@@ -22,7 +22,7 @@ export function Campo({ etichetta, ...props }: { etichetta: string } & InputHTML
 
 function Avviso({ tono, children }: { tono: "errore" | "ok"; children: React.ReactNode }) {
   return (
-    <p role={tono === "errore" ? "alert" : "status"} className={`rounded-2xl px-4 py-3 text-sm ${tono === "errore" ? "bg-segnale/12 text-segnale" : "bg-accento-tenue text-accento"}`}>
+    <p role={tono === "errore" ? "alert" : "status"} className={`rounded-xl px-4 py-3 text-sm ${tono === "errore" ? "bg-segnale/12 text-segnale" : "bg-accento-tenue text-accento"}`}>
       {children}
     </p>
   );
@@ -76,7 +76,7 @@ export default function Accesso({ castelli }: { castelli: Castello[] }) {
   return (
     <div className="flex flex-col gap-5">
       {modo !== "recupero" ? (
-        <div role="tablist" aria-label="Accesso" className="grid grid-cols-2 gap-1 rounded-2xl border border-linea bg-superficie p-1">
+        <div role="tablist" aria-label="Accesso" className="grid grid-cols-2 gap-1 rounded-xl bg-superficie p-1">
           {(["accedi", "registrati"] as const).map((m) => (
             <button
               key={m}
@@ -84,7 +84,7 @@ export default function Accesso({ castelli }: { castelli: Castello[] }) {
               role="tab"
               aria-selected={modo === m}
               onClick={() => cambia(m)}
-              className="h-10 rounded-xl text-sm font-semibold text-testo-2 transition-colors aria-selected:bg-superficie-2 aria-selected:text-testo"
+              className="h-10 rounded-lg text-sm font-semibold text-testo-2 transition-colors aria-selected:bg-superficie-2 aria-selected:text-testo"
             >
               {m === "accedi" ? "Accedi" : "Crea account"}
             </button>
@@ -158,7 +158,7 @@ export function NuovaPassword({ fatto }: { fatto: () => void }) {
 
   return (
     <form
-      className="flex flex-col gap-4 rounded-2xl border border-linea bg-superficie p-4"
+      className="flex flex-col gap-4 rounded-2xl bg-superficie p-4"
       onSubmit={async (e) => {
         e.preventDefault();
         setInCorso(true);

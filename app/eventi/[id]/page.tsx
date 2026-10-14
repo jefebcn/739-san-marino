@@ -56,7 +56,7 @@ export default async function DettaglioEvento({ params }: Props) {
       </section>
 
       <section className="azioni">
-        <button type="button" className="bottone primario" disabled>Fai check-in · +{e.metri} m</button>
+        <button type="button" className="bottone primario" disabled>Fai check-in (+{e.metri} m)</button>
         <p className="nota">Il check-in si attiva con l&apos;accesso, in arrivo a breve.</p>
         <a href={linkCalendario(e)} target="_blank" rel="noopener" className="bottone secondario premibile">
           <Icona nome="calendario" size={20} /> Aggiungi al calendario

@@ -8,19 +8,19 @@ import { Icona, type NomeIcona } from "./Icona";
 type Voce = { href: string; titolo: string; sotto: string; icona: NomeIcona; testo: string };
 
 const PAGINE: { href: string; titolo: string; sotto: string; icona: NomeIcona; parole: string }[] = [
-  { href: "/utili/farmacie", titolo: "Farmacie aperte", sotto: "Utili · chi è aperto adesso", icona: "farmacia", parole: "farmacia farmacie medicine turno cailungo" },
-  { href: "/utili/trasporti", titolo: "Funivia e bus", sotto: "Utili · prossime partenze", icona: "funivia", parole: "funivia bus autobus rimini orari trasporti smuvi" },
-  { href: "/utili/rifiuti", titolo: "Raccolta rifiuti", sotto: "Utili · calendario per castello", icona: "rifiuti", parole: "rifiuti raccolta spazzatura differenziata carta plastica vetro organico" },
-  { href: "/utili/parcheggi", titolo: "Parcheggi", sotto: "Utili · posti e tariffe", icona: "parcheggio", parole: "parcheggi parcheggio auto camper bus p9 multipiano" },
-  { href: "/utili", titolo: "Numeri di emergenza", sotto: "Utili · 112, 113, 115, 118", icona: "scudo", parole: "emergenza emergenze 112 113 115 118 polizia ambulanza vigili fuoco" },
+  { href: "/utili/farmacie", titolo: "Farmacie aperte", sotto: "Chi è aperto adesso", icona: "farmacia", parole: "farmacia farmacie medicine turno cailungo" },
+  { href: "/utili/trasporti", titolo: "Funivia e bus", sotto: "Prossime partenze", icona: "funivia", parole: "funivia bus autobus rimini orari trasporti smuvi" },
+  { href: "/utili/rifiuti", titolo: "Raccolta rifiuti", sotto: "Calendario per castello", icona: "rifiuti", parole: "rifiuti raccolta spazzatura differenziata carta plastica vetro organico" },
+  { href: "/utili/parcheggi", titolo: "Parcheggi", sotto: "Posti e tariffe", icona: "parcheggio", parole: "parcheggi parcheggio auto camper bus p9 multipiano" },
+  { href: "/utili", titolo: "Numeri di emergenza", sotto: "112, 113, 115, 118", icona: "scudo", parole: "emergenza emergenze 112 113 115 118 polizia ambulanza vigili fuoco" },
   { href: "/sport", titolo: "Sport e partite", sotto: "Partite, squadre e classifiche", icona: "sport", parole: "sport partita partite calcetto padel tennis basket pallavolo rating classifica" },
   { href: "/eventi", titolo: "Calendario eventi", sotto: "Cosa succede", icona: "eventi", parole: "eventi calendario concerti serate" },
   { href: "/mappa", titolo: "Mappa", sotto: "Luoghi e servizi", icona: "mappa", parole: "mappa luoghi dove" },
   { href: "/castelli", titolo: "Classifica dei castelli", sotto: "La sfida in metri", icona: "castelli", parole: "castelli classifica metri sfida" },
   { href: "/profile", titolo: "Il mio SMR ID", sotto: "Tessera, QR e profilo", icona: "id", parole: "smr id profilo tessera qr account accesso password" },
   { href: "/guida", titolo: "Come funziona 739", sotto: "Guida", icona: "utili", parole: "guida aiuto come funziona metri" },
-  { href: "/food", titolo: "Food", sotto: "Ristoranti e negozi · in arrivo", icona: "food", parole: "food ristoranti bar negozi mangiare" },
-  { href: "/business", titolo: "Business", sotto: "Network aziendale · in arrivo", icona: "business", parole: "business aziende imprese lavoro" },
+  { href: "/food", titolo: "Food", sotto: "Ristoranti e negozi, in arrivo", icona: "food", parole: "food ristoranti bar negozi mangiare" },
+  { href: "/business", titolo: "Business", sotto: "Network aziendale, in arrivo", icona: "business", parole: "business aziende imprese lavoro" },
 ];
 
 const SUGGERIMENTI = ["Farmacie", "Funivia", "Parcheggi", "Calcetto", "Raccolta"];
@@ -41,7 +41,7 @@ export default function Ricerca({ eventi, luoghi, castelli }: { eventi: Evento[]
         voci: eventi.map((e) => ({
           href: `/eventi/${e.id}`,
           titolo: e.titolo,
-          sotto: `${etichettaGiorno(e.inizio)} · ${ora(e.inizio)}${e.luogo ? ` · ${e.luogo.nome}` : ""}`,
+          sotto: `${etichettaGiorno(e.inizio)} alle ${ora(e.inizio)}${e.luogo ? `, ${e.luogo.nome}` : ""}`,
           icona: "eventi" as NomeIcona,
           testo: pulisci(`${e.titolo} ${e.descrizione ?? ""} ${e.luogo?.nome ?? ""} ${e.castello?.nome ?? ""} ${e.organizzatore ?? ""}`),
         })),
@@ -51,7 +51,7 @@ export default function Ricerca({ eventi, luoghi, castelli }: { eventi: Evento[]
         voci: luoghi.map((l) => ({
           href: `/mappa?luogo=${l.id}`,
           titolo: l.nome,
-          sotto: [CATEGORIE[l.categoria] ?? l.categoria, l.indirizzo].filter(Boolean).join(" · "),
+          sotto: [CATEGORIE[l.categoria] ?? l.categoria, l.indirizzo].filter(Boolean).join(", "),
           icona: (l.categoria === "farmacia" ? "farmacia" : l.categoria === "parcheggio" ? "parcheggio" : l.categoria === "trasporti" ? "funivia" : "pin") as NomeIcona,
           testo: pulisci(`${l.nome} ${CATEGORIE[l.categoria] ?? l.categoria} ${l.indirizzo ?? ""} ${l.descrizione ?? ""}`),
         })),
@@ -73,24 +73,24 @@ export default function Ricerca({ eventi, luoghi, castelli }: { eventi: Evento[]
     <div className="flex flex-col gap-5">
       <label className="relative block">
         <span className="sr-only">Cerca</span>
-        <span className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-testo-2 [&_svg]:size-5"><Icona nome="cerca" /></span>
+        <span className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-testo-2"><Icona nome="cerca" size={20} /></span>
         <input
           type="search"
           autoFocus
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="Cerca eventi, luoghi, servizi…"
+          placeholder="Cerca eventi, luoghi e servizi"
           enterKeyHint="search"
-          className="h-13 w-full rounded-2xl border border-linea bg-superficie pr-4 pl-12 text-[16px] text-testo outline-none placeholder:text-testo-2/70 focus:border-accento"
+          className="h-12 w-full rounded-xl border border-linea bg-superficie pr-4 pl-12 text-[16px] text-testo outline-none placeholder:text-testo-2/70 focus:border-accento"
         />
       </label>
 
       {!parole.length ? (
         <section className="flex flex-col gap-3">
-          <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-testo-2">Suggerimenti</span>
+          <span className="text-sm font-medium text-testo-2">Prova con</span>
           <div className="flex flex-wrap gap-2">
             {SUGGERIMENTI.map((s) => (
-              <button key={s} type="button" onClick={() => setQ(s)} className="h-9 rounded-xl border border-linea bg-superficie px-3.5 text-sm font-medium">{s}</button>
+              <button key={s} type="button" onClick={() => setQ(s)} className="h-9 rounded-xl bg-superficie px-3.5 text-sm font-medium hover:bg-superficie-2">{s}</button>
             ))}
           </div>
         </section>
@@ -99,12 +99,12 @@ export default function Ricerca({ eventi, luoghi, castelli }: { eventi: Evento[]
       ) : (
         risultati.map((g) => (
           <section key={g.nome} className="flex flex-col gap-2">
-            <h2 className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-testo-2">{g.nome}</h2>
+            <h2 className="text-sm font-medium text-testo-2">{g.nome}</h2>
             <ul className="flex flex-col gap-1.5">
               {g.voci.map((v) => (
                 <li key={v.href}>
-                  <Link href={v.href} className="flex items-center gap-3 rounded-2xl border border-linea bg-superficie p-3 transition-transform active:scale-[0.98]">
-                    <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-accento-tenue text-accento [&_svg]:size-5"><Icona nome={v.icona} /></span>
+                  <Link href={v.href} className="flex items-center gap-3 rounded-xl bg-superficie p-3 transition-colors hover:bg-superficie-2 active:scale-[0.98]">
+                    <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-fondo text-testo"><Icona nome={v.icona} size={20} /></span>
                     <span className="flex min-w-0 flex-col">
                       <span className="truncate text-[15px] font-semibold">{v.titolo}</span>
                       <span className="truncate text-[13px] text-testo-2">{v.sotto}</span>

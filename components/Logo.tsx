@@ -6,12 +6,12 @@ export function Cime({ width = 34, color = "#C9A45C" }: { width?: number; color?
   );
 }
 
+/** Il marchio: 739 con le tre cime del Titano. */
 export function Logo() {
   return (
     <span className="logo" aria-label="739 San Marino">
       739
-      <Cime />
-      <small>San Marino</small>
+      <Cime width={28} />
     </span>
   );
 }

@@ -18,8 +18,7 @@ import { livello } from "@/lib/quota";
 function Intestazione({ titolo, testo }: { titolo: string; testo: string }) {
   return (
     <header className="flex flex-col gap-1.5">
-      <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-testo-2">SMR ID</span>
-      <h1 className="text-[34px] font-bold leading-[1.02] tracking-tight">{titolo}</h1>
+      <h1 className="text-[30px] font-semibold leading-tight tracking-[-0.03em]">{titolo}</h1>
       <p className="text-[15px] text-testo-2">{testo}</p>
     </header>
   );
@@ -31,7 +30,7 @@ function Quota() {
   const metri = 0;
   const { prossimo, mancano } = livello(metri);
   return (
-    <section className="pannello quota topo cornice" aria-label="La tua quota">
+    <section className="pannello quota topo" aria-label="La tua quota">
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12 }}>
         <span className="etichetta">La tua quota</span>
         <span className="etichetta">Vetta 739 m</span>

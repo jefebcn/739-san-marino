@@ -57,7 +57,7 @@ export default function SmrCard({ nome, tessera, castello, rating, apriQr = fals
     <>
       <article
         aria-label={`SMR ID di ${nome ?? "utente 739"}, tessera ${tessera}`}
-        className="relative isolate grid aspect-[1.586] w-full grid-cols-[minmax(0,1fr)_auto] grid-rows-[auto_1fr_auto] gap-x-4 overflow-hidden rounded-3xl border border-ottone-500/35 bg-[linear-gradient(140deg,#1F1F23_0%,#0C0C0E_55%,#1C1810_100%)] p-5 text-zinc-50 shadow-[0_24px_60px_-24px_rgba(201,164,92,0.45)]"
+        className="relative isolate grid aspect-[1.586] w-full grid-cols-[minmax(0,1fr)_auto] grid-rows-[auto_1fr_auto] gap-x-4 overflow-hidden rounded-2xl border border-white/10 bg-[linear-gradient(140deg,#1F1F23_0%,#111113_60%,#17150F_100%)] p-5 text-zinc-50 shadow-[0_20px_40px_-24px_rgba(0,0,0,0.6)]"
       >
         {/* Riflesso metallico e curve di livello */}
         <span aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(115deg,transparent_35%,rgba(232,211,160,0.10)_48%,transparent_62%)]" />
@@ -67,7 +67,7 @@ export default function SmrCard({ nome, tessera, castello, rating, apriQr = fals
           <span className="flex items-baseline gap-1.5 text-xl font-bold tracking-tighter">
             739 <Cime width={26} />
           </span>
-          <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.24em] text-ottone-300">SMR ID</span>
+          <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-ottone-300">SMR ID</span>
         </header>
 
         <div className="flex min-w-0 flex-col justify-end gap-2 self-end">
@@ -93,12 +93,12 @@ export default function SmrCard({ nome, tessera, castello, rating, apriQr = fals
 
         <footer className="flex items-end gap-5">
           <span className="flex flex-col">
-            <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-zinc-500">Tessera</span>
+            <span className="font-mono text-[9px] uppercase tracking-[0.08em] text-zinc-500">Tessera</span>
             <span className="font-mono text-[13px] font-semibold tracking-wider text-ottone-200">{tessera}</span>
           </span>
           <span className="flex flex-col">
-            <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-zinc-500">Rating</span>
-            <span className="font-mono text-[13px] font-semibold text-zinc-100">{rating ? Math.round(rating) : "—"}</span>
+            <span className="font-mono text-[9px] uppercase tracking-[0.08em] text-zinc-500">Rating</span>
+            <span className="font-mono text-[13px] font-semibold text-zinc-100">{rating ? Math.round(rating) : "Nuovo"}</span>
           </span>
         </footer>
       </article>

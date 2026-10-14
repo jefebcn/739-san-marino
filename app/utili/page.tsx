@@ -38,7 +38,6 @@ export default async function Utili() {
   return (
     <>
       <section className="intro">
-        <span className="etichetta">Utili ed emergenze</span>
         <h1 className="titolo">Quello che serve, quando serve</h1>
       </section>
 
@@ -56,7 +55,7 @@ export default async function Utili() {
       </section>
 
       <section className="sezione">
-        <div className="sezione-head"><h2>Servizi</h2><span className="meta">aggiornati adesso</span></div>
+        <div className="sezione-head"><h2>Servizi</h2></div>
         <div className="lista">
           <Servizio href="/utili/farmacie" icona="farmacia" titolo="Farmacie aperte" allerta>
             {farmacie.length ? <ConteggioAperte farmacie={farmacie} testo /> : "Farmacie e orari"}

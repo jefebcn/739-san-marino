@@ -34,7 +34,7 @@ export default async function Castello({ params }: Props) {
         <h1 className="titolo">{c.nome}</h1>
         <div style={{ display: "flex", gap: 18, alignItems: "baseline" }}>
           <span style={{ fontFamily: "var(--mono)", fontSize: 44, fontWeight: 700, letterSpacing: "-0.05em", lineHeight: 1 }}>{posizione + 1}°</span>
-          <span style={{ fontFamily: "var(--mono)", fontSize: 14 }}>{fmt.format(c.metri ?? 0)} m · su {classifica.length}</span>
+          <span style={{ fontFamily: "var(--mono)", fontSize: 14 }}>{fmt.format(c.metri ?? 0)} m in classifica</span>
         </div>
         <span style={{ position: "absolute", right: -12, bottom: -8, opacity: 0.3 }}><Cime width={170} color={c.colore} /></span>
       </section>

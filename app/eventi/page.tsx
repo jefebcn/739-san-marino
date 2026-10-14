@@ -19,7 +19,6 @@ export default async function Eventi() {
   return (
     <>
       <section className="intro">
-        <span className="etichetta">Calendario</span>
         <h1 className="titolo">Eventi sul Titano</h1>
         <p className="sottotitolo">Ogni check-in vale metri per te e per il tuo castello.</p>
       </section>

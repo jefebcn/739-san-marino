@@ -46,21 +46,22 @@ function Elenco({ righe }: { righe: Raccolta[] }) {
 }
 
 /** Riga breve per la tessera in Utili: cosa si raccoglie domani nel tuo castello. */
-export function RaccoltaBreve({ raccolta, castelli }: { raccolta: Raccolta[]; castelli: Castello[] }) {
+export function RaccoltaBreve({ raccolta, castelli, compatto = false }: { raccolta: Raccolta[]; castelli: Castello[]; compatto?: boolean }) {
   const slug = useCastelloScelto();
   const [stato, setStato] = useState<{ dow: number; zona: string | null } | null>(null);
   useEffect(() => setStato({ dow: adessoSM().dow, zona: leggiZona() }), []);
   const c = castelli.find((x) => x.slug === slug);
   if (!stato) return <>…</>;
-  if (!c) return <>Scegli il tuo castello per vedere il calendario</>;
+  if (!c) return <>{compatto ? "Scegli il castello" : "Scegli il tuo castello per vedere il calendario"}</>;
   const righe = raccolta.filter((r) => r.castello_id === c.id);
-  if (righe.length === 0) return <>{c.nome}: cassonetti stradali, niente porta a porta</>;
+  if (righe.length === 0) return <>{compatto ? "Cassonetti stradali" : `${c.nome}: cassonetti stradali, niente porta a porta`}</>;
   const zone = zoneDi(righe);
   const zona = stato.zona && zone.includes(stato.zona) ? stato.zona : zone[0];
   const domani = frazioniDel(righe.filter((r) => r.zona === zona), (stato.dow % 7) + 1);
+  if (compatto) return <>{domani.length ? domani.map((r) => nomeFrazione(r.frazione)).join(", ") : "Nessuna raccolta"}</>;
   return (
     <>
-      {c.nome}{zone.length > 1 ? ` (${zona.toLowerCase()})` : ""} · domani <b>{domani.length ? domani.map((r) => nomeFrazione(r.frazione)).join(", ") : "niente"}</b>
+      Domani a {c.nome}{zone.length > 1 ? ` (${zona.toLowerCase()})` : ""}: <b>{domani.length ? domani.map((r) => nomeFrazione(r.frazione)).join(", ") : "niente"}</b>
     </>
   );
 }
@@ -126,11 +127,11 @@ export default function CalendarioRaccolta({ raccolta, castelli }: { raccolta: R
 
           <div className="adesso">
             <div className="card" style={{ background: "var(--accento-tenue)" }}>
-              <span className="etichetta">Oggi{dow ? ` · ${GIORNI_BREVI[dow - 1]}` : ""}</span>
+              <span className="etichetta">Oggi{dow ? `, ${GIORNI[dow - 1]}` : ""}</span>
               {dow ? <Elenco righe={frazioniDel(righe, dow)} /> : <span>…</span>}
             </div>
             <div className="card">
-              <span className="etichetta">Domani{domani ? ` · ${GIORNI_BREVI[domani - 1]}` : ""}</span>
+              <span className="etichetta">Domani{domani ? `, ${GIORNI[domani - 1]}` : ""}</span>
               {domani ? <Elenco righe={frazioniDel(righe, domani)} /> : <span>…</span>}
             </div>
           </div>
@@ -164,7 +165,7 @@ export default function CalendarioRaccolta({ raccolta, castelli }: { raccolta: R
         <h3>Ingombranti, sfalci e pannolini</h3>
         <span style={{ fontSize: 14, color: "var(--testo-2)" }}>Si ritirano su richiesta. Centro di raccolta di San Giovanni (Strada IV Gualdaria): lunedì–sabato 8.00–17.30.</span>
         <div className="riga-azioni">
-          <a className="azione-mini premibile" href="tel:0549883700">Chiama AASS · 0549 883700</a>
+          <a className="azione-mini premibile" href="tel:0549883700">Chiama AASS: 0549 883700</a>
         </div>
       </section>
     </>

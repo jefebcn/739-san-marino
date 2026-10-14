@@ -75,11 +75,21 @@ Tabelle: `castelli` (i 9 castelli con colore), `profili`, `luoghi`, `eventi`, `c
 
 ## Identità visiva
 
-- Stile "fintech locale": base zinc profonda (`zinc-950`), accento **ottone** (scala `ottone-50…900` in `tailwind.config.ts`, finitura `bg-metallo` per i bottoni primari), Segnale `#E8573A` solo per emergenze e avvisi, azzurro `#5EB6E4` solo per informazioni e mappa. Un colore per castello, usato solo in classifiche e badge.
+- Stile "fintech locale": base zinc profonda (`zinc-950`), accento **ottone** (scala `ottone-50…900` in `tailwind.config.ts`, `bg-metallo` per i bottoni primari: ottone pieno, senza effetto lucido), Segnale `#E8573A` solo per emergenze e avvisi, azzurro `#5EB6E4` solo per informazioni e mappa. Un colore per castello, usato solo in classifiche e badge.
 - Tema: scuro di default, chiaro solo se il telefono è in modalità chiara (scelta di Alex). I colori si usano tramite i ruoli (`bg-fondo`, `bg-superficie`, `text-testo`, `text-testo-2`, `border-linea`, `text-accento`, `bg-accento-tenue`… o le variabili CSS corrispondenti), mai esadecimali fissi nelle pagine.
-- Schede `rounded-2xl` con bordo sottile, ombre minime, vetro smerigliato (`backdrop-blur`) solo per barre e pannelli sopra mappe o immagini.
-- Caratteri: Inter (testi e titoli, gerarchia bold/`text-testo-2`), JetBrains Mono (numeri, orari, metri, rating, etichette; cifre a larghezza fissa). Caricati con `next/font` in `app/layout.tsx`.
-- Stile HUD, da strumento di montagna, usato con misura: niente striscia dell'altimetro in alto (scelta di Alex); la quota personale sta nella pagina SMR ID. Elementi ricorrenti: `.pannello` (scheda scura), `.topo` (curve di livello sullo sfondo), `.cornice` (angoli da mirino), numeri grandi in mono. Usarli con misura: non su ogni scheda.
+- Ombre minime, vetro smerigliato (`backdrop-blur`) solo per barre e pannelli sopra mappe o immagini.
+- Caratteri: Geist (testi e titoli, titoli a peso 600, mai 700+) e Geist Mono (solo numeri: orari, metri, rating, conti alla rovescia, a peso 500). Caricati con `next/font` in `app/layout.tsx`.
+- Icone: solo Phosphor (`@phosphor-icons/react`), tramite `components/Icona.tsx` (nomi italiani, `peso` regular/fill/duotone/bold). Mai disegnare icone SVG a mano; l'unico SVG fatto a mano è il logo.
+- Regole "anti-AI" (dalle skill design-taste-frontend e redesign-existing-projects, applicate a ottobre 2026 su richiesta di Alex):
+  - niente etichette maiuscole spaziate sopra i titoli (eyebrow); le uniche ammesse sono le diciture della Card SMR ID, come su una carta fisica;
+  - niente puntini "·" come separatore nei testi visibili: virgole, "alle", due punti o a capo (i titoli delle schede del browser restano "Pagina · 739 San Marino");
+  - niente trattini lunghi (—) nei testi;
+  - niente gradienti lucidi, bagliori, angoli da mirino o macchie di colore decorative;
+  - un solo accento (ottone): categorie e icone in colore neutro; i colori dei castelli solo come punto o dettaglio;
+  - raggi: contenitori 16 px (`rounded-2xl`), controlli 12 px (`rounded-xl`), pulsante + tondo;
+  - schede senza bordo (solo fondo `bg-superficie`), bordo solo per campi e liste raggruppate;
+  - testi in frase normale, niente Title Case né maiuscolo.
+- Stile HUD, da strumento di montagna, usato con misura: niente striscia dell'altimetro in alto (scelta di Alex); la quota personale sta nella pagina SMR ID. Elementi ricorrenti: `.pannello` (scheda scura) e `.topo` (curve di livello leggere), numeri grandi in mono. Usarli con misura.
 - Logo: il numero 739 con le tre cime del Titano (`components/Logo.tsx`). Mai usare torri, corona o stemma della Repubblica.
 - I punti si chiamano **metri**: livelli Valle (0), Mura (200), Torri (450), Vetta (739). Non chiamarli "punti": esiste già la SMaC dello Stato.
 - Tono: diretto, "di casa" con i residenti, chiaro per i turisti. Italiano prima, inglese in arrivo.

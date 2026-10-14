@@ -30,9 +30,8 @@ export default function DesignSystem() {
   return (
     <div className="flex flex-col gap-8">
       <header className="flex flex-col gap-1.5">
-        <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-testo-2">Design system</span>
-        <h1 className="text-[34px] font-bold leading-none tracking-tight">739 · Base</h1>
-        <p className="text-[15px] text-testo-2">Zinc profondo, ottone per le azioni, Inter per i testi, JetBrains Mono per i numeri.</p>
+        <h1 className="text-[30px] font-semibold leading-tight tracking-[-0.03em]">Design system 739</h1>
+        <p className="text-[15px] text-testo-2">Zinc profondo, ottone per le azioni, Geist per i testi, Geist Mono per i numeri.</p>
       </header>
 
       <section className="flex flex-col gap-3">
@@ -62,11 +61,11 @@ export default function DesignSystem() {
 
       <section className="flex flex-col gap-2">
         <h2 className="text-lg font-semibold">Caratteri</h2>
-        <p className="text-[34px] font-bold leading-none tracking-tight">Titolo 34</p>
+        <p className="text-[30px] font-semibold leading-none tracking-[-0.03em]">Titolo 30</p>
         <p className="text-xl font-semibold tracking-tight">Sezione 20</p>
-        <p className="text-[15px]">Testo 15 · Inter regular, leggibile anche in movimento.</p>
-        <p className="text-sm text-testo-2">Descrizione 14 · zinc-400 sul fondo scuro.</p>
-        <p className="font-mono text-2xl font-semibold tabular-nums">1.742 · 07:45 · #A39F</p>
+        <p className="text-[15px]">Testo 15, Geist regular.</p>
+        <p className="text-sm text-testo-2">Descrizione 14, zinc-400 sul fondo scuro.</p>
+        <p className="font-mono text-2xl font-medium tabular-nums">1.742  07:45  739-A3F9</p>
       </section>
 
       <section className="flex flex-col gap-3">
@@ -84,7 +83,7 @@ export default function DesignSystem() {
 
       <section className="flex flex-col gap-3">
         <h2 className="text-lg font-semibold">ActionCard</h2>
-        <ActionCard href="/eventi" icona={<Icona nome="eventi" />} titolo="Calcetto a Serravalle" descrizione="Giovedì 20:30 · mancano 3 giocatori" extra={<span className="rounded-md bg-accento-tenue px-2 py-0.5 font-mono text-[11px] font-semibold text-accento">+25 m</span>} />
+        <ActionCard href="/eventi" icona={<Icona nome="eventi" />} titolo="Calcetto a Serravalle" descrizione="Giovedì alle 20:30, mancano 3 giocatori" extra={<span className="rounded-md bg-accento-tenue px-2 py-0.5 font-mono text-[11px] font-semibold text-accento">+25 m</span>} />
         <ActionCard href="/utili" icona={<Icona nome="mappa" />} tono="neutro" titolo="Campi vicini" descrizione="Scansione della posizione per trovare dove si gioca" />
         <ActionCard icona={<Icona nome="scudo" />} tono="allerta" titolo="Emergenza" descrizione="Chiama il 112" />
         <div className="relative overflow-hidden rounded-3xl bg-[radial-gradient(circle_at_20%_20%,#C9A45C55,transparent_55%),radial-gradient(circle_at_80%_70%,#5EB6E455,transparent_50%)] p-4">
@@ -100,7 +99,7 @@ export default function DesignSystem() {
 
       <section className="flex flex-col gap-3">
         <h2 className="text-lg font-semibold">BottomNav</h2>
-        <p className="text-sm text-testo-2">È la barra in fondo a questa pagina: vetro smerigliato, voce attiva in ottone. Voci: Home · Sport · Mappa · Eventi · ID.</p>
+        <p className="text-sm text-testo-2">È la barra in fondo a questa pagina: vetro smerigliato, voce attiva con icona piena. Voci: Home, Mappa, il + centrale, Sport, Eventi.</p>
       </section>
     </div>
   );

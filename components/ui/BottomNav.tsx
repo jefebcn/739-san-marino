@@ -8,7 +8,7 @@ import { Icona, type NomeIcona } from "../Icona";
 export type VoceNav = { href: string; nome: string; icona: NomeIcona };
 
 /**
- * Barra di navigazione fissa in basso, in vetro smerigliato. La voce attiva si accende in ottone.
+ * Barra di navigazione fissa in basso, in vetro smerigliato.
  * `centro` (facoltativo) va in mezzo alle voci: il pulsante delle azioni rapide.
  */
 export default function BottomNav({ voci, centro }: { voci: VoceNav[]; centro?: ReactNode }) {
@@ -16,19 +16,21 @@ export default function BottomNav({ voci, centro }: { voci: VoceNav[]; centro?: 
   const attivo = (href: string) => (href === "/" ? path === "/" : path === href || path.startsWith(href + "/"));
   const meta = Math.ceil(voci.length / 2);
 
-  const voce = (v: VoceNav) => (
-    <Link
-      key={v.href}
-      href={v.href}
-      aria-current={attivo(v.href) ? "page" : undefined}
-      className="group flex min-h-[52px] flex-col items-center gap-0.5 py-0.5 text-[11px] font-medium text-testo-2 aria-[current=page]:text-testo"
-    >
-      <span className="grid h-8 w-14 place-items-center rounded-xl transition-colors duration-150 group-aria-[current=page]:bg-accento-tenue group-aria-[current=page]:text-accento [&_svg]:size-[22px]">
-        <Icona nome={v.icona} />
-      </span>
-      {v.nome}
-    </Link>
-  );
+  // La voce attiva si riconosce dall'icona piena e dal testo chiaro, senza riquadri colorati
+  const voce = (v: VoceNav) => {
+    const qui = attivo(v.href);
+    return (
+      <Link
+        key={v.href}
+        href={v.href}
+        aria-current={qui ? "page" : undefined}
+        className="flex min-h-[52px] flex-col items-center justify-center gap-1 text-[11px] font-medium text-testo-2 transition-colors aria-[current=page]:text-testo"
+      >
+        <Icona nome={v.icona} size={24} peso={qui ? "fill" : "regular"} />
+        {v.nome}
+      </Link>
+    );
+  };
 
   return (
     <nav

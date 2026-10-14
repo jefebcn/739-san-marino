@@ -1,17 +1,18 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import BottomNav, { type VoceNav } from "@/components/ui/BottomNav";
 import SessioneSync from "@/modules/core/components/SessioneSync";
-import SceltaCastello from "@/components/SceltaCastello";
+import { Logo } from "@/components/Logo";
+import Link from "next/link";
 import AzioniTesta from "@/components/AzioniTesta";
 import AzioniRapide from "@/components/AzioniRapide";
 import { getClassifica } from "@/lib/data";
 
 export const revalidate = 60;
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
-const jetbrains = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains", display: "swap" });
+const geist = Geist({ subsets: ["latin"], variable: "--font-geist", display: "swap" });
+const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono", display: "swap" });
 
 const VOCI: VoceNav[] = [
   { href: "/", nome: "Home", icona: "home" },
@@ -49,7 +50,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const classifica = await getClassifica();
 
   return (
-    <html lang="it" className={`${inter.variable} ${jetbrains.variable}`} suppressHydrationWarning>
+    <html lang="it" className={`${geist.variable} ${geistMono.variable}`} suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -61,8 +62,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <div className="app">
           <header className="top">
             <div className="top-riga mx-auto max-w-[var(--colonna)]">
-              <SceltaCastello classifica={classifica} />
-              <AzioniTesta />
+              <Link href="/" aria-label="739, torna alla Home" className="shrink-0">
+                <Logo />
+              </Link>
+              <AzioniTesta classifica={classifica} />
             </div>
           </header>
           <main className="main">

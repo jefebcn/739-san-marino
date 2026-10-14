@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { Icona } from "../Icona";
 
 type Tono = "neutro" | "accento" | "allerta";
 
@@ -21,23 +22,23 @@ type Props = {
 };
 
 const TONI_ICONA: Record<Tono, string> = {
-  neutro: "bg-superficie-2 text-testo",
-  accento: "bg-accento-tenue text-accento",
+  neutro: "bg-fondo text-testo",
+  accento: "bg-fondo text-accento",
   allerta: "bg-segnale/15 text-segnale",
 };
 
 function Freccia() {
   return (
-    <svg viewBox="0 0 24 24" className="size-5 shrink-0 text-testo-2 transition-transform duration-150 group-hover:translate-x-0.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M9 6l6 6-6 6" />
-    </svg>
+    <span className="shrink-0 text-testo-2 transition-transform duration-150 group-hover:translate-x-0.5">
+      <Icona nome="avanti" size={18} />
+    </span>
   );
 }
 
 /** Scheda d'azione: icona, titolo, descrizione e (se è un link) freccia. Il mattone delle liste di 739. */
 export default function ActionCard({ titolo, descrizione, icona, extra, children, href, esterno, tono = "accento", vetro, className = "" }: Props) {
   const fondo = vetro ? "bg-[var(--vetro)] backdrop-blur-xl backdrop-saturate-150" : "bg-superficie";
-  const classi = `group flex items-center gap-3.5 rounded-2xl border border-linea p-4 text-left ${fondo} ${href ? "transition-transform duration-150 ease-out active:scale-[0.98]" : ""} ${className}`;
+  const classi = `group flex items-center gap-3.5 rounded-2xl p-4 text-left ${fondo} ${href ? "transition-transform duration-150 ease-out active:scale-[0.98]" : ""} ${className}`;
 
   const corpo = (
     <>

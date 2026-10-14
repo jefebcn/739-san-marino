@@ -20,8 +20,8 @@ function Stato({ l, ora }: { l: Luogo; ora: Date | null }) {
   const a = ora ? apertura(l.orari_settimana, ora) : null;
   if (!a) return null;
   if (a.sempre) return <span className="spia-mini aperta">Sempre aperta</span>;
-  if (a.aperta) return <span className="spia-mini aperta">Aperta · chiude alle {a.chiude}</span>;
-  return <span className="spia-mini">Chiusa{a.riapre ? ` · riapre ${a.riapre}` : ""}</span>;
+  if (a.aperta) return <span className="spia-mini aperta">Aperta, chiude alle {a.chiude}</span>;
+  return <span className="spia-mini">Chiusa{a.riapre ? `, riapre ${a.riapre}` : ""}</span>;
 }
 
 /** Numero di farmacie aperte adesso, per le tessere di Home e Utili. */
@@ -29,7 +29,7 @@ export function ConteggioAperte({ farmacie, testo = false }: { farmacie: Luogo[]
   const ora = useAdesso();
   if (!ora) return testo ? <>…</> : <span className="grande">–</span>;
   const n = farmacie.filter((f) => apertura(f.orari_settimana, ora)?.aperta).length;
-  if (testo) return <><b>{n}</b> {n === 1 ? "aperta" : "aperte"} adesso · Cailungo sempre aperta</>;
+  if (testo) return <><b>{n}</b> {n === 1 ? "aperta" : "aperte"} adesso, Cailungo sempre</>;
   return <span className="grande">{n}<small>{n === 1 ? "aperta" : "aperte"}</small></span>;
 }
 
@@ -48,14 +48,14 @@ export default function ElencoFarmacie({ farmacie }: { farmacie: Luogo[] }) {
 
   return (
     <>
-      <section className="turno pannello topo cornice" aria-live="polite">
+      <section className="turno pannello topo" aria-live="polite">
         <span className={aperte.length ? "spia" : "spia spenta"}>Adesso</span>
         <h2>{ora ? `${aperte.length} ${aperte.length === 1 ? "farmacia aperta" : "farmacie aperte"}` : "Farmacie aperte"}</h2>
         <p style={{ color: "var(--pannello-testo)", fontSize: 15 }}>
           Di notte e nei festivi c&apos;è sempre la <b style={{ color: "#fff" }}>farmacia di Cailungo</b>, all&apos;Ospedale di Stato: aperta 24 ore su 24 (dalle 23 alle 6 solo urgenze). Nei festivi apre anche quella di Città.
         </p>
         <a href="tel:0549994222" className="bottone primario-chiaro premibile" style={{ marginTop: 6, position: "relative", zIndex: 2 }}>
-          <Icona nome="telefono" size={20} /> Cailungo · 0549 994222
+          <Icona nome="telefono" size={20} /> Cailungo: 0549 994222
         </a>
       </section>
 

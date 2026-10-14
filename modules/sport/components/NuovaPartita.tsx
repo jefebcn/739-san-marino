@@ -82,7 +82,7 @@ export default function NuovaPartita({ sport, chiudi }: { sport: Sport[]; chiudi
             </button>
           ))}
         </div>
-        {scelto ? <p className="font-mono text-xs text-testo-2">{scelto.giocatori_per_squadra} contro {scelto.giocatori_per_squadra} · {scelto.giocatori_per_squadra * 2} posti</p> : null}
+        {scelto ? <p className="text-[13px] text-testo-2">{scelto.giocatori_per_squadra} contro {scelto.giocatori_per_squadra}, {scelto.giocatori_per_squadra * 2} posti</p> : null}
       </fieldset>
 
       <div className="grid grid-cols-2 gap-3">

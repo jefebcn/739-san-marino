@@ -173,7 +173,7 @@ export default function MappaTerritorio({ luoghi, focus }: { luoghi: Luogo[]; fo
           ) : (
             <>
               <span className="etichetta">Mappa del territorio</span>
-              <h2>{filtro === "tutti" ? "Tutto quello che c'è" : CATEGORIE[filtro] ?? filtro} <span className="meta">· {conteggio}</span></h2>
+              <h2>{filtro === "tutti" ? "Tutto quello che c'è" : CATEGORIE[filtro] ?? filtro} <span className="meta">{conteggio}</span></h2>
             </>
           )}
         </div>
@@ -187,7 +187,7 @@ export default function MappaTerritorio({ luoghi, focus }: { luoghi: Luogo[]; fo
                 <div className="dati">
                   {dettaglio.indirizzo ? <div><Icona nome="pin" /><span><b>Indirizzo</b><span className="meta">{dettaglio.indirizzo}</span></span></div> : null}
                   {dettaglio.orari ? <div><Icona nome="orologio" /><span><b>Orari</b><span className="meta">{dettaglio.orari}</span></span></div> : null}
-                  {dettaglio.tariffa ? <div><Icona nome="parcheggio" /><span><b>Tariffe{dettaglio.posti ? ` · ${dettaglio.posti} posti` : ""}</b><span className="meta">{dettaglio.tariffa}</span></span></div> : null}
+                  {dettaglio.tariffa ? <div><Icona nome="parcheggio" /><span><b>Tariffe{dettaglio.posti ? `, ${dettaglio.posti} posti` : ""}</b><span className="meta">{dettaglio.tariffa}</span></span></div> : null}
                   {dettaglio.telefono ? <div><Icona nome="telefono" /><span><b>Telefono</b><a className="meta" href={`tel:${dettaglio.telefono.replace(/\s/g, "")}`}>{dettaglio.telefono}</a></span></div> : null}
                 </div>
               ) : null}
@@ -208,7 +208,7 @@ export default function MappaTerritorio({ luoghi, focus }: { luoghi: Luogo[]; fo
                 <span className="punto" style={{ background: COLORI[l.categoria] ?? "#0B1F2E" }} />
                 <div style={{ minWidth: 0 }}>
                   <h3>{l.nome}</h3>
-                  <div className="meta">{CATEGORIE[l.categoria] ?? l.categoria}{l.indirizzo ? ` · ${l.indirizzo}` : ""}</div>
+                  <div className="meta">{CATEGORIE[l.categoria] ?? l.categoria}{l.indirizzo ? `, ${l.indirizzo}` : ""}</div>
                 </div>
                 <a className="vai" href={linkIndicazioni(l.lat, l.lng)} target="_blank" rel="noopener" onClick={(ev) => ev.stopPropagation()}>
                   Vai

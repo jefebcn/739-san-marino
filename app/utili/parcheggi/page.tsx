@@ -27,7 +27,7 @@ export default async function Parcheggi() {
               {p.tariffa || p.posti ? (
                 <span className="meta" style={{ display: "flex", gap: 6, alignItems: "flex-start" }}>
                   <Icona nome="parcheggio" size={14} />
-                  <span>{[p.posti ? `${p.posti} posti` : null, p.tariffa].filter(Boolean).join(" · ")}</span>
+                  <span>{[p.posti ? `${p.posti} posti` : null, p.tariffa].filter(Boolean).join(", ")}</span>
                 </span>
               ) : null}
             </SchedaLuogo>

@@ -18,11 +18,11 @@ type ComeLink = Comune & { href: string; esterno?: boolean };
 type ComeBottone = Comune & Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children" | "className"> & { href?: undefined };
 
 const BASE =
-  "inline-flex select-none items-center justify-center gap-2 rounded-2xl font-semibold tracking-tight transition-[transform,filter,background-color] duration-150 ease-out active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-5 [&_svg]:shrink-0";
+  "inline-flex select-none items-center justify-center gap-2 rounded-xl font-semibold tracking-tight transition-[transform,filter,background-color] duration-150 ease-out active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-5 [&_svg]:shrink-0";
 
 const VARIANTI: Record<Variante, string> = {
-  primario: "bg-metallo text-su-accento shadow-lucido hover:brightness-105",
-  secondario: "border border-linea bg-superficie text-testo hover:bg-superficie-2",
+  primario: "bg-metallo text-su-accento hover:brightness-105",
+  secondario: "bg-superficie text-testo hover:bg-superficie-2",
   fantasma: "text-accento hover:bg-accento-tenue",
 };
 

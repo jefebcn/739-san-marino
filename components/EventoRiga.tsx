@@ -18,7 +18,7 @@ export default function EventoRiga({ e }: { e: Evento }) {
         <h3>{e.titolo}</h3>
         <div className="meta">
           {ora(e.inizio)}
-          {e.luogo ? ` · ${e.luogo.nome}` : e.castello ? ` · ${e.castello.nome}` : ""}
+          {e.luogo ? `, ${e.luogo.nome}` : e.castello ? `, ${e.castello.nome}` : ""}
         </div>
       </div>
       <span className="metri">+{e.metri} m</span>

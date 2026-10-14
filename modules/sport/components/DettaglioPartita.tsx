@@ -97,14 +97,13 @@ export default function DettaglioPartita({ id, sport, castelli }: { id: string; 
     <div className="flex flex-col gap-6">
       <Link href="/sport" className="inline-flex items-center gap-1.5 text-sm font-medium text-accento"><Icona nome="freccia" size={18} /> Partite</Link>
 
-      <section className="relative isolate flex flex-col gap-3 overflow-hidden rounded-3xl border border-linea bg-pannello p-5 text-zinc-50">
-        <span aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_90%_0%,rgba(201,164,92,0.22),transparent_55%)]" />
+      <section className="relative isolate flex flex-col gap-3 overflow-hidden rounded-2xl bg-pannello p-5 text-zinc-50">
         <div className="flex items-center justify-between gap-2">
-          <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-ottone-300">{nomeSport}</span>
-          <span className={`rounded-md px-2 py-0.5 font-mono text-[10.5px] font-semibold uppercase ${s.classe}`}>{s.testo}</span>
+          <span className="text-sm font-medium text-ottone-300">{nomeSport}</span>
+          <span className={`rounded-md px-2 py-0.5 text-xs font-medium ${s.classe}`}>{s.testo}</span>
         </div>
-        <h1 className="text-[28px] font-bold leading-[1.05] tracking-tight">{p.titolo}</h1>
-        <p className="text-[15px] text-zinc-300">{formatData(p.inizio)} · {p.luogo_nome}</p>
+        <h1 className="text-[26px] font-semibold leading-[1.1] tracking-tight">{p.titolo}</h1>
+        <p className="text-[15px] text-zinc-300">{formatData(p.inizio)}<br />{p.luogo_nome}</p>
         <div className="flex items-center gap-3">
           <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/10">
             <span className="block h-full rounded-full bg-metallo" style={{ width: `${Math.min(100, (p.iscritti / p.posti) * 100)}%` }} />
@@ -171,7 +170,7 @@ export default function DettaglioPartita({ id, sport, castelli }: { id: string; 
           <section className="flex flex-col gap-3">
             <div className="flex items-baseline justify-between">
               <h2 className="text-xl font-semibold tracking-tight">Squadre</h2>
-              {probA != null ? <span className="font-mono text-xs text-testo-2">Vittoria A {Math.round(probA * 100)}% · B {Math.round((1 - probA) * 100)}%</span> : null}
+              {probA != null ? <span className="text-[13px] text-testo-2">A vince al {Math.round(probA * 100)}%</span> : null}
             </div>
             <div className="grid grid-cols-2 gap-3">
               <Squadra nome="Squadra A" giocatori={squadraA} castelli={castelli} giocata={p.stato === "giocata"} punti={p.stato === "giocata" ? p.punteggio_a : null} />

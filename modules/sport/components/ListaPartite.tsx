@@ -95,7 +95,7 @@ export default function ListaPartite({ sport }: { sport: Sport[] }) {
           {[0, 1, 2].map((i) => <div key={i} className="h-[92px] animate-pulse rounded-2xl bg-superficie" />)}
         </div>
       ) : ordinate.length === 0 ? (
-        <div className="flex flex-col items-start gap-3 rounded-2xl border border-dashed border-linea p-5">
+        <div className="flex flex-col items-start gap-2 rounded-2xl bg-superficie p-5">
           <p className="text-[15px] font-semibold">Nessuna partita in programma{filtro ? ` di ${nomeSport(filtro).toLowerCase()}` : ""}.</p>
           <p className="text-sm text-testo-2">Organizzane una: chi si iscrive viene messo in squadre bilanciate in base al rating.</p>
         </div>
@@ -107,11 +107,11 @@ export default function ListaPartite({ sport }: { sport: Sport[] }) {
                 href={`/sport/${p.id}`}
                 icona={<Icona nome="sport" />}
                 titolo={p.titolo}
-                descrizione={`${etichettaGiorno(p.inizio)} · ${ora(p.inizio)} · ${p.luogo_nome}`}
+                descrizione={`${etichettaGiorno(p.inizio)} alle ${ora(p.inizio)}, ${p.luogo_nome}`}
                 extra={
-                  p.sono_organizzatore ? <span className="rounded-md bg-accento-tenue px-2 py-0.5 font-mono text-[10.5px] font-semibold uppercase text-accento">Organizzi</span>
-                  : p.sono_iscritto ? <span className="rounded-md bg-ok/15 px-2 py-0.5 font-mono text-[10.5px] font-semibold uppercase text-ok">Iscritto</span>
-                  : <span className="font-mono text-xs text-testo-2">{nomeSport(p.sport_id)}</span>
+                  p.sono_organizzatore ? <span className="text-xs font-medium text-accento">Organizzi tu</span>
+                  : p.sono_iscritto ? <span className="text-xs font-medium text-ok">Iscritto</span>
+                  : <span className="text-xs text-testo-2">{nomeSport(p.sport_id)}</span>
                 }
               >
                 <Posti p={p} />

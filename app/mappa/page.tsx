@@ -14,7 +14,6 @@ export default async function Mappa({ searchParams }: Props) {
     return (
       <>
         <section className="intro">
-          <span className="etichetta">Mappa del territorio</span>
           <h1 className="titolo">Tutto quello che c&apos;è, e dove</h1>
         </section>
         <p className="vuoto">Nessun luogo ancora sulla mappa.</p>

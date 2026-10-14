@@ -21,7 +21,7 @@ export function ProssimaPartenza({ partenze }: { partenze: Partenza[] }) {
   const ora = useAdesso();
   if (!ora) return <span className="grande">--:--</span>;
   const [p] = prossimePartenze(partenze, 1, ora);
-  if (!p) return <span className="grande">—</span>;
+  if (!p) return <span className="text-sm text-testo-2">Nessuna corsa</span>;
   return (
     <span className="grande">
       {p.tra < 60 && !p.domani ? <>{p.tra}<small>min</small></> : <>{oraBreve(p.p.ora)}{p.domani ? <small>domani</small> : null}</>}
@@ -34,7 +34,7 @@ export function TestoProssima({ partenze }: { partenze: Partenza[] }) {
   if (!ora) return <>…</>;
   const [p] = prossimePartenze(partenze, 1, ora);
   if (!p) return <>nessuna corsa in programma</>;
-  return <><b>{oraBreve(p.p.ora)}</b> · {p.domani ? "domani" : testoTra(p.tra)}</>;
+  return <><b>{oraBreve(p.p.ora)}</b>, {p.domani ? "domani" : testoTra(p.tra)}</>;
 }
 
 export default function Partenze({ linee }: { linee: Linea[] }) {
@@ -63,8 +63,8 @@ export default function Partenze({ linee }: { linee: Linea[] }) {
         </div>
       ) : null}
 
-      <section className="pannello topo cornice" aria-live="polite">
-        <span className="etichetta">{linea.tipo === "funivia" ? "Funivia" : "Bus"} · prossima partenza</span>
+      <section className="pannello topo" aria-live="polite">
+        <span className="etichetta">{linea.tipo === "funivia" ? "Prossima funivia" : "Prossimo bus"}</span>
         {direzioni.length > 1 ? (
           <div style={{ display: "flex", gap: 6, flexWrap: "wrap", position: "relative", zIndex: 2 }}>
             {direzioni.map((d) => (

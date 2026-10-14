@@ -20,7 +20,7 @@ export default async function Trasporti() {
           Domenica e festivi c&apos;è SMUVI, il bus a chiamata.
         </span>
         <div className="riga-azioni">
-          <a className="azione-mini premibile" href="tel:0549883700">Prenota SMUVI · 0549 883700</a>
+          <a className="azione-mini premibile" href="tel:0549883700">Prenota SMUVI: 0549 883700</a>
           <a className="azione-mini premibile" href={FONTI.busInterni} target="_blank" rel="noopener">Orari AASS</a>
         </div>
       </section>
