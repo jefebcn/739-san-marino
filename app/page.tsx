@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getClassifica, getEventi, oggiLungo, ora, etichettaGiorno, saluto, giornoNumero, meseBreve } from "@/lib/data";
+import { chiaveGiorno, getClassifica, getEventi, oggiLungo, ora, etichettaGiorno, saluto, giornoNumero, meseBreve } from "@/lib/data";
 import { Icona, type NomeIcona } from "@/components/Icona";
 import { AREE } from "@/lib/aree";
 import Installa from "@/components/Installa";
@@ -13,6 +13,10 @@ import { getPartiteAperte, getSport } from "@/modules/sport/dati";
 import { cielo, getMeteo, gradi } from "@/lib/meteo";
 import { getAvvisi } from "@/lib/avvisi";
 import AvvisiOggi from "@/components/AvvisiOggi";
+import Bollettino from "@/components/oggi/Bollettino";
+import Programma from "@/components/oggi/Programma";
+import { fasciaDi, nelPeriodo } from "@/lib/oggi";
+import { getUltimo } from "@/lib/contenuti";
 
 export const revalidate = 60;
 
@@ -37,15 +41,28 @@ function Titolo({ children, href }: { children: React.ReactNode; href?: string }
 }
 
 export default async function Home() {
-  const [eventi, classifica, farmacie, linee, raccolta, parcheggi, partite, sport, meteo, avvisi] = await Promise.all([
-    getEventi(8), getClassifica(), getFarmacie(), getLinee(), getRaccolta(), getParcheggi(), getPartiteAperte(), getSport(), getMeteo(), getAvvisi(),
+  // La Home cambia con l'ora di San Marino (lib/oggi.ts): mattina il Bollettino, poi il programma della fascia
+  const adesso = new Date();
+  const fascia = fasciaDi(adesso);
+  const mattina = fascia.tipo === "mattina";
+  const [eventi, classifica, farmacie, linee, raccolta, parcheggi, partite, sport, meteo, avvisi, scritto] = await Promise.all([
+    getEventi(40), getClassifica(), getFarmacie(), getLinee(), getRaccolta(), getParcheggi(), getPartiteAperte(), getSport(), getMeteo(), getAvvisi(),
+    mattina ? getUltimo("bollettino", 1) : fascia.tipo === "weekend" ? getUltimo("weekend", 4) : Promise.resolve(null),
   ]);
   const tempo = meteo ? cielo(meteo.codice, meteo.giorno) : null;
   const podio = classifica.slice(0, 3);
   const funivia = linee.find((l) => l.tipo === "funivia");
-  const evidenza = eventi[0];
-  const altri = eventi.slice(1);
   const nomeSport = (id: string) => sport.find((s) => s.id === id)?.nome ?? id;
+  const nomiSport = Object.fromEntries(sport.map((s) => [s.id, s.nome]));
+  const eventiFascia = eventi.filter((e) => nelPeriodo(e, fascia.al, adesso));
+  const partiteFascia = partite.filter((p) => nelPeriodo(p, fascia.al, adesso));
+  // Quello che è già nel Bollettino o nel programma non si ripete più in basso
+  const giaVisti = new Set(eventiFascia.map((e) => e.id));
+  const dopo = eventi.filter((e) => !giaVisti.has(e.id) && new Date(e.inizio) > adesso);
+  const evidenza = !mattina && !eventiFascia.length && !partiteFascia.length ? dopo[0] : undefined;
+  const altri = (evidenza ? dopo.slice(1) : dopo).slice(0, 8);
+  const altrePartite = partite.filter((p) => !partiteFascia.includes(p));
+  const bollettinoDiOggi = scritto && scritto.tipo === "bollettino" && scritto.pubblicato_il && chiaveGiorno(scritto.pubblicato_il) === chiaveGiorno(adesso.toISOString()) ? scritto : null;
   const multipiano = parcheggi.find((p) => p.nome.startsWith("P9"));
 
   return (
@@ -72,7 +89,8 @@ export default async function Home() {
         </Link>
       </section>
 
-      <AvvisiOggi avvisi={avvisi} castelli={classifica} />
+      {/* Di mattina gli avvisi stanno dentro il Bollettino */}
+      {mattina ? null : <AvvisiOggi avvisi={avvisi} castelli={classifica} />}
 
       {/* Chi arriva la prima volta: il marchio, una frase, un'azione */}
       <section className="per-nuovi relative isolate overflow-hidden rounded-2xl bg-pannello p-5 text-zinc-50">
@@ -85,9 +103,26 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Chi torna: l'evento in evidenza, come una locandina */}
-      {evidenza ? (
-        <Link href={`/eventi/${evidenza.id}`} className="per-tornati group grid grid-cols-[minmax(0,1fr)_auto] gap-4 rounded-2xl bg-pannello p-5 text-zinc-50 transition-transform active:scale-[0.99]">
+      {/* La fascia dell'ora: Bollettino, programma di oggi, di stasera o del weekend; se è vuoto, il prossimo evento */}
+      {mattina ? (
+        <Bollettino
+          compatto
+          avvisi={<AvvisiOggi avvisi={avvisi} castelli={classifica} />}
+          dati={{
+            meteo,
+            eventi: eventiFascia,
+            farmacie,
+            funivia: funivia?.partenze.filter((p) => p.direzione === "Borgo Maggiore → Città") ?? [],
+            raccolta,
+            castelli: classifica,
+            partite: partiteFascia,
+            scritto: bollettinoDiOggi,
+          }}
+        />
+      ) : eventiFascia.length || partiteFascia.length || (fascia.tipo === "weekend" && scritto) ? (
+        <Programma titolo={fascia.titolo} eventi={eventiFascia} partite={partiteFascia} nomeSport={nomiSport} rubrica={fascia.tipo === "weekend" ? scritto : null} massimo={fascia.tipo === "weekend" ? 12 : 8} perGiorno={fascia.tipo === "weekend"} />
+      ) : evidenza ? (
+        <Link href={`/eventi/${evidenza.id}`} className="group grid grid-cols-[minmax(0,1fr)_auto] gap-4 rounded-2xl bg-pannello p-5 text-zinc-50 transition-transform active:scale-[0.99]">
           <div className="flex min-w-0 flex-col">
             <span className="text-sm font-medium text-ottone-300">{etichettaGiorno(evidenza.inizio)}, ore {ora(evidenza.inizio)}</span>
             <h2 className="mt-1.5 text-[24px] font-semibold leading-[1.12] tracking-tight">{evidenza.titolo}</h2>
@@ -100,7 +135,7 @@ export default async function Home() {
           </div>
         </Link>
       ) : (
-        <Link href="/sport" className="per-tornati flex flex-col rounded-2xl bg-pannello p-5 text-zinc-50">
+        <Link href="/sport" className="flex flex-col rounded-2xl bg-pannello p-5 text-zinc-50">
           <h2 className="text-[24px] font-semibold leading-tight tracking-tight">Gioca questa settimana</h2>
           <p className="mt-1 text-[15px] text-zinc-400">Calcetto, padel, tennis: squadre bilanciate dal tuo rating.</p>
           <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-ottone-300">Trova una partita <Icona nome="vai" size={16} /></span>
@@ -124,32 +159,34 @@ export default async function Home() {
         <ScegliCastello castelli={classifica} />
       </section>
 
-      <section className="flex flex-col gap-3">
-        <Titolo href="/vivere">Adesso</Titolo>
-        <div className="grid grid-cols-2 gap-2.5">
-          <Link href="/utili/farmacie" className="row-span-2 flex flex-col rounded-2xl bg-superficie p-4 transition-colors hover:bg-superficie-2">
-            <span className="flex items-center gap-2 text-sm font-medium text-testo-2"><Icona nome="farmacia" size={18} /> Farmacie</span>
-            <span className="mt-auto pt-6 [&_.grande]:text-[44px] [&_.grande]:font-medium [&_.grande]:tracking-[-0.05em]"><ConteggioAperte farmacie={farmacie} /></span>
-            <span className="mt-1 text-[13px] leading-snug text-testo-2">Cailungo è aperta 24 ore su 24</span>
-          </Link>
-          <Link href="/utili/trasporti" className="flex flex-col gap-3 rounded-2xl bg-superficie p-4 transition-colors hover:bg-superficie-2">
-            <span className="flex items-center gap-2 text-sm font-medium text-testo-2"><Icona nome="funivia" size={18} /> Funivia</span>
-            {funivia ? <ProssimaPartenza partenze={funivia.partenze.filter((p) => p.direzione === "Borgo Maggiore → Città")} /> : <span className="text-sm">Orari in arrivo</span>}
-          </Link>
-          <Link href="/utili/rifiuti" className="flex flex-col gap-3 rounded-2xl bg-superficie p-4 transition-colors hover:bg-superficie-2">
-            <span className="flex items-center gap-2 text-sm font-medium text-testo-2"><Icona nome="rifiuti" size={18} /> Rifiuti domani</span>
-            <span className="text-[15px] font-semibold leading-snug"><RaccoltaBreve raccolta={raccolta} castelli={classifica} compatto /></span>
-          </Link>
-          <Link href="/utili/parcheggi" className="col-span-2 flex items-center gap-4 rounded-2xl bg-superficie p-4 transition-colors hover:bg-superficie-2">
-            <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-fondo text-testo"><Icona nome="parcheggio" size={24} /></span>
-            <span className="flex min-w-0 flex-col">
-              <span className="text-[15px] font-semibold">{parcheggi.length} parcheggi in città</span>
-              <span className="truncate text-[13px] text-testo-2">{multipiano ? `Il più grande è il ${multipiano.nome.split(" ")[0]}, ${fmt.format(multipiano.posti ?? 0)} posti` : "Posti e tariffe"}</span>
-            </span>
-            <span className="ml-auto text-testo-2"><Icona nome="avanti" size={18} /></span>
-          </Link>
-        </div>
-      </section>
+      {mattina ? null : (
+        <section className="flex flex-col gap-3">
+          <Titolo href="/vivere">Adesso</Titolo>
+          <div className="grid grid-cols-2 gap-2.5">
+            <Link href="/utili/farmacie" className="row-span-2 flex flex-col rounded-2xl bg-superficie p-4 transition-colors hover:bg-superficie-2">
+              <span className="flex items-center gap-2 text-sm font-medium text-testo-2"><Icona nome="farmacia" size={18} /> Farmacie</span>
+              <span className="mt-auto pt-6 [&_.grande]:text-[44px] [&_.grande]:font-medium [&_.grande]:tracking-[-0.05em]"><ConteggioAperte farmacie={farmacie} /></span>
+              <span className="mt-1 text-[13px] leading-snug text-testo-2">Cailungo è aperta 24 ore su 24</span>
+            </Link>
+            <Link href="/utili/trasporti" className="flex flex-col gap-3 rounded-2xl bg-superficie p-4 transition-colors hover:bg-superficie-2">
+              <span className="flex items-center gap-2 text-sm font-medium text-testo-2"><Icona nome="funivia" size={18} /> Funivia</span>
+              {funivia ? <ProssimaPartenza partenze={funivia.partenze.filter((p) => p.direzione === "Borgo Maggiore → Città")} /> : <span className="text-sm">Orari in arrivo</span>}
+            </Link>
+            <Link href="/utili/rifiuti" className="flex flex-col gap-3 rounded-2xl bg-superficie p-4 transition-colors hover:bg-superficie-2">
+              <span className="flex items-center gap-2 text-sm font-medium text-testo-2"><Icona nome="rifiuti" size={18} /> Rifiuti domani</span>
+              <span className="text-[15px] font-semibold leading-snug"><RaccoltaBreve raccolta={raccolta} castelli={classifica} compatto /></span>
+            </Link>
+            <Link href="/utili/parcheggi" className="col-span-2 flex items-center gap-4 rounded-2xl bg-superficie p-4 transition-colors hover:bg-superficie-2">
+              <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-fondo text-testo"><Icona nome="parcheggio" size={24} /></span>
+              <span className="flex min-w-0 flex-col">
+                <span className="text-[15px] font-semibold">{parcheggi.length} parcheggi in città</span>
+                <span className="truncate text-[13px] text-testo-2">{multipiano ? `Il più grande è il ${multipiano.nome.split(" ")[0]}, ${fmt.format(multipiano.posti ?? 0)} posti` : "Posti e tariffe"}</span>
+              </span>
+              <span className="ml-auto text-testo-2"><Icona nome="avanti" size={18} /></span>
+            </Link>
+          </div>
+        </section>
+      )}
 
       {altri.length ? (
         <section className="flex flex-col gap-3">
@@ -171,35 +208,37 @@ export default async function Home() {
         </section>
       ) : null}
 
-      <section className="flex flex-col gap-3">
-        <Titolo href="/sport">Partite</Titolo>
-        {partite.length === 0 ? (
-          <Link href="/sport?nuova=1" className="flex items-center gap-4 rounded-2xl border border-dashed border-linea p-4 transition-colors hover:bg-superficie">
-            <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-accento-tenue text-accento"><Icona nome="sport" size={24} /></span>
-            <span className="flex flex-col">
-              <span className="text-[15px] font-semibold">Nessuna partita in programma</span>
-              <span className="text-[13px] text-testo-2">Organizzane una: ci pensa 739 a fare squadre pari.</span>
-            </span>
-          </Link>
-        ) : (
-          <ul className="divide-y divide-linea overflow-hidden rounded-2xl bg-superficie">
-            {partite.slice(0, 4).map((p) => (
-              <li key={p.id}>
-                <Link href={`/sport/${p.id}`} className="flex items-center gap-3 px-4 py-3.5 transition-colors hover:bg-superficie-2">
-                  <span className="flex min-w-0 flex-1 flex-col">
-                    <span className="truncate text-[15px] font-semibold">{p.titolo}</span>
-                    <span className="truncate text-[13px] text-testo-2">{nomeSport(p.sport_id)}, {etichettaGiorno(p.inizio).toLowerCase()} alle {ora(p.inizio)}</span>
-                  </span>
-                  <span className="shrink-0 text-right">
-                    <span className="block font-mono text-[15px] font-medium">{p.posti - p.iscritti}</span>
-                    <span className="block text-[11px] text-testo-2">posti</span>
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+      {partite.length && !altrePartite.length ? null : (
+        <section className="flex flex-col gap-3">
+          <Titolo href="/sport">Partite</Titolo>
+          {altrePartite.length === 0 ? (
+            <Link href="/sport?nuova=1" className="flex items-center gap-4 rounded-2xl border border-dashed border-linea p-4 transition-colors hover:bg-superficie">
+              <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-accento-tenue text-accento"><Icona nome="sport" size={24} /></span>
+              <span className="flex flex-col">
+                <span className="text-[15px] font-semibold">Nessuna partita in programma</span>
+                <span className="text-[13px] text-testo-2">Organizzane una: ci pensa 739 a fare squadre pari.</span>
+              </span>
+            </Link>
+          ) : (
+            <ul className="divide-y divide-linea overflow-hidden rounded-2xl bg-superficie">
+              {altrePartite.slice(0, 4).map((p) => (
+                <li key={p.id}>
+                  <Link href={`/sport/${p.id}`} className="flex items-center gap-3 px-4 py-3.5 transition-colors hover:bg-superficie-2">
+                    <span className="flex min-w-0 flex-1 flex-col">
+                      <span className="truncate text-[15px] font-semibold">{p.titolo}</span>
+                      <span className="truncate text-[13px] text-testo-2">{nomeSport(p.sport_id)}, {etichettaGiorno(p.inizio).toLowerCase()} alle {ora(p.inizio)}</span>
+                    </span>
+                    <span className="shrink-0 text-right">
+                      <span className="block font-mono text-[15px] font-medium">{p.posti - p.iscritti}</span>
+                      <span className="block text-[11px] text-testo-2">posti</span>
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      )}
 
       {podio.length === 3 ? (
         <section className="flex flex-col gap-3">

@@ -45,8 +45,8 @@ function Elenco({ righe }: { righe: Raccolta[] }) {
   );
 }
 
-/** Riga breve per la riga in Vivere: cosa si raccoglie domani nel tuo castello. */
-export function RaccoltaBreve({ raccolta, castelli, compatto = false }: { raccolta: Raccolta[]; castelli: Castello[]; compatto?: boolean }) {
+/** Riga breve per Vivere e Oggi: cosa si raccoglie domani (o oggi, nel Bollettino) nel tuo castello. */
+export function RaccoltaBreve({ raccolta, castelli, compatto = false, oggi = false }: { raccolta: Raccolta[]; castelli: Castello[]; compatto?: boolean; oggi?: boolean }) {
   const slug = useCastelloScelto();
   const [stato, setStato] = useState<{ dow: number; zona: string | null } | null>(null);
   useEffect(() => setStato({ dow: adessoSM().dow, zona: leggiZona() }), []);
@@ -57,11 +57,11 @@ export function RaccoltaBreve({ raccolta, castelli, compatto = false }: { raccol
   if (righe.length === 0) return <>{compatto ? "Cassonetti stradali" : `${c.nome}: cassonetti stradali, niente porta a porta`}</>;
   const zone = zoneDi(righe);
   const zona = stato.zona && zone.includes(stato.zona) ? stato.zona : zone[0];
-  const domani = frazioniDel(righe.filter((r) => r.zona === zona), (stato.dow % 7) + 1);
+  const domani = frazioniDel(righe.filter((r) => r.zona === zona), oggi ? stato.dow : (stato.dow % 7) + 1);
   if (compatto) return <>{domani.length ? domani.map((r) => nomeFrazione(r.frazione)).join(", ") : "Nessuna raccolta"}</>;
   return (
     <>
-      Domani a {c.nome}{zone.length > 1 ? ` (${zona.toLowerCase()})` : ""}: <b>{domani.length ? domani.map((r) => nomeFrazione(r.frazione)).join(", ") : "niente"}</b>
+      {oggi ? "Oggi" : "Domani"} a {c.nome}{zone.length > 1 ? ` (${zona.toLowerCase()})` : ""}: <b>{domani.length ? domani.map((r) => nomeFrazione(r.frazione)).join(", ") : "niente"}</b>
     </>
   );
 }

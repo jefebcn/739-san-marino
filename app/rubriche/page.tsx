@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Icona } from "@/components/Icona";
 import { TIPI, TIPI_ORDINE, getContenuti, type TipoContenuto } from "@/lib/contenuti";
 
 export const revalidate = 300;
@@ -21,6 +22,17 @@ export default async function Rubriche({ searchParams }: Props) {
         <h1 className="text-[30px] font-semibold leading-tight tracking-[-0.03em]">{tipo ? TIPI[tipo].nome : "Rubriche"}</h1>
         <p className="text-[15px] text-testo-2">{tipo ? TIPI[tipo].riga : "Quello che la redazione di 739 racconta ogni settimana."}</p>
       </section>
+
+      {!tipo || tipo === "bollettino" ? (
+        <Link href="/bollettino" className="flex items-center gap-3.5 rounded-2xl bg-superficie p-4 transition-colors hover:bg-superficie-2">
+          <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-fondo text-testo"><Icona nome="stampa" size={22} /></span>
+          <span className="flex min-w-0 flex-col">
+            <span className="text-[15px] font-semibold">Il Bollettino di oggi</span>
+            <span className="text-[13px] text-testo-2">Meteo, avvisi, eventi e servizi, sempre aggiornato</span>
+          </span>
+          <span className="ml-auto text-testo-2"><Icona nome="avanti" size={18} /></span>
+        </Link>
+      ) : null}
 
       <nav aria-label="Rubriche" className="-mx-[var(--lato)] flex gap-2 overflow-x-auto px-[var(--lato)] pb-1 [scrollbar-width:none]">
         <Link href="/rubriche" aria-current={!tipo ? "page" : undefined} className="h-10 shrink-0 content-center rounded-xl bg-superficie px-3.5 text-sm font-medium text-testo-2 aria-[current=page]:bg-testo aria-[current=page]:text-fondo">

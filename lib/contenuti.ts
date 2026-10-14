@@ -56,6 +56,13 @@ export async function getContenuti({ tipo, limite = 30 }: { tipo?: TipoContenuto
   return (data ?? []) as Contenuto[];
 }
 
+/** L'ultimo uscito di una rubrica, solo se è uscito da meno di `giorni` giorni (per Oggi). */
+export async function getUltimo(tipo: TipoContenuto, giorni: number): Promise<Contenuto | null> {
+  const [c] = await getContenuti({ tipo, limite: 1 });
+  if (!c?.pubblicato_il) return null;
+  return Date.now() - new Date(c.pubblicato_il).getTime() < giorni * 86400_000 ? c : null;
+}
+
 /** «Il castello della settimana: Borgo Maggiore» → «il-castello-della-settimana-borgo-maggiore» */
 export function slugDa(testo: string) {
   return testo

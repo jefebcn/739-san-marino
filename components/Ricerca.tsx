@@ -13,6 +13,7 @@ const FISSE: { href: string; titolo: string; sotto: string; icona: NomeIcona; pa
   { href: "/vivere", titolo: "Numeri di emergenza", sotto: "112, 113, 115, 118", icona: "scudo", parole: "emergenza emergenze 112 113 115 118 polizia ambulanza vigili fuoco" },
   { href: "/mappa", titolo: "Mappa", sotto: "Luoghi e servizi", icona: "mappa", parole: "mappa luoghi dove" },
   { href: "/profile", titolo: "Il mio SMR ID", sotto: "Tessera, QR e profilo", icona: "id", parole: "smr id profilo tessera qr account accesso password" },
+  { href: "/bollettino", titolo: "Il Bollettino", sotto: "Ogni mattina alle 7:39", icona: "stampa", parole: "bollettino oggi notizie mattina meteo avvisi 739" },
   { href: "/rubriche", titolo: "Rubriche", sotto: "Bollettino, castello della settimana, weekend, storie", icona: "storie", parole: "rubriche storie bollettino castello settimana weekend vetta come si fa liste" },
   { href: "/guida", titolo: "Come funziona 739", sotto: "Guida", icona: "utili", parole: "guida aiuto come funziona metri" },
 ];
