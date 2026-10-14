@@ -103,7 +103,7 @@ Ufficio del Turismo (calendario eventi), AASS (funivia, bus, rifiuti, avvisi), I
 
 ### Ordine di lavoro
 
-1. Tabella `importazioni` e pannello `/admin/coda`.
+1. Tabella `importazioni` e pannello `/admin/coda`: fatto il 14/10/2026 (migrazioni 0011 e 0012). Libertas alimenta la coda due volte al giorno.
 2. Importazione OSM programmata nel database: fatta per bagni, fontanelle, ricarica, impianti, cultura e panorami (migrazione 0010); da estendere a ristoranti, bar e negozi.
 3. Estrazione AI degli eventi dal feed di Libertas verso la coda.
 4. «Proponi un evento» e «Segnala un errore».

@@ -14,6 +14,7 @@ import { mioRating } from "@/modules/sport/api";
 import { EtichetteScala, Scala } from "@/components/Quota";
 import { Cime } from "@/components/Logo";
 import { livello } from "@/lib/quota";
+import { conteggioBozze, sonoAmministratore } from "@/modules/coda/api";
 
 function Intestazione({ titolo, testo }: { titolo: string; testo: string }) {
   return (
@@ -61,6 +62,16 @@ export default function Profilo({ castelli }: { castelli: Castello[] }) {
   const idUtente = utente?.id;
   useEffect(() => {
     if (idUtente) mioRating(idUtente).then(setRating);
+  }, [idUtente]);
+  // Gli amministratori vedono il collegamento alla coda delle bozze, con quante ne aspettano
+  const [daVedere, setDaVedere] = useState<number | null>(null);
+  useEffect(() => {
+    if (!idUtente) return;
+    sonoAmministratore().then(async (si) => {
+      if (!si) return;
+      const { conteggio } = await conteggioBozze();
+      setDaVedere(conteggio?.nuovo ?? 0);
+    });
   }, [idUtente]);
 
   if (stato === "caricamento") {
@@ -147,6 +158,15 @@ export default function Profilo({ castelli }: { castelli: Castello[] }) {
       <section className="flex flex-col gap-3">
         <h2 className="text-xl font-semibold tracking-tight">Account</h2>
         <ActionCard icona={<Icona nome="persona" />} tono="neutro" titolo={utente.email ?? "Email"} descrizione="Email di accesso" />
+        {daVedere !== null ? (
+          <ActionCard
+            href="/admin/coda"
+            icona={<Icona nome="stampa" />}
+            tono="neutro"
+            titolo="Coda delle bozze"
+            descrizione={daVedere === 1 ? "1 bozza da vedere" : `${daVedere} bozze da vedere`}
+          />
+        ) : null}
         <PrimaryButton variante="secondario" pieno onClick={() => esci()}>Esci</PrimaryButton>
         <p className="text-center text-xs text-testo-2">SMR ID è la tessera digitale di 739: non è un documento d&apos;identità.</p>
       </section>

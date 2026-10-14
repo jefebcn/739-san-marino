@@ -32,10 +32,13 @@ export type Evento = {
   organizzatore: string | null;
   luogo: { id: string; nome: string; lat: number; lng: number } | null;
   castello: { id: number; slug: string; nome: string; colore: string } | null;
+  /** Da dove viene l'evento, se è arrivato dalla coda delle bozze (es. "Libertas") */
+  fonte: string | null;
+  link_fonte: string | null;
 };
 
 const CAMPI_EVENTO =
-  "id, titolo, descrizione, inizio, fine, metri, organizzatore, luogo:luoghi(id, nome, lat, lng), castello:castelli(id, slug, nome, colore)";
+  "id, titolo, descrizione, inizio, fine, metri, organizzatore, fonte, link_fonte, luogo:luoghi(id, nome, lat, lng), castello:castelli(id, slug, nome, colore)";
 
 const TZ = "Europe/San_Marino";
 

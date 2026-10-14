@@ -67,6 +67,12 @@ export default async function DettaglioEvento({ params }: Props) {
           </a>
         ) : null}
       </section>
+
+      {e.fonte ? (
+        <p className="fonte">
+          Fonte: {e.link_fonte ? <a href={e.link_fonte} target="_blank" rel="noopener">{e.fonte}</a> : e.fonte}
+        </p>
+      ) : null}
     </>
   );
 }

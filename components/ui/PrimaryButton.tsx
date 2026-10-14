@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 
-type Variante = "primario" | "secondario" | "fantasma";
+type Variante = "primario" | "secondario" | "interno" | "fantasma";
 type Dimensione = "md" | "sm";
 
 type Comune = {
@@ -23,6 +23,8 @@ const BASE =
 const VARIANTI: Record<Variante, string> = {
   primario: "bg-metallo text-su-accento hover:brightness-105",
   secondario: "bg-superficie text-testo hover:bg-superficie-2",
+  // Dentro una scheda bg-superficie, dove il secondario sparirebbe
+  interno: "bg-fondo text-testo hover:bg-superficie-2",
   fantasma: "text-accento hover:bg-accento-tenue",
 };
 
