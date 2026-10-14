@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { Castello } from "@/lib/data";
-import { testoSu } from "@/lib/colore";
+import { EmblemaCastello } from "./LogoCastello";
 import { impostaCastello, useCastelloScelto } from "./Castello";
 import { Icona } from "./Icona";
 
@@ -64,7 +64,8 @@ export default function SceltaCastello({ classifica }: { classifica: Castello[] 
                     }}
                     className="flex w-full items-center gap-3 rounded-xl border border-transparent bg-superficie px-3 py-2.5 text-left aria-pressed:border-accento"
                   >
-                    <span className="grid size-9 shrink-0 place-items-center rounded-xl font-mono text-xs font-medium" style={{ background: x.colore, color: testoSu(x.colore) }}>{i + 1}</span>
+                    <span className="w-5 shrink-0 text-center font-mono text-xs font-medium text-testo-2">{i + 1}</span>
+                    <EmblemaCastello c={x} className="size-14" />
                     <span className="flex-1 text-[15px] font-medium">{x.nome}</span>
                     <span className="font-mono text-xs text-testo-2">{fmt.format(x.metri ?? 0)} m</span>
                   </button>

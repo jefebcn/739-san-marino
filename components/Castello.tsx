@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { Castello } from "@/lib/data";
+import { EmblemaCastello } from "./LogoCastello";
 
 export const CHIAVE_CASTELLO = "739-castello";
 export const EVENTO_CASTELLO = "739-castello-cambiato";
@@ -51,7 +52,7 @@ export function ScegliCastello({ castelli }: { castelli: Castello[] }) {
             document.querySelector(".main")?.scrollTo({ top: 0, behavior: "smooth" });
           }}
         >
-          <span className="punto" style={{ background: c.colore }} />
+          <EmblemaCastello c={c} className="size-14" />
           {c.nome}
         </button>
       ))}

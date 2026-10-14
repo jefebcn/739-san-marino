@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getClassifica, getEventi, getLuoghi, CATEGORIE } from "@/lib/data";
 import EventoRiga from "@/components/EventoRiga";
 import { Icona } from "@/components/Icona";
+import { LogoCastello, haLogo } from "@/components/LogoCastello";
 
 export const revalidate = 60;
 
@@ -27,13 +28,22 @@ export default async function Castello({ params }: Props) {
 
   return (
     <>
-      <section className="copertina topo" style={{ background: `linear-gradient(165deg, #141416 40%, ${c.colore})` }}>
+      <section className={`copertina ${haLogo(c.slug) ? "bg-black" : "topo bg-[#141416]"}`}>
         <Link href="/castelli" className="indietro"><Icona nome="freccia" size={18} /> Castelli</Link>
-        <span className="meta">Castello di San Marino</span>
-        <h1 className="titolo">{c.nome}</h1>
-        <div style={{ display: "flex", gap: 18, alignItems: "baseline" }}>
-          <span style={{ fontFamily: "var(--mono)", fontSize: 44, fontWeight: 700, letterSpacing: "-0.05em", lineHeight: 1 }}>{posizione + 1}°</span>
-          <span style={{ fontFamily: "var(--mono)", fontSize: 14 }}>{fmt.format(c.metri ?? 0)} m in classifica</span>
+        {haLogo(c.slug) ? (
+          <>
+            <LogoCastello c={c} className="mx-auto w-full max-w-[400px]" />
+            <h1 className="sr-only">{c.nome}</h1>
+          </>
+        ) : (
+          <>
+            <span className="meta">Castello di San Marino</span>
+            <h1 className="titolo">{c.nome}</h1>
+          </>
+        )}
+        <div className="flex items-baseline justify-between gap-4">
+          <span className="font-mono text-[44px] leading-none font-medium tracking-[-0.05em]">{posizione + 1}°</span>
+          <span className="font-mono text-sm text-white/80">{fmt.format(c.metri ?? 0)} m in classifica</span>
         </div>
       </section>
 

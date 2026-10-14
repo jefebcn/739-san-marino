@@ -5,6 +5,7 @@ import { AREE } from "@/lib/aree";
 import Installa from "@/components/Installa";
 import { Completo } from "@/components/Logo";
 import { ScegliCastello } from "@/components/Castello";
+import { EmblemaCastello } from "@/components/LogoCastello";
 import { ProssimaPartenza } from "@/components/Partenze";
 import { ConteggioAperte } from "@/components/Farmacie";
 import { RaccoltaBreve } from "@/components/Raccolta";
@@ -265,7 +266,7 @@ export default async function Home() {
                 <div className="podio">
                   {[podio[1], podio[0], podio[2]].map((c) => (
                     <Link key={c.id} href={`/castelli/${c.slug}`} className="premibile">
-                      <i aria-hidden="true" style={{ background: c.colore }} />
+                      <EmblemaCastello c={c} className="mb-auto aspect-square w-full" />
                       <em>{classifica.indexOf(c) + 1}</em>
                       <b>{c.nome}</b>
                       <span>{fmt.format(c.metri ?? 0)} m</span>

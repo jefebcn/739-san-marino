@@ -230,7 +230,7 @@
 .podio b { font-size: 15px; line-height: 1.15; font-weight: 600; }
 .podio span { font-family: var(--mono); font-size: 11px; opacity: 0.9; }
 .podio em { font-family: var(--mono); font-style: normal; font-size: 24px; font-weight: 500; line-height: 1; letter-spacing: -0.04em; }
-.riga { display: grid; grid-template-columns: 24px 14px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--linea); }
+.riga { display: grid; grid-template-columns: 24px auto minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--linea); }
 li:last-child > .riga { border-bottom: 0; }
 .riga .pos { font-family: var(--mono); font-size: 13px; font-weight: 500; color: var(--testo); }
 .punto { width: 14px; height: 14px; border-radius: 4px; display: inline-block; flex: none; }

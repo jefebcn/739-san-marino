@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getClassifica } from "@/lib/data";
+import { EmblemaCastello } from "@/components/LogoCastello";
 
 export const revalidate = 60;
 
@@ -27,7 +28,7 @@ export default async function Castelli() {
             <div className="podio" aria-label="Podio">
               {[podio[1], podio[0], podio[2]].map((c) => (
                 <Link key={c.id} href={`/castelli/${c.slug}`} className="premibile">
-                <i aria-hidden="true" style={{ background: c.colore }} />
+                  <EmblemaCastello c={c} className="mb-auto aspect-square w-full" />
                   <em>{classifica.indexOf(c) + 1}</em>
                   <b>{c.nome}</b>
                   <span>{fmt.format(c.metri ?? 0)} m</span>
@@ -41,7 +42,7 @@ export default async function Castelli() {
               <li key={c.id}>
                 <Link href={`/castelli/${c.slug}`} className="riga premibile">
                   <span className="pos">{i + 1}</span>
-                  <span className="punto" style={{ background: c.colore }} />
+                  <EmblemaCastello c={c} className="size-14" />
                   <div style={{ minWidth: 0 }}>
                     <div style={{ fontWeight: 600 }}>{c.nome}</div>
                     <div className="barra">
