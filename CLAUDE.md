@@ -75,6 +75,7 @@ L'app si adatta allo schermo che la apre: a tutto schermo sul telefono (rispetta
 - in fondo il piè di pagina (`components/PiedePagina.tsx`, largo come la testata, nascosto sulla mappa);
 - i pannelli dal basso (castello, segnala un errore) diventano finestre al centro;
 - le pagine restano nella colonna da 640 px finché non sono pronte per lo schermo largo: allora contengono un elemento con classe `larga` e `.main:has(.larga)` porta `--lato` a `--lato-largo` (colonna `--larga`, 1180 px). Dentro, le griglie a più colonne si scrivono con `lg:`.
+- Oggi su computer: programma della fascia, prossimi eventi (in griglia) e partite a sinistra; castello (per chi arriva), «Adesso», castelli in vetta e 112 a destra. Sul telefono l'ordine resta quello di sempre grazie a `order-*` sulle colonne `contents`; la fila delle aree e la ricerca nella pagina spariscono perché sono nella testata.
 
 La Home sceglie la versione con l'attributo `data-utente` su `<html>` ("nuovo" o "tornato"), impostato da uno script in `app/layout.tsx` prima che la pagina compaia, per evitare lampeggi.
 
