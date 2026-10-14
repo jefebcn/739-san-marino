@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import Testo from "@/components/Testo";
 import { Icona } from "@/components/Icona";
 import { TIPI, getContenuto } from "@/lib/contenuti";
@@ -37,6 +37,8 @@ export default async function Storia({ params }: Props) {
   const { slug } = await params;
   const c = await getContenuto(slug);
   if (!c) notFound();
+  // Gli speciali hanno la loro pagina, con programma per giorno, mappa e parcheggi
+  if (c.tipo === "speciale") redirect(`/speciali/${c.slug}`);
   const [extra, castelli] = await Promise.all([collegati(c.luoghi, c.eventi), getClassifica()]);
   const castello = castelli.find((x) => x.id === c.castello_id);
   const tipo = TIPI[c.tipo];

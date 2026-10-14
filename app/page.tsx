@@ -19,6 +19,8 @@ import Bollettino from "@/components/oggi/Bollettino";
 import Programma from "@/components/oggi/Programma";
 import { fasciaDi, nelPeriodo } from "@/lib/oggi";
 import { getUltimo } from "@/lib/contenuti";
+import { getSpecialeInCorso } from "@/lib/speciali";
+import SpecialeOggi from "@/components/oggi/SpecialeOggi";
 
 export const revalidate = 60;
 
@@ -47,9 +49,10 @@ export default async function Home() {
   const adesso = new Date();
   const fascia = fasciaDi(adesso);
   const mattina = fascia.tipo === "mattina";
-  const [eventi, classifica, farmacie, linee, raccolta, parcheggi, partite, sport, meteo, avvisi, scritto] = await Promise.all([
+  const [eventi, classifica, farmacie, linee, raccolta, parcheggi, partite, sport, meteo, avvisi, scritto, speciale] = await Promise.all([
     getEventi(40), getClassifica(), getFarmacie(), getLinee(), getRaccolta(), getParcheggi(), getPartiteAperte(), getSport(), getMeteo(), getAvvisi(),
     mattina ? getUltimo("bollettino", 1) : fascia.tipo === "weekend" ? getUltimo("weekend", 4) : Promise.resolve(null),
+    getSpecialeInCorso(),
   ]);
   const tempo = meteo ? cielo(meteo.codice, meteo.giorno) : null;
   const podio = classifica.slice(0, 3);
@@ -90,6 +93,9 @@ export default async function Home() {
           Cerca eventi, luoghi e servizi
         </Link>
       </section>
+
+      {/* Uno speciale in corso (Natale delle Meraviglie, Giornate Medievali…) sta in cima, sopra a tutto il resto */}
+      {speciale ? <SpecialeOggi s={speciale} /> : null}
 
       {/* Di mattina gli avvisi stanno dentro il Bollettino */}
       {mattina ? null : <AvvisiOggi avvisi={avvisi} castelli={classifica} />}
