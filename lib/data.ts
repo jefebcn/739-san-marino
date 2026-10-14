@@ -207,4 +207,5 @@ export const CATEGORIE: Record<string, string> = {
   bagni: "Bagni pubblici",
   acqua: "Fontanelle",
   ricarica: "Ricarica auto",
+  avviso: "Avvisi",
 };

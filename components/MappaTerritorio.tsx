@@ -20,6 +20,7 @@ const COLORI: Record<string, string> = {
   bagni: "#9AA0A6",
   acqua: "#4FC3F7",
   ricarica: "#7CB342",
+  avviso: "#E8573A",
 };
 
 const CENTRO: [number, number] = [12.4578, 43.9424];
@@ -230,8 +231,8 @@ export default function MappaTerritorio({ luoghi, focus }: { luoghi: Luogo[]; fo
                 <a className="bottone primario piccolo premibile" href={linkIndicazioni(dettaglio.lat, dettaglio.lng)} target="_blank" rel="noopener">
                   <Icona nome="indicazioni" size={18} /> Indicazioni
                 </a>
-                <a className="bottone secondario piccolo premibile" href={`/luoghi/${dettaglio.id}`}>
-                  Apri la scheda
+                <a className="bottone secondario piccolo premibile" href={dettaglio.categoria === "avviso" ? `/vivere/avvisi#${dettaglio.id}` : `/luoghi/${dettaglio.id}`}>
+                  {dettaglio.categoria === "avviso" ? "Tutti gli avvisi" : "Apri la scheda"}
                 </a>
               </div>
               <button type="button" className="w-fit self-center py-2 text-sm font-medium text-testo-2" onClick={() => setScelto(undefined)}>

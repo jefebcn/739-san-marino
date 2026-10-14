@@ -6,6 +6,7 @@ import { ConteggioAperte } from "@/components/Farmacie";
 import { getClassifica, getLuoghi } from "@/lib/data";
 import { getFarmacie, getLinee, getParcheggi, getRaccolta } from "@/lib/servizi";
 import { cielo, getMeteo, gradi } from "@/lib/meteo";
+import { getAvvisi } from "@/lib/avvisi";
 
 export const revalidate = 60;
 
@@ -36,9 +37,10 @@ function Emergenze() {
 }
 
 export default async function Vivere() {
-  const [farmacie, linee, parcheggi, raccolta, castelli, meteo, luoghi] = await Promise.all([
-    getFarmacie(), getLinee(), getParcheggi(), getRaccolta(), getClassifica(), getMeteo(), getLuoghi(),
+  const [farmacie, linee, parcheggi, raccolta, castelli, meteo, luoghi, avvisi] = await Promise.all([
+    getFarmacie(), getLinee(), getParcheggi(), getRaccolta(), getClassifica(), getMeteo(), getLuoghi(), getAvvisi(),
   ]);
+  const attenzione = avvisi.filter((a) => a.gravita === "attenzione").length;
   const funivia = linee.find((l) => l.tipo === "funivia");
   const bus = linee.filter((l) => l.tipo === "bus");
   const n = (c: string) => luoghi.filter((l) => l.categoria === c).length;
@@ -48,6 +50,9 @@ export default async function Vivere() {
       slug="vivere"
       testa={<Emergenze />}
       stato={{
+        avvisi: avvisi.length ? (
+          <><b className="font-mono font-medium text-testo">{avvisi.length}</b> {avvisi.length === 1 ? "avviso in corso" : "avvisi in corso"}{attenzione ? <span className="text-segnale">, {attenzione} di attenzione</span> : null}</>
+        ) : "Nessun avviso in corso",
         salute: farmacie.length ? <ConteggioAperte farmacie={farmacie} testo /> : undefined,
         trasporti: funivia ? <>Funivia <TestoProssima partenze={funivia.partenze} /></> : bus.length ? `${bus.length} linee bus` : undefined,
         parcheggi: parcheggi.length ? <><b className="font-mono font-medium text-testo">{parcheggi.length}</b> parcheggi con tariffe e indicazioni</> : undefined,

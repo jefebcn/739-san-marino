@@ -36,7 +36,7 @@ export const AREE: Area[] = [
     icona: "utili",
     href: "/vivere",
     sezioni: [
-      { slug: "avvisi", nome: "Avvisi e chiusure", descrizione: "Strade chiuse, servizi sospesi, allerte meteo.", icona: "avvisi", parole: "avvisi chiusure strade lavori allerta" },
+      { slug: "avvisi", nome: "Avvisi e chiusure", descrizione: "Strade chiuse, servizi sospesi, allerte meteo.", icona: "avvisi", href: "/vivere/avvisi", categorie: ["avviso"], parole: "avvisi chiusure strade lavori allerta" },
       { slug: "uffici", nome: "Uffici pubblici", descrizione: "Dove andare e cosa portare per ogni pratica.", icona: "uffici", parole: "uffici pubblici pratiche documenti carta identita anagrafe" },
       { slug: "salute", nome: "Salute e farmacie", descrizione: "Farmacie aperte adesso, ospedale e centri sanitari.", icona: "farmacia", href: "/utili/farmacie", categorie: ["farmacia"], parole: "farmacia farmacie medicine salute ospedale cailungo" },
       { slug: "trasporti", nome: "Bus e funivia", descrizione: "Prossime partenze e tabellone.", icona: "funivia", href: "/utili/trasporti", categorie: ["trasporti"], parole: "funivia bus autobus rimini orari trasporti" },

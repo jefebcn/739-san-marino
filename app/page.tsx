@@ -11,6 +11,8 @@ import PrimaryButton from "@/components/ui/PrimaryButton";
 import { getFarmacie, getLinee, getParcheggi, getRaccolta } from "@/lib/servizi";
 import { getPartiteAperte, getSport } from "@/modules/sport/dati";
 import { cielo, getMeteo, gradi } from "@/lib/meteo";
+import { getAvvisi } from "@/lib/avvisi";
+import AvvisiOggi from "@/components/AvvisiOggi";
 
 export const revalidate = 60;
 
@@ -35,8 +37,8 @@ function Titolo({ children, href }: { children: React.ReactNode; href?: string }
 }
 
 export default async function Home() {
-  const [eventi, classifica, farmacie, linee, raccolta, parcheggi, partite, sport, meteo] = await Promise.all([
-    getEventi(8), getClassifica(), getFarmacie(), getLinee(), getRaccolta(), getParcheggi(), getPartiteAperte(), getSport(), getMeteo(),
+  const [eventi, classifica, farmacie, linee, raccolta, parcheggi, partite, sport, meteo, avvisi] = await Promise.all([
+    getEventi(8), getClassifica(), getFarmacie(), getLinee(), getRaccolta(), getParcheggi(), getPartiteAperte(), getSport(), getMeteo(), getAvvisi(),
   ]);
   const tempo = meteo ? cielo(meteo.codice, meteo.giorno) : null;
   const podio = classifica.slice(0, 3);
@@ -69,6 +71,8 @@ export default async function Home() {
           Cerca eventi, luoghi e servizi
         </Link>
       </section>
+
+      <AvvisiOggi avvisi={avvisi} castelli={classifica} />
 
       {/* Chi arriva la prima volta: il marchio, una frase, un'azione */}
       <section className="per-nuovi relative isolate overflow-hidden rounded-2xl bg-pannello p-5 text-zinc-50">
