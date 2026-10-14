@@ -103,6 +103,10 @@ Tabelle: `castelli` (i 9 castelli con colore), `profili`, `luoghi`, `eventi`, `c
 5. Versione inglese.
 6. Dominio 739sanmarino.com quando Alex lo acquista.
 
+## Fonti di dati
+
+L'elenco dei siti da cui prendere informazioni, con quelli già usati, come collegare gli altri e cosa richiede un accordo, è in `docs/fonti.md`. Non leggere in automatico i siti che lo vietano nel loro robots.txt.
+
 ## Regole di lavoro
 
 - Prima di pubblicare: `npm run build` deve passare.
