@@ -4,7 +4,7 @@ import {
   Briefcase,
   Bus,
   CableCar,
-  CalendarBlank,
+  CalendarDots,
   CalendarPlus,
   CaretLeft,
   CaretRight,
@@ -31,10 +31,11 @@ import {
 } from "@phosphor-icons/react/dist/ssr";
 
 // Una sola famiglia di icone (Phosphor), con nomi italiani usati in tutta l'app.
+// Stile scelto da Alex sui set di riferimento: icone piene con angoli arrotondati (peso "fill").
 const ICONE = {
   home: House,
   mappa: MapTrifold,
-  eventi: CalendarBlank,
+  eventi: CalendarDots,
   castelli: Trophy,
   utili: Lifebuoy,
   orologio: Clock,
@@ -64,7 +65,10 @@ const ICONE = {
 
 export type NomeIcona = keyof typeof ICONE;
 
-export function Icona({ nome, size = 24, peso = "regular" }: { nome: NomeIcona; size?: number; peso?: IconWeight }) {
+// Frecce, "+" e lente sono segni a linea: piene diventerebbero triangoli o macchie, quindi restano a tratto spesso
+const LINEARI = new Set<NomeIcona>(["freccia", "avanti", "vai", "piu", "cerca"]);
+
+export function Icona({ nome, size = 24, peso }: { nome: NomeIcona; size?: number; peso?: IconWeight }) {
   const Componente = ICONE[nome];
-  return <Componente size={size} weight={peso} aria-hidden="true" />;
+  return <Componente size={size} weight={peso ?? (LINEARI.has(nome) ? "bold" : "fill")} aria-hidden="true" />;
 }

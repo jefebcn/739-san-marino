@@ -16,7 +16,7 @@ export default function BottomNav({ voci, centro }: { voci: VoceNav[]; centro?: 
   const attivo = (href: string) => (href === "/" ? path === "/" : path === href || path.startsWith(href + "/"));
   const meta = Math.ceil(voci.length / 2);
 
-  // La voce attiva si riconosce dall'icona piena e dal testo chiaro, senza riquadri colorati
+  // Icone sempre piene: la voce attiva si riconosce dal colore chiaro, le altre restano attenuate
   const voce = (v: VoceNav) => {
     const qui = attivo(v.href);
     return (
@@ -24,9 +24,9 @@ export default function BottomNav({ voci, centro }: { voci: VoceNav[]; centro?: 
         key={v.href}
         href={v.href}
         aria-current={qui ? "page" : undefined}
-        className="flex min-h-[52px] flex-col items-center justify-center gap-1 text-[11px] font-medium text-testo-2 transition-colors aria-[current=page]:text-testo"
+        className="flex min-h-[52px] flex-col items-center justify-center gap-1 text-[11px] font-medium text-testo-2/70 transition-colors aria-[current=page]:text-testo"
       >
-        <Icona nome={v.icona} size={24} peso={qui ? "fill" : "regular"} />
+        <Icona nome={v.icona} size={24} />
         {v.nome}
       </Link>
     );

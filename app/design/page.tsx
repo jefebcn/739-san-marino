@@ -99,7 +99,7 @@ export default function DesignSystem() {
 
       <section className="flex flex-col gap-3">
         <h2 className="text-lg font-semibold">BottomNav</h2>
-        <p className="text-sm text-testo-2">È la barra in fondo a questa pagina: vetro smerigliato, voce attiva con icona piena. Voci: Home, Mappa, il + centrale, Sport, Eventi.</p>
+        <p className="text-sm text-testo-2">È la barra in fondo a questa pagina: vetro smerigliato, icone piene, voce attiva in chiaro. Voci: Home, Mappa, il + centrale, Sport, Eventi.</p>
       </section>
     </div>
   );

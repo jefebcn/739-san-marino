@@ -32,7 +32,7 @@ export default function AzioniRapide() {
         onClick={() => setAperto(true)}
         className="-mt-4 grid size-14 place-items-center rounded-full bg-metallo text-su-accento ring-[5px] ring-fondo transition-transform duration-150 active:scale-90"
       >
-        <Icona nome="piu" size={26} peso="bold" />
+        <Icona nome="piu" size={26} />
       </button>
 
       {aperto ? (

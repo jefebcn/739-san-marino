@@ -306,7 +306,7 @@ li:last-child > .riga { border-bottom: 0; }
 .spia::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #3DDC5B; box-shadow: 0 0 0 4px rgba(61, 220, 91, 0.2); animation: pulsa 2s ease-in-out infinite; }
 .spia.spenta { color: var(--pannello-testo); }
 .spia.spenta::before { background: var(--testo-2); box-shadow: none; animation: none; }
-.spia-mini { display: inline-flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 11.5px; font-weight: 600; color: var(--testo-2); }
+.spia-mini { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; color: var(--testo-2); }
 .spia-mini::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--testo-2); opacity: 0.6; }
 .spia-mini.aperta { color: var(--ok); }
 .spia-mini.aperta::before { background: #2BB24C; opacity: 1; }

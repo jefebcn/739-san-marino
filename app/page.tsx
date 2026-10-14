@@ -101,7 +101,7 @@ export default async function Home() {
         {CATEGORIE.map((c) => (
           <Link key={c.href} href={c.href} className="group flex flex-col items-center gap-1.5 text-center">
             <span className="grid size-14 place-items-center rounded-2xl bg-superficie text-testo transition-colors group-hover:bg-superficie-2 group-active:scale-95">
-              <Icona nome={c.icona} size={26} peso="duotone" />
+              <Icona nome={c.icona} size={26} />
             </span>
             <span className="text-xs font-medium text-testo-2">{c.nome}</span>
           </Link>
@@ -118,7 +118,7 @@ export default async function Home() {
         <Titolo href="/utili">Adesso</Titolo>
         <div className="grid grid-cols-2 gap-2.5">
           <Link href="/utili/farmacie" className="row-span-2 flex flex-col rounded-2xl bg-superficie p-4 transition-colors hover:bg-superficie-2">
-            <span className="flex items-center gap-2 text-sm font-medium text-testo-2"><Icona nome="farmacia" size={18} peso="fill" /> Farmacie</span>
+            <span className="flex items-center gap-2 text-sm font-medium text-testo-2"><Icona nome="farmacia" size={18} /> Farmacie</span>
             <span className="mt-auto pt-6 [&_.grande]:text-[44px] [&_.grande]:font-medium [&_.grande]:tracking-[-0.05em]"><ConteggioAperte farmacie={farmacie} /></span>
             <span className="mt-1 text-[13px] leading-snug text-testo-2">Cailungo è aperta 24 ore su 24</span>
           </Link>
@@ -210,7 +210,7 @@ export default async function Home() {
       <Installa />
 
       <a href="tel:112" className="flex items-center gap-4 rounded-2xl bg-segnale p-4 text-white transition-transform active:scale-[0.99]">
-        <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-white/15"><Icona nome="telefono" size={22} peso="fill" /></span>
+        <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-white/15"><Icona nome="telefono" size={22} /></span>
         <span className="flex flex-col">
           <span className="text-[15px] font-semibold">Emergenza</span>
           <span className="text-[13px] text-white/80">Tocca per chiamare</span>
