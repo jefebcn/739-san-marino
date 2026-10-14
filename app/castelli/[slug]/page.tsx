@@ -28,7 +28,7 @@ export default async function Castello({ params }: Props) {
 
   return (
     <>
-      <section className={`copertina ${haLogo(c.slug) ? "bg-black" : "topo bg-[#141416]"}`}>
+      <section className={`copertina ${haLogo(c.slug) ? "bg-pannello" : "topo bg-pannello"}`}>
         <Link href="/castelli" className="indietro"><Icona nome="freccia" size={18} /> Castelli</Link>
         {haLogo(c.slug) ? (
           <>

@@ -105,15 +105,15 @@ export default async function Home() {
       {mattina ? null : <AvvisiOggi avvisi={avvisi} castelli={classifica} />}
 
       {/* Chi arriva la prima volta: il marchio, una frase, un'azione */}
-      <section className="per-nuovi flex flex-col gap-5 rounded-2xl bg-pannello p-5 text-zinc-50 lg:flex-row-reverse lg:items-center lg:justify-between lg:p-8">
-        {/* Il pannello è scuro anche col tema chiaro: il logo resta bianco */}
-        <Completo etichetta="739 San Marino" className="h-24 w-auto self-start text-zinc-50 lg:h-36 lg:self-center" />
+      <section className="per-nuovi flex flex-col gap-5 rounded-2xl bg-superficie p-5 text-testo lg:flex-row-reverse lg:items-center lg:justify-between lg:p-8">
+        {/* Il logo prende il colore del testo: bianco sul tema scuro, nero sul chiaro */}
+        <Completo etichetta="739 San Marino" className="h-24 w-auto self-start text-testo lg:h-36 lg:self-center" />
         <div className="flex flex-col">
           <h2 className="max-w-[15ch] text-[26px] font-semibold leading-[1.1] tracking-tight lg:max-w-none lg:text-[32px]">Tutto San Marino, in un&apos;app</h2>
-          <p className="mt-2 max-w-[30ch] text-[15px] leading-relaxed text-zinc-400 lg:max-w-[52ch]">Eventi, sport e servizi dei nove castelli, con la tua tessera digitale.</p>
+          <p className="mt-2 max-w-[30ch] text-[15px] leading-relaxed text-testo-2 lg:max-w-[52ch]">Eventi, sport e servizi dei nove castelli, con la tua tessera digitale.</p>
           <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-3">
             <PrimaryButton href="/profile">Crea il tuo SMR ID</PrimaryButton>
-            <Link href="/guida" className="text-sm font-medium text-zinc-300 hover:text-white">Come funziona</Link>
+            <Link href="/guida" className="text-sm font-medium text-testo-2 hover:text-testo">Come funziona</Link>
           </div>
         </div>
       </section>

@@ -19,7 +19,7 @@ export default function MappaPunto({ lat, lng, nome, categoria }: { lat: number;
       if (annullato || !box.current) return;
       // Il worker è copiato in public/ da scripts/worker-mappa.mjs
       ml.setWorkerUrl(new URL("/maplibre-gl-worker.mjs", window.location.origin).href);
-      const scuro = !window.matchMedia("(prefers-color-scheme: light)").matches;
+      const scuro = window.matchMedia("(prefers-color-scheme: dark)").matches;
       const m = new ml.Map({
         container: box.current,
         style: scuro ? STILE_SCURO : STILE_CHIARO,
