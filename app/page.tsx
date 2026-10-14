@@ -276,7 +276,7 @@ export default async function Home() {
                 <div className="podio">
                   {[podio[1], podio[0], podio[2]].map((c) => (
                     <Link key={c.id} href={`/castelli/${c.slug}`} className="premibile">
-                      <EmblemaCastello c={c} className="mb-auto aspect-square w-full" />
+                      <EmblemaCastello c={c} className="aspect-square w-full" />
                       <em>{classifica.indexOf(c) + 1}</em>
                       <b>{c.nome}</b>
                       <span>{fmt.format(c.metri ?? 0)} m</span>

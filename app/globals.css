@@ -233,13 +233,12 @@ nav a:not([aria-current="page"]) > .icona-colore { opacity: 0.55; filter: graysc
 .icona-propria::before, .icona-propria::after { content: ""; position: absolute; inset: 0; -webkit-mask: var(--m) center / contain no-repeat; mask: var(--m) center / contain no-repeat; }
 .icona-propria::before { --m: var(--base); background: currentColor; }
 .icona-propria::after { --m: var(--accento-icona); background: var(--icona-accento); }
-.podio { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; align-items: end; }
-.podio a { border-radius: 16px; padding: 12px; display: flex; flex-direction: column; gap: 4px; align-items: flex-start; min-height: 104px; justify-content: flex-end; position: relative; overflow: hidden; background: var(--superficie); color: var(--testo); }
-.podio a:nth-child(2) { min-height: 136px; }
+.podio { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; align-items: stretch; }
+.podio a { border-radius: 16px; padding: 12px; display: flex; flex-direction: column; gap: 4px; align-items: flex-start; justify-content: flex-start; position: relative; overflow: hidden; background: var(--superficie); color: var(--testo); }
 .podio i { width: 10px; height: 10px; border-radius: 50%; margin-bottom: auto; }
-.podio b { font-size: 15px; line-height: 1.15; font-weight: 600; }
+.podio b { font-size: 15px; line-height: 1.15; font-weight: 600; flex: 1; }
 .podio span { font-family: var(--mono); font-size: 11px; opacity: 0.9; }
-.podio em { font-family: var(--mono); font-style: normal; font-size: 24px; font-weight: 500; line-height: 1; letter-spacing: -0.04em; }
+.podio em { margin-top: 6px; font-family: var(--mono); font-style: normal; font-size: 24px; font-weight: 500; line-height: 1; letter-spacing: -0.04em; }
 .riga { display: grid; grid-template-columns: 24px auto minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--linea); }
 li:last-child > .riga { border-bottom: 0; }
 .riga .pos { font-family: var(--mono); font-size: 13px; font-weight: 500; color: var(--testo); }
