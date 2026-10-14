@@ -33,11 +33,11 @@ export default async function Esplora() {
         <p className="text-[15px] text-testo-2">Tutto 739 in cinque aree.</p>
       </section>
 
-      <Link href="/cerca" className="flex h-12 items-center gap-3 rounded-xl bg-superficie px-4 text-[15px] text-testo-2 transition-colors hover:bg-superficie-2">
+      <Link href="/cerca" className="flex h-12 items-center gap-3 rounded-xl bg-superficie px-4 lg:hidden text-[15px] text-testo-2 transition-colors hover:bg-superficie-2">
         <Icona nome="cerca" size={20} /> Cerca un servizio, un luogo, un evento
       </Link>
 
-      <nav aria-label="Aree" className="grid grid-cols-2 gap-2.5">
+      <nav aria-label="Aree" className="larga grid grid-cols-2 gap-2.5 lg:grid-cols-5 lg:gap-3">
         {AREE.map((a, i) => {
           const attive = a.sezioni.filter((s) => s.href).length;
           return (
@@ -45,7 +45,7 @@ export default async function Esplora() {
               key={a.slug}
               href={a.href}
               // Vivere occupa tutta la riga: è l'area che si apre più spesso
-              className={`flex flex-col gap-3 rounded-2xl bg-superficie p-4 transition-colors hover:bg-superficie-2 active:scale-[0.99] ${i === 0 ? "col-span-2" : ""}`}
+              className={`flex flex-col gap-3 rounded-2xl bg-superficie p-4 transition-colors hover:bg-superficie-2 active:scale-[0.99] ${i === 0 ? "col-span-2 lg:col-span-1" : ""}`}
             >
               <span className="flex items-center justify-between">
                 <span className="grid size-11 place-items-center rounded-xl bg-fondo text-testo"><Icona nome={a.icona} size={24} /></span>

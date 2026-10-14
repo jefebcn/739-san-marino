@@ -115,6 +115,7 @@
   .main:has(.mappa-piena) .piede { display: none !important; }
   /* Il piè di pagina è largo come la testata anche sotto le pagine a colonna stretta */
   .piede { margin-inline: calc(var(--lato-largo) - var(--lato)); }
+  .main .emergenza { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
 
 /* Schermi larghi: i pannelli a tutta larghezza diventano schede, il foglio della mappa resta in colonna */

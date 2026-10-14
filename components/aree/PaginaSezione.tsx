@@ -25,7 +25,7 @@ export default async function PaginaSezione({ area, sezione, prima, vuoto }: { a
         <p className="sottotitolo">{s.descrizione}</p>
       </TestaPagina>
 
-      {prima}
+      <div className="flex flex-col gap-7 empty:hidden lg:max-w-[var(--colonna)]">{prima}</div>
 
       {totale === 0 ? (
         <p className="rounded-2xl bg-superficie p-5 text-[15px] text-testo-2">{vuoto ?? "Nessun luogo ancora in questa sezione."}</p>
@@ -38,9 +38,9 @@ export default async function PaginaSezione({ area, sezione, prima, vuoto }: { a
                 <span className="font-mono text-sm font-medium text-testo-2">{g.luoghi.length}</span>
               </h2>
             ) : null}
-            <ul className="divide-y divide-linea rounded-2xl bg-superficie">
+            <ul className="larga divide-y divide-linea rounded-2xl bg-superficie lg:grid lg:grid-cols-2 lg:gap-2.5 lg:divide-y-0 lg:bg-transparent xl:grid-cols-3">
               {g.luoghi.map((l) => (
-                <li key={l.id}>
+                <li key={l.id} className="lg:overflow-hidden lg:rounded-2xl lg:bg-superficie">
                   <RigaLuogo l={l} />
                 </li>
               ))}

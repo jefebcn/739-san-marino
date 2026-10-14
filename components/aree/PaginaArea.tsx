@@ -28,7 +28,7 @@ export default function PaginaArea({
   return (
     <>
       <section className="flex flex-col gap-1.5">
-        <Link href="/esplora" className="mb-1 flex w-fit items-center gap-1 text-sm font-medium text-accento">
+        <Link href="/esplora" className="mb-1 flex w-fit items-center gap-1 text-sm font-medium text-accento lg:hidden">
           <Icona nome="freccia" size={16} /> Esplora
         </Link>
         <h1 className="text-[30px] font-semibold leading-tight tracking-[-0.03em]">{a.nome}</h1>
@@ -37,7 +37,7 @@ export default function PaginaArea({
 
       {testa}
 
-      <section className="flex flex-col gap-2" aria-label={`Sezioni di ${a.nome}`}>
+      <section className="larga flex flex-col gap-2 lg:grid lg:grid-cols-3 lg:gap-3" aria-label={`Sezioni di ${a.nome}`}>
         {attive.map((s) => (
           <Link
             key={s.slug}
@@ -62,9 +62,9 @@ export default function PaginaArea({
       {inArrivo.length ? (
         <section className="flex flex-col gap-3" aria-label="In arrivo">
           <h2 className="text-[19px] font-semibold tracking-tight">In arrivo</h2>
-          <ul className="divide-y divide-linea rounded-2xl border border-linea">
+          <ul className="divide-y divide-linea rounded-2xl border border-linea lg:grid lg:grid-cols-3 lg:gap-3 lg:divide-y-0 lg:border-0">
             {inArrivo.map((s) => (
-              <li key={s.slug} id={s.slug} className="flex items-start gap-3 px-4 py-3.5">
+              <li key={s.slug} id={s.slug} className="flex items-start gap-3 px-4 py-3.5 lg:rounded-2xl lg:border lg:border-linea">
                 <span className="mt-0.5 shrink-0 text-testo-2"><Icona nome={s.icona} size={20} /></span>
                 <span className="flex min-w-0 flex-col gap-0.5">
                   <span className="text-[15px] font-medium leading-snug">{s.nome}</span>
