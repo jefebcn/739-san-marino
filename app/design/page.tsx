@@ -94,7 +94,7 @@ export default function DesignSystem() {
       <section className="flex flex-col gap-3">
         <h2 className="text-lg font-semibold">Card SMR ID</h2>
         <p className="text-sm text-testo-2">Esempio con dati finti. Tocca il QR per ingrandirlo.</p>
-        <SmrCard nome="Nome Cognome" tessera="739-A3F9-K2" castello={{ id: 2, slug: "borgo-maggiore", nome: "Borgo Maggiore", colore: "#F3A712" }} rating={1500} />
+        <SmrCard nome="Nome Cognome" tessera="739-A3F9-K2" castello={{ id: 2, slug: "borgo-maggiore", nome: "Borgo Maggiore", colore: "#FDC844" }} rating={1500} />
       </section>
 
       <section className="flex flex-col gap-3">
