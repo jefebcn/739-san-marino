@@ -109,7 +109,7 @@ Tabelle: `castelli` (i 9 castelli con colore), `profili`, `luoghi`, `eventi`, `c
 
 ## Fonti di dati
 
-L'elenco dei siti da cui prendere informazioni, con quelli già usati, come collegare gli altri e cosa richiede un accordo, è in `docs/fonti.md`. Non leggere in automatico i siti che lo vietano nel loro robots.txt. Collegate in automatico (ottobre 2026): Open-Meteo, OpenStreetMap e il feed di Libertas. Sono letture dirette dal server Next.js con la cache di `fetch` (`next.revalidate`): niente cron, niente chiavi. Se una fonte non risponde la sua sezione sparisce senza errori. Da questa sessione cloud Open-Meteo e Overpass non si raggiungono (rete del container): si verificano sul sito online.
+L'elenco dei siti da cui prendere informazioni, con quelli già usati, come collegare gli altri e cosa richiede un accordo, è in `docs/fonti.md`. Non leggere in automatico i siti che lo vietano nel loro robots.txt. Collegate in automatico (ottobre 2026): Open-Meteo, OpenStreetMap e il feed di Libertas. Sono letture dirette dal server Next.js con la cache di `fetch` (`next.revalidate`): niente cron, niente chiavi. Se una fonte non risponde la sua sezione sparisce senza errori. Alex vuole integrare più dati possibili: il piano in sei canali (coda unica delle bozze con approvazione, API aperte, RSS, newsletter via email, contributi di organizzatori e utenti, pagine consentite dal robots.txt, accordi con gli enti) e l'ordine di lavoro sono nella sezione «Motore dati» di `docs/fonti.md`. Da questa sessione cloud Open-Meteo e Overpass non si raggiungono (rete del container): si verificano sul sito online.
 
 ## Regole di lavoro
 

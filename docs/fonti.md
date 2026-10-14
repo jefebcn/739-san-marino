@@ -2,7 +2,7 @@
 
 Ricerca del 14 ottobre 2026. Per ogni fonte: cosa offre, quanto si aggiorna e come collegarla.
 
-**Regola:** i siti che bloccano la lettura automatica (robots.txt) non vanno letti in automatico. Per quelli i dati si copiano a mano, citando la fonte, oppure si chiede un accordo a chi li gestisce. 739 dà loro visibilità, quindi c'è qualcosa da offrire in cambio.
+**Regola:** un sito si legge in automatico solo se il suo robots.txt lo consente. Quando un sito lo vieta, i suoi dati arrivano per altre strade: newsletter e comunicati, contributi di chi organizza, accordi con chi lo gestisce (vedi «Motore dati» in fondo). 739 dà visibilità, quindi c'è qualcosa da offrire in cambio.
 
 ## 0. Già usate dall'app
 
@@ -49,10 +49,68 @@ Collegate il 14/10/2026: meteo in Home e in `/utili/meteo`, luoghi OSM su mappa 
 | [Bonelli Bus](https://www.bonellibus.it/shuttle-rimini-san-marino/) | Seconda navetta Rimini–San Marino, tutti i giorni | Stagionale |
 | [Ufficio Statistica](https://www.statistica.sm/pub2/StatisticaSM/Dati-statistici.html) | Popolazione, turismo, prezzi | Bollettino trimestrale, solo PDF |
 
-## Piano consigliato
+## Motore dati: come integrare il massimo (piano del 14/10/2026)
 
-1. **Mappa:** importare da OpenStreetMap i luoghi che mancano (bagni, impianti, monumenti), con un aggiornamento periodico, senza toccare farmacie e parcheggi già caricati dalle fonti ufficiali.
-2. **Meteo:** aggiungere il meteo in Home e in Utili con Open-Meteo.
-3. **Eventi:** leggere il feed di Libertas, proporre gli eventi del weekend come bozze, pubblicarli dopo un controllo a mano (serve il pannello di inserimento).
-4. **Promemoria:** ricontrollare a marzo gli orari dei bus e a dicembre gli ecocalendari.
-5. **Accordi:** contattare Ufficio del Turismo, AASS e ISS per avere eventi, orari e turni in formato aggiornabile.
+Obiettivo di Alex: portare in 739 più dati possibili, senza fermarsi ai siti che bloccano la lettura automatica. La risposta non è forzare quei siti, ma moltiplicare i canali. Sei canali, tutti legittimi, che finiscono nello stesso posto.
+
+### Il cuore: una coda unica delle bozze
+
+Ogni dato che arriva da fuori (evento, luogo, orario, avviso) entra prima in una tabella `importazioni` e non va online da solo.
+
+- Campi: `tipo` (evento, luogo, orario, avviso), `dati` (json già strutturato: titolo, inizio, fine, luogo, castello, prezzo, link), `fonte` (nome), `link_fonte`, `canale` (api, rss, email, contributo, pagina, accordo), `stato` (nuovo, approvato, scartato, duplicato), `simile_a` (id di un elemento già esistente), `creato_il`.
+- Doppioni: stesso titolo normalizzato (senza accenti e maiuscole) + stessa data + luogo vicino = `duplicato`, unito all'esistente.
+- Pannello `/admin/coda` (solo per gli amministratori): approva con un tocco, modifica, scarta. Le fonti affidabili (accordi, organizzatori verificati) possono essere approvate in automatico.
+- Ogni elemento pubblicato mostra la fonte con il link, come già fanno le pagine di Utili.
+
+### Canale 1: dati aperti con API (automatico, già avviato)
+
+- OpenStreetMap: da Vercel l'Overpass API non risponde in tempo reale. Soluzione: un'importazione programmata (Vercel Cron, una volta a settimana, oppure una GitHub Action) che salva i luoghi OSM in `luoghi` con `fonte = 'osm'` e l'id OSM, così la mappa legge solo dal database. Aggiungere ristoranti, bar, negozi e hotel con `opening_hours`: sono la base dei moduli Food e Business.
+- Wikidata e Wikimedia Commons: monumenti e luoghi storici con descrizione e **foto a licenza libera** (con autore e licenza da citare). Risolve le foto grandi delle schede.
+- Open-Meteo: già collegato.
+- Open Charge Map (chiave gratuita): colonnine di ricarica con potenza e stato.
+
+### Canale 2: feed RSS (automatico)
+
+- Libertas: già collegato. Passo successivo: estrarre dagli articoli «Gli eventi del fine settimana» i singoli eventi con l'AI (AI SDK + AI Gateway, risposta in json con titolo, date, orario, luogo, ingresso, contatti) e metterli nella coda come bozze.
+- Provare `/feed/` sugli altri siti di notizie costruiti con WordPress (per esempio Tribuna Politica Web), dal server di Vercel e rispettando il loro robots.txt.
+
+### Canale 3: newsletter e comunicati stampa via email (automatico, il più potente)
+
+I siti che bloccano i robot mandano comunque le stesse informazioni per email a chi è iscritto: newsletter e comunicati stampa.
+
+- Creare un indirizzo dedicato (per esempio `redazione@739sanmarino.com` quando c'è il dominio, intanto una casella Gmail) e iscriverlo alle newsletter di Ufficio del Turismo, gov.sm, ISS, AASS, musei, teatro, associazioni.
+- Chiedere agli uffici stampa di inserire 739 tra i destinatari dei comunicati, come fanno con le testate.
+- Un servizio di email in arrivo (per esempio Resend o Postmark inbound, che chiama un endpoint di 739) passa ogni email all'AI, che estrae eventi e avvisi e li mette nella coda.
+
+### Canale 4: contributi di organizzatori, locali e utenti (cresce da solo)
+
+In un territorio piccolo è il canale che copre di più, perché chi organizza vuole farsi vedere.
+
+- «Proponi un evento» per tutti: modulo semplice, finisce nella coda.
+- Account organizzatore (associazioni, pro loco, Giunte di Castello, società sportive, locali): pubblicano e aggiornano i propri eventi e orari; dopo la verifica, approvazione automatica.
+- «Segnala un errore» su ogni scheda (orario sbagliato, luogo chiuso).
+- Metri come ricompensa per le segnalazioni verificate.
+
+### Canale 5: pagine pubbliche lette con buone maniere (dove è consentito)
+
+- Prima di tutto: leggere il `robots.txt` di ogni sito **dal server di Vercel** (da questo ambiente non è raggiungibile). Molti siti bloccano solo i robot delle AI (GPTBot, ClaudeBot) e non un lettore normale: in quel caso la lettura è consentita.
+- Dove è consentita: un lettore con nome dichiarato (User-Agent `739bot` con un link di contatto), al massimo una lettura al giorno per pagina, solo le pagine utili, fonte sempre citata, dati estratti dall'AI e messi nella coda.
+- Dove è vietata: niente lettura automatica. Restano email (canale 3), contributi (canale 4) e accordi (canale 6).
+
+### Canale 6: accordi con gli enti (il dato ufficiale)
+
+Ufficio del Turismo (calendario eventi), AASS (funivia, bus, rifiuti, avvisi), ISS (farmacie e festivi), Camera di Commercio (imprese), CONS (impianti e società). Cosa chiedere, dal più semplice: inserire 739 nei comunicati stampa, un export periodico (anche un foglio condiviso), un feed o un'API. In cambio: visibilità, statistiche su quante persone vedono i loro contenuti, pubblicazione corretta e con la fonte.
+
+### Ordine di lavoro
+
+1. Tabella `importazioni` e pannello `/admin/coda`.
+2. Importazione OSM programmata nel database (sistema anche la mappa) con ristoranti, bar e negozi.
+3. Estrazione AI degli eventi dal feed di Libertas verso la coda.
+4. «Proponi un evento» e «Segnala un errore».
+5. Casella email + email in arrivo verso la coda.
+6. Verifica dei `robots.txt` dal server e lettore `739bot` dove consentito.
+7. Wikidata e Commons per le foto delle schede.
+
+### Promemoria fissi
+
+Ricontrollare a marzo gli orari dei bus Rimini–San Marino e a dicembre gli ecocalendari dell'anno nuovo.
