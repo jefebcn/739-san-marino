@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import BottomNav, { type VoceNav } from "@/components/ui/BottomNav";
 import SessioneSync from "@/modules/core/components/SessioneSync";
+import { Analytics } from "@vercel/analytics/next";
 import { Logo } from "@/components/Logo";
 import Link from "next/link";
 import AzioniTesta from "@/components/AzioniTesta";
@@ -73,6 +74,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           </main>
           <BottomNav voci={VOCI} centro={<AzioniRapide />} />
           <SessioneSync castelli={classifica} />
+          {/* Visite anonime, senza cookie (Vercel Web Analytics): si accende dal pannello di Vercel */}
+          <Analytics />
         </div>
       </body>
     </html>

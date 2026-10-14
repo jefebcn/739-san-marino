@@ -6,6 +6,28 @@ import { supabaseBrowser } from "@/lib/supabase/browser";
 import { EVENTO_CASTELLO, impostaCastello, leggiCastello } from "@/components/Castello";
 import { caricaProfilo, salvaProfilo } from "../auth";
 import { useSessione } from "../store";
+import { adessoSM } from "@/lib/orario";
+
+const CHIAVE_ACCESSO = "739-accesso";
+
+/** Un giorno di accesso per persona (migrazione 0021), al massimo una chiamata al giorno da questo telefono. */
+function segnaAccesso(id: string) {
+  const oggi = `${id}:${adessoSM().data}`;
+  try {
+    if (localStorage.getItem(CHIAVE_ACCESSO) === oggi) return;
+  } catch {
+    /* senza localStorage si segna comunque: il database tiene un solo giorno per persona */
+  }
+  supabaseBrowser()
+    .rpc("segna_accesso")
+    .then(({ error }) => {
+      // Prima della 0021 la funzione non c'è: si riprova alla prossima apertura
+      if (error) return;
+      try {
+        localStorage.setItem(CHIAVE_ACCESSO, oggi);
+      } catch {}
+    });
+}
 
 /**
  * Collega Supabase Auth allo store della sessione. Non disegna nulla: sta nel layout.
@@ -20,6 +42,7 @@ export default function SessioneSync({ castelli }: { castelli: Castello[] }) {
       if (!utente) return esci();
       const profilo = await caricaProfilo(utente.id);
       accedi({ id: utente.id, email: utente.email ?? null }, profilo);
+      segnaAccesso(utente.id);
       // Il castello del profilo vince su quello salvato sul telefono
       const slug = castelli.find((c) => c.id === profilo?.castello_id)?.slug;
       if (slug && slug !== leggiCastello()) impostaCastello(slug);

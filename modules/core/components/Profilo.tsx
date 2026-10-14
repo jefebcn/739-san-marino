@@ -178,6 +178,9 @@ export default function Profilo({ castelli }: { castelli: Castello[] }) {
           {ruoli.redattore ? (
             <ActionCard href="/admin/contenuti" icona={<Icona nome="storie" />} tono="neutro" titolo="Contenuti" descrizione="Bollettino, rubriche e storie" />
           ) : null}
+          {ruoli.amministratore ? (
+            <ActionCard href="/admin/numeri" icona={<Icona nome="numeri" />} tono="neutro" titolo="Numeri" descrizione="SMR ID, chi torna, eventi e schede verificate" />
+          ) : null}
           {ruoli.redattore ? (
             <ActionCard href="/admin/importa" icona={<Icona nome="importa" />} tono="neutro" titolo="Importa" descrizione="Luoghi, eventi, avvisi e contenuti da un file JSON" />
           ) : null}

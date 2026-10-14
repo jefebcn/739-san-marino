@@ -16,6 +16,7 @@ import {
   CaretLeft,
   CaretRight,
   ChargingStation,
+  ChartBar,
   FileArrowUp,
   Church,
   Clock,
@@ -152,6 +153,7 @@ const ICONE = {
   panorama: Binoculars,
   stampa: Newspaper,
   importa: FileArrowUp,
+  numeri: ChartBar,
 } satisfies Record<string, Icon>;
 
 export type NomeIcona = keyof typeof ICONE;
