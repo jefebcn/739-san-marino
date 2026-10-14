@@ -2,6 +2,8 @@
 
 App del territorio di San Marino: eventi, mappa, castelli e servizi utili in un'unica app installabile sul telefono. Il nome viene dall'altezza del Monte Titano (739 m). Il proprietario è Alex Conti: scrivi e rispondi sempre in italiano.
 
+**Bussola del prodotto: `docs/piano.md`** (anima, cinque aree, scheda unica, piano editoriale, roadmap a fasi, regole). Ogni lavoro nuovo deve stare dentro quel piano; se non ci sta, chiedi ad Alex.
+
 ## Stato attuale
 
 - **Online:** https://739-san-marino.vercel.app (Vercel, deploy automatico a ogni push su `main`)
