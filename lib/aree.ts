@@ -72,7 +72,7 @@ export const AREE: Area[] = [
     sezioni: [
       { slug: "partite", nome: "Partite aperte", descrizione: "Trova una partita o organizzane una.", icona: "sport", href: "/sport", parole: "partita partite calcetto padel tennis basket pallavolo rating classifica" },
       { slug: "impianti", nome: "Impianti sportivi", descrizione: "Campi, palestre, piscine e stadi.", icona: "impianti", href: "/sport/impianti", categorie: ["impianto"], parole: "impianti campi palestra piscina stadio" },
-      { slug: "tornei", nome: "Tornei di castello", descrizione: "Squadre che giocano per il proprio castello.", icona: "tornei", parole: "tornei torneo castello squadre" },
+      { slug: "tornei", nome: "Tornei di castello", descrizione: "Squadre che giocano per il proprio castello.", icona: "tornei", href: "/sport/tornei", parole: "tornei torneo castello squadre" },
       { slug: "societa", nome: "Società sportive", descrizione: "Le società e le federazioni del territorio.", icona: "associazioni", parole: "societa sportive federazioni cons" },
     ],
   },

@@ -9,6 +9,8 @@ import { useSessione } from "@/modules/core/store";
 import { annulla, dettaglioPartita, formaSquadre, giocatoriPartita, iscriviti, registraRisultato, ritirati } from "../api";
 import { probabilitaVittoria, squadra } from "../glicko";
 import type { DettaglioPartita as Dettaglio, Giocatore, Sport } from "../tipi";
+import { torneoDiPartita } from "../tornei-api";
+import type { TorneoDiPartita } from "../tornei";
 
 const STATI: Record<string, { testo: string; classe: string }> = {
   aperta: { testo: "Iscrizioni aperte", classe: "bg-ok/15 text-ok" },
@@ -54,6 +56,11 @@ export default function DettaglioPartita({ id, sport, castelli }: { id: string; 
   const [inCorso, setInCorso] = useState(false);
   const [puntiA, setPuntiA] = useState("");
   const [puntiB, setPuntiB] = useState("");
+  const [torneo, setTorneo] = useState<TorneoDiPartita | null>(null);
+
+  useEffect(() => {
+    torneoDiPartita(id).then(setTorneo);
+  }, [id]);
 
   const carica = useCallback(async () => {
     const r = await dettaglioPartita(id);
@@ -95,7 +102,7 @@ export default function DettaglioPartita({ id, sport, castelli }: { id: string; 
 
   return (
     <div className="flex flex-col gap-6">
-      <Link href="/sport" className="inline-flex items-center gap-1.5 text-sm font-medium text-accento"><Icona nome="freccia" size={18} /> Partite</Link>
+      <Link href={torneo ? `/sport/tornei/${torneo.id}` : "/sport"} className="inline-flex items-center gap-1.5 text-sm font-medium text-accento"><Icona nome="freccia" size={18} /> {torneo ? torneo.titolo : "Partite"}</Link>
 
       <section className="relative isolate flex flex-col gap-3 overflow-hidden rounded-2xl bg-pannello p-5 text-zinc-50">
         <div className="flex items-center justify-between gap-2">
@@ -125,7 +132,7 @@ export default function DettaglioPartita({ id, sport, castelli }: { id: string; 
           </PrimaryButton>
         ) : null}
 
-        {p.sono_organizzatore && (p.stato === "aperta" || p.stato === "squadre") ? (
+        {p.sono_organizzatore && !torneo && (p.stato === "aperta" || p.stato === "squadre") ? (
           <PrimaryButton pieno variante={p.stato === "squadre" ? "secondario" : "primario"} disabled={inCorso || !pari} onClick={() => esegui(() => formaSquadre(p.id))}>
             {p.stato === "squadre" ? "Rifai le squadre" : pari ? "Forma squadre bilanciate" : "Servono giocatori in numero pari"}
           </PrimaryButton>
@@ -141,21 +148,22 @@ export default function DettaglioPartita({ id, sport, castelli }: { id: string; 
           >
             <h2 className="text-base font-semibold">Risultato finale</h2>
             <div className="grid grid-cols-[1fr_auto_1fr] items-end gap-3">
-              <label className="flex flex-col gap-1.5 text-[13px] font-medium text-testo-2">Squadra A
+              <label className="flex min-w-0 flex-col gap-1.5 truncate text-[13px] font-medium text-testo-2">{torneo?.nome_a ?? "Squadra A"}
                 <input inputMode="numeric" pattern="[0-9]*" required value={puntiA} onChange={(e) => setPuntiA(e.target.value.replace(/\D/g, "").slice(0, 3))}
                   className="h-14 rounded-2xl border border-linea bg-fondo text-center font-mono text-2xl font-bold text-testo outline-none focus:border-accento" />
               </label>
               <span className="pb-4 font-mono text-xl text-testo-2">–</span>
-              <label className="flex flex-col gap-1.5 text-[13px] font-medium text-testo-2">Squadra B
+              <label className="flex min-w-0 flex-col gap-1.5 truncate text-[13px] font-medium text-testo-2">{torneo?.nome_b ?? "Squadra B"}
                 <input inputMode="numeric" pattern="[0-9]*" required value={puntiB} onChange={(e) => setPuntiB(e.target.value.replace(/\D/g, "").slice(0, 3))}
                   className="h-14 rounded-2xl border border-linea bg-fondo text-center font-mono text-2xl font-bold text-testo outline-none focus:border-accento" />
               </label>
             </div>
-            <PrimaryButton type="submit" pieno disabled={inCorso}>Registra e aggiorna i rating</PrimaryButton>
+            {torneo?.eliminazione ? <p className="text-xs text-testo-2">È a eliminazione diretta: serve una vincente, conta anche supplementari o rigori.</p> : null}
+            <PrimaryButton type="submit" pieno disabled={inCorso}>{torneo ? "Registra, aggiorna rating e tabellone" : "Registra e aggiorna i rating"}</PrimaryButton>
           </form>
         ) : null}
 
-        {p.sono_iscritto && !p.sono_organizzatore && (p.stato === "aperta" || p.stato === "squadre") && !iniziata ? (
+        {p.sono_iscritto && !p.sono_organizzatore && !torneo && (p.stato === "aperta" || p.stato === "squadre") && !iniziata ? (
           <PrimaryButton pieno variante="secondario" disabled={inCorso} onClick={() => esegui(() => ritirati(p.id))}>Ritirati</PrimaryButton>
         ) : null}
 
@@ -170,13 +178,13 @@ export default function DettaglioPartita({ id, sport, castelli }: { id: string; 
           <section className="flex flex-col gap-3">
             <div className="flex items-baseline justify-between">
               <h2 className="text-xl font-semibold tracking-tight">Squadre</h2>
-              {probA != null ? <span className="text-[13px] text-testo-2">A vince al {Math.round(probA * 100)}%</span> : null}
+              {probA != null ? <span className="text-[13px] text-testo-2">{torneo?.nome_a ?? "A"} vince al {Math.round(probA * 100)}%</span> : null}
             </div>
             <div className="grid grid-cols-2 gap-3">
-              <Squadra nome="Squadra A" giocatori={squadraA} castelli={castelli} giocata={p.stato === "giocata"} punti={p.stato === "giocata" ? p.punteggio_a : null} />
-              <Squadra nome="Squadra B" giocatori={squadraB} castelli={castelli} giocata={p.stato === "giocata"} punti={p.stato === "giocata" ? p.punteggio_b : null} />
+              <Squadra nome={torneo?.nome_a ?? "Squadra A"} giocatori={squadraA} castelli={castelli} giocata={p.stato === "giocata"} punti={p.stato === "giocata" ? p.punteggio_a : null} />
+              <Squadra nome={torneo?.nome_b ?? "Squadra B"} giocatori={squadraB} castelli={castelli} giocata={p.stato === "giocata"} punti={p.stato === "giocata" ? p.punteggio_b : null} />
             </div>
-            <p className="text-xs text-testo-2">Squadre bilanciate sulla somma dei rating Glicko-2. Chi non ha ancora giocato parte da 1500.</p>
+            <p className="text-xs text-testo-2">{torneo ? "Le squadre sono quelle dei castelli iscritte al torneo." : "Squadre bilanciate sulla somma dei rating Glicko-2."} Chi non ha ancora giocato parte da 1500.</p>
           </section>
         ) : giocatori.length ? (
           <section className="flex flex-col gap-3">
@@ -188,7 +196,7 @@ export default function DettaglioPartita({ id, sport, castelli }: { id: string; 
         ) : null
       ) : null}
 
-      {p.sono_organizzatore && (p.stato === "aperta" || p.stato === "squadre") && !iniziata ? (
+      {p.sono_organizzatore && !torneo && (p.stato === "aperta" || p.stato === "squadre") && !iniziata ? (
         <PrimaryButton variante="fantasma" dimensione="sm" disabled={inCorso} onClick={() => confirm("Annullare la partita per tutti?") && esegui(() => annulla(p.id))}>
           Annulla la partita
         </PrimaryButton>

@@ -60,7 +60,7 @@ function Quota() {
             {dati.movimenti.map((m, i) => (
               <li key={`${m.creato_il}-${i}`} className="flex items-center gap-3 px-4 py-3">
                 <span className="flex min-w-0 flex-1 flex-col">
-                  <span className="truncate text-[15px] font-medium">{m.titolo ?? (m.motivo === "checkin" ? "Check-in" : m.motivo)}</span>
+                  <span className="truncate text-[15px] font-medium">{m.titolo ?? (m.motivo === "checkin" ? "Check-in" : m.motivo === "torneo" ? "Torneo vinto" : m.motivo)}</span>
                   <span className="text-[13px] text-testo-2">{giornoBreve.format(new Date(m.creato_il))}</span>
                 </span>
                 <span className="font-mono text-[15px] font-medium text-accento">{m.metri > 0 ? "+" : ""}{m.metri} m</span>

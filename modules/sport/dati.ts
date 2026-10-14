@@ -1,5 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import type { Partita, Sport } from "./tipi";
+import type { RigaTorneo } from "./tornei";
 
 /** Elenco degli sport (lettura pubblica, lato server). */
 export async function getSport(): Promise<Sport[]> {
@@ -23,4 +24,16 @@ export async function getPartiteAperte(): Promise<Partita[]> {
     return [];
   }
   return ((data ?? []) as Partita[]).filter((p) => p.stato === "aperta").slice(0, 8);
+}
+
+/** Tornei di castello (migrazione 0025); se le funzioni non ci sono ancora, l'elenco è vuoto. */
+export async function getTornei(): Promise<RigaTorneo[]> {
+  const db = supabase();
+  if (!db) return [];
+  const { data, error } = await db.rpc("elenco_tornei");
+  if (error) {
+    console.error("tornei", error.message);
+    return [];
+  }
+  return (data ?? []) as RigaTorneo[];
 }
