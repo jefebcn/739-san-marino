@@ -173,12 +173,14 @@ const LINEARI = new Set<NomeIcona>(["freccia", "avanti", "vai", "piu", "cerca", 
 
 // Icone piatte disegnate per Alex (ottobre 2026) per quattro aree e la mappa: prendono il posto di Phosphor.
 // Due maschere in public/icone (node scripts/icone-aree.mjs): la base prende il colore del testo, l'accento resta blu.
-const PROPRIE = new Set<NomeIcona>(["vivere", "uscire", "comunita", "lavorare", "mappa"]);
+const PROPRIE = new Set<NomeIcona>(["vivere", "uscire", "comunita", "lavorare"]);
 
 // Icone a colori disegnate per Alex (ottobre 2026, stile 3D): si usano così come sono, in public/icone-colore
 // (node scripts/icone-colore.mjs). Più nomi possono usare lo stesso disegno.
 const COLORE: Partial<Record<NomeIcona, string>> = {
   sport: "sport",
+  home: "home",
+  mappa: "mappa",
   partite: "partite",
   tornei: "tornei",
   impianti: "impianti",

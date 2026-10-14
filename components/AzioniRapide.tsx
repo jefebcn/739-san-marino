@@ -32,9 +32,11 @@ export default function AzioniRapide() {
         aria-label="Azioni rapide"
         aria-haspopup="dialog"
         onClick={() => setAperto(true)}
-        className="-mt-4 grid size-14 place-items-center rounded-full bg-metallo text-su-accento ring-[5px] ring-fondo transition-transform duration-150 active:scale-90"
+        className="-mt-4 grid size-14 place-items-center rounded-full bg-fondo ring-[5px] ring-fondo transition-transform duration-150 active:scale-90"
       >
-        <Icona nome="piu" size={26} />
+        {/* Il + disegnato per Alex: un bottone d'ottone già pronto, si usa così com'è */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/icone-colore/piu.webp" alt="" aria-hidden="true" width={56} height={56} draggable={false} className="size-14" />
       </button>
 
       {aperto ? (
