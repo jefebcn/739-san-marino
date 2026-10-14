@@ -129,7 +129,7 @@ Tabelle: `castelli` (i 9 castelli con colore), `profili`, `luoghi`, `eventi`, `c
   - schede senza bordo (solo fondo `bg-superficie`), bordo solo per campi e liste raggruppate;
   - testi in frase normale, niente Title Case né maiuscolo.
 - Stile HUD, da strumento di montagna, usato con misura: niente striscia dell'altimetro in alto (scelta di Alex); la quota personale sta nella pagina SMR ID. Elementi ricorrenti: `.pannello` (scheda scura) e `.topo` (curve di livello leggere), numeri grandi in mono. Usarli con misura.
-- Logo: il numero 739 con le tre cime del Titano (`components/Logo.tsx`). Mai usare torri, corona o stemma della Repubblica.
+- Logo (scelto da Alex il 14/10/2026, anteprima in `docs/logo.png`): il Titano con le tre torri sopra il 739 in corsivo pieno. Tre versioni in `public/brand/`, tutte a un colore con `fill="currentColor"`: `739-completo.svg` (marchio intero, da 64 px in su), `739-ridotto.svg` (solo il 739, per testate e spazi bassi), `739-torri.svg` (solo le torri, per icone piccole e favicon). **Sempre bianco su scuro e nero su chiaro**, mai in ottone o a colori: l'ottone resta l'accento dell'interfaccia. Le torri compaiono solo nel logo: niente corona, stemma o bandiera della Repubblica, e niente torri disegnate altrove nell'app.
 - I punti si chiamano **metri**: livelli Valle (0), Mura (200), Torri (450), Vetta (739). Non chiamarli "punti": esiste già la SMaC dello Stato.
 - Tono: diretto, "di casa" con i residenti, chiaro per i turisti. Italiano prima, inglese in arrivo.
 
