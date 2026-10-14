@@ -7,6 +7,7 @@ import PrimaryButton from "@/components/ui/PrimaryButton";
 import { LIVELLI, livello } from "@/lib/quota";
 import { useSessione } from "@/modules/core/store";
 import Tano, { POSA_DI_LIVELLO } from "@/components/Tano";
+import { ChiediNotifiche } from "@/components/Notifiche";
 import { faiCheckin, type EsitoCheckin } from "../api";
 
 /**
@@ -64,6 +65,7 @@ export default function Checkin({ evento, titolo }: { evento: string; titolo: st
   const salito = esito.nuovo ? LIVELLI.find((l) => l.da > 0 && prima < l.da && esito.totale >= l.da) : undefined;
 
   return (
+    <>
     <section className="pannello topo flex flex-col gap-5" role="status" aria-live="polite">
       <div className="flex flex-col gap-1">
         <span className="text-sm" style={{ color: "var(--pannello-testo)" }}>{esito.nuovo ? "Check-in fatto" : "Avevi già fatto check-in"}</span>
@@ -97,5 +99,8 @@ export default function Checkin({ evento, titolo }: { evento: string; titolo: st
         <PrimaryButton variante="fantasma" href={`/eventi/${evento}`}>Torna all&apos;evento</PrimaryButton>
       </div>
     </section>
+    {/* Il momento giusto per chiedere le notifiche: dopo il check-in, mai all'apertura */}
+    {esito.nuovo ? <ChiediNotifiche /> : null}
+    </>
   );
 }

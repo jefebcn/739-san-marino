@@ -14,6 +14,7 @@ import { mioRating } from "@/modules/sport/api";
 import { EtichetteScala, Scala } from "@/components/Quota";
 import { livello } from "@/lib/quota";
 import Tano, { POSA_DI_LIVELLO } from "@/components/Tano";
+import Notifiche from "@/components/Notifiche";
 import { conteggioBozze } from "@/modules/coda/api";
 import { mieiRuoli, NESSUN_RUOLO, type Ruoli } from "../ruoli";
 import { mieiMetri, type Movimento } from "@/modules/eventi/api";
@@ -199,6 +200,8 @@ export default function Profilo({ castelli }: { castelli: Castello[] }) {
           ))}
         </div>
       </section>
+
+      <Notifiche />
 
       <section className="flex flex-col gap-3">
         <h2 className="text-xl font-semibold tracking-tight">Account</h2>

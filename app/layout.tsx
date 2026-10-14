@@ -4,6 +4,7 @@ import "./globals.css";
 import BottomNav, { type VoceNav } from "@/components/ui/BottomNav";
 import SessioneSync from "@/modules/core/components/SessioneSync";
 import { Analytics } from "@vercel/analytics/next";
+import RegistraSW from "@/components/RegistraSW";
 import { Ridotto } from "@/components/Logo";
 import Link from "next/link";
 import AzioniTesta from "@/components/AzioniTesta";
@@ -94,6 +95,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <SessioneSync castelli={classifica} />
           {/* Visite anonime, senza cookie (Vercel Web Analytics): si accende dal pannello di Vercel */}
           <Analytics />
+          <RegistraSW />
         </div>
       </body>
     </html>

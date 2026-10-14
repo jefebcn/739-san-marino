@@ -2,6 +2,7 @@ import Link from "next/link";
 import AvvisiOggi from "@/components/AvvisiOggi";
 import Bollettino from "@/components/oggi/Bollettino";
 import Condividi from "@/components/Condividi";
+import Notifiche from "@/components/Notifiche";
 import { Icona } from "@/components/Icona";
 import { getAvvisi } from "@/lib/avvisi";
 import { getContenuti } from "@/lib/contenuti";
@@ -55,6 +56,8 @@ export default async function PaginaBollettino() {
           scritto,
         }}
       />
+
+      <Notifiche />
 
       <Condividi titolo="Il Bollettino di 739" testo={`Il Bollettino di oggi, ${oggiLungo()}: le cose da sapere su San Marino`} percorso="/bollettino" />
 
