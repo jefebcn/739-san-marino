@@ -114,6 +114,25 @@ export async function getLuogo(id: string): Promise<Luogo | null> {
   return (r.data as Luogo | null) ?? null;
 }
 
+export type PraticaDi = Pratica & { luogo_id: string; luogo: string; indice: number };
+
+/** Le pratiche («Cosa posso fare qui») dei luoghi di alcune categorie, per cercare «cosa devo fare». Vuoto finché non c'è la 0013. */
+export async function getPratiche(categorie: string[]): Promise<PraticaDi[]> {
+  const db = supabase();
+  if (!db) return [];
+  const { data, error } = await db.from("luoghi").select("id, nome, cosa_fare").in("categoria", categorie).not("cosa_fare", "is", null).order("nome");
+  if (error) {
+    if (error.code !== "42703") console.error("pratiche", error.message);
+    return [];
+  }
+  return (data ?? []).flatMap((l: { id: string; nome: string; cosa_fare: unknown }) =>
+    // Stesso ordine della scheda (solo le pratiche con titolo), così l'indice porta alla pratica giusta
+    (Array.isArray(l.cosa_fare) ? (l.cosa_fare as Pratica[]) : [])
+      .filter((p) => p?.titolo)
+      .map((p, indice) => ({ ...p, luogo_id: l.id, luogo: l.nome, indice })),
+  );
+}
+
 export async function getClassifica(): Promise<Castello[]> {
   const db = supabase();
   if (!db) return [];
@@ -208,4 +227,6 @@ export const CATEGORIE: Record<string, string> = {
   acqua: "Fontanelle",
   ricarica: "Ricarica auto",
   avviso: "Avvisi",
+  ufficio: "Uffici pubblici",
+  salute: "Salute",
 };

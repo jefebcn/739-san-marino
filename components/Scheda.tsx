@@ -104,10 +104,10 @@ export default function Scheda({ l, castello, azioni }: { l: Luogo; castello: Ca
       ) : null}
 
       {pratiche.length ? (
-        <section className="flex flex-col gap-3" aria-label="Cosa posso fare qui">
+        <section id="cosa-fare" className="flex scroll-mt-20 flex-col gap-3" aria-label="Cosa posso fare qui">
           <h2 className="text-[19px] font-semibold tracking-tight">Cosa posso fare qui</h2>
-          {pratiche.map((p) => (
-            <div key={p.titolo} className="flex flex-col gap-2 rounded-2xl bg-superficie p-4">
+          {pratiche.map((p, i) => (
+            <div key={p.titolo} id={`pratica-${i}`} className="flex scroll-mt-20 flex-col gap-2 rounded-2xl bg-superficie p-4 target:ring-2 target:ring-accento">
               <h3 className="text-[15px] font-semibold leading-snug">{p.titolo}</h3>
               {p.testo ? <p className="text-sm leading-relaxed text-testo-2">{p.testo}</p> : null}
               {p.documenti?.length ? (

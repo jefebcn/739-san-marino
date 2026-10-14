@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { notFound } from "next/navigation";
 import TestaPagina from "@/components/Indietro";
 import { Icona } from "@/components/Icona";
@@ -6,7 +7,7 @@ import { CATEGORIE, getLuoghi, type Luogo } from "@/lib/data";
 import { area as trovaArea, sezione as trovaSezione } from "@/lib/aree";
 
 /** Sezione di un'area fatta di luoghi (es. Musei e monumenti): elenco raggruppato per categoria, con la mappa. */
-export default async function PaginaSezione({ area, sezione }: { area: string; sezione: string }) {
+export default async function PaginaSezione({ area, sezione, prima, vuoto }: { area: string; sezione: string; prima?: ReactNode; vuoto?: string }) {
   const a = trovaArea(area);
   const s = trovaSezione(area, sezione);
   // Solo le sezioni di luoghi hanno questa pagina; le altre portano altrove o sono in arrivo
@@ -24,8 +25,10 @@ export default async function PaginaSezione({ area, sezione }: { area: string; s
         <p className="sottotitolo">{s.descrizione}</p>
       </TestaPagina>
 
+      {prima}
+
       {totale === 0 ? (
-        <p className="rounded-2xl bg-superficie p-5 text-[15px] text-testo-2">Nessun luogo ancora in questa sezione.</p>
+        <p className="rounded-2xl bg-superficie p-5 text-[15px] text-testo-2">{vuoto ?? "Nessun luogo ancora in questa sezione."}</p>
       ) : (
         gruppi.map((g) => (
           <section key={g.categoria} className="flex flex-col gap-2.5">

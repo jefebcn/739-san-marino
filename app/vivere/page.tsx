@@ -53,6 +53,7 @@ export default async function Vivere() {
         avvisi: avvisi.length ? (
           <><b className="font-mono font-medium text-testo">{avvisi.length}</b> {avvisi.length === 1 ? "avviso in corso" : "avvisi in corso"}{attenzione ? <span className="text-segnale">, {attenzione} di attenzione</span> : null}</>
         ) : "Nessun avviso in corso",
+        uffici: n("ufficio") ? <><b className="font-mono font-medium text-testo">{n("ufficio")}</b> {n("ufficio") === 1 ? "ufficio" : "uffici"}, con le pratiche e i documenti da portare</> : "Schede in preparazione",
         salute: farmacie.length ? <ConteggioAperte farmacie={farmacie} testo /> : undefined,
         trasporti: funivia ? <>Funivia <TestoProssima partenze={funivia.partenze} /></> : bus.length ? `${bus.length} linee bus` : undefined,
         parcheggi: parcheggi.length ? <><b className="font-mono font-medium text-testo">{parcheggi.length}</b> parcheggi con tariffe e indicazioni</> : undefined,

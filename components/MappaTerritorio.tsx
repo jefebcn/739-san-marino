@@ -21,6 +21,8 @@ const COLORI: Record<string, string> = {
   acqua: "#4FC3F7",
   ricarica: "#7CB342",
   avviso: "#E8573A",
+  ufficio: "#3F5B73",
+  salute: "#E8573A",
 };
 
 const CENTRO: [number, number] = [12.4578, 43.9424];

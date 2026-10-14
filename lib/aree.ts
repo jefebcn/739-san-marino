@@ -37,8 +37,8 @@ export const AREE: Area[] = [
     href: "/vivere",
     sezioni: [
       { slug: "avvisi", nome: "Avvisi e chiusure", descrizione: "Strade chiuse, servizi sospesi, allerte meteo.", icona: "avvisi", href: "/vivere/avvisi", categorie: ["avviso"], parole: "avvisi chiusure strade lavori allerta" },
-      { slug: "uffici", nome: "Uffici pubblici", descrizione: "Dove andare e cosa portare per ogni pratica.", icona: "uffici", parole: "uffici pubblici pratiche documenti carta identita anagrafe" },
-      { slug: "salute", nome: "Salute e farmacie", descrizione: "Farmacie aperte adesso, ospedale e centri sanitari.", icona: "farmacia", href: "/utili/farmacie", categorie: ["farmacia"], parole: "farmacia farmacie medicine salute ospedale cailungo" },
+      { slug: "uffici", nome: "Uffici pubblici", descrizione: "Dove andare e cosa portare per ogni pratica.", icona: "uffici", href: "/vivere/uffici", categorie: ["ufficio"], parole: "uffici pubblici pratiche documenti carta identita anagrafe" },
+      { slug: "salute", nome: "Salute e farmacie", descrizione: "Farmacie aperte adesso, ospedale e centri sanitari.", icona: "farmacia", href: "/vivere/salute", categorie: ["salute", "farmacia"], parole: "farmacia farmacie medicine salute ospedale cailungo medico centro sanitario iss" },
       { slug: "trasporti", nome: "Bus e funivia", descrizione: "Prossime partenze e tabellone.", icona: "funivia", href: "/utili/trasporti", categorie: ["trasporti"], parole: "funivia bus autobus rimini orari trasporti" },
       { slug: "parcheggi", nome: "Parcheggi", descrizione: "Posti, tariffe e indicazioni.", icona: "parcheggio", href: "/utili/parcheggi", categorie: ["parcheggio"], parole: "parcheggi parcheggio auto camper p9 multipiano" },
       { slug: "rifiuti", nome: "Raccolta rifiuti", descrizione: "Il calendario del tuo castello.", icona: "rifiuti", href: "/utili/rifiuti", parole: "rifiuti raccolta spazzatura differenziata carta plastica vetro organico" },

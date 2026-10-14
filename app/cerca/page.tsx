@@ -1,16 +1,16 @@
 import Ricerca from "@/components/Ricerca";
-import { getClassifica, getEventi, getLuoghi } from "@/lib/data";
+import { getClassifica, getEventi, getLuoghi, getPratiche } from "@/lib/data";
 
 export const revalidate = 300;
 
 export const metadata = { title: "Cerca · 739 San Marino" };
 
 export default async function Cerca() {
-  const [eventi, luoghi, castelli] = await Promise.all([getEventi(80), getLuoghi(), getClassifica()]);
+  const [eventi, luoghi, castelli, pratiche] = await Promise.all([getEventi(80), getLuoghi(), getClassifica(), getPratiche(["ufficio", "salute"])]);
   return (
     <>
       <h1 className="sr-only">Cerca</h1>
-      <Ricerca eventi={eventi} luoghi={luoghi} castelli={castelli} />
+      <Ricerca eventi={eventi} luoghi={luoghi} castelli={castelli} pratiche={pratiche} />
     </>
   );
 }

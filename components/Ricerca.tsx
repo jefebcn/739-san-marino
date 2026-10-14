@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { CATEGORIE, etichettaGiorno, ora, type Castello, type Evento, type Luogo } from "@/lib/data";
+import { CATEGORIE, etichettaGiorno, ora, type Castello, type Evento, type Luogo, type PraticaDi } from "@/lib/data";
 import { Icona, type NomeIcona } from "./Icona";
 import { AREE } from "@/lib/aree";
 
@@ -39,12 +39,23 @@ function pulisci(s: string) {
   return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
 }
 
-export default function Ricerca({ eventi, luoghi, castelli }: { eventi: Evento[]; luoghi: Luogo[]; castelli: Castello[] }) {
+export default function Ricerca({ eventi, luoghi, castelli, pratiche = [] }: { eventi: Evento[]; luoghi: Luogo[]; castelli: Castello[]; pratiche?: PraticaDi[] }) {
   const [q, setQ] = useState("");
 
   const indice = useMemo(() => {
     const gruppi: { nome: string; voci: Voce[] }[] = [
       { nome: "Servizi e sezioni", voci: PAGINE.map((p) => ({ href: p.href, titolo: p.titolo, sotto: p.sotto, icona: p.icona, testo: pulisci(`${p.titolo} ${p.parole}`) })) },
+      {
+        // «Cosa devo fare»: le pratiche delle schede di uffici e salute
+        nome: "Pratiche",
+        voci: pratiche.map((p) => ({
+          href: `/luoghi/${p.luogo_id}#pratica-${p.indice}`,
+          titolo: p.titolo,
+          sotto: p.luogo,
+          icona: "uffici" as NomeIcona,
+          testo: pulisci(`${p.titolo} ${p.testo ?? ""} ${(p.documenti ?? []).join(" ")} ${p.luogo}`),
+        })),
+      },
       {
         nome: "Eventi",
         voci: eventi.map((e) => ({
@@ -71,7 +82,7 @@ export default function Ricerca({ eventi, luoghi, castelli }: { eventi: Evento[]
       },
     ];
     return gruppi;
-  }, [eventi, luoghi, castelli]);
+  }, [eventi, luoghi, castelli, pratiche]);
 
   const parole = pulisci(q).split(/\s+/).filter(Boolean);
   const risultati = parole.length
