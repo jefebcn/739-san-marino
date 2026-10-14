@@ -17,7 +17,7 @@ const TESTO = `
 
 Il titolare del trattamento è ${titolare()}. Per qualsiasi domanda sui tuoi dati scrivi a ${emailContatto()}.
 
-Le regole di riferimento sono la Legge della Repubblica di San Marino n. 171 del 21 dicembre 2018 sulla protezione dei dati personali e, per chi usa 739 dall'Unione europea, il Regolamento (UE) 2016/679 (GDPR).
+Il titolare ha sede a Malta, nell'Unione europea: la regola di riferimento è il Regolamento (UE) 2016/679 (GDPR). Per chi usa 739 da San Marino vale anche la Legge della Repubblica di San Marino n. 171 del 21 dicembre 2018 sulla protezione dei dati personali.
 
 ## Quali dati e perché
 
@@ -57,7 +57,7 @@ Meteo (Open-Meteo), articoli di Libertas e luoghi di OpenStreetMap li legge il n
 
 Puoi chiedere di vedere i tuoi dati, correggerli, cancellarli, limitarne l'uso, riceverne una copia o opporti al trattamento. Nome e castello li cambi da solo nella pagina SMR ID; per tutto il resto scrivi a ${emailContatto()}. Rispondiamo entro 30 giorni.
 
-Se pensi che i tuoi dati non siano trattati bene puoi rivolgerti all'Autorità Garante per la protezione dei dati personali della Repubblica di San Marino.
+Se pensi che i tuoi dati non siano trattati bene puoi rivolgerti all'Information and Data Protection Commissioner di Malta, all'autorità per la protezione dei dati del paese in cui vivi o, da San Marino, all'Autorità Garante per la protezione dei dati personali della Repubblica di San Marino.
 
 ## Minori
 

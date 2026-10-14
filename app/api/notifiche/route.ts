@@ -3,6 +3,7 @@ import { supabase } from "@/lib/supabase";
 import { chiaveGiorno, getEventi } from "@/lib/data";
 import { cielo, getMeteo, gradi } from "@/lib/meteo";
 import { getAvvisi } from "@/lib/avvisi";
+import { TITOLARE } from "@/lib/legale";
 
 // Invio delle notifiche (passo 1.6). La chiama solo pg_cron alle 7:39 di San Marino (manda_notifiche(),
 // migrazione 0029) con il segreto della cassaforte: il database lo controlla in notifiche_da_inviare().
@@ -62,7 +63,7 @@ export async function POST(richiesta: Request) {
   const iscrizioni = (data ?? []) as Iscrizione[];
   if (!iscrizioni.length) return Response.json({ inviate: 0 });
 
-  webpush.setVapidDetails(process.env.VAPID_SUBJECT || "mailto:conti9708@gmail.com", pubblica, privata);
+  webpush.setVapidDetails(process.env.VAPID_SUBJECT || `mailto:${TITOLARE.email}`, pubblica, privata);
   const testi = await messaggi();
   const inviate: string[] = [];
   const scadute: string[] = [];

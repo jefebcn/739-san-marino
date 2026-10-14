@@ -11,7 +11,7 @@ Cosa deve fare Alex prima di aprire 739 a tutti (passo 1.8, 14/10/2026). In ordi
 ## 2. Privacy e termini
 
 - [x] Testi approvati da Alex il 14/10/2026 (età minima 16 anni, foro di San Marino).
-- [ ] Dati della società titolare (ragione sociale, sede, email): si scrivono in `lib/legale.ts` e compaiono in Privacy e Termini. Fino ad allora le pagine dicono «[in arrivo]».
+- [x] Titolare: Mediterranean Digital Solutions Ltd (Malta), la stessa società di FantaTitano, in `lib/legale.ts`.
 - [ ] Oggi la cancellazione dell'account si chiede per email. Se serve, aggiungo «Cancella il mio SMR ID» nel profilo.
 
 ## 3. Dominio
@@ -21,7 +21,7 @@ Cosa deve fare Alex prima di aprire 739 a tutti (passo 1.8, 14/10/2026). In ordi
 
 ## 4. Notifiche (passo 1.6)
 
-- [ ] Applicare `supabase/migrations/0029_notifiche.sql` dall'SQL Editor.
+- [x] Migrazione 0029 applicata da Alex il 14/10/2026.
 - [ ] Mettere su Vercel le chiavi VAPID (`NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`) e rifare il deploy. Senza chiavi la scheda Notifiche non compare e l'invio risponde 503: l'app funziona lo stesso.
 - [ ] Provarle su un iPhone (con 739 sulla schermata Home) e su un Android.
 
