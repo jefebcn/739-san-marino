@@ -184,6 +184,7 @@ export default function Profilo({ castelli }: { castelli: Castello[] }) {
           {ruoli.redattore ? (
             <ActionCard href="/admin/importa" icona={<Icona nome="importa" />} tono="neutro" titolo="Importa" descrizione="Luoghi, eventi, avvisi e contenuti da un file JSON" />
           ) : null}
+          <ActionCard href="/profile/eventi" icona={<Icona nome="eventi" />} tono="neutro" titolo="I miei eventi" descrizione="Pubblica e modifica i tuoi eventi" />
           <p className="text-[13px] text-testo-2">{ruoli.amministratore ? "Sei amministratore: vedi anche i pannelli della redazione." : ruoli.redattore ? "Sei nella redazione di 739." : "Sei organizzatore di eventi su 739."}</p>
         </section>
       ) : null}

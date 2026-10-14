@@ -7,6 +7,7 @@ import { Icona, type NomeIcona } from "./Icona";
 const AZIONI: { href: string; icona: NomeIcona; titolo: string; testo: string; allerta?: boolean }[] = [
   { href: "/sport?nuova=1", icona: "sport", titolo: "Organizza una partita", testo: "Le squadre le bilancia 739" },
   { href: "/eventi", icona: "eventi", titolo: "Cosa succede", testo: "Il calendario degli eventi" },
+  { href: "/eventi/proponi", icona: "calendario", titolo: "Proponi un evento", testo: "Organizzi qualcosa? Mettilo su 739" },
   { href: "/profile?qr=1", icona: "qr", titolo: "Mostra il mio QR", testo: "Il tuo SMR ID, pronto da scansionare" },
   { href: "/cerca", icona: "cerca", titolo: "Cerca", testo: "Eventi, luoghi, servizi e castelli" },
   { href: "/utili/farmacie", icona: "farmacia", titolo: "Farmacie aperte", testo: "Chi è aperto adesso" },

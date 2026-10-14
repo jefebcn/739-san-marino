@@ -18,6 +18,13 @@ export type DatiEvento = {
   /** Solo nelle segnalazioni */
   motivo?: "orario" | "posizione" | "chiuso" | "altro";
   testo?: string | null;
+  /** Proposte del pubblico e degli organizzatori (0022) */
+  per_chi?: string;
+  prezzo?: string;
+  indirizzo?: string;
+  contatto?: string;
+  foto_url?: string;
+  foto_credito?: string;
   /** Solo dalle fonti RSS */
   pubblicato_il?: string;
   categorie?: string[];

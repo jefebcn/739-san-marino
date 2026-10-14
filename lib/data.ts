@@ -53,10 +53,18 @@ export type Evento = {
   /** Da dove viene l'evento, se è arrivato dalla coda delle bozze (es. "Libertas") */
   fonte: string | null;
   link_fonte: string | null;
+  /** Dalla migrazione 0022 (proposte e organizzatori): possono mancare */
+  per_chi?: string | null;
+  prezzo?: string | null;
+  foto_url?: string | null;
+  foto_credito?: string | null;
+  contatto?: string | null;
+  indirizzo?: string | null;
 };
 
-const CAMPI_EVENTO =
+const CAMPI_BASE =
   "id, titolo, descrizione, inizio, fine, metri, organizzatore, fonte, link_fonte, luogo:luoghi(id, nome, lat, lng), castello:castelli(id, slug, nome, colore)";
+const CAMPI_EVENTO = `${CAMPI_BASE}, per_chi, prezzo, foto_url, foto_credito, contatto, indirizzo`;
 
 const TZ = "Europe/San_Marino";
 
@@ -67,9 +75,14 @@ function daOra() {
 export async function getEventi(limite = 50, castelloId?: number): Promise<Evento[]> {
   const db = supabase();
   if (!db) return [];
-  let q = db.from("eventi").select(CAMPI_EVENTO).gte("inizio", daOra()).order("inizio", { ascending: true }).limit(limite);
-  if (castelloId) q = q.eq("castello_id", castelloId);
-  const { data, error } = await q;
+  const leggi = (campi: string) => {
+    let q = db.from("eventi").select(campi).gte("inizio", daOra()).order("inizio", { ascending: true }).limit(limite);
+    if (castelloId) q = q.eq("castello_id", castelloId);
+    return q;
+  };
+  let { data, error } = await leggi(CAMPI_EVENTO);
+  // Prima della 0022 i campi nuovi non ci sono: si leggono quelli di base
+  if (error?.code === "42703") ({ data, error } = await leggi(CAMPI_BASE));
   if (error) {
     console.error("eventi", error.message);
     return [];
@@ -80,7 +93,8 @@ export async function getEventi(limite = 50, castelloId?: number): Promise<Event
 export async function getEvento(id: string): Promise<Evento | null> {
   const db = supabase();
   if (!db || !/^[0-9a-f-]{36}$/i.test(id)) return null;
-  const { data, error } = await db.from("eventi").select(CAMPI_EVENTO).eq("id", id).maybeSingle();
+  let { data, error } = await db.from("eventi").select(CAMPI_EVENTO).eq("id", id).maybeSingle();
+  if (error?.code === "42703") ({ data, error } = await db.from("eventi").select(CAMPI_BASE).eq("id", id).maybeSingle());
   if (error) {
     console.error("evento", error.message);
     return null;

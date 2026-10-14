@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { chiaveGiorno, etichettaGiorno, getEventi, type Evento } from "@/lib/data";
 import EventoRiga from "@/components/EventoRiga";
 import { Icona } from "@/components/Icona";
@@ -25,6 +26,9 @@ export default async function Eventi() {
       <section className="intro">
         <h1 className="titolo">Eventi sul Titano</h1>
         <p className="sottotitolo">Ogni check-in vale metri per te e per il tuo castello.</p>
+        <Link href="/eventi/proponi" className="mt-2 flex w-fit items-center gap-1.5 text-sm font-semibold text-accento">
+          <Icona nome="piu" size={16} /> Proponi un evento
+        </Link>
       </section>
 
       {/* Computer: il calendario a sinistra, la stampa locale a destra */}

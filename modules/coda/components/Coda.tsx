@@ -248,6 +248,37 @@ function LinkPubblicato({ bozza }: { bozza: Bozza }) {
   );
 }
 
+/** I dettagli di una proposta arrivata da «Proponi un evento»: passano da soli nell'evento quando lo pubblichi */
+function DettagliProposta({ dati }: { dati: DatiEvento }) {
+  const righe: [string, string | undefined][] = [
+    ["Quando", typeof dataOra(dati.inizio) === "string" ? `${dataOra(dati.inizio)}${dati.fine ? `, fino alle ${dati.fine.slice(11, 16)}` : ""}` : undefined],
+    ["Dove", dati.indirizzo],
+    ["Per chi", dati.per_chi],
+    ["Prezzo", dati.prezzo],
+    ["Organizza", dati.organizzatore],
+    ["Contatto", dati.contatto],
+  ];
+  return (
+    <div className="flex flex-col gap-3">
+      <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-sm">
+        {righe.filter(([, v]) => v).map(([k, v]) => (
+          <div key={k} className="contents">
+            <dt className="text-testo-2">{k}</dt>
+            <dd className="break-words">{v}</dd>
+          </div>
+        ))}
+      </dl>
+      {dati.foto_url ? (
+        <figure className="flex flex-col gap-1">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={dati.foto_url} alt="Foto della proposta" className="aspect-[16/10] w-full max-w-sm rounded-xl bg-fondo object-cover" />
+          {dati.foto_credito ? <figcaption className="text-xs text-testo-2">Foto: {dati.foto_credito}</figcaption> : null}
+        </figure>
+      ) : null}
+    </div>
+  );
+}
+
 /** Le righe di riepilogo di un elemento importato, per decidere senza aprire il file */
 function Riepilogo({ bozza }: { bozza: Bozza }) {
   const d = bozza.dati as Record<string, unknown>;
@@ -356,6 +387,7 @@ function Scheda({
       </div>
       <h2 className="text-[17px] font-semibold leading-snug tracking-tight">{bozza.dati.titolo ?? "Senza titolo"}</h2>
       {bozza.dati.descrizione && !aperta ? <p className="line-clamp-4 text-sm leading-relaxed text-testo-2">{bozza.dati.descrizione}</p> : null}
+      {bozza.canale === "contributo" && !aperta ? <DettagliProposta dati={bozza.dati} /> : null}
       {bozza.link_fonte ? (
         <a href={bozza.link_fonte} target="_blank" rel="noopener" className="flex w-fit items-center gap-1 text-sm font-medium text-accento">
           Leggi l&apos;originale <Icona nome="avanti" size={14} />
