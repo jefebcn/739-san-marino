@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { CATEGORIE, etichettaGiorno, ora, type Castello, type Evento, type Luogo, type PraticaDi } from "@/lib/data";
 import { Icona, type NomeIcona } from "./Icona";
+import { Vuoto } from "./Tano";
 import { AREE } from "@/lib/aree";
 
 type Voce = { href: string; titolo: string; sotto: string; icona: NomeIcona; testo: string };
@@ -120,7 +121,7 @@ export default function Ricerca({ eventi, luoghi, castelli, pratiche = [] }: { e
           </div>
         </section>
       ) : risultati.length === 0 ? (
-        <p className="rounded-2xl border border-dashed border-linea p-5 text-sm text-testo-2">Nessun risultato per «{q.trim()}». Prova con un&apos;altra parola.</p>
+        <Vuoto titolo={`Nessun risultato per «${q.trim()}»`} testo="Prova con un'altra parola, o guarda cosa c'è nelle cinque aree." azione={{ href: "/esplora", testo: "Vai a Esplora" }} />
       ) : (
         risultati.map((g) => (
           <section key={g.nome} className="flex flex-col gap-2">

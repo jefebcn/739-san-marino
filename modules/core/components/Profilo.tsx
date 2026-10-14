@@ -13,6 +13,7 @@ import SmrCard from "./SmrCard";
 import { mioRating } from "@/modules/sport/api";
 import { EtichetteScala, Scala } from "@/components/Quota";
 import { livello } from "@/lib/quota";
+import Tano, { POSA_DI_LIVELLO } from "@/components/Tano";
 import { conteggioBozze } from "@/modules/coda/api";
 import { mieiRuoli, NESSUN_RUOLO, type Ruoli } from "../ruoli";
 import { mieiMetri, type Movimento } from "@/modules/eventi/api";
@@ -43,7 +44,11 @@ function Quota() {
           <span className="etichetta">La tua quota, {attuale.nome}</span>
           <span className="etichetta">Vetta 739 m</span>
         </div>
-        <span className="quota-num">{dati ? metri : "–"}<small>m</small></span>
+        <div className="flex items-end justify-between gap-3">
+          <span className="quota-num">{dati ? metri : "–"}<small>m</small></span>
+          {/* Il traguardo raggiunto: Valle saluta, Mura pollice, Torri fiero, Vetta esulta */}
+          {dati ? <Tano posa={POSA_DI_LIVELLO[attuale.nome]} className="-mb-2 h-28 w-auto" /> : null}
+        </div>
         <div style={{ color: "var(--pannello-testo)" }}>
           <Scala metri={metri} grande />
           <EtichetteScala />

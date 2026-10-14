@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Vuoto } from "@/components/Tano";
 import { chiaveGiorno, etichettaGiorno, getEventi, type Evento } from "@/lib/data";
 import EventoRiga from "@/components/EventoRiga";
 import { Icona } from "@/components/Icona";
@@ -35,7 +36,7 @@ export default async function Eventi() {
       <div className="larga flex flex-col gap-7 lg:grid lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start lg:gap-10">
         <div className="flex flex-col gap-7">
           {gruppi.length === 0 ? (
-            <p className="vuoto">Nessun evento in calendario per ora.</p>
+            <Vuoto titolo="Nessun evento in calendario: proponine uno" testo="Organizzi qualcosa sul Titano? La redazione lo controlla e lo pubblica." azione={{ href: "/eventi/proponi", testo: "Proponi un evento" }} />
           ) : (
             gruppi.map((g) => (
               <section key={g.chiave} className="sezione" style={{ gap: 10 }}>

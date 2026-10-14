@@ -1,6 +1,7 @@
 import Link from "next/link";
 import TestaPagina from "@/components/Indietro";
 import { Completo } from "@/components/Logo";
+import Tano from "@/components/Tano";
 import { Icona, type NomeIcona } from "@/components/Icona";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import { AREE } from "@/lib/aree";
@@ -28,8 +29,10 @@ export default function Guida() {
         <p className="sottotitolo">Tutto San Marino in un&apos;app: cosa succede, dove andare, cosa serve. E una sfida tra i nove castelli.</p>
       </TestaPagina>
 
-      <div className="flex justify-center rounded-2xl bg-superficie px-6 py-8">
-        <Completo etichetta="739 San Marino" className="h-32 w-auto text-testo" />
+      <div className="flex items-end justify-center gap-6 overflow-hidden rounded-2xl bg-superficie px-6 pt-6">
+        <Completo etichetta="739 San Marino" className="mb-8 h-28 w-auto text-testo" />
+        {/* Tano saluta in apertura della guida */}
+        <Tano posa="saluta" priority className="h-44 w-auto lg:h-52" />
       </div>
 
       <section className="sezione">

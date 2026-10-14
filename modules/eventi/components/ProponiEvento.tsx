@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Icona } from "@/components/Icona";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import { useSessione } from "@/modules/core/store";
+import Tano from "@/components/Tano";
 import { mieiRuoli } from "@/modules/core/ruoli";
 import { caricaFoto, mieiEventi, proponiEvento, salvaMioEvento, type DatiProposta } from "../api";
 
@@ -160,7 +161,8 @@ export default function ProponiEvento({ luoghi, castelli }: { luoghi: LuogoScelt
   if (fatto) {
     return (
       <section className="flex flex-col gap-4 rounded-2xl bg-superficie p-5" role="status">
-        <span className="grid size-12 place-items-center rounded-xl bg-accento-tenue text-accento"><Icona nome="eventi" size={26} /></span>
+        {/* Evento proposto o pubblicato: Tano col pollice in su */}
+        <Tano posa="pollice" priority className="h-36 w-auto self-center" />
         {fatto.tipo === "proposta" ? (
           <>
             <h2 className="text-[21px] font-semibold tracking-tight">Grazie, la proposta è arrivata</h2>

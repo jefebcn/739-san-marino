@@ -6,6 +6,7 @@ import { EtichetteScala, Scala } from "@/components/Quota";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import { LIVELLI, livello } from "@/lib/quota";
 import { useSessione } from "@/modules/core/store";
+import Tano, { POSA_DI_LIVELLO } from "@/components/Tano";
 import { faiCheckin, type EsitoCheckin } from "../api";
 
 /**
@@ -68,10 +69,14 @@ export default function Checkin({ evento, titolo }: { evento: string; titolo: st
         <span className="text-sm" style={{ color: "var(--pannello-testo)" }}>{esito.nuovo ? "Check-in fatto" : "Avevi già fatto check-in"}</span>
         <h1 className="text-[22px] font-semibold leading-tight tracking-tight text-white">{esito.titolo}</h1>
       </div>
-      <span className="quota-num">
-        {esito.nuovo ? `+${esito.metri}` : esito.totale}
-        <small>m</small>
-      </span>
+      <div className="flex items-end justify-between gap-3">
+        <span className="quota-num">
+          {esito.nuovo ? `+${esito.metri}` : esito.totale}
+          <small>m</small>
+        </span>
+        {/* Check-in fatto: Tano esulta; se si sale di livello, la posa del nuovo livello */}
+        {esito.nuovo ? <Tano posa={salito ? POSA_DI_LIVELLO[salito.nome] : "esulta"} priority className="-mb-2 h-36 w-auto" /> : null}
+      </div>
       <p className="text-[15px]" style={{ color: "var(--pannello-testo)" }}>
         {esito.nuovo ? (
           <>La tua quota è <b className="font-mono font-medium text-white">{esito.totale} m</b>, e i metri contano anche per il tuo castello.</>

@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import ActionCard from "@/components/ui/ActionCard";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import { Icona } from "@/components/Icona";
+import { Vuoto } from "@/components/Tano";
 import { etichettaGiorno, ora } from "@/lib/data";
 import { useSessione } from "@/modules/core/store";
 import { elencoPartite } from "../api";
@@ -95,10 +96,11 @@ export default function ListaPartite({ sport }: { sport: Sport[] }) {
           {[0, 1, 2].map((i) => <div key={i} className="h-[92px] animate-pulse rounded-2xl bg-superficie" />)}
         </div>
       ) : ordinate.length === 0 ? (
-        <div className="flex flex-col items-start gap-2 rounded-2xl bg-superficie p-5">
-          <p className="text-[15px] font-semibold">Nessuna partita in programma{filtro ? ` di ${nomeSport(filtro).toLowerCase()}` : ""}.</p>
-          <p className="text-sm text-testo-2">Organizzane una: chi si iscrive viene messo in squadre bilanciate in base al rating.</p>
-        </div>
+        <Vuoto
+          titolo={`Nessuna partita${filtro ? ` di ${nomeSport(filtro).toLowerCase()}` : ""} in programma: organizzane una`}
+          testo="Chi si iscrive viene messo in squadre bilanciate in base al rating."
+          azione={stato === "connesso" ? undefined : { href: "/profile?torna=/sport?nuova=1", testo: "Entra e organizza" }}
+        />
       ) : (
         <ul className="flex flex-col gap-2.5">
           {ordinate.map(({ p, km }) => (

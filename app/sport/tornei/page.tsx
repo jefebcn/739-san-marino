@@ -6,6 +6,7 @@ import { getClassifica } from "@/lib/data";
 import { getSport, getTornei } from "@/modules/sport/dati";
 import { periodo, STATI_TORNEO } from "@/modules/sport/tornei";
 import NuovoTorneoLink from "@/modules/sport/components/NuovoTorneoLink";
+import { Vuoto } from "@/components/Tano";
 
 export const revalidate = 60;
 
@@ -27,11 +28,7 @@ export default async function Tornei() {
       <NuovoTorneoLink />
 
       {tornei.length === 0 ? (
-        <section className="flex flex-col gap-2 rounded-2xl bg-superficie p-5">
-          <span className="text-testo-2"><Icona nome="tornei" size={28} /></span>
-          <h2 className="text-[17px] font-semibold">Nessun torneo in programma</h2>
-          <p className="text-[15px] text-testo-2">Quando la redazione apre un torneo lo trovi qui: il capitano iscrive la squadra del suo castello e manda il link ai compagni.</p>
-        </section>
+        <Vuoto titolo="Nessun torneo in programma" testo="Quando la redazione apre un torneo lo trovi qui: il capitano iscrive la squadra del suo castello e manda il link ai compagni. Nel frattempo, gioca una partita." azione={{ href: "/sport", testo: "Vai alle partite" }} />
       ) : (
         <ul className="flex flex-col gap-3">
           {tornei.map((t) => {

@@ -4,6 +4,7 @@ import { Icona, type NomeIcona } from "@/components/Icona";
 import { AREE } from "@/lib/aree";
 import Installa from "@/components/Installa";
 import { Completo } from "@/components/Logo";
+import Tano, { Vuoto } from "@/components/Tano";
 import { ScegliCastello } from "@/components/Castello";
 import { EmblemaCastello } from "@/components/LogoCastello";
 import { ProssimaPartenza } from "@/components/Partenze";
@@ -105,12 +106,15 @@ export default async function Home() {
       {mattina ? null : <AvvisiOggi avvisi={avvisi} castelli={classifica} />}
 
       {/* Chi arriva la prima volta: il marchio, una frase, un'azione */}
-      <section className="per-nuovi flex flex-col gap-5 rounded-2xl bg-superficie p-5 text-testo lg:flex-row-reverse lg:items-center lg:justify-between lg:p-8">
-        {/* Il logo prende il colore del testo: bianco sul tema scuro, nero sul chiaro */}
-        <Completo etichetta="739 San Marino" className="h-24 w-auto self-start text-testo lg:h-36 lg:self-center" />
+      <section className="per-nuovi flex flex-col gap-4 overflow-hidden rounded-2xl bg-superficie p-5 text-testo lg:flex-row-reverse lg:items-center lg:justify-between lg:gap-10 lg:px-8 lg:py-6">
+        {/* Il logo prende il colore del testo (bianco sul tema scuro, nero sul chiaro); accanto Tano dà il benvenuto */}
+        <div className="flex items-end justify-between gap-4 lg:gap-8">
+          <Completo etichetta="739 San Marino" className="mb-1 h-24 w-auto text-testo lg:h-32" />
+          <Tano posa="benvenuto" priority className="-mt-1 h-40 w-auto lg:h-48" />
+        </div>
         <div className="flex flex-col">
           <h2 className="max-w-[15ch] text-[26px] font-semibold leading-[1.1] tracking-tight lg:max-w-none lg:text-[32px]">Tutto San Marino, in un&apos;app</h2>
-          <p className="mt-2 max-w-[30ch] text-[15px] leading-relaxed text-testo-2 lg:max-w-[52ch]">Eventi, sport e servizi dei nove castelli, con la tua tessera digitale.</p>
+          <p className="mt-2 max-w-[34ch] text-[15px] leading-relaxed text-testo-2 lg:max-w-[52ch]">Eventi, sport e servizi dei nove castelli, con la tua tessera digitale. Tano ti fa strada.</p>
           <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-3">
             <PrimaryButton href="/profile">Crea il tuo SMR ID</PrimaryButton>
             <Link href="/guida" className="text-sm font-medium text-testo-2 hover:text-testo">Come funziona</Link>
@@ -199,13 +203,17 @@ export default async function Home() {
               <section className="flex flex-col gap-3">
                 <Titolo href="/sport">Partite</Titolo>
                 {altrePartite.length === 0 ? (
-                  <Link href="/sport?nuova=1" className="flex items-center gap-4 rounded-2xl border border-dashed border-linea p-4 transition-colors hover:bg-superficie">
-                    <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-accento-tenue text-accento"><Icona nome="sport" size={24} /></span>
-                    <span className="flex flex-col">
-                      <span className="text-[15px] font-semibold">Nessuna partita in programma</span>
-                      <span className="text-[13px] text-testo-2">Organizzane una: ci pensa 739 a fare squadre pari.</span>
-                    </span>
-                  </Link>
+                  <>
+                    {/* Per chi arriva la prima volta Tano è già nel benvenuto: qui solo la riga */}
+                    <Vuoto className="per-tornati" titolo="Oggi non ci sono partite: organizzane una" testo="Ci pensa 739 a fare squadre pari." azione={{ href: "/sport?nuova=1", testo: "Organizza una partita" }} />
+                    <Link href="/sport?nuova=1" className="per-nuovi flex items-center gap-4 rounded-2xl border border-dashed border-linea p-4 transition-colors hover:bg-superficie">
+                      <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-accento-tenue text-accento"><Icona nome="partite" size={28} /></span>
+                      <span className="flex flex-col">
+                        <span className="text-[15px] font-semibold">Nessuna partita in programma</span>
+                        <span className="text-[13px] text-testo-2">Organizzane una: ci pensa 739 a fare squadre pari.</span>
+                      </span>
+                    </Link>
+                  </>
                 ) : (
                   <ul className="divide-y divide-linea overflow-hidden rounded-2xl bg-superficie">
                     {altrePartite.slice(0, 4).map((p) => (
