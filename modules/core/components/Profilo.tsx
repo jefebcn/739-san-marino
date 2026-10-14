@@ -71,9 +71,9 @@ export default function Profilo({ castelli }: { castelli: Castello[] }) {
     if (!idUtente) return;
     mieiRuoli().then(async (r) => {
       setRuoli(r);
-      if (!r.amministratore) return;
+      if (!r.redattore) return;
       const { conteggio } = await conteggioBozze();
-      setDaVedere((conteggio?.nuovo ?? 0) + (conteggio?.segnalazioni ?? 0));
+      if (conteggio) setDaVedere((conteggio?.nuovo ?? 0) + (conteggio?.segnalazioni ?? 0));
     });
   }, [idUtente]);
 
@@ -166,7 +166,7 @@ export default function Profilo({ castelli }: { castelli: Castello[] }) {
       {ruoli.redattore || ruoli.organizzatore ? (
         <section className="flex flex-col gap-3">
           <h2 className="text-xl font-semibold tracking-tight">{ruoli.amministratore ? "Amministrazione" : ruoli.redattore ? "Redazione" : "Organizzatore"}</h2>
-          {ruoli.amministratore ? (
+          {ruoli.redattore ? (
             <ActionCard
               href="/admin/coda"
               icona={<Icona nome="stampa" />}
@@ -177,6 +177,9 @@ export default function Profilo({ castelli }: { castelli: Castello[] }) {
           ) : null}
           {ruoli.redattore ? (
             <ActionCard href="/admin/contenuti" icona={<Icona nome="storie" />} tono="neutro" titolo="Contenuti" descrizione="Bollettino, rubriche e storie" />
+          ) : null}
+          {ruoli.redattore ? (
+            <ActionCard href="/admin/importa" icona={<Icona nome="importa" />} tono="neutro" titolo="Importa" descrizione="Luoghi, eventi, avvisi e contenuti da un file JSON" />
           ) : null}
           <p className="text-[13px] text-testo-2">{ruoli.amministratore ? "Sei amministratore: vedi anche i pannelli della redazione." : ruoli.redattore ? "Sei nella redazione di 739." : "Sei organizzatore di eventi su 739."}</p>
         </section>

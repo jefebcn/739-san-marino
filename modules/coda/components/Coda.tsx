@@ -12,13 +12,14 @@ import {
   conteggioBozze,
   ripristinaBozza,
   scartaBozza,
-  sonoAmministratore,
   type Bozza,
   type Conteggio,
   type DatiEvento,
   type StatoBozza,
 } from "../api";
 import { suggerisciData } from "../date";
+import { mieiRuoli } from "@/modules/core/ruoli";
+import { TIPI, type TipoContenuto } from "@/lib/rubriche";
 
 export type LuogoScelta = { id: string; nome: string; castello_id: number | null };
 export type CastelloScelta = { id: number; nome: string };
@@ -37,7 +38,22 @@ const CANALI: Record<string, string> = {
   contributo: "proposta",
   pagina: "sito",
   accordo: "accordo",
+  redazione: "importazione",
 };
+
+const CATEGORIA: Record<string, string> = {
+  luogo: "Luogo", parcheggio: "Parcheggio", farmacia: "Farmacia", impianto: "Impianto sportivo", trasporti: "Trasporti", locale: "Locale",
+  servizio: "Servizio", cultura: "Museo o monumento", panorama: "Panorama", bagni: "Bagni", acqua: "Fontanella", ricarica: "Ricarica auto",
+  ufficio: "Ufficio pubblico", salute: "Salute",
+};
+const TIPO_AVVISO: Record<string, string> = { strada: "Strade", servizio: "Servizi", meteo: "Meteo", evento: "Eventi", altro: "Altro" };
+const MESI = ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio", "agosto", "settembre", "ottobre", "novembre", "dicembre"];
+
+/** «2026-10-20T07:00» (ora di San Marino) → «20 ottobre, 07:00» */
+function dataOra(v: unknown) {
+  const m = typeof v === "string" ? v.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}:\d{2})/) : null;
+  return m ? `${Number(m[3])} ${MESI[Number(m[2]) - 1]}, ${m[4]}` : v;
+}
 
 const giorno = new Intl.DateTimeFormat("it-IT", { day: "numeric", month: "long", timeZone: "Europe/San_Marino" });
 const giornoOra = new Intl.DateTimeFormat("it-IT", { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit", timeZone: "Europe/San_Marino" });
@@ -70,14 +86,15 @@ function Completa({
 }) {
   const proposta = suggerisciData(`${bozza.dati.titolo ?? ""} ${bozza.dati.descrizione ?? ""}`, bozza.dati.pubblicato_il);
   const [titolo, setTitolo] = useState(bozza.dati.titolo ?? "");
-  const [data, setData] = useState(proposta.data ?? "");
-  const [ora, setOra] = useState(proposta.ora ?? "");
-  const [oraFine, setOraFine] = useState("");
-  const [luogo, setLuogo] = useState("");
-  const [castello, setCastello] = useState("");
-  const [organizzatore, setOrganizzatore] = useState("");
+  // Un evento importato dalla redazione ha già data, ora e luogo: si parte da quelli
+  const [data, setData] = useState(bozza.dati.inizio?.slice(0, 10) ?? proposta.data ?? "");
+  const [ora, setOra] = useState(bozza.dati.inizio?.slice(11, 16) ?? proposta.ora ?? "");
+  const [oraFine, setOraFine] = useState(bozza.dati.fine?.slice(11, 16) ?? "");
+  const [luogo, setLuogo] = useState(luoghi.find((l) => l.id === bozza.dati.luogo_id)?.nome ?? "");
+  const [castello, setCastello] = useState(bozza.dati.castello_id ? String(bozza.dati.castello_id) : "");
+  const [organizzatore, setOrganizzatore] = useState(bozza.dati.organizzatore ?? "");
   const [descrizione, setDescrizione] = useState(bozza.dati.descrizione ?? "");
-  const [metri, setMetri] = useState("20");
+  const [metri, setMetri] = useState(bozza.dati.metri ? String(bozza.dati.metri) : "20");
   const [invio, setInvio] = useState(false);
   const [errore, setErrore] = useState<string | null>(null);
 
@@ -123,7 +140,7 @@ function Completa({
           <input type="time" value={oraFine} onChange={(e) => setOraFine(e.target.value)} className={`h-12 ${STILE_CAMPO} px-3`} />
         </Etichetta>
       </div>
-      {proposta.data ? <p className="-mt-1.5 text-[13px] text-testo-2">Data e ora lette dal testo: controllale prima di pubblicare.</p> : null}
+      {proposta.data && !bozza.dati.inizio ? <p className="-mt-1.5 text-[13px] text-testo-2">Data e ora lette dal testo: controllale prima di pubblicare.</p> : null}
       <Etichetta testo="Luogo">
         <input
           list={`luoghi-${bozza.id}`}
@@ -215,6 +232,93 @@ function SchedaSegnalazione({ bozza, aggiorna }: { bozza: Bozza; aggiorna: (test
   );
 }
 
+const NOMI_TIPO: Record<Bozza["tipo"], string> = { evento: "Evento", luogo: "Luogo", avviso: "Avviso", contenuto: "Contenuto", segnalazione: "Segnalazione" };
+
+/** Dove si vede quello che è stato approvato */
+function LinkPubblicato({ bozza }: { bozza: Bozza }) {
+  const [href, testo] =
+    bozza.tipo === "luogo" ? [`/luoghi/${bozza.elemento_id}`, "Vedi la scheda"]
+    : bozza.tipo === "avviso" ? ["/vivere/avvisi", "Vedi gli avvisi"]
+    : bozza.tipo === "contenuto" ? ["/admin/contenuti", "Rileggilo e pubblicalo in Contenuti"]
+    : [`/eventi/${bozza.elemento_id}`, "Vedi l'evento pubblicato"];
+  return (
+    <Link href={href} className="flex w-fit items-center gap-1 text-sm font-medium text-accento">
+      {testo} <Icona nome="avanti" size={14} />
+    </Link>
+  );
+}
+
+/** Le righe di riepilogo di un elemento importato, per decidere senza aprire il file */
+function Riepilogo({ bozza }: { bozza: Bozza }) {
+  const d = bozza.dati as Record<string, unknown>;
+  const righe: [string, unknown][] =
+    bozza.tipo === "luogo"
+      ? [["Categoria", CATEGORIA[String(d.categoria)] ?? d.categoria], ["Indirizzo", d.indirizzo], ["Telefono", d.telefono], ["Sito", d.sito], ["Pratiche", Array.isArray(d.cosa_fare) ? `${d.cosa_fare.length} in «Cosa posso fare qui»` : null], ["Fonte", d.fonte_nome]]
+      : bozza.tipo === "avviso"
+        ? [["Tipo", TIPO_AVVISO[String(d.tipo_avviso)] ?? d.tipo_avviso], ["Gravità", d.gravita === "attenzione" ? "Attenzione" : "Informazione"], ["Dal", dataOra(d.dal)], ["Al", dataOra(d.al)], ["Testo", d.testo]]
+        : [["Rubrica", TIPI[d.tipo_contenuto as TipoContenuto]?.nome ?? d.tipo_contenuto], ["Sommario", d.sommario], ["Testo", typeof d.corpo === "string" && d.corpo ? `${d.corpo.length} caratteri` : null]];
+  const piene = righe.filter(([, v]) => v !== undefined && v !== null && v !== "");
+  if (!piene.length) return null;
+  return (
+    <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-sm">
+      {piene.map(([k, v]) => (
+        <div key={k} className="contents">
+          <dt className="text-testo-2">{k}</dt>
+          <dd className="line-clamp-2 break-words">{String(v)}</dd>
+        </div>
+      ))}
+    </dl>
+  );
+}
+
+/** Luoghi, avvisi e contenuti arrivati dall'importazione: si approvano come sono o si scartano. */
+function SchedaImportazione({ bozza, aggiorna }: { bozza: Bozza; aggiorna: (testo: string) => void }) {
+  const [occupato, setOccupato] = useState(false);
+  const [errore, setErrore] = useState<string | null>(null);
+  const esegui = async (azione: () => Promise<{ errore: string | null }>, testo: string) => {
+    setOccupato(true);
+    setErrore(null);
+    const r = await azione();
+    setOccupato(false);
+    if (r.errore) return setErrore(r.errore);
+    aggiorna(testo);
+  };
+  const approvato = bozza.tipo === "luogo" ? (bozza.simile_id ? "Scheda aggiornata." : "Luogo pubblicato sulla mappa.") : bozza.tipo === "avviso" ? "Avviso pubblicato." : "Contenuto creato come bozza in Contenuti.";
+
+  return (
+    <article className="flex flex-col gap-3 rounded-2xl bg-superficie p-4">
+      <div className="flex items-center justify-between gap-3 text-[13px] text-testo-2">
+        <span>{NOMI_TIPO[bozza.tipo]}, {bozza.fonte}, {giorno.format(new Date(bozza.creato_il))}</span>
+        {bozza.stato === "duplicato" ? <span className="font-medium text-testo">Doppione</span> : null}
+      </div>
+      <h2 className="text-[17px] font-semibold leading-snug tracking-tight">{bozza.dati.titolo ?? (bozza.dati as { nome?: string }).nome ?? "Senza titolo"}</h2>
+      <Riepilogo bozza={bozza} />
+      {bozza.tipo === "luogo" && bozza.simile_id && bozza.stato === "nuovo" ? (
+        <p className="rounded-xl bg-fondo p-3 text-sm">
+          <b className="font-semibold">Esiste già: </b>
+          <Link href={`/luoghi/${bozza.simile_id}`} className="text-accento">{bozza.simile_titolo}</Link>. Approvando aggiorni quella scheda con i dati nuovi, senza crearne un doppione.
+        </p>
+      ) : null}
+      {bozza.nota ? <p className="text-sm text-testo-2">Nota: {bozza.nota}</p> : null}
+      {errore ? <p role="alert" className="rounded-xl bg-segnale/12 px-4 py-3 text-sm text-segnale">{errore}</p> : null}
+      {bozza.stato === "nuovo" ? (
+        <div className="grid grid-cols-2 gap-2">
+          <PrimaryButton variante="interno" disabled={occupato} onClick={() => esegui(() => scartaBozza(bozza.id, null), "Bozza scartata.")}>Scarta</PrimaryButton>
+          <PrimaryButton disabled={occupato} onClick={() => esegui(() => approvaBozza(bozza.id, {}), approvato)}>
+            {bozza.tipo === "luogo" && bozza.simile_id ? "Aggiorna" : "Approva"}
+          </PrimaryButton>
+        </div>
+      ) : null}
+      {bozza.stato === "approvato" && bozza.elemento_id ? <LinkPubblicato bozza={bozza} /> : null}
+      {bozza.stato === "scartato" || bozza.stato === "duplicato" ? (
+        <PrimaryButton variante="interno" dimensione="sm" className="w-fit" disabled={occupato} onClick={() => esegui(() => ripristinaBozza(bozza.id), "Bozza rimessa in coda.")}>
+          Rimetti in coda
+        </PrimaryButton>
+      ) : null}
+    </article>
+  );
+}
+
 function Scheda({
   bozza,
   luoghi,
@@ -231,6 +335,7 @@ function Scheda({
   const [errore, setErrore] = useState<string | null>(null);
   const quando = bozza.dati.pubblicato_il ?? bozza.creato_il;
   if (bozza.tipo === "segnalazione") return <SchedaSegnalazione bozza={bozza} aggiorna={aggiorna} />;
+  if (bozza.tipo !== "evento") return <SchedaImportazione bozza={bozza} aggiorna={aggiorna} />;
 
   const esegui = async (azione: () => Promise<{ errore: string | null }>, testo: string) => {
     setOccupato(true);
@@ -290,11 +395,7 @@ function Scheda({
         )
       ) : null}
 
-      {bozza.stato === "approvato" && bozza.elemento_id ? (
-        <Link href={`/eventi/${bozza.elemento_id}`} className="flex w-fit items-center gap-1 text-sm font-medium text-accento">
-          Vedi l&apos;evento pubblicato <Icona nome="avanti" size={14} />
-        </Link>
-      ) : null}
+      {bozza.stato === "approvato" && bozza.elemento_id ? <LinkPubblicato bozza={bozza} /> : null}
 
       {bozza.stato === "scartato" || bozza.stato === "duplicato" ? (
         <PrimaryButton variante="interno" dimensione="sm" className="w-fit" disabled={occupato} onClick={() => esegui(() => ripristinaBozza(bozza.id), "Bozza rimessa in coda.")}>
@@ -317,7 +418,7 @@ export default function Coda({ luoghi, castelli }: { luoghi: LuogoScelta[]; cast
 
   useEffect(() => {
     if (sessione !== "connesso") return;
-    sonoAmministratore().then((si) => setPermesso(si ? "si" : "no"));
+    mieiRuoli().then((r) => setPermesso(r.redattore ? "si" : "no"));
   }, [sessione]);
 
   const carica = useCallback(async () => {
@@ -350,7 +451,7 @@ export default function Coda({ luoghi, castelli }: { luoghi: LuogoScelta[]; cast
     );
   }
   if (permesso === "no") {
-    return <p className="text-[15px] text-testo-2">Il pannello è riservato agli amministratori di 739. Se dovresti averlo, chiedi ad Alex di aggiungerti.</p>;
+    return <p className="text-[15px] text-testo-2">La coda è riservata alla redazione di 739. Se dovresti averla, chiedi ad Alex di aggiungerti.</p>;
   }
 
   return (

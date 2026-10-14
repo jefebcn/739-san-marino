@@ -99,3 +99,10 @@ export async function segnalaErrore(dove: { luogo?: string; evento?: string }, m
   if (error?.code === "PGRST202") return { errore: "Le segnalazioni non sono ancora attive. Riprova tra qualche giorno." };
   return { errore: messaggio(error) };
 }
+
+/** Importazione della redazione (/admin/importa): gli elementi già validati entrano nella coda. */
+export async function importaRedazione(elementi: Record<string, unknown>[]) {
+  const { data, error } = await db().rpc("importa_redazione", { p_elementi: elementi });
+  if (error?.code === "PGRST202") return { n: 0, errore: "L'importazione non è ancora attiva: manca la migrazione 0019 nel database." };
+  return { n: (data as number | null) ?? 0, errore: messaggio(error) };
+}
