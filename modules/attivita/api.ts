@@ -27,6 +27,9 @@ function messaggio(e: ErroreDb) {
   return "Qualcosa non ha funzionato. Riprova tra poco.";
 }
 const db = () => supabaseBrowser();
+/** La scheda pubblica è in cache: dopo un salvataggio si fa rigenerare subito (app/api/rivalida) */
+const rigenera = (luogo: string) =>
+  fetch("/api/rivalida", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ percorso: `/luoghi/${luogo}` }) }).catch(() => {});
 
 export async function chiediAttivita(luogo: string, chi: string, telefono: string, nota: string) {
   const { error } = await db().rpc("chiedi_attivita", { p_luogo: luogo, p_chi: chi, p_telefono: telefono, p_nota: nota || null });
@@ -45,6 +48,7 @@ export async function luogoDaModificare(id: string) {
 
 export async function salvaMiaAttivita(luogo: string, dati: DatiAttivita) {
   const { error } = await db().rpc("salva_mia_attivita", { p_luogo: luogo, p_dati: dati });
+  if (!error) await rigenera(luogo);
   return { errore: messaggio(error) };
 }
 
@@ -77,16 +81,19 @@ export async function mioPro(luogo: string) {
 
 export async function salvaPro(luogo: string, menu: string, prenota: string) {
   const { error } = await db().rpc("salva_pro", { p_luogo: luogo, p_menu: menu, p_prenota: prenota });
+  if (!error) await rigenera(luogo);
   return { errore: messaggio(error) };
 }
 
 export async function salvaOfferta(luogo: string, o: { id: string | null; titolo: string; testo: string; dal: string; al: string }) {
   const { error } = await db().rpc("salva_offerta", { p_luogo: luogo, p_id: o.id, p_titolo: o.titolo, p_testo: o.testo, p_dal: o.dal, p_al: o.al });
+  if (!error) await rigenera(luogo);
   return { errore: messaggio(error) };
 }
 
-export async function togliOfferta(id: string) {
+export async function togliOfferta(id: string, luogo: string) {
   const { error } = await db().rpc("togli_offerta", { p_id: id });
+  if (!error) await rigenera(luogo);
   return { errore: messaggio(error) };
 }
 
@@ -97,6 +104,7 @@ export async function numeriScheda(luogo: string, giorni = 30) {
 
 export async function impostaPro(luogo: string, fino: string | null) {
   const { error } = await db().rpc("imposta_pro", { p_luogo: luogo, p_fino: fino });
+  if (!error) await rigenera(luogo);
   return { errore: messaggio(error) };
 }
 

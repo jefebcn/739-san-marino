@@ -1,7 +1,12 @@
 import PaginaSezione from "@/components/aree/PaginaSezione";
-import { sezione as trovaSezione } from "@/lib/aree";
+import { area as trovaArea, sezione as trovaSezione } from "@/lib/aree";
 
 export const revalidate = 300;
+
+// Le sezioni fatte di luoghi si preparano alla build e restano in cache (ISR)
+export async function generateStaticParams() {
+  return (trovaArea("uscire")?.sezioni ?? []).filter((s) => s.categorie && s.href?.startsWith("/uscire/")).map((s) => ({ sezione: s.slug }));
+}
 
 type Props = { params: Promise<{ sezione: string }> };
 

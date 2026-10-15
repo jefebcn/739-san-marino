@@ -2,15 +2,18 @@
 
 import { useEffect } from "react";
 import type { Castello } from "@/lib/data";
-import { supabaseBrowser } from "@/lib/supabase/browser";
 import { EVENTO_CASTELLO, impostaCastello, leggiCastello } from "@/components/Castello";
-import { caricaProfilo, salvaProfilo } from "../auth";
 import { useSessione } from "../store";
 import { adessoSM } from "@/lib/orario";
 
 const CHIAVE_ACCESSO = "739-accesso";
 
 /** Un giorno di accesso per persona (migrazione 0021), al massimo una chiamata al giorno da questo telefono. */
+// Il client di Supabase (195 KB) non serve per disegnare la pagina: si scarica dopo il primo disegno,
+// così non rallenta nessuna pagina. Le pagine che lo usano subito (profilo, moduli) lo importano da sole.
+const supabaseDopo = () => import("@/lib/supabase/browser").then((m) => m.supabaseBrowser());
+const authDopo = () => import("../auth");
+
 function segnaAccesso(id: string) {
   const oggi = `${id}:${adessoSM().data}`;
   try {
@@ -18,8 +21,8 @@ function segnaAccesso(id: string) {
   } catch {
     /* senza localStorage si segna comunque: il database tiene un solo giorno per persona */
   }
-  supabaseBrowser()
-    .rpc("segna_accesso")
+  supabaseDopo()
+    .then((db) => db.rpc("segna_accesso"))
     .then(({ error }) => {
       // Prima della 0021 la funzione non c'è: si riprova alla prossima apertura
       if (error) return;
@@ -35,12 +38,13 @@ function segnaAccesso(id: string) {
  */
 export default function SessioneSync({ castelli }: { castelli: Castello[] }) {
   useEffect(() => {
-    const db = supabaseBrowser();
+    let annullato = false;
+    let smetti: (() => void) | undefined;
     const { accedi, esci, impostaRecupero } = useSessione.getState();
 
     const carica = async (utente: { id: string; email?: string | null } | null) => {
       if (!utente) return esci();
-      const profilo = await caricaProfilo(utente.id);
+      const profilo = await (await authDopo()).caricaProfilo(utente.id);
       accedi({ id: utente.id, email: utente.email ?? null }, profilo);
       segnaAccesso(utente.id);
       // Il castello del profilo vince su quello salvato sul telefono
@@ -48,13 +52,17 @@ export default function SessioneSync({ castelli }: { castelli: Castello[] }) {
       if (slug && slug !== leggiCastello()) impostaCastello(slug);
     };
 
-    db.auth.getSession().then(({ data }) => carica(data.session?.user ?? null));
-    const { data } = db.auth.onAuthStateChange((evento, sessione) => {
-      if (evento === "PASSWORD_RECOVERY") impostaRecupero(true);
-      if (evento === "SIGNED_IN" || evento === "SIGNED_OUT" || evento === "USER_UPDATED") {
-        // Fuori dal callback: Supabase sconsiglia altre chiamate dentro onAuthStateChange
-        setTimeout(() => carica(sessione?.user ?? null), 0);
-      }
+    supabaseDopo().then((db) => {
+      if (annullato) return;
+      db.auth.getSession().then(({ data }) => carica(data.session?.user ?? null));
+      const { data } = db.auth.onAuthStateChange((evento, sessione) => {
+        if (evento === "PASSWORD_RECOVERY") impostaRecupero(true);
+        if (evento === "SIGNED_IN" || evento === "SIGNED_OUT" || evento === "USER_UPDATED") {
+          // Fuori dal callback: Supabase sconsiglia altre chiamate dentro onAuthStateChange
+          setTimeout(() => carica(sessione?.user ?? null), 0);
+        }
+      });
+      smetti = () => data.subscription.unsubscribe();
     });
 
     // Se cambi castello dalla Home mentre sei connesso, lo salviamo anche nel profilo
@@ -63,12 +71,13 @@ export default function SessioneSync({ castelli }: { castelli: Castello[] }) {
       const id = castelli.find((c) => c.slug === leggiCastello())?.id ?? null;
       if (!profilo || id === null || id === profilo.castello_id) return;
       aggiornaProfilo({ castello_id: id });
-      salvaProfilo(profilo.id, { castello_id: id });
+      authDopo().then((a) => a.salvaProfilo(profilo.id, { castello_id: id }));
     };
     window.addEventListener(EVENTO_CASTELLO, castelloCambiato);
 
     return () => {
-      data.subscription.unsubscribe();
+      annullato = true;
+      smetti?.();
       window.removeEventListener(EVENTO_CASTELLO, castelloCambiato);
     };
   }, [castelli]);

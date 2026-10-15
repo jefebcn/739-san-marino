@@ -33,6 +33,13 @@ export function allarga([o, s, e, n]: Riquadro, quanto = 0.3): Riquadro {
 export const contiene = (a: Riquadro, b: Riquadro) => a[0] <= b[0] && a[1] <= b[1] && a[2] >= b[2] && a[3] >= b[3];
 export const dentro = (r: Riquadro, p: { lat: number; lng: number }) => p.lng >= r[0] && p.lng <= r[2] && p.lat >= r[1] && p.lat <= r[3];
 
+/** Tutto il territorio, dalla cache della CDN (app/api/luoghi-mappa): la prima cosa che chiede la mappa */
+export async function luoghiDelTerritorio(segnale: AbortSignal): Promise<{ punti: PuntoMappa[]; completo: boolean }> {
+  const r = await fetch("/api/luoghi-mappa", { signal: segnale });
+  if (!r.ok) throw new Error(`luoghi-mappa ${r.status}`);
+  return (await r.json()) as { punti: PuntoMappa[]; completo: boolean };
+}
+
 /** I luoghi di un riquadro. `completo` è falso se il riquadro ne ha più del limite. */
 export async function luoghiNelRiquadro([o, s, e, n]: Riquadro, segnale: AbortSignal): Promise<{ punti: PuntoMappa[]; completo: boolean }> {
   const db = supabaseBrowser();

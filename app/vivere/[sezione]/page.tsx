@@ -3,11 +3,16 @@ import PaginaSezione from "@/components/aree/PaginaSezione";
 import CosaDevoFare from "@/components/CosaDevoFare";
 import { ConteggioAperte } from "@/components/Farmacie";
 import { Icona } from "@/components/Icona";
-import { sezione as trovaSezione } from "@/lib/aree";
+import { area as trovaArea, sezione as trovaSezione } from "@/lib/aree";
 import { getPratiche } from "@/lib/data";
 import { getFarmacie } from "@/lib/servizi";
 
 export const revalidate = 300;
+
+// Le sezioni fatte di luoghi si preparano alla build e restano in cache (ISR)
+export async function generateStaticParams() {
+  return (trovaArea("vivere")?.sezioni ?? []).filter((s) => s.categorie && s.href?.startsWith("/vivere/")).map((s) => ({ sezione: s.slug }));
+}
 
 type Props = { params: Promise<{ sezione: string }> };
 

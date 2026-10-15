@@ -8,10 +8,13 @@ import { Icona } from "./Icona";
 import { AREE, areaDiCategoria, type SlugArea } from "@/lib/aree";
 import { CENTRO, STILE_CHIARO, STILE_SCURO } from "@/lib/mappa";
 import {
-  allarga, cercaIndirizzi, cercaLuoghi, contiene, dentro, dettaglioLuogo, distanzaM, leggiDistanza, luoghiNelRiquadro,
+  allarga, cercaIndirizzi, cercaLuoghi, contiene, dentro, dettaglioLuogo, distanzaM, leggiDistanza, luoghiDelTerritorio, luoghiNelRiquadro,
   TERRITORIO, type Indirizzo, type PuntoMappa, type Riquadro,
 } from "@/lib/mappa-dati";
 import { chiaveSegnaposto, immagineSegnaposto, PuntoCategoria } from "./Segnaposto";
+
+// La libreria della mappa (la parte più pesante) parte appena si carica questo file, non dopo il primo disegno
+const libreria = typeof window === "undefined" ? null : import("maplibre-gl");
 
 /** 0 = solo intestazione, 1 = metà schermo, 2 = quasi tutto lo schermo */
 type Livello = 0 | 1 | 2;
@@ -34,7 +37,7 @@ const aPunto = (l: Luogo): PuntoMappa => ({
  * si disegnano come layer GeoJSON raggruppati quando sono vicini (non centinaia di elementi del DOM) e
  * l'elenco del pannello mostra quelli dell'area, dal più vicino se si è dato il consenso alla posizione.
  */
-export default function MappaTerritorio({ segnali, iniziale }: { segnali: Luogo[]; iniziale?: Luogo | null }) {
+export default function MappaTerritorio({ segnali }: { segnali: Luogo[] }) {
   const box = useRef<HTMLDivElement>(null);
   const foglio = useRef<HTMLDivElement>(null);
   const mappa = useRef<MLMap | null>(null);
@@ -62,9 +65,11 @@ export default function MappaTerritorio({ segnali, iniziale }: { segnali: Luogo[
   const [filtro, setFiltro] = useState<string>("tutti");
   // Prima si sceglie l'area (Vivere, Uscire, Sport…), poi una categoria di quell'area
   const [areaFiltro, setAreaFiltro] = useState<SlugArea | "tutte">("tutte");
-  const [scelto, setScelto] = useState<string | undefined>(iniziale?.id);
-  const [dettaglio, setDettaglio] = useState<Luogo | null>(iniziale ?? null);
-  const [livelloFoglio, setLivelloFoglio] = useState<Livello>(iniziale ? 1 : 0);
+  const [scelto, setScelto] = useState<string | undefined>();
+  const [dettaglio, setDettaglio] = useState<Luogo | null>(null);
+  const [livelloFoglio, setLivelloFoglio] = useState<Livello>(0);
+  // ?luogo=<id> (dal pulsante «Sulla mappa» della scheda): si legge nel browser, così la pagina resta statica e in cache
+  const focus = useRef<string | null>(null);
   const [quanti, setQuanti] = useState(PASSO_ELENCO);
   // Ricerca
   const [testo, setTesto] = useState("");
@@ -93,16 +98,16 @@ export default function MappaTerritorio({ segnali, iniziale }: { segnali: Luogo[
     if (!posizione) return qui;
     return qui.map((p) => ({ ...p, distanza_m: distanzaM(posizione, p) })).sort((a, b) => a.distanza_m - b.distanza_m);
   }, [filtrati, vista, posizione]);
-  const puntoScelto = tuttiPunti.find((l) => l.id === scelto) ?? (iniziale && iniziale.id === scelto ? aPunto(iniziale) : undefined);
+  const puntoScelto = tuttiPunti.find((l) => l.id === scelto) ?? (dettaglio && dettaglio.id === scelto ? aPunto(dettaglio) : undefined);
 
-  const caricaRiquadro = useCallback(async (r: Riquadro) => {
+  const caricaRiquadro = useCallback(async (r: Riquadro, territorio = false) => {
     richiesta.current?.abort();
     inCorso.current = r;
     const ac = new AbortController();
     richiesta.current = ac;
     setStatoDati("carico");
     try {
-      const { punti: nuovi, completo } = await luoghiNelRiquadro(r, ac.signal);
+      const { punti: nuovi, completo } = territorio ? await luoghiDelTerritorio(ac.signal) : await luoghiNelRiquadro(r, ac.signal);
       if (ac.signal.aborted) return;
       for (const p of nuovi) punti.current.set(p.id, p);
       if (completo) coperti.current.push(r);
@@ -136,13 +141,18 @@ export default function MappaTerritorio({ segnali, iniziale }: { segnali: Luogo[
   // Subito, senza aspettare che la mappa sia pronta: il territorio intero (oggi poche centinaia di luoghi, ~50 KB).
   // Se un giorno i luoghi saranno più del limite, la risposta è incompleta e la mappa chiederà poi per aree.
   useEffect(() => {
-    caricaRiquadro(TERRITORIO);
+    caricaRiquadro(TERRITORIO, true);
   }, [caricaRiquadro]);
 
   useEffect(() => {
     let annullato = false;
     let attesa: ReturnType<typeof setTimeout> | undefined;
-    import("maplibre-gl").then((ml) => {
+    focus.current = new URLSearchParams(window.location.search).get("luogo");
+    if (focus.current && /^[0-9a-f-]{36}$/.test(focus.current)) {
+      setScelto(focus.current);
+      setLivelloFoglio(1);
+    } else focus.current = null;
+    libreria!.then((ml) => {
       if (annullato || !box.current) return;
       // Il worker è copiato in public/ da scripts/worker-mappa.mjs
       ml.setWorkerUrl(new URL("/maplibre-gl-worker.mjs", window.location.origin).href);
@@ -150,8 +160,8 @@ export default function MappaTerritorio({ segnali, iniziale }: { segnali: Luogo[
       const m = new ml.Map({
         container: box.current,
         style: scuro ? STILE_SCURO : STILE_CHIARO,
-        center: iniziale ? [iniziale.lng, iniziale.lat] : CENTRO,
-        zoom: iniziale ? 15.5 : 11.4,
+        center: CENTRO,
+        zoom: focus.current ? 13 : 11.4,
         attributionControl: { compact: true },
       });
       // Il pannello copre parte della mappa: in basso sul telefono, a sinistra su computer
@@ -232,9 +242,7 @@ export default function MappaTerritorio({ segnali, iniziale }: { segnali: Luogo[
       mappa.current?.remove();
       mappa.current = null;
     };
-    // La mappa si crea una volta: il luogo iniziale serve solo all'apertura
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [caricaVista]);
 
   // Le immagini dei segnaposto si preparano una volta per tipo, prima di passare i dati alla mappa
   const assicuraImmagini = useCallback(async (lista: PuntoMappa[]) => {
@@ -299,16 +307,23 @@ export default function MappaTerritorio({ segnali, iniziale }: { segnali: Luogo[
     if (!scelto) return setDettaglio(null);
     const segnale = segnali.find((s) => s.id === scelto);
     if (segnale) return setDettaglio(segnale);
-    if (iniziale?.id === scelto) return setDettaglio(iniziale);
     let annullato = false;
     setDettaglio(null);
     dettaglioLuogo(scelto).then((l) => {
-      if (!annullato) setDettaglio(l);
+      if (annullato) return;
+      setDettaglio(l);
+      // Aperta con ?luogo=: si va lì senza animazione, una volta sola
+      if (l && focus.current === l.id) {
+        focus.current = null;
+        const vai = () => mappa.current?.jumpTo({ center: [l.lng, l.lat], zoom: 15.5 });
+        if (mappa.current) vai();
+        else libreria?.then(() => setTimeout(vai, 0));
+      }
     });
     return () => {
       annullato = true;
     };
-  }, [scelto, segnali, iniziale]);
+  }, [scelto, segnali]);
 
   // Ricerca: luoghi per nome e indirizzi, con attesa breve e richieste vecchie annullate
   useEffect(() => {
@@ -364,7 +379,7 @@ export default function MappaTerritorio({ segnali, iniziale }: { segnali: Luogo[
     setTesto("");
     setScelto(undefined);
     setLivelloFoglio(1);
-    const ml = await import("maplibre-gl");
+    const ml = await libreria!;
     segnoIndirizzo.current?.remove();
     const el = document.createElement("span");
     el.className = "segno-indirizzo";

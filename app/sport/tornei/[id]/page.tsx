@@ -4,6 +4,11 @@ import { getClassifica } from "@/lib/data";
 
 export const revalidate = 300;
 
+// Nessuna pagina pronta alla build: si crea alla prima visita e poi resta in cache (ISR) fino al revalidate
+export async function generateStaticParams() {
+  return [];
+}
+
 export const metadata = { title: "Torneo · 739 San Marino" };
 
 type Props = { params: Promise<{ id: string }> };

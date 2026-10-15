@@ -12,6 +12,11 @@ import Condividi from "@/components/Condividi";
 
 export const revalidate = 300;
 
+// Nessuna pagina pronta alla build: si crea alla prima visita e poi resta in cache (ISR) fino al revalidate
+export async function generateStaticParams() {
+  return [];
+}
+
 type Props = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: Props) {

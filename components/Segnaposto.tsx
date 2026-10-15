@@ -1,25 +1,13 @@
 "use client";
 
-import { flushSync } from "react-dom";
-import { createRoot } from "react-dom/client";
 import { Icona, type NomeIcona } from "./Icona";
+import { TRACCIATI } from "./icone-tracciati";
 import { coloreDi, iconaDi } from "@/lib/mappa";
 
 // Segnaposto della mappa: un tondo col colore della categoria e l'icona del tipo di luogo in bianco.
-// I marcatori di MapLibre sono elementi del DOM fuori da React: l'SVG di ogni icona si prepara una volta e si riusa.
-const svg = new Map<NomeIcona, string>();
-
-function svgDi(nome: NomeIcona) {
-  let s = svg.get(nome);
-  if (s) return s;
-  const div = document.createElement("div");
-  const radice = createRoot(div);
-  flushSync(() => radice.render(<Icona nome={nome} size={16} piatta />));
-  s = div.innerHTML;
-  radice.unmount();
-  svg.set(nome, s);
-  return s;
-}
+// I marcatori di MapLibre sono fuori da React: l'SVG si scrive direttamente dai tracciati delle icone.
+const svgDi = (nome: NomeIcona) =>
+  `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256" aria-hidden="true">${TRACCIATI[nome] ?? ""}</svg>`;
 
 /** Il marcatore per un luogo, da passare a `new Marker({ element })` */
 export function elementoSegnaposto(tag: "button" | "span", l: { categoria: string; sottocategoria?: string | null }) {
@@ -40,8 +28,6 @@ export const chiaveSegnaposto = (l: { categoria: string; sottocategoria?: string
  * disegnato su un canvas; l'icona Phosphor bianca si carica come immagine a sé e si disegna al centro.
  */
 export async function immagineSegnaposto(l: { categoria: string; sottocategoria?: string | null }, scala = 2): Promise<ImageData> {
-  // svgDi usa flushSync, che dentro un effetto di React non disegna niente: si esce prima dal ciclo di React
-  await new Promise((ok) => setTimeout(ok, 0));
   const icona = svgDi(iconaDi(l.categoria, l.sottocategoria))
     .replace(/currentColor/g, "#fff")
     .replace(/<svg([^>]*?)\s(width|height)="[^"]*"/g, "<svg$1")

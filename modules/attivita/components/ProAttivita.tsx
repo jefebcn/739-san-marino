@@ -95,7 +95,7 @@ export default function ProAttivita({ id, nome }: { id: string; nome: string }) 
                   {o.testo ? <span className="text-[13px] text-testo-2">{o.testo}</span> : null}
                   <span className="text-[13px] text-accento">Dal {leggi(o.dal)} al {leggi(o.al)}</span>
                 </span>
-                <button type="button" aria-label={`Togli l'offerta ${o.titolo}`} className="grid size-10 shrink-0 place-items-center rounded-xl text-testo-2 hover:bg-superficie-2 hover:text-testo" onClick={async () => { setInvio(true); esito(await togliOfferta(o.id), "Offerta tolta."); }}>
+                <button type="button" aria-label={`Togli l'offerta ${o.titolo}`} className="grid size-10 shrink-0 place-items-center rounded-xl text-testo-2 hover:bg-superficie-2 hover:text-testo" onClick={async () => { setInvio(true); esito(await togliOfferta(o.id, id), "Offerta tolta."); }}>
                   <Icona nome="chiudi" size={18} />
                 </button>
               </li>

@@ -1,0 +1,14 @@
+import { revalidatePath } from "next/cache";
+import { NextResponse } from "next/server";
+
+// Le schede dei luoghi restano in cache (ISR, 5 minuti). Quando un titolare salva la sua scheda o il suo Pro
+// la pagina si rigenera subito, così le modifiche si vedono «subito» come promette il modulo.
+// Accetta solo indirizzi di schede: al massimo fa rigenerare una pagina, nessun dato cambia da qui.
+const SCHEDA = /^\/luoghi\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+
+export async function POST(req: Request) {
+  const { percorso } = (await req.json().catch(() => ({}))) as { percorso?: string };
+  if (!percorso || !SCHEDA.test(percorso)) return NextResponse.json({ ok: false }, { status: 400 });
+  revalidatePath(percorso);
+  return NextResponse.json({ ok: true });
+}

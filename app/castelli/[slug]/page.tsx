@@ -7,6 +7,11 @@ import { LogoCastello, haLogo } from "@/components/LogoCastello";
 
 export const revalidate = 60;
 
+// I nove castelli si preparano alla build e restano in cache (ISR)
+export async function generateStaticParams() {
+  return (await getClassifica()).map((c) => ({ slug: c.slug }));
+}
+
 type Props = { params: Promise<{ slug: string }> };
 
 const fmt = new Intl.NumberFormat("it-IT");

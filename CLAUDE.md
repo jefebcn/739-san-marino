@@ -103,6 +103,15 @@ L'app si adatta allo schermo che la apre: a tutto schermo sul telefono (rispetta
 
 La Home sceglie la versione con l'attributo `data-utente` su `<html>` ("nuovo" o "tornato"), impostato da uno script in `app/layout.tsx` prima che la pagina compaia, per evitare lampeggi.
 
+## Velocità (15/10/2026, richiesta di Alex)
+
+- **Funzioni a Francoforte**: `vercel.json` con `"regions": ["fra1"]`, vicino al database (Francoforte) e a San Marino. Prima giravano a Washington (iad1) e ogni query attraversava l'Atlantico.
+- **Tutto in cache (ISR)**: le pagine con parametri (`/luoghi/[id]`, `/eventi/[id]`, `/castelli/[slug]`, `/storie/[slug]`, `/speciali/[slug]`, `/sport/tornei/[id]`, sezioni delle aree) hanno `generateStaticParams` (le sezioni e i castelli preparati alla build, le altre alla prima visita) e restano in cache fino al loro `revalidate`. Quando il titolare salva la scheda, il Pro o un'offerta, `modules/attivita/api.ts` chiama `POST /api/rivalida` (accetta solo `/luoghi/<uuid>`) e la scheda si rigenera subito. Restano dinamiche solo le pagine con parametri di ricerca (rubriche con `?settimana=`, check-in) e quelle personali.
+- **Mappa**: `/mappa` è statica; i luoghi del territorio arrivano da `/api/luoghi-mappa` (cache CDN 5 minuti, campi minimi) con `preload` nella pagina e `preconnect` ai server di OpenFreeMap; `?luogo=` si legge nel browser; la libreria MapLibre si scarica appena arriva il file del componente.
+- **Icone**: `components/Icona.tsx` non importa più il pacchetto Phosphor (portava in ogni pagina i sei stili di ogni icona, 259 KB): `node scripts/icone-phosphor.mjs` scrive in `components/icone-tracciati.ts` solo lo stile usato (34 KB). **Quando si aggiunge un'icona in `ICONE` si rilancia lo script.**
+- **Supabase dopo il primo disegno**: `SessioneSync` (nel layout) importa il client di Supabase dinamicamente; le pagine che lo usano subito lo caricano da sole.
+- **Loghi dei castelli** piccoli a 192 px (`scripts/castelli.mjs`), 40% più leggeri.
+
 ## Database
 
 Tabelle: `castelli` (i 9 castelli con colore), `profili`, `luoghi`, `eventi`, `checkin`, `metri_movimenti`, più i servizi (migrazioni 0002–0004, dati reali raccolti il 13/10/2026 con le fonti scritte in `0004_dati_servizi.sql`):

@@ -11,6 +11,11 @@ import { metadatiCondivisione } from "@/lib/condivisione";
 
 export const revalidate = 300;
 
+// Nessuna pagina pronta alla build: si crea alla prima visita e poi resta in cache (ISR) fino al revalidate
+export async function generateStaticParams() {
+  return [];
+}
+
 type Props = { params: Promise<{ id: string }> };
 
 export async function generateMetadata({ params }: Props) {

@@ -9,6 +9,11 @@ import Condividi from "@/components/Condividi";
 
 export const revalidate = 60;
 
+// Nessuna pagina pronta alla build: si crea alla prima visita e poi resta in cache (ISR) fino al revalidate
+export async function generateStaticParams() {
+  return [];
+}
+
 type Props = { params: Promise<{ id: string }> };
 
 /** Il contatto dell'organizzatore diventa un link: email, sito o telefono */

@@ -1,18 +1,19 @@
+import { preconnect, preload } from "react-dom";
 import MappaTerritorio from "@/components/MappaTerritorio";
-import { getLuogo, type Luogo } from "@/lib/data";
+import type { Luogo } from "@/lib/data";
 import { getAvvisi } from "@/lib/avvisi";
 
 export const revalidate = 300;
 
 export const metadata = { title: "Mappa · 739 San Marino" };
 
-type Props = { searchParams: Promise<{ luogo?: string }> };
-
-// I luoghi non viaggiano più nella pagina: la mappa li chiede al database per l'area che si guarda (lib/mappa-dati.ts).
-// Qui arrivano solo gli avvisi con una posizione e, con ?luogo=, il luogo da aprire subito.
-export default async function Mappa({ searchParams }: Props) {
-  const { luogo } = await searchParams;
-  const [avvisi, iniziale] = await Promise.all([getAvvisi(), luogo && /^[0-9a-f-]{36}$/.test(luogo) ? getLuogo(luogo) : null]);
+// Pagina statica, in cache sulla CDN: i luoghi non viaggiano nella pagina ma in /api/luoghi-mappa (anche quella in cache),
+// che il browser comincia a scaricare subito grazie al preload; la connessione ai server delle mappe si apre in anticipo.
+// Qui arrivano solo gli avvisi con una posizione; ?luogo= lo legge la mappa nel browser.
+export default async function Mappa() {
+  preload("/api/luoghi-mappa", { as: "fetch", crossOrigin: "anonymous" });
+  preconnect("https://tiles.openfreemap.org", { crossOrigin: "anonymous" });
+  const avvisi = await getAvvisi();
   // Gli avvisi con una posizione compaiono sulla mappa come segnali (categoria «avviso», area Vivere)
   const segnali: Luogo[] = avvisi
     .filter((a) => a.lat != null || a.luogo)
@@ -34,5 +35,5 @@ export default async function Mappa({ searchParams }: Props) {
       fonte: "avviso",
     }));
 
-  return <MappaTerritorio segnali={segnali} iniziale={iniziale} />;
+  return <MappaTerritorio segnali={segnali} />;
 }
