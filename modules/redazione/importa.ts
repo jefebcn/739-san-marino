@@ -20,7 +20,7 @@ export type Esito = {
   avvisi: string[];
 };
 
-const CATEGORIE_LUOGO = ["luogo", "parcheggio", "farmacia", "impianto", "trasporti", "locale", "servizio", "cultura", "panorama", "bagni", "acqua", "ricarica", "ufficio", "salute"];
+const CATEGORIE_LUOGO = ["luogo", "parcheggio", "farmacia", "impianto", "trasporti", "locale", "servizio", "cultura", "panorama", "bagni", "acqua", "ricarica", "ufficio", "salute", "posta", "banca", "carburante", "scuola", "chiesa", "negozio"];
 const AREE = ["vivere", "uscire", "sport", "comunita", "lavorare"];
 const TIPI_AVVISO = ["strada", "servizio", "meteo", "evento", "altro"];
 const ID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;

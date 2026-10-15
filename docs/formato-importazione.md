@@ -26,11 +26,11 @@ Quando lo approvi, se in 739 c'è già un luogo con lo stesso nome nello stesso 
 | Campo | Obbligatorio | Cosa contiene |
 |---|---|---|
 | `nome` | sì | Nome del luogo |
-| `categoria` | sì | `luogo`, `parcheggio`, `farmacia`, `impianto`, `trasporti`, `locale`, `servizio`, `cultura`, `panorama`, `bagni`, `acqua`, `ricarica`, `ufficio`, `salute` |
+| `categoria` | sì | `luogo`, `parcheggio`, `farmacia`, `impianto`, `trasporti`, `locale`, `servizio`, `cultura`, `panorama`, `bagni`, `acqua`, `ricarica`, `ufficio`, `salute`, `posta`, `banca`, `carburante`, `scuola`, `chiesa`, `negozio` (le ultime sei dopo la migrazione 0033) |
 | `lat`, `lng` | per i luoghi nuovi | Coordinate, devono cadere a San Marino |
 | `castello` | no | Nome o slug del castello |
 | `area` | no | `vivere`, `uscire`, `sport`, `comunita`, `lavorare` |
-| `sottocategoria` | no | Testo libero, es. «Anagrafe» |
+| `sottocategoria` | no | Testo libero, es. «Anagrafe». Per i locali uno di: `ristorante`, `pizzeria`, `piadineria`, `cibo veloce`, `bar`, `gelateria`, `pub` (così finiscono nel gruppo giusto di «Mangiare e bere» e hanno l'icona giusta sulla mappa) |
 | `descrizione`, `indirizzo`, `telefono`, `email`, `sito` | no | |
 | `orari` | no | Orari in testo, come li legge una persona |
 | `orari_settimana` | no | Orari per calcolare «aperto adesso»: `{"1": [["08:00","13:00"]], …}`, 1 = lunedì, 7 = domenica, più fasce per giorno |
@@ -61,6 +61,30 @@ Quando lo approvi, se in 739 c'è già un luogo con lo stesso nome nello stesso 
   "fonte_nome": "Portale della PA",
   "fonte_link": "https://www.gov.sm/",
   "verificato_il": "2026-10-14"
+}
+```
+
+### Un ristorante che su OpenStreetMap manca
+
+I ristoranti arrivano da soli da OpenStreetMap ogni notte, ma i più importanti a volte non ci sono, o ci sono con dati scarsi. Si aggiungono così: un luogo inserito dalla redazione vince sempre, perché l'aggiornamento notturno non duplica un locale entro 60 metri da uno inserito a mano.
+
+```json
+{
+  "tipo": "luogo",
+  "nome": "Nome del ristorante",
+  "categoria": "locale",
+  "sottocategoria": "ristorante",
+  "area": "uscire",
+  "castello": "citta",
+  "lat": 43.9363,
+  "lng": 12.4467,
+  "indirizzo": "Via Esempio 2, Città di San Marino",
+  "telefono": "+378 0549 000000",
+  "sito": "https://esempio.sm",
+  "orari": "Pranzo e cena, chiuso il martedì",
+  "descrizione": "Cucina sammarinese, terrazza sulla valle.",
+  "fonte_nome": "Sito del ristorante",
+  "fonte_link": "https://esempio.sm"
 }
 ```
 
