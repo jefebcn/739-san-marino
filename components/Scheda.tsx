@@ -7,8 +7,8 @@ import { CATEGORIA_SINGOLA, CATEGORIE, TIPI_LEGGIBILI, linkIndicazioni, type Cas
 import Condividi from "./Condividi";
 
 // Le attività private, come CATEGORIE_ATTIVITA in modules/attivita/api.ts
-const ATTIVITA = new Set(["locale", "negozio", "carburante", "azienda", "professionista", "artigiano"]);
-const SOLO_TIPO = new Set(["locale", "scuola", "chiesa", "banca", "negozio", "azienda", "professionista", "artigiano"]);
+const ATTIVITA = new Set(["locale", "negozio", "carburante", "azienda", "professionista", "artigiano", "animali", "associazione"]);
+const SOLO_TIPO = new Set(["locale", "scuola", "chiesa", "banca", "negozio", "azienda", "professionista", "artigiano", "animali", "associazione"]);
 
 const giornoBreve = new Intl.DateTimeFormat("it-IT", { day: "numeric", month: "long", timeZone: "Europe/San_Marino" });
 const giornoLungo = new Intl.DateTimeFormat("it-IT", { day: "numeric", month: "long", year: "numeric", timeZone: "Europe/San_Marino" });
@@ -164,7 +164,7 @@ export default function Scheda({ l, castello, azioni, gestito = false, pro = nul
           {/* Profilo base delle attività (Fase 2): il titolare chiede la scheda */}
           {!gestito && ATTIVITA.has(l.categoria) ? (
             <Link href={`/attivita/chiedi?luogo=${l.id}`} className="flex w-fit items-center gap-1 py-1 text-sm font-medium text-accento">
-              È la tua attività? Gestisci la scheda <Icona nome="avanti" size={14} />
+              {l.categoria === "associazione" ? "È la tua associazione?" : "È la tua attività?"} Gestisci la scheda <Icona nome="avanti" size={14} />
             </Link>
           ) : null}
           {azioni}

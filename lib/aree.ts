@@ -15,6 +15,8 @@ export type Sezione = {
   href?: string;
   /** Categorie di `luoghi` mostrate in questa sezione (elenco e mappa) */
   categorie?: string[];
+  /** Solo questi tipi (sottocategorie) delle categorie: la sezione è una parte di un'altra (Volontariato tra le associazioni) */
+  tipi?: string[];
   /** Parole in più per la ricerca */
   parole?: string;
 };
@@ -45,6 +47,7 @@ export const AREE: Area[] = [
       { slug: "meteo", nome: "Meteo", descrizione: "Adesso, prossime ore e settimana.", icona: "meteo", href: "/utili/meteo", parole: "meteo tempo pioggia previsioni temperatura" },
       { slug: "poste-banche", nome: "Poste, banche e carburante", descrizione: "Uffici postali, banche, bancomat e distributori.", icona: "banca", href: "/vivere/poste-banche", categorie: ["posta", "banca", "carburante"], parole: "poste posta ufficio postale banca banche bancomat atm soldi prelievo benzina carburante distributore gasolio diesel gpl metano" },
       { slug: "servizi", nome: "Bagni, fontanelle e ricarica", descrizione: "Bagni pubblici, acqua potabile e colonnine per l'auto elettrica.", icona: "servizi", href: "/vivere/servizi", categorie: ["bagni", "acqua", "ricarica", "servizio"], parole: "bagni toilette fontanelle acqua ricarica colonnine elettrica" },
+      { slug: "animali", nome: "Animali", descrizione: "Veterinari, toelettature, centri cinofili e il rifugio.", icona: "animali", href: "/vivere/animali", categorie: ["animali"], parole: "animali veterinario veterinari cane cani gatto gatti toelettatura canile rifugio apas cinofilo addestramento" },
       { slug: "scuola", nome: "Scuola e famiglia", descrizione: "Nidi, scuole dell'infanzia, elementari, medie e università.", icona: "scuola", href: "/vivere/scuola", categorie: ["scuola"], parole: "scuola scuole nido asilo infanzia materna elementari medie superiori liceo universita famiglia bambini" },
     ],
   },
@@ -74,7 +77,7 @@ export const AREE: Area[] = [
       { slug: "partite", nome: "Partite aperte", descrizione: "Trova una partita o organizzane una.", icona: "partite", href: "/sport", parole: "partita partite calcetto padel tennis basket pallavolo rating classifica" },
       { slug: "impianti", nome: "Impianti sportivi", descrizione: "Campi, palestre, piscine e stadi.", icona: "impianti", href: "/sport/impianti", categorie: ["impianto"], parole: "impianti campi palestra piscina stadio" },
       { slug: "tornei", nome: "Tornei di castello", descrizione: "Squadre che giocano per il proprio castello.", icona: "tornei", href: "/sport/tornei", parole: "tornei torneo castello squadre" },
-      { slug: "societa", nome: "Società sportive", descrizione: "Le società e le federazioni del territorio.", icona: "associazioni", parole: "societa sportive federazioni cons" },
+      { slug: "societa", nome: "Società sportive", descrizione: "Le società e le federazioni del territorio.", icona: "coppa", href: "/sport/societa", categorie: ["associazione"], tipi: ["sportiva"], parole: "societa sportive federazioni cons club squadra calcio" },
     ],
   },
   {
@@ -86,8 +89,8 @@ export const AREE: Area[] = [
     sezioni: [
       { slug: "castelli", nome: "I 9 castelli", descrizione: "La classifica in metri e la pagina di ogni castello.", icona: "castelli", href: "/castelli", parole: "castelli classifica metri citta borgo maggiore serravalle domagnano" },
       { slug: "giunte", nome: "Giunte di castello", descrizione: "Chi sono, dove trovarle e cosa organizzano.", icona: "giunte", parole: "giunte giunta capitano castello" },
-      { slug: "associazioni", nome: "Associazioni", descrizione: "Culturali, sportive, sociali.", icona: "associazioni", parole: "associazioni associazione club" },
-      { slug: "volontariato", nome: "Volontariato", descrizione: "Dove dare una mano.", icona: "lavoro", parole: "volontariato volontari aiutare" },
+      { slug: "associazioni", nome: "Associazioni", descrizione: "Culturali, di volontariato, sportive, circoli e associazioni di categoria.", icona: "gruppo", href: "/comunita/associazioni", categorie: ["associazione"], parole: "associazioni associazione club circolo circoli fondazione sindacati sindacato ordine" },
+      { slug: "volontariato", nome: "Volontariato", descrizione: "Le associazioni dove dare una mano.", icona: "associazioni", href: "/comunita/volontariato", categorie: ["associazione"], tipi: ["volontariato"], parole: "volontariato volontari aiutare onlus" },
       { slug: "chiese", nome: "Chiese", descrizione: "Le chiese del territorio. Gli orari delle messe arriveranno dalle parrocchie.", icona: "chiese", href: "/comunita/chiese", categorie: ["chiesa"], parole: "chiese chiesa messe messa parrocchia basilica pieve santuario culto" },
       { slug: "bacheca", nome: "Bacheca", descrizione: "Annunci e iniziative di chi vive qui.", icona: "bacheca", parole: "bacheca annunci" },
     ],
@@ -115,16 +118,16 @@ export function sezione(slugArea: string, slugSezione: string) {
   return area(slugArea)?.sezioni.find((s) => s.slug === slugSezione);
 }
 
-/** Area di una categoria di luoghi (per raggruppare i filtri della mappa). */
+/** Area di una categoria di luoghi (per raggruppare i filtri della mappa). Conta la sezione che la elenca tutta. */
 export function areaDiCategoria(categoria: string): SlugArea | null {
-  for (const a of AREE) for (const s of a.sezioni) if (s.categorie?.includes(categoria)) return a.slug;
+  for (const a of AREE) for (const s of a.sezioni) if (!s.tipi && s.categorie?.includes(categoria)) return a.slug;
   return null;
 }
 
-/** Dove torna indietro la scheda di un luogo: la sezione che lo elenca, altrimenti la sua area, altrimenti la mappa. */
-export function ritornoDiCategoria(categoria: string): { href: string; nome: string } {
-  for (const a of AREE)
-    for (const s of a.sezioni)
-      if (s.categorie?.includes(categoria)) return s.href ? { href: s.href, nome: s.nome } : { href: a.href, nome: a.nome };
-  return { href: "/mappa", nome: "Mappa" };
+/** Dove torna indietro la scheda di un luogo: la sezione che lo elenca (quella del suo tipo, se c'è), altrimenti la sua area, altrimenti la mappa. */
+export function ritornoDiCategoria(categoria: string, sottocategoria?: string | null): { href: string; nome: string } {
+  const sezioni = AREE.flatMap((a) => a.sezioni.filter((s) => s.categorie?.includes(categoria)).map((s) => ({ a, s })));
+  const x = sezioni.find(({ s }) => sottocategoria && s.tipi?.includes(sottocategoria)) ?? sezioni.find(({ s }) => !s.tipi);
+  if (!x) return { href: "/mappa", nome: "Mappa" };
+  return x.s.href ? { href: x.s.href, nome: x.s.nome } : { href: x.a.href, nome: x.a.nome };
 }

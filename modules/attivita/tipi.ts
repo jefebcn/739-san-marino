@@ -1,7 +1,7 @@
-// I tipi di attività che un titolare può aggiungere, per categoria: gli stessi di tipi_attivita() (migrazione 0036).
+// I tipi di attività che un titolare può aggiungere, per categoria: gli stessi di tipi_attivita() (migrazioni 0036 e 0039).
 // `nome` è come si legge da solo nella scheda e nel modulo.
 
-export type CategoriaNuova = "locale" | "negozio" | "azienda" | "professionista" | "artigiano";
+export type CategoriaNuova = "locale" | "negozio" | "azienda" | "professionista" | "artigiano" | "animali" | "associazione";
 
 export const CATEGORIE_NUOVE: { categoria: CategoriaNuova; nome: string; esempio: string }[] = [
   { categoria: "azienda", nome: "Azienda", esempio: "Un'impresa: informatica, edilizia, industria, turismo…" },
@@ -9,6 +9,8 @@ export const CATEGORIE_NUOVE: { categoria: CategoriaNuova; nome: string; esempio
   { categoria: "artigiano", nome: "Artigiano", esempio: "Idraulico, elettricista, falegname, parrucchiere…" },
   { categoria: "locale", nome: "Locale", esempio: "Ristorante, pizzeria, bar, gelateria…" },
   { categoria: "negozio", nome: "Negozio", esempio: "Souvenir, abbigliamento, alimentari…" },
+  { categoria: "animali", nome: "Animali", esempio: "Veterinario, toelettatura, centro cinofilo…" },
+  { categoria: "associazione", nome: "Associazione", esempio: "Culturale, di volontariato, sportiva, circolo…" },
 ];
 
 export const TIPI: Record<CategoriaNuova, { tipo: string; nome: string }[]> = {
@@ -74,6 +76,23 @@ export const TIPI: Record<CategoriaNuova, { tipo: string; nome: string }[]> = {
     { tipo: "auto", nome: "Auto e moto" },
     { tipo: "servizi", nome: "Servizi" },
     { tipo: "negozio", nome: "Altro negozio" },
+  ],
+  animali: [
+    { tipo: "veterinario", nome: "Veterinario" },
+    { tipo: "toelettatura", nome: "Toelettatura" },
+    { tipo: "rifugio", nome: "Rifugio o canile" },
+    { tipo: "addestramento", nome: "Centro cinofilo" },
+    { tipo: "pensione", nome: "Pensione per animali" },
+    { tipo: "altro", nome: "Altro" },
+  ],
+  associazione: [
+    { tipo: "culturale", nome: "Culturale" },
+    { tipo: "volontariato", nome: "Volontariato" },
+    { tipo: "sportiva", nome: "Società sportiva o federazione" },
+    { tipo: "ricreativa", nome: "Circolo o ricreativa" },
+    { tipo: "religiosa", nome: "Religiosa" },
+    { tipo: "di categoria", nome: "Di categoria o sindacato" },
+    { tipo: "altro", nome: "Altro" },
   ],
 };
 

@@ -20,6 +20,9 @@ const PLURALI: Record<string, string> = {
   "agenzia immobiliare": "Agenzie immobiliari", "studio medico": "Studi medici", consulente: "Consulenti",
   idraulico: "Idraulici", elettricista: "Elettricisti", falegname: "Falegnami", edile: "Imprese edili", fabbro: "Fabbri", imbianchino: "Imbianchini",
   meccanico: "Meccanici e carrozzieri", parrucchiere: "Parrucchieri ed estetisti", sartoria: "Sartorie", giardiniere: "Giardinieri",
+  veterinario: "Veterinari", toelettatura: "Toelettature", rifugio: "Rifugi e canili", addestramento: "Centri cinofili", pensione: "Pensioni per animali",
+  culturale: "Culturali", volontariato: "Volontariato", sportiva: "Società sportive e federazioni", ricreativa: "Circoli e ricreative",
+  religiosa: "Religiose", "di categoria": "Di categoria e sindacati",
   "nido e infanzia": "Nidi e scuole dell'infanzia", elementare: "Elementari", "media e superiore": "Medie e superiori", università: "Università",
 };
 // Tipi che hanno un ordine naturale (le scuole per età); gli altri vanno dal gruppo più numeroso
@@ -37,7 +40,7 @@ export default async function PaginaSezione({ area, sezione, prima, vuoto }: { a
 
   const [tutti, offerte] = await Promise.all([getLuoghi(), getOfferteInCorso()]);
   let gruppi = s.categorie
-    .map((c) => ({ categoria: c, nome: CATEGORIE[c] ?? c, luoghi: tutti.filter((l) => l.categoria === c) }))
+    .map((c) => ({ categoria: c, nome: CATEGORIE[c] ?? c, luoghi: tutti.filter((l) => l.categoria === c && (!s.tipi || s.tipi.includes(l.sottocategoria ?? ""))) }))
     .filter((g) => g.luoghi.length);
   // Una categoria sola con più tipi (Mangiare e bere: ristoranti, pizzerie, bar…): si raggruppa per tipo
   const tipi = gruppi.length === 1 ? [...new Set(gruppi[0].luoghi.map((l) => l.sottocategoria ?? ""))] : [];
@@ -48,8 +51,9 @@ export default async function PaginaSezione({ area, sezione, prima, vuoto }: { a
       .sort((a, b) => (ULTIMI.has(a.categoria) ? 1 : ULTIMI.has(b.categoria) ? -1 : posto(a.categoria) >= 0 && posto(b.categoria) >= 0 ? posto(a.categoria) - posto(b.categoria) : b.luoghi.length - a.luoghi.length));
   }
   const totale = gruppi.reduce((n, g) => n + g.luoghi.length, 0);
-  // Sezioni di attività private: chi non trova la sua può aggiungerla (migrazione 0036)
+  // Sezioni di attività private e associazioni: chi non trova la sua può aggiungerla (migrazioni 0036 e 0039)
   const aggiungi = s.categorie.find(eCategoriaNuova);
+  const cosa = aggiungi === "associazione" ? { sua: "La tua associazione", una: "È la tua associazione?" } : { sua: "La tua attività", una: "È la tua attività?" };
 
   return (
     <>
@@ -82,24 +86,24 @@ export default async function PaginaSezione({ area, sezione, prima, vuoto }: { a
       )}
 
       {aggiungi ? (
-        <Link href={`/attivita/aggiungi?categoria=${aggiungi}`} className="flex items-center gap-3 rounded-2xl bg-superficie px-4 py-3.5 transition-colors hover:bg-superficie-2 lg:max-w-[var(--colonna)]">
+        <Link href={`/attivita/aggiungi?categoria=${aggiungi}${s.tipi?.length === 1 ? `&tipo=${encodeURIComponent(s.tipi[0])}` : ""}`} className="flex items-center gap-3 rounded-2xl bg-superficie px-4 py-3.5 transition-colors hover:bg-superficie-2 lg:max-w-[var(--colonna)]">
           <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-accento-tenue text-accento"><Icona nome="piu" size={18} piatta /></span>
           <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-            <span className="text-[15px] font-semibold">{totale ? "La tua attività non c'è?" : "È la tua attività?"}</span>
+            <span className="text-[15px] font-semibold">{totale ? `${cosa.sua} non c'è?` : cosa.una}</span>
             <span className="text-[13px] text-testo-2">Aggiungila gratis: la redazione verifica e poi la aggiorni tu.</span>
           </span>
           <span className="shrink-0 text-testo-2"><Icona nome="avanti" size={18} /></span>
         </Link>
       ) : null}
 
-      {s.categorie.some((c) => tutti.some((l) => l.categoria === c && l.fonte === "overture")) ? (
+      {gruppi.some((g) => g.luoghi.some((l) => l.fonte === "overture")) ? (
         <p className="fonte">
           Alcuni luoghi da{" "}
           <a href="https://docs.overturemaps.org/attribution/" target="_blank" rel="noopener">Overture Maps Foundation</a> (CDLA Permissive 2.0), da verificare.
         </p>
       ) : null}
 
-      {s.categorie.some((c) => tutti.some((l) => l.categoria === c && l.fonte === "osm")) ? (
+      {gruppi.some((g) => g.luoghi.some((l) => l.fonte === "osm")) ? (
         <p className="fonte">
           Dati ©{" "}
           <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, aggiornati ogni notte.

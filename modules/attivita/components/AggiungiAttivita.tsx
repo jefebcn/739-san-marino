@@ -20,10 +20,10 @@ function Campo({ testo, nota, children }: { testo: string; nota?: string; childr
 }
 
 /** «Aggiungi la tua attività»: il titolare propone una scheda nuova, la redazione verifica e la crea già affidata a lui. */
-export default function AggiungiAttivita({ castelli, categoria: iniziale }: { castelli: { id: number; nome: string }[]; categoria?: string }) {
+export default function AggiungiAttivita({ castelli, categoria: iniziale, tipo: tipoIniziale }: { castelli: { id: number; nome: string }[]; categoria?: string; tipo?: string }) {
   const { stato, profilo } = useSessione();
   const [categoria, setCategoria] = useState<CategoriaNuova | "">(eCategoriaNuova(iniziale) ? iniziale : "");
-  const [tipo, setTipo] = useState("");
+  const [tipo, setTipo] = useState(eCategoriaNuova(iniziale) && TIPI[iniziale].some((t) => t.tipo === tipoIniziale) ? tipoIniziale! : "");
   const [nome, setNome] = useState("");
   const [castello, setCastello] = useState("");
   const [indirizzo, setIndirizzo] = useState("");
@@ -41,10 +41,10 @@ export default function AggiungiAttivita({ castelli, categoria: iniziale }: { ca
 
   if (stato === "caricamento") return <div className="h-96 animate-pulse rounded-2xl bg-superficie" aria-busy="true" aria-label="Caricamento" />;
   if (stato !== "connesso") {
-    const qui = `/attivita/aggiungi${categoria ? `?categoria=${categoria}` : ""}`;
+    const qui = `/attivita/aggiungi${categoria ? `?categoria=${categoria}${tipo ? `&tipo=${encodeURIComponent(tipo)}` : ""}` : ""}`;
     return (
       <div className="flex flex-col gap-4 rounded-2xl bg-superficie p-5">
-        <p className="text-[15px] leading-relaxed">Per aggiungere la tua attività serve il tuo SMR ID: è gratis e ci vuole un minuto. Così poi la scheda la aggiorni tu.</p>
+        <p className="text-[15px] leading-relaxed">Per aggiungere la tua {categoria === "associazione" ? "associazione" : "attività"} serve il tuo SMR ID: è gratis e ci vuole un minuto. Così poi la scheda la aggiorni tu.</p>
         <PrimaryButton href={`/profile?torna=${encodeURIComponent(qui)}`} className="w-fit">Entra con SMR ID</PrimaryButton>
       </div>
     );

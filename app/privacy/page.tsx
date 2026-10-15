@@ -34,11 +34,11 @@ Il titolare ha sede a Malta, nell'Unione europea: la regola di riferimento è il
 
 **Notifiche.** Se le accendi salviamo l'indirizzo tecnico che il tuo telefono ci dà per riceverle, le notifiche scelte (Bollettino, Weekend) e il giorno dell'ultimo invio. Se sei entrato con l'SMR ID colleghiamo l'iscrizione al tuo account. Spegnendo entrambi gli interruttori l'iscrizione viene cancellata.
 
-**Titolari di attività.** Se chiedi di gestire la scheda della tua attività, o ne proponi una nuova, salviamo chi sei e che ruolo hai, un telefono per la verifica e la nota che scrivi: li vede solo la redazione di 739 e il telefono non compare nella scheda. Quello che scrivi nella scheda (descrizione, contatti, orari, foto) invece è pubblico.
+**Titolari di attività e associazioni.** Se chiedi di gestire la scheda della tua attività o della tua associazione, o ne proponi una nuova, salviamo chi sei e che ruolo hai, un telefono per la verifica e la nota che scrivi: li vede solo la redazione di 739 e il telefono non compare nella scheda. Quello che scrivi nella scheda (descrizione, contatti, orari, foto) invece è pubblico.
 
-**Schede da fonti aperte.** Molte schede di negozi, locali, aziende e studi arrivano da OpenStreetMap e da Overture Maps: sono dati pubblici delle attività (nome, indirizzo, telefono e sito dell'attività), con la fonte scritta nella scheda. Se una scheda riguarda te o la tua attività e vuoi correggerla o toglierla, usa «Segnala un errore» o scrivici: lo facciamo.
+**Schede da fonti aperte.** Molte schede di negozi, locali, aziende, studi, veterinari e associazioni arrivano da OpenStreetMap e da Overture Maps: sono dati pubblici delle attività e delle associazioni (nome, indirizzo, telefono e sito), con la fonte scritta nella scheda. Se una scheda riguarda te o la tua attività e vuoi correggerla o toglierla, usa «Segnala un errore» o scrivici: lo facciamo.
 
-**Numeri delle schede delle attività.** Quando apri la scheda di un locale, un negozio o un distributore, o tocchi Chiama, Indicazioni, sito, email, Menu o Prenota, aggiungiamo uno al totale di quel giorno per quella scheda. Non salviamo chi sei, né il tuo indirizzo IP, né l'ora: il titolare con il piano Pro vede solo i totali.
+**Numeri delle schede delle attività.** Quando apri la scheda di un'attività (un locale, un negozio, uno studio…) o di un'associazione, o tocchi Chiama, Indicazioni, sito, email, Menu o Prenota, aggiungiamo uno al totale di quel giorno per quella scheda. Non salviamo chi sei, né il tuo indirizzo IP, né l'ora: il titolare con il piano Pro vede solo i totali.
 
 **Posizione.** «Vicino a me» usa la posizione del telefono solo dentro il browser, per ordinare le partite e i luoghi della mappa: non la salviamo e non ce la manda nessuno. Se organizzi una partita e scegli di usare la posizione, salviamo il punto del campo, non il tuo.
 

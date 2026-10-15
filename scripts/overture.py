@@ -30,12 +30,69 @@ BUCKET = "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com"
 
 # ---- Dalle categorie di Overture (basic_category e taxonomy.primary) a quelle di 739 -------------------------
 # Restituisce (categoria, sottocategoria) oppure None se il luogo non entra in 739 (o arriva già da OSM:
-# banche, distributori, chiese, scuole, musei, uffici pubblici, farmacie, ospedali).
+# banche, distributori, chiese, scuole, musei, uffici pubblici, farmacie, ospedali). Animali e associazioni dalla 0039.
 
 
-def mappa(cat, t):
+# Associazioni: Overture non distingue culturali, sportive o di volontariato, quindi si guarda anche il nome.
+# Fuori: Giunte di castello (istituzioni, arriveranno dalla fonte ufficiale), partiti, parrocchie e luoghi di culto
+# (le chiese arrivano da OSM).
+ORG_ESCLUSE = re.compile(r"\bgiunta\b|partito|parrocchia|santuario|sacello|cimitero|barangay|神社")
+ORG_TIPI = [
+    ("di categoria", re.compile(r"sindacat|confederazione|lavoratori|imprenditori|pensionati|\bordine (degli|dei)\b|\bcollegio\b|"
+                               r"\b(cdls|csdl|usl|usc|usot|osla|anis)\b|unione sammarinese")),
+    ("ricreativa", re.compile(r"campeggiator|(juventus|inter|milan) club|tifosi")),
+    ("religiosa", re.compile(r"oratorio|salesian|^ac |azione cattolica|caritas")),
+    ("sportiva", re.compile(r"federazione|comitato olimpico|polisportiva|\basd\b|aeroclub|ippic|\bjudo\b|balestrier|calcio|tennis|"
+                            r"ciclis|sci club|bocciofil|moto ?club|\bsport")),
+    ("ricreativa", re.compile(r"circolo|centro sociale|comitato|\bfesta\b|pro loco|kiwanis|lions|rotary|recreational")),
+    ("volontariato", re.compile(r"onlus|volontar|oncologic|cuore|soccorso|non rischio|protezione civile|croce rossa|avis\b|aido|"
+                                r"\b(avsso|asdei|aslem|asfa)\b|batticinque|insiamo|viviamo in positivo|geriatri|donator")),
+    ("culturale", re.compile(r"cultur|musica|dante|fondazione|istituto|memoria|micologic|sommelier|fratellanza|comites|regolaristi|"
+                             r"biblio|teatro|\bcoro\b|\bbanda\b|informatica|giappone")),
+]
+# Categorie di Overture che a San Marino sono associazioni (con le eccezioni di ORG_ESCLUSE)
+ORG = ("social_or_community_service", "non_governmental_association", "charity_organization", "labor_union", "religious_organization",
+       "cultural_center", "sport_league")
+
+
+def tipo_associazione(nome, t):
+    n = (nome or "").lower()
+    if ORG_ESCLUSE.search(n):
+        return None
+    if t == "labor_union":
+        return "di categoria"
+    if t == "charity_organization":
+        return "volontariato"
+    for tipo, r in ORG_TIPI:
+        if r.search(n):
+            return tipo
+    return {"religious_organization": "religiosa", "sport_league": "sportiva"}.get(t, "altro")
+
+
+def mappa(cat, t, nome=""):
     cat = cat or ""
     t = t or cat
+    # Animali (prima dei negozi: per Overture anche i veterinari sono «animal_or_pet_service»).
+    # Allevamenti e servizi generici restano fuori.
+    if t == "veterinarian":
+        return "animali", "veterinario"
+    if t == "pet_groomer":
+        return "animali", "toelettatura"
+    if t in ("animal_shelter", "animal_rescue_service"):
+        return "animali", "rifugio"
+    if t in ("dog_trainer", "pet_training"):
+        return "animali", "addestramento"
+    if t in ("pet_boarding", "pet_sitting", "pet_hotel"):
+        return "animali", "pensione"
+    if cat == "animal_or_pet_service":
+        return None
+    # Associazioni
+    if t in ORG:
+        tipo = tipo_associazione(nome, t)
+        return ("associazione", tipo) if tipo else None
+    # «Sport e tempo libero» mescola palestre, scuderie e federazioni: entrano solo le società e le federazioni
+    if t == "sports_and_recreation":
+        return ("associazione", "sportiva") if re.search(r"federazione|comitato olimpico|polisportiva|\basd\b", (nome or "").lower()) else None
     # Locali
     if t == "pizza_restaurant":
         return "locale", "pizzeria"
@@ -152,7 +209,8 @@ def mappa(cat, t):
     return None
 
 
-AREA = {"locale": "uscire", "negozio": "uscire", "azienda": "lavorare", "professionista": "lavorare", "artigiano": "lavorare", "impianto": "sport"}
+AREA = {"locale": "uscire", "negozio": "uscire", "azienda": "lavorare", "professionista": "lavorare", "artigiano": "lavorare", "impianto": "sport",
+        "animali": "vivere", "associazione": "comunita"}
 
 
 def ultima_release():
@@ -222,7 +280,7 @@ def main():
         if not nome or not nome.strip():
             scartati["senza nome"] += 1
             continue
-        m = mappa(cat, tax)
+        m = mappa(cat, tax, nome)
         if not m:
             scartati["categoria non usata"] += 1
             k = tax or cat or "nessuna"

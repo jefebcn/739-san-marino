@@ -279,6 +279,8 @@ export const CATEGORIE: Record<string, string> = {
   azienda: "Aziende",
   professionista: "Professionisti",
   artigiano: "Artigiani",
+  animali: "Animali",
+  associazione: "Associazioni",
 };
 
 /** Come si legge il tipo di un luogo nella sua scheda, quando non basta la parola della sottocategoria */
@@ -298,7 +300,19 @@ export const TIPI_LEGGIBILI: Record<string, string> = {
   edile: "Impresa edile",
   meccanico: "Meccanico e carrozziere",
   parrucchiere: "Parrucchiere ed estetista",
+  // Animali e associazioni (migrazione 0039)
+  rifugio: "Rifugio per animali",
+  addestramento: "Centro cinofilo",
+  pensione: "Pensione per animali",
+  culturale: "Associazione culturale",
+  volontariato: "Associazione di volontariato",
+  sportiva: "Società sportiva",
+  ricreativa: "Circolo e associazione ricreativa",
+  religiosa: "Associazione religiosa",
+  "di categoria": "Associazione di categoria",
 };
 
 /** Il nome di una categoria per una sola scheda, quando il tipo è «altro» */
-export const CATEGORIA_SINGOLA: Record<string, string> = { azienda: "Azienda", professionista: "Studio professionale", artigiano: "Artigiano" };
+export const CATEGORIA_SINGOLA: Record<string, string> = {
+  azienda: "Azienda", professionista: "Studio professionale", artigiano: "Artigiano", animali: "Servizi per animali", associazione: "Associazione",
+};

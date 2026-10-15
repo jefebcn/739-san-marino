@@ -31,7 +31,7 @@ export default async function PaginaLuogo({ params }: Props) {
   const [l, castelli, gestito, pro] = await Promise.all([getLuogo(id), getClassifica(), getGestito(id), getPro(id)]);
   if (!l) notFound();
   const castello = castelli.find((c) => c.id === l.castello_id) ?? null;
-  const ritorno = ritornoDiCategoria(l.categoria);
+  const ritorno = ritornoDiCategoria(l.categoria, l.sottocategoria);
 
   return (
     <>
