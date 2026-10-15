@@ -30,9 +30,10 @@ Cosa deve fare Alex prima di aprire 739 a tutti (passo 1.8, 14/10/2026). In ordi
 - [x] Applicare `supabase/migrations/0033_negozi.sql` (fatto da Alex il 15/10/2026, primo aggiornamento lanciato lo stesso giorno) (contiene anche 0030, 0031, 0032): ristoranti e bar, poste, banche, distributori, scuole, chiese, negozi. Poi lanciare l'aggiornamento subito con `cron.schedule('osm-subito', …)` e toglierlo dopo 2 o 3 minuti con `cron.unschedule('osm-subito')`.
 - [x] Applicare `supabase/migrations/0034_attivita.sql` (profilo base delle attività: i titolari chiedono e aggiornano la loro scheda).
 - [x] Applicare `supabase/migrations/0035_attivita_pro.sql` (739 Pro: menu, prenota, offerte e numeri della scheda).
-- [ ] Applicare `supabase/migrations/0036_aggiungi_attivita.sql` (Aggiungi la tua attività: aziende, professionisti, artigiani; secondo tentativo notturno di OpenStreetMap).
-- [ ] Applicare `supabase/migrations/0037_mappa_postgis.sql` (PostGIS e funzioni della mappa: area, distanza, ricerca per nome). Senza, la mappa funziona lo stesso con i filtri normali.
-- [ ] Applicare `supabase/migrations/0038_fonti_overture.sql` (luoghi da Overture Maps; richiede la 0037), poi in `/admin/fonti` caricare il file di `scripts/overture.py` e decidere cosa pubblicare.
+- [x] Applicare `supabase/migrations/0036_aggiungi_attivita.sql` (Aggiungi la tua attività: aziende, professionisti, artigiani; secondo tentativo notturno di OpenStreetMap).
+- [x] Applicare `supabase/migrations/0037_mappa_postgis.sql` (PostGIS e funzioni della mappa: area, distanza, ricerca per nome). Senza, la mappa funziona lo stesso con i filtri normali.
+- [x] Applicare `supabase/migrations/0038_fonti_overture.sql` (luoghi da Overture Maps; richiede la 0037), poi in `/admin/fonti` caricare il file di `scripts/overture.py` e decidere cosa pubblicare. Fatto il 15/10/2026: pubblicati i 307 luoghi con qualità 85 o più.
+- [ ] Controllare a campione i luoghi di Overture pubblicati (categoria e tipo giusti, attività ancora aperta) e togliere «Da verificare» a quelli controllati; poi decidere se pubblicare anche la fascia 75-84 (324 luoghi).
 - [ ] Prima di vendere il primo Pro: un modello di accordo con prezzo (3,99 € al mese o 39 € all'anno), durata e fattura della società; al primo incasso passare a Vercel Pro (Hobby è solo non commerciale).
 - [ ] Mandare a Claude i nomi dei ristoranti importanti: quelli che OSM non ha si aggiungono con `/admin/importa`.
 - [ ] Per la Fase 1 mancano dati veri: Giunte di castello, associazioni, società sportive (CONS), orari delle messe. Vanno chiesti agli enti o dati da Alex.
