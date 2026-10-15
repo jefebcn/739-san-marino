@@ -3,11 +3,11 @@ import { emailContatto, titolare } from "@/lib/legale";
 
 export const metadata = { title: "Termini d'uso · 739 San Marino", description: "Le regole per usare 739 San Marino." };
 
-// Passo 1.8, approvati da Alex il 14/10/2026. Titolare ed email in lib/legale.ts.
+// Passo 1.8, approvati da Alex il 14/10/2026; rivisti e confermati da Claude su incarico di Alex il 15/10/2026.
 const TESTO = `
 ## Cos'è 739
 
-739 San Marino è un'app gratuita con eventi, servizi, luoghi, sport e la sfida tra i nove castelli. Non è un servizio della Repubblica di San Marino né di un ente pubblico: è gestita da ${titolare()}. Usandola accetti queste regole.
+739 San Marino è un'app gratuita per chi la usa, con eventi, servizi, luoghi, sport e la sfida tra i nove castelli. Non è un servizio della Repubblica di San Marino né di un ente pubblico: è gestita da ${titolare()}. Usandola accetti queste regole.
 
 ## Le informazioni
 

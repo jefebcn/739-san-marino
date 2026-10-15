@@ -3,14 +3,15 @@ import { emailContatto, titolare } from "@/lib/legale";
 
 export const metadata = { title: "Privacy · 739 San Marino", description: "Quali dati usa 739 San Marino, perché e per quanto tempo." };
 
-// Passo 1.8, approvata da Alex il 14/10/2026. Titolare ed email in lib/legale.ts.
+// Passo 1.8, approvata da Alex il 14/10/2026; rivista e confermata da Claude su incarico di Alex il 15/10/2026
+// (base giuridica, trasferimenti, cookie e memoria del telefono). Titolare ed email in lib/legale.ts.
 const TESTO = `
 ## In breve
 
 - Puoi usare quasi tutta 739 senza account e senza dirci chi sei.
 - Se crei un SMR ID salviamo nome, email e castello, più quello che fai nell'app: check-in, partite, eventi proposti.
 - Niente pubblicità, niente profilazione, niente dati venduti o ceduti a nessuno.
-- Usiamo solo i cookie tecnici che servono a tenerti dentro il tuo account.
+- Usiamo un solo cookie, tecnico, per tenerti dentro il tuo account. Niente banner perché non serve.
 - Puoi chiedere in ogni momento di vedere, correggere o cancellare i tuoi dati.
 
 ## Chi tratta i dati
@@ -21,7 +22,7 @@ Il titolare ha sede a Malta, nell'Unione europea: la regola di riferimento è il
 
 ## Quali dati e perché
 
-**Senza account.** Il castello che scegli, l'ultimo giorno in cui hai aperto 739 e poche altre preferenze restano solo sul tuo telefono (memoria del browser) e non arrivano a noi. Le visite alle pagine le contiamo con Vercel Web Analytics, che non usa cookie e non ci dice chi sei: vediamo solo totali.
+**Senza account.** Il castello che scegli e poche altre preferenze restano solo sul tuo telefono (vedi «Cookie e memoria del telefono») e non arrivano a noi. Le visite alle pagine le contiamo con Vercel Web Analytics, che non usa cookie e non ci dice chi sei: vediamo solo totali.
 
 **Con l'SMR ID.** Email e password (la password è salvata cifrata, nemmeno noi la vediamo), nome, castello, lingua e il numero di tessera. Ci servono per farti accedere, mostrarti la Card e assegnare i metri a te e al tuo castello. Per sapere quante persone tornano a usare 739 salviamo un giorno per persona in cui l'app è stata aperta: niente orari, niente pagine visitate.
 
@@ -37,10 +38,18 @@ Il titolare ha sede a Malta, nell'Unione europea: la regola di riferimento è il
 
 **Posizione.** «Vicino a me» usa la posizione del telefono solo dentro il browser, per ordinare le partite: non la salviamo. Se organizzi una partita e scegli di usare la posizione, salviamo il punto del campo, non il tuo.
 
+## Su quale base
+
+- **Per darti il servizio che chiedi** (GDPR art. 6.1.b): account SMR ID, check-in e metri, partite e tornei, eventi proposti, schede delle attività.
+- **Con il tuo consenso** (art. 6.1.a), che puoi togliere quando vuoi: notifiche e posizione del telefono.
+- **Per un nostro interesse legittimo** (art. 6.1.f), con il minimo dei dati: limiti anti abuso con l'impronta cifrata, conteggi anonimi delle visite, sicurezza del servizio.
+
+Nessuna decisione che ti riguarda viene presa in automatico da un programma.
+
 ## Dove stanno i dati
 
 - **Supabase** (database e account): server a Francoforte, nell'Unione europea.
-- **Vercel** (il sito e le statistiche anonime delle visite): rete di server internazionale.
+- **Vercel** (il sito e le statistiche anonime delle visite): società con sede negli Stati Uniti e rete di server internazionale. Il trasferimento fuori dall'Unione europea avviene con le garanzie previste dal GDPR (Data Privacy Framework UE-USA o clausole contrattuali standard).
 - **OpenFreeMap** (le mappe): il tuo browser scarica da loro le immagini della mappa, quindi vedono il tuo indirizzo IP come per qualunque sito.
 
 Meteo (Open-Meteo), articoli di Libertas e luoghi di OpenStreetMap li legge il nostro server: a loro non arriva nessun tuo dato.
@@ -51,9 +60,20 @@ Meteo (Open-Meteo), articoli di Libertas e luoghi di OpenStreetMap li legge il n
 - Iscrizioni alle notifiche: finché non le spegni o il telefono smette di accettarle.
 - Impronte anti abuso: restano con la proposta o la segnalazione e contano solo nel giorno in cui sono create.
 
-## Cookie
+## Cookie e memoria del telefono
 
-739 usa solo cookie tecnici: quelli che tengono aperta la sessione dell'SMR ID. Nessun cookie di profilazione o pubblicità, nessun cookie di terze parti. Per questo non ti chiediamo il consenso con un banner.
+**Un solo cookie, tecnico.** Se entri con l'SMR ID il browser salva il cookie della sessione (si chiama \`sb-…-auth-token\`): ti tiene dentro il tuo account e sparisce quando esci. Senza account non c'è nessun cookie.
+
+**Preferenze nella memoria del browser.** Restano sul tuo telefono, non le leggiamo da lontano e non servono a profilarti:
+
+- il castello che hai scelto e la zona della raccolta rifiuti;
+- se hai già chiuso l'invito a installare 739 e se ti abbiamo già chiesto delle notifiche;
+- l'ultimo giorno in cui hai aperto 739 con l'SMR ID, per segnare l'accesso una volta sola al giorno;
+- la pagina a cui tornare dopo l'accesso (solo finché la scheda del browser resta aperta).
+
+**Copia per quando sei senza rete.** Il telefono tiene una copia di Oggi, della pagina con i numeri di emergenza e delle icone di 739, così si aprono anche senza connessione.
+
+Niente cookie di profilazione o di pubblicità, niente cookie di terze parti: le statistiche delle visite (Vercel Web Analytics) e le mappe (OpenFreeMap) non ne usano. Per questo la legge non chiede un banner per il consenso. Puoi cancellare tutto quando vuoi dalle impostazioni del browser: perdi solo le preferenze e l'accesso.
 
 ## I tuoi diritti
 
