@@ -115,6 +115,25 @@ export async function getLuoghi(castelloId?: number): Promise<Luogo[]> {
   return (data ?? []) as Luogo[];
 }
 
+/** 739 Pro di una scheda (migrazione 0035): menu, prenota e offerte in corso. null se non è Pro. */
+export type DatiPro = { menu_url: string | null; prenota_url: string | null; offerte: { titolo: string; testo: string | null; al: string }[] };
+
+export async function getPro(id: string): Promise<DatiPro | null> {
+  const db = supabase();
+  if (!db) return null;
+  const { data, error } = await db.rpc("dati_pro", { p_luogo: id });
+  return error ? null : ((data as DatiPro | null) ?? null);
+}
+
+/** Le offerte in corso delle schede Pro, per le liste delle sezioni */
+export async function getOfferteInCorso(): Promise<Map<string, string>> {
+  const db = supabase();
+  if (!db) return new Map();
+  const { data, error } = await db.rpc("offerte_in_corso");
+  if (error || !data) return new Map();
+  return new Map((data as { luogo_id: string; titolo: string }[]).map((o) => [o.luogo_id, o.titolo]));
+}
+
 /** La scheda è gestita dal titolare dell'attività? (migrazione 0034; prima della migrazione: no) */
 export async function getGestito(id: string): Promise<boolean> {
   const db = supabase();

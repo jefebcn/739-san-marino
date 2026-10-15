@@ -36,13 +36,15 @@ Il titolare ha sede a Malta, nell'Unione europea: la regola di riferimento è il
 
 **Titolari di attività.** Se chiedi di gestire la scheda del tuo locale o negozio salviamo chi sei e che ruolo hai, un telefono per la verifica e la nota che scrivi: li vede solo la redazione di 739 e il telefono non compare nella scheda. Quello che scrivi nella scheda (descrizione, contatti, orari, foto) invece è pubblico.
 
+**Numeri delle schede delle attività.** Quando apri la scheda di un locale, un negozio o un distributore, o tocchi Chiama, Indicazioni, sito, email, Menu o Prenota, aggiungiamo uno al totale di quel giorno per quella scheda. Non salviamo chi sei, né il tuo indirizzo IP, né l'ora: il titolare con il piano Pro vede solo i totali.
+
 **Posizione.** «Vicino a me» usa la posizione del telefono solo dentro il browser, per ordinare le partite: non la salviamo. Se organizzi una partita e scegli di usare la posizione, salviamo il punto del campo, non il tuo.
 
 ## Su quale base
 
 - **Per darti il servizio che chiedi** (GDPR art. 6.1.b): account SMR ID, check-in e metri, partite e tornei, eventi proposti, schede delle attività.
 - **Con il tuo consenso** (art. 6.1.a), che puoi togliere quando vuoi: notifiche e posizione del telefono.
-- **Per un nostro interesse legittimo** (art. 6.1.f), con il minimo dei dati: limiti anti abuso con l'impronta cifrata, conteggi anonimi delle visite, sicurezza del servizio.
+- **Per un nostro interesse legittimo** (art. 6.1.f), con il minimo dei dati: limiti anti abuso con l'impronta cifrata, conteggi anonimi delle visite e delle schede delle attività, sicurezza del servizio.
 
 Nessuna decisione che ti riguarda viene presa in automatico da un programma.
 
@@ -69,7 +71,7 @@ Meteo (Open-Meteo), articoli di Libertas e luoghi di OpenStreetMap li legge il n
 - il castello che hai scelto e la zona della raccolta rifiuti;
 - se hai già chiuso l'invito a installare 739 e se ti abbiamo già chiesto delle notifiche;
 - l'ultimo giorno in cui hai aperto 739 con l'SMR ID, per segnare l'accesso una volta sola al giorno;
-- la pagina a cui tornare dopo l'accesso (solo finché la scheda del browser resta aperta).
+- la pagina a cui tornare dopo l'accesso e le schede delle attività già contate, per contarle una volta sola (solo finché la scheda del browser resta aperta).
 
 **Copia per quando sei senza rete.** Il telefono tiene una copia di Oggi, della pagina con i numeri di emergenza e delle icone di 739, così si aprono anche senza connessione.
 

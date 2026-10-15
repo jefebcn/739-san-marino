@@ -62,3 +62,45 @@ export async function decidiAttivita(id: string, stato: "approvata" | "rifiutata
   const { error } = await db().rpc("decidi_attivita", { p_id: id, p_stato: stato, p_nota: nota || null });
   return { errore: messaggio(error) };
 }
+
+// ——— 739 Pro (migrazione 0035): 3,99 € al mese o 39 € all'anno, attivato da un amministratore ———
+
+export const PREZZO_PRO = "3,99 € al mese, oppure 39 € all'anno";
+export type Offerta = { id: string; titolo: string; testo: string | null; dal: string; al: string };
+export type MioPro = { attivo: boolean; fino: string | null; menu_url: string | null; prenota_url: string | null; offerte: Offerta[] };
+export type Numero = { tipo: string; totale: number; ultimi7: number };
+
+export async function mioPro(luogo: string) {
+  const { data, error } = await db().rpc("mio_pro", { p_luogo: luogo });
+  return { pro: (data as MioPro | null) ?? null, errore: error?.code === "PGRST202" ? null : messaggio(error) };
+}
+
+export async function salvaPro(luogo: string, menu: string, prenota: string) {
+  const { error } = await db().rpc("salva_pro", { p_luogo: luogo, p_menu: menu, p_prenota: prenota });
+  return { errore: messaggio(error) };
+}
+
+export async function salvaOfferta(luogo: string, o: { id: string | null; titolo: string; testo: string; dal: string; al: string }) {
+  const { error } = await db().rpc("salva_offerta", { p_luogo: luogo, p_id: o.id, p_titolo: o.titolo, p_testo: o.testo, p_dal: o.dal, p_al: o.al });
+  return { errore: messaggio(error) };
+}
+
+export async function togliOfferta(id: string) {
+  const { error } = await db().rpc("togli_offerta", { p_id: id });
+  return { errore: messaggio(error) };
+}
+
+export async function numeriScheda(luogo: string, giorni = 30) {
+  const { data, error } = await db().rpc("numeri_scheda", { p_luogo: luogo, p_giorni: giorni });
+  return { numeri: (data ?? []) as Numero[], errore: messaggio(error) };
+}
+
+export async function impostaPro(luogo: string, fino: string | null) {
+  const { error } = await db().rpc("imposta_pro", { p_luogo: luogo, p_fino: fino });
+  return { errore: messaggio(error) };
+}
+
+export async function elencoPro() {
+  const { data, error } = await db().rpc("elenco_pro");
+  return { pro: new Map(((data ?? []) as { luogo_id: string; fino: string }[]).map((p) => [p.luogo_id, p.fino])), errore: error?.code === "PGRST202" ? null : messaggio(error) };
+}

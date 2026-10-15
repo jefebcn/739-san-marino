@@ -7,6 +7,7 @@ import { useSessione } from "@/modules/core/store";
 import { caricaFoto } from "@/modules/eventi/api";
 import type { Luogo } from "@/lib/data";
 import { luogoDaModificare, salvaMiaAttivita, type Orari } from "../api";
+import ProAttivita from "./ProAttivita";
 import OrariSettimana from "./OrariSettimana";
 import { CAMPO } from "./stile";
 
@@ -115,6 +116,7 @@ export default function ModificaAttivita({ id }: { id: string }) {
   };
 
   return (
+    <div className="flex flex-col gap-8">
     <form onSubmit={salva} className="flex flex-col gap-5">
       <Campo testo="Descrizione" nota="Cosa si trova da voi, in poche righe. Massimo 1000 caratteri.">
         <textarea rows={5} maxLength={1000} value={descrizione} onChange={(e) => setDescrizione(e.target.value)} placeholder="Es. Cucina sammarinese, pasta fatta in casa, terrazza sulla valle." className={`${CAMPO} py-3 leading-relaxed`} />
@@ -164,5 +166,7 @@ export default function ModificaAttivita({ id }: { id: string }) {
       <PrimaryButton type="submit" disabled={invio || caricaInCorso}>{invio ? "Salvo…" : "Salva la scheda"}</PrimaryButton>
       <p className="-mt-2 text-[13px] text-testo-2">Le modifiche vanno online subito, con la scritta «Aggiornata dal titolare». Il nome e la posizione li cambia la redazione: chiedili con «Segnala un errore».</p>
     </form>
+    <ProAttivita id={id} nome={luogo.nome} />
+    </div>
   );
 }

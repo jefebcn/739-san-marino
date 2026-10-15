@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { Icona } from "@/components/Icona";
-import { decidiAttivita, richiesteAttivita, type Richiesta, type StatoRichiesta } from "../api";
+import { mieiRuoli } from "@/modules/core/ruoli";
+import { decidiAttivita, elencoPro, impostaPro, richiesteAttivita, type Richiesta, type StatoRichiesta } from "../api";
 import { CAMPO } from "./stile";
 
 const SCHEDE: { stato: StatoRichiesta; nome: string }[] = [
@@ -12,6 +13,7 @@ const SCHEDE: { stato: StatoRichiesta; nome: string }[] = [
   { stato: "rifiutata", nome: "Rifiutate" },
 ];
 const quando = new Intl.DateTimeFormat("it-IT", { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit", timeZone: "Europe/San_Marino" });
+const giorno = new Intl.DateTimeFormat("it-IT", { day: "numeric", month: "long", year: "numeric", timeZone: "Europe/San_Marino" });
 const tel = (t: string) => `tel:${t.replace(/[^+0-9]/g, "")}`;
 
 /** Redazione: le richieste dei titolari. Si verifica (di solito chiamando il numero della scheda) e si decide. */
@@ -21,6 +23,13 @@ export default function RichiesteAttivita() {
   const [errore, setErrore] = useState<string | null>(null);
   const [note, setNote] = useState<Record<string, string>>({});
   const [inCorso, setInCorso] = useState<string | null>(null);
+  const [admin, setAdmin] = useState(false);
+  const [pro, setPro] = useState<Map<string, string>>(new Map());
+  const [fino, setFino] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    mieiRuoli().then((r) => setAdmin(r.amministratore));
+  }, []);
 
   const carica = useCallback(() => {
     setLista(null);
@@ -28,6 +37,7 @@ export default function RichiesteAttivita() {
       setLista(r.richieste);
       setErrore(r.errore);
     });
+    if (scheda === "approvata") elencoPro().then((r) => setPro(r.pro));
   }, [scheda]);
   useEffect(carica, [carica]);
 
@@ -36,6 +46,16 @@ export default function RichiesteAttivita() {
     const esito = await decidiAttivita(r.id, stato, note[r.id] ?? "");
     setInCorso(null);
     if (esito.errore) return setErrore(esito.errore);
+    carica();
+  };
+
+  // 739 Pro: lo attiva un amministratore dopo l'accordo con la società (niente pagamenti nell'app)
+  const cambiaPro = async (r: Richiesta, data: string | null) => {
+    setInCorso(r.id);
+    const esito = await impostaPro(r.luogo_id, data);
+    setInCorso(null);
+    if (esito.errore) return setErrore(esito.errore);
+    setErrore(null);
     carica();
   };
 
@@ -78,7 +98,26 @@ export default function RichiesteAttivita() {
                 </div>
               </>
             ) : scheda === "approvata" ? (
-              <button type="button" disabled={inCorso === r.id} onClick={() => decidi(r, "revocata")} className="w-fit py-2 text-sm font-medium text-segnale disabled:opacity-50">Togli la scheda a questo titolare</button>
+              <>
+                <p className={`text-sm ${pro.has(r.luogo_id) ? "font-medium text-accento" : "text-testo-2"}`}>
+                  {pro.has(r.luogo_id) ? `739 Pro fino al ${giorno.format(new Date(`${pro.get(r.luogo_id)}T12:00:00Z`))}` : "Profilo base"}
+                </p>
+                {admin ? (
+                  <div className="flex flex-wrap items-end gap-2">
+                    <label className="flex flex-col gap-1 text-[13px] text-testo-2">
+                      Pro fino al
+                      <input type="date" value={fino[r.id] ?? pro.get(r.luogo_id) ?? ""} onChange={(e) => setFino({ ...fino, [r.id]: e.target.value })} className={`h-11 ${CAMPO}`} />
+                    </label>
+                    <button type="button" disabled={inCorso === r.id || !(fino[r.id] ?? "")} onClick={() => cambiaPro(r, fino[r.id])} className="h-11 rounded-xl bg-metallo px-4 text-sm font-semibold text-su-accento disabled:opacity-50">
+                      {pro.has(r.luogo_id) ? "Cambia" : "Attiva il Pro"}
+                    </button>
+                    {pro.has(r.luogo_id) ? (
+                      <button type="button" disabled={inCorso === r.id} onClick={() => cambiaPro(r, null)} className="h-11 rounded-xl px-4 text-sm font-medium text-testo-2 hover:text-testo disabled:opacity-50">Togli il Pro</button>
+                    ) : null}
+                  </div>
+                ) : null}
+                <button type="button" disabled={inCorso === r.id} onClick={() => decidi(r, "revocata")} className="w-fit py-2 text-sm font-medium text-segnale disabled:opacity-50">Togli la scheda a questo titolare</button>
+              </>
             ) : null}
           </article>
         ))

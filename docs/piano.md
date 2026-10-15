@@ -67,7 +67,7 @@ Formati: schede, liste scelte (massimo sette voci, sempre con il perché), guide
 
 ## Modello economico
 
-Chi vive e visita San Marino non paga mai. Pagano le attività: profilo base gratis, profilo Pro (menu, offerte, prenotazioni, statistiche), eventi in evidenza (sempre segnalati come sponsorizzati), pacchetti per manifestazioni, premi dei metri, dati aggregati e anonimi. Niente banner, niente vendita di dati personali. Al primo incasso: Vercel Pro (Hobby è solo non commerciale), piano commerciale Open-Meteo.
+Chi vive e visita San Marino non paga mai. Pagano le attività: profilo base gratis, profilo Pro (menu, offerte, prenotazioni, statistiche; 3,99 € al mese o 39 € all'anno, deciso il 15/10/2026), eventi in evidenza (sempre segnalati come sponsorizzati), pacchetti per manifestazioni, premi dei metri, dati aggregati e anonimi. Niente banner, niente vendita di dati personali. Al primo incasso: Vercel Pro (Hobby è solo non commerciale), piano commerciale Open-Meteo.
 
 ## Regole che non cambiano
 

@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { notFound } from "next/navigation";
 import TestaPagina from "@/components/Indietro";
 import { Icona } from "@/components/Icona";
-import { CATEGORIE, getLuoghi, type Luogo } from "@/lib/data";
+import { CATEGORIE, getLuoghi, getOfferteInCorso, type Luogo } from "@/lib/data";
 import { area as trovaArea, sezione as trovaSezione } from "@/lib/aree";
 
 const PLURALI: Record<string, string> = {
@@ -28,7 +28,7 @@ export default async function PaginaSezione({ area, sezione, prima, vuoto }: { a
   // Solo le sezioni di luoghi hanno questa pagina; le altre portano altrove o sono in arrivo
   if (!a || !s?.categorie) notFound();
 
-  const tutti = await getLuoghi();
+  const [tutti, offerte] = await Promise.all([getLuoghi(), getOfferteInCorso()]);
   let gruppi = s.categorie
     .map((c) => ({ categoria: c, nome: CATEGORIE[c] ?? c, luoghi: tutti.filter((l) => l.categoria === c) }))
     .filter((g) => g.luoghi.length);
@@ -64,7 +64,7 @@ export default async function PaginaSezione({ area, sezione, prima, vuoto }: { a
             <ul className="larga divide-y divide-linea rounded-2xl bg-superficie lg:grid lg:grid-cols-2 lg:gap-2.5 lg:divide-y-0 lg:bg-transparent xl:grid-cols-3">
               {g.luoghi.map((l) => (
                 <li key={l.id} className="lg:overflow-hidden lg:rounded-2xl lg:bg-superficie">
-                  <RigaLuogo l={l} />
+                  <RigaLuogo l={l} offerta={offerte.get(l.id)} />
                 </li>
               ))}
             </ul>
@@ -82,13 +82,14 @@ export default async function PaginaSezione({ area, sezione, prima, vuoto }: { a
   );
 }
 
-function RigaLuogo({ l }: { l: Luogo }) {
+function RigaLuogo({ l, offerta }: { l: Luogo; offerta?: string }) {
   const sotto = [l.indirizzo, l.descrizione].filter(Boolean).join(", ");
   return (
     <Link href={`/luoghi/${l.id}`} className="flex items-center gap-3 px-4 py-3.5 transition-colors hover:bg-superficie-2">
       <span className="flex min-w-0 flex-1 flex-col gap-0.5">
         <span className="text-[15px] font-medium leading-snug">{l.nome}</span>
         {sotto ? <span className="line-clamp-1 text-[13px] text-testo-2">{sotto}</span> : null}
+        {offerta ? <span className="line-clamp-1 text-[13px] font-medium text-accento">Offerta: {offerta}</span> : null}
       </span>
       <span className="shrink-0 text-testo-2"><Icona nome="avanti" size={18} /></span>
     </Link>

@@ -40,6 +40,8 @@ La redazione può non pubblicare, modificare o togliere quello che non rispetta 
 
 Il titolare di un locale, di un negozio o di un distributore può chiedere di gestire la sua scheda. La redazione verifica prima di affidarla. Chi la gestisce risponde di quello che scrive, deve tenerla aggiornata e non può usarla per pubblicità che non riguarda l'attività. La redazione può correggere la scheda o toglierne la gestione se queste regole non sono rispettate. Il profilo base è gratis.
 
+**739 Pro.** Chi gestisce la scheda può chiedere il piano Pro, a pagamento (oggi 3,99 € al mese o 39 € all'anno): i pulsanti «Menu» e «Prenota» con i propri link, fino a tre offerte con la scadenza e i numeri della scheda (solo totali). Si attiva con un accordo scritto con ${titolare()}, che indica prezzo, durata e fattura; nell'app non si paga niente. Il Pro non cambia l'ordine delle liste né i risultati della ricerca: le offerte devono essere vere, valide nelle date indicate e riguardare l'attività. Alla scadenza la scheda torna al profilo base e restano descrizione, contatti, orari e foto.
+
 ## Le cose da non fare
 
 Usare 739 per spam, raccogliere dati di altri utenti, aggirare i limiti, leggere l'app in automatico in modo massiccio o provare a entrare dove non si ha accesso.
