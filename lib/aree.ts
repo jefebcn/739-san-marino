@@ -60,7 +60,7 @@ export const AREE: Area[] = [
       { slug: "cultura", nome: "Musei e monumenti", descrizione: "Musei, torri, porte e monumenti.", icona: "cultura", href: "/uscire/cultura", categorie: ["cultura", "luogo"], parole: "musei museo monumenti torri guaita cesta montale" },
       { slug: "natura", nome: "Panorami e natura", descrizione: "I punti panoramici del territorio.", icona: "panorama", href: "/uscire/natura", categorie: ["panorama"], parole: "panorama panorami vista natura sentieri" },
       { slug: "dormire", nome: "Dormire", descrizione: "Hotel, b&b e agriturismi.", icona: "dormire", parole: "dormire hotel albergo bed breakfast agriturismo" },
-      { slug: "negozi", nome: "Negozi e outlet", descrizione: "Botteghe, negozi del centro e outlet.", icona: "negozi", parole: "negozi shopping outlet botteghe" },
+      { slug: "negozi", nome: "Negozi e outlet", descrizione: "Souvenir, gioiellerie, alimentari, abbigliamento e centri commerciali.", icona: "negozi", href: "/uscire/negozi", categorie: ["negozio"], parole: "negozi negozio shopping outlet botteghe souvenir gioielleria gioielli orologi armeria supermercato alimentari abbigliamento vestiti profumeria tabacchi centro commerciale" },
       { slug: "itinerari", nome: "Itinerari", descrizione: "Percorsi a piedi per scoprire il territorio.", icona: "itinerari", parole: "itinerari percorsi passeggiate trekking" },
     ],
   },

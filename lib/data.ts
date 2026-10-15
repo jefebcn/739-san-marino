@@ -248,4 +248,13 @@ export const CATEGORIE: Record<string, string> = {
   carburante: "Distributori di carburante",
   scuola: "Scuole",
   chiesa: "Chiese",
+  negozio: "Negozi",
+};
+
+/** Come si legge il tipo di un luogo nella sua scheda, quando non basta la parola della sottocategoria */
+export const TIPI_LEGGIBILI: Record<string, string> = {
+  casa: "Casa e fai da te",
+  servizi: "Servizi",
+  auto: "Auto e moto",
+  "libri e giochi": "Libri, musica e giochi",
 };

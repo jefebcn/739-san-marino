@@ -16,6 +16,7 @@ export default async function Uscire() {
       stato={{
         eventi: prossimi ? <><b className="font-mono font-medium text-testo">{prossimi}</b> {prossimi === 1 ? "evento" : "eventi"} nei prossimi 7 giorni</> : undefined,
         mangiare: conta(["locale"]) ? <><b className="font-mono font-medium text-testo">{conta(["locale"])}</b> tra ristoranti, pizzerie, bar e gelaterie</> : "I locali arrivano da OpenStreetMap",
+        negozi: conta(["negozio"]) ? <><b className="font-mono font-medium text-testo">{conta(["negozio"])}</b> negozi, dai souvenir ai centri commerciali</> : "I negozi arrivano da OpenStreetMap",
         cultura: <><b className="font-mono font-medium text-testo">{conta(["cultura", "luogo"])}</b> tra musei, torri e monumenti</>,
         natura: <><b className="font-mono font-medium text-testo">{conta(["panorama"])}</b> punti panoramici</>,
       }}

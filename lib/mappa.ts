@@ -23,6 +23,7 @@ export const COLORI: Record<string, string> = {
   carburante: "#6B7280",
   scuola: "#5C6BC0",
   chiesa: "#8D6E63",
+  negozio: "#8E6C8A",
 };
 
 /** Icona del segnaposto per categoria (sempre Phosphor, bianca sul colore della categoria) */
@@ -47,6 +48,7 @@ export const ICONE_CATEGORIA: Record<string, NomeIcona> = {
   carburante: "carburante",
   scuola: "scuola",
   chiesa: "chiese",
+  negozio: "negozi",
 };
 
 /** Per i locali l'icona dice che posto è */
