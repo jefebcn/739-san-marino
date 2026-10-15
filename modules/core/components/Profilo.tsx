@@ -254,6 +254,9 @@ export default function Profilo({ castelli }: { castelli: Castello[] }) {
           {ruoli.amministratore ? (
             <ActionCard href="/admin/numeri" icona={<Icona nome="numeri" />} tono="neutro" titolo="Numeri" descrizione="SMR ID, chi torna, eventi e schede verificate" />
           ) : null}
+          {ruoli.amministratore ? (
+            <ActionCard href="/admin/fonti" icona={<Icona nome="mappa" />} tono="neutro" titolo="Fonti dei luoghi" descrizione="Luoghi da Overture Maps da controllare e pubblicare" />
+          ) : null}
           {ruoli.redattore ? (
             <ActionCard href="/admin/importa" icona={<Icona nome="importa" />} tono="neutro" titolo="Importa" descrizione="Luoghi, eventi, avvisi e contenuti da un file JSON" />
           ) : null}

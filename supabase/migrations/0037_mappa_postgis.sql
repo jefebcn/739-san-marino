@@ -32,10 +32,10 @@ create index if not exists luoghi_categoria on public.luoghi (categoria);
 create index if not exists luoghi_nome_trgm on public.luoghi using gin (public.testo_norm(nome) extensions.gin_trgm_ops);
 
 -- I luoghi dentro il riquadro della mappa, con i campi che servono per disegnarli e per l'elenco.
--- p_categorie vuoto = tutte. Al massimo 3000 righe: se ne arrivano p_limite, il telefono sa che deve avvicinarsi.
+-- p_categorie vuoto = tutte. Al massimo 3000 righe (San Marino intero, anche con Overture): se ne arrivano p_limite, il telefono sa che deve avvicinarsi.
 create or replace function public.luoghi_mappa(
   p_ovest double precision, p_sud double precision, p_est double precision, p_nord double precision,
-  p_categorie text[] default null, p_limite integer default 1500
+  p_categorie text[] default null, p_limite integer default 3000
 )
 returns table (id uuid, nome text, categoria text, sottocategoria text, lat double precision, lng double precision, indirizzo text, fonte text)
 language sql stable security invoker set search_path = '' as $$
@@ -44,7 +44,7 @@ language sql stable security invoker set search_path = '' as $$
   where l.posizione operator(extensions.&&) extensions.st_makeenvelope(p_ovest, p_sud, p_est, p_nord, 4326)::extensions.geography
     and (p_categorie is null or cardinality(p_categorie) = 0 or l.categoria = any (p_categorie))
   order by l.nome
-  limit least(greatest(coalesce(p_limite, 1500), 1), 3000)
+  limit least(greatest(coalesce(p_limite, 3000), 1), 3000)
 $$;
 
 -- I luoghi più vicini a un punto (la posizione del telefono), con la distanza in metri

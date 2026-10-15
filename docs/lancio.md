@@ -31,6 +31,8 @@ Cosa deve fare Alex prima di aprire 739 a tutti (passo 1.8, 14/10/2026). In ordi
 - [x] Applicare `supabase/migrations/0034_attivita.sql` (profilo base delle attività: i titolari chiedono e aggiornano la loro scheda).
 - [x] Applicare `supabase/migrations/0035_attivita_pro.sql` (739 Pro: menu, prenota, offerte e numeri della scheda).
 - [ ] Applicare `supabase/migrations/0036_aggiungi_attivita.sql` (Aggiungi la tua attività: aziende, professionisti, artigiani; secondo tentativo notturno di OpenStreetMap).
+- [ ] Applicare `supabase/migrations/0037_mappa_postgis.sql` (PostGIS e funzioni della mappa: area, distanza, ricerca per nome). Senza, la mappa funziona lo stesso con i filtri normali.
+- [ ] Applicare `supabase/migrations/0038_fonti_overture.sql` (luoghi da Overture Maps; richiede la 0037), poi in `/admin/fonti` caricare il file di `scripts/overture.py` e decidere cosa pubblicare.
 - [ ] Prima di vendere il primo Pro: un modello di accordo con prezzo (3,99 € al mese o 39 € all'anno), durata e fattura della società; al primo incasso passare a Vercel Pro (Hobby è solo non commerciale).
 - [ ] Mandare a Claude i nomi dei ristoranti importanti: quelli che OSM non ha si aggiungono con `/admin/importa`.
 - [ ] Per la Fase 1 mancano dati veri: Giunte di castello, associazioni, società sportive (CONS), orari delle messe. Vanno chiesti agli enti o dati da Alex.

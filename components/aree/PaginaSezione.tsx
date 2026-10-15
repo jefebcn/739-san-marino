@@ -92,6 +92,13 @@ export default async function PaginaSezione({ area, sezione, prima, vuoto }: { a
         </Link>
       ) : null}
 
+      {s.categorie.some((c) => tutti.some((l) => l.categoria === c && l.fonte === "overture")) ? (
+        <p className="fonte">
+          Alcuni luoghi da{" "}
+          <a href="https://docs.overturemaps.org/attribution/" target="_blank" rel="noopener">Overture Maps Foundation</a> (CDLA Permissive 2.0), da verificare.
+        </p>
+      ) : null}
+
       {s.categorie.some((c) => tutti.some((l) => l.categoria === c && l.fonte === "osm")) ? (
         <p className="fonte">
           Dati ©{" "}

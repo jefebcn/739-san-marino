@@ -13,7 +13,7 @@ export type PuntoMappa = {
 export type Riquadro = [number, number, number, number];
 
 const CAMPI_PUNTO = "id, nome, categoria, sottocategoria, lat, lng, indirizzo, fonte";
-export const LIMITE_RIQUADRO = 1500;
+export const LIMITE_RIQUADRO = 3000;
 // Il territorio di San Marino con un po' di margine: fuori non c'è niente da chiedere
 export const TERRITORIO: Riquadro = [12.39, 43.88, 12.53, 44.0];
 

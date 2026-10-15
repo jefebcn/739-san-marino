@@ -498,6 +498,15 @@ export default function MappaTerritorio({ segnali, iniziale }: { segnali: Luogo[
                       {dettaglio.telefono ? <div><Icona nome="telefono" /><span><b>Telefono</b><a className="meta" href={`tel:${dettaglio.telefono.replace(/\s/g, "")}`}>{dettaglio.telefono}</a></span></div> : null}
                     </div>
                   ) : null}
+                  {dettaglio.fonte === "overture" ? (
+                    <p className="meta">
+                      Dati ©{" "}
+                      <a href="https://docs.overturemaps.org/attribution/" target="_blank" rel="noopener" style={{ textDecoration: "underline" }}>
+                        Overture Maps Foundation
+                      </a>
+                      , da verificare
+                    </p>
+                  ) : null}
                   {dettaglio.fonte === "osm" ? (
                     <p className="meta">
                       Dati ©{" "}
