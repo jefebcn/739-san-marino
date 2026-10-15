@@ -7,8 +7,8 @@ import { CATEGORIA_SINGOLA, CATEGORIE, TIPI_LEGGIBILI, linkIndicazioni, type Cas
 import Condividi from "./Condividi";
 
 // Le attività private, come CATEGORIE_ATTIVITA in modules/attivita/api.ts
-const ATTIVITA = new Set(["locale", "negozio", "carburante", "azienda", "professionista", "artigiano", "animali", "associazione"]);
-const SOLO_TIPO = new Set(["locale", "scuola", "chiesa", "banca", "negozio", "azienda", "professionista", "artigiano", "animali", "associazione"]);
+const ATTIVITA = new Set(["locale", "negozio", "carburante", "azienda", "professionista", "artigiano", "animali", "associazione", "dormire"]);
+const SOLO_TIPO = new Set(["locale", "scuola", "chiesa", "banca", "negozio", "azienda", "professionista", "artigiano", "animali", "associazione", "dormire"]);
 
 const giornoBreve = new Intl.DateTimeFormat("it-IT", { day: "numeric", month: "long", timeZone: "Europe/San_Marino" });
 const giornoLungo = new Intl.DateTimeFormat("it-IT", { day: "numeric", month: "long", year: "numeric", timeZone: "Europe/San_Marino" });

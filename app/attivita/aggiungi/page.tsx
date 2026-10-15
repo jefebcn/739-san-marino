@@ -17,6 +17,7 @@ const RITORNO: Record<string, { href: string; nome: string }> = {
   locale: { href: "/uscire/mangiare", nome: "Mangiare e bere" },
   negozio: { href: "/uscire/negozi", nome: "Negozi e outlet" },
   animali: { href: "/vivere/animali", nome: "Animali" },
+  dormire: { href: "/uscire/dormire", nome: "Dormire" },
   associazione: { href: "/comunita/associazioni", nome: "Associazioni" },
 };
 const RITORNO_TIPO: Record<string, { href: string; nome: string }> = {

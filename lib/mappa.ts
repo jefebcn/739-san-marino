@@ -29,6 +29,7 @@ export const COLORI: Record<string, string> = {
   artigiano: "#8D6E4F",
   animali: "#8C7B35",
   associazione: "#5F5A8F",
+  dormire: "#3D6E8C",
 };
 
 /** Icona del segnaposto per categoria (sempre Phosphor, bianca sul colore della categoria) */
@@ -59,6 +60,7 @@ export const ICONE_CATEGORIA: Record<string, NomeIcona> = {
   artigiano: "artigiani",
   animali: "animali",
   associazione: "gruppo",
+  dormire: "dormire",
 };
 
 /** Per i locali l'icona dice che posto è */

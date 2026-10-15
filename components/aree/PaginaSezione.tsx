@@ -23,6 +23,7 @@ const PLURALI: Record<string, string> = {
   veterinario: "Veterinari", toelettatura: "Toelettature", rifugio: "Rifugi e canili", addestramento: "Centri cinofili", pensione: "Pensioni per animali",
   culturale: "Culturali", volontariato: "Volontariato", sportiva: "Società sportive e federazioni", ricreativa: "Circoli e ricreative",
   religiosa: "Religiose", "di categoria": "Di categoria e sindacati", "giunta di castello": "Giunte di castello",
+  hotel: "Hotel", "bed and breakfast": "Bed and breakfast", residence: "Residence", campeggio: "Campeggi", agriturismo: "Agriturismi",
   "nido e infanzia": "Nidi e scuole dell'infanzia", elementare: "Elementari", "media e superiore": "Medie e superiori", università: "Università",
 };
 // Tipi che hanno un ordine naturale (le scuole per età); gli altri vanno dal gruppo più numeroso

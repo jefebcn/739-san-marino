@@ -297,6 +297,7 @@ export const CATEGORIE: Record<string, string> = {
   artigiano: "Artigiani",
   animali: "Animali",
   associazione: "Associazioni",
+  dormire: "Dormire",
 };
 
 /** Come si legge il tipo di un luogo nella sua scheda, quando non basta la parola della sottocategoria */
@@ -326,9 +327,15 @@ export const TIPI_LEGGIBILI: Record<string, string> = {
   ricreativa: "Circolo e associazione ricreativa",
   religiosa: "Associazione religiosa",
   "di categoria": "Associazione di categoria",
+  // Dormire (migrazione 0041)
+  hotel: "Hotel",
+  "bed and breakfast": "Bed and breakfast",
+  residence: "Residence",
+  campeggio: "Campeggio",
+  agriturismo: "Agriturismo",
 };
 
 /** Il nome di una categoria per una sola scheda, quando il tipo è «altro» */
 export const CATEGORIA_SINGOLA: Record<string, string> = {
-  azienda: "Azienda", professionista: "Studio professionale", artigiano: "Artigiano", animali: "Servizi per animali", associazione: "Associazione",
+  azienda: "Azienda", professionista: "Studio professionale", artigiano: "Artigiano", animali: "Servizi per animali", associazione: "Associazione", dormire: "Struttura ricettiva",
 };

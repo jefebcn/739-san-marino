@@ -1,7 +1,7 @@
 // I tipi di attività che un titolare può aggiungere, per categoria: gli stessi di tipi_attivita() (migrazioni 0036 e 0039).
 // `nome` è come si legge da solo nella scheda e nel modulo.
 
-export type CategoriaNuova = "locale" | "negozio" | "azienda" | "professionista" | "artigiano" | "animali" | "associazione";
+export type CategoriaNuova = "locale" | "negozio" | "azienda" | "professionista" | "artigiano" | "animali" | "associazione" | "dormire";
 
 export const CATEGORIE_NUOVE: { categoria: CategoriaNuova; nome: string; esempio: string }[] = [
   { categoria: "azienda", nome: "Azienda", esempio: "Un'impresa: informatica, edilizia, industria, turismo…" },
@@ -9,6 +9,7 @@ export const CATEGORIE_NUOVE: { categoria: CategoriaNuova; nome: string; esempio
   { categoria: "artigiano", nome: "Artigiano", esempio: "Idraulico, elettricista, falegname, parrucchiere…" },
   { categoria: "locale", nome: "Locale", esempio: "Ristorante, pizzeria, bar, gelateria…" },
   { categoria: "negozio", nome: "Negozio", esempio: "Souvenir, abbigliamento, alimentari…" },
+  { categoria: "dormire", nome: "Dove dormire", esempio: "Hotel, bed and breakfast, residence, campeggio…" },
   { categoria: "animali", nome: "Animali", esempio: "Veterinario, toelettatura, centro cinofilo…" },
   { categoria: "associazione", nome: "Associazione", esempio: "Culturale, di volontariato, sportiva, circolo…" },
 ];
@@ -83,6 +84,14 @@ export const TIPI: Record<CategoriaNuova, { tipo: string; nome: string }[]> = {
     { tipo: "rifugio", nome: "Rifugio o canile" },
     { tipo: "addestramento", nome: "Centro cinofilo" },
     { tipo: "pensione", nome: "Pensione per animali" },
+    { tipo: "altro", nome: "Altro" },
+  ],
+  dormire: [
+    { tipo: "hotel", nome: "Hotel" },
+    { tipo: "bed and breakfast", nome: "Bed and breakfast" },
+    { tipo: "residence", nome: "Residence e appartamenti" },
+    { tipo: "campeggio", nome: "Campeggio" },
+    { tipo: "agriturismo", nome: "Agriturismo" },
     { tipo: "altro", nome: "Altro" },
   ],
   associazione: [

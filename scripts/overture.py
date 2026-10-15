@@ -30,7 +30,7 @@ BUCKET = "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com"
 
 # ---- Dalle categorie di Overture (basic_category e taxonomy.primary) a quelle di 739 -------------------------
 # Restituisce (categoria, sottocategoria) oppure None se il luogo non entra in 739 (o arriva già da OSM:
-# banche, distributori, chiese, scuole, musei, uffici pubblici, farmacie, ospedali). Animali e associazioni dalla 0039.
+# banche, distributori, chiese, scuole, musei, uffici pubblici, farmacie, ospedali). Animali e associazioni dalla 0039, dormire dalla 0041.
 
 
 # Associazioni: Overture non distingue culturali, sportive o di volontariato, quindi si guarda anche il nome.
@@ -86,6 +86,17 @@ def mappa(cat, t, nome=""):
         return "animali", "pensione"
     if cat == "animal_or_pet_service":
         return None
+    # Dormire (dalla 0041)
+    if cat in ("hotel", "motel", "inn", "resort") or t in ("hotel", "motel", "resort"):
+        if re.match(r"gruppo\b", (nome or "").lower()):
+            return None  # la sede di un gruppo alberghiero, non una struttura
+        return "dormire", "residence" if re.search(r"\bresidence\b", (nome or "").lower()) else "hotel"
+    if cat in ("bed_and_breakfast", "guest_house") or t in ("bed_and_breakfast", "guest_house"):
+        return "dormire", "bed and breakfast"
+    if cat in ("campground", "rv_park") or t in ("campground", "rv_park", "campsite"):
+        return "dormire", "campeggio"
+    if t in ("agriturismo", "farm_stay"):
+        return "dormire", "agriturismo"
     # Associazioni
     if t in ORG:
         tipo = tipo_associazione(nome, t)
@@ -210,7 +221,7 @@ def mappa(cat, t, nome=""):
 
 
 AREA = {"locale": "uscire", "negozio": "uscire", "azienda": "lavorare", "professionista": "lavorare", "artigiano": "lavorare", "impianto": "sport",
-        "animali": "vivere", "associazione": "comunita"}
+        "animali": "vivere", "associazione": "comunita", "dormire": "uscire"}
 
 
 def ultima_release():
@@ -287,6 +298,10 @@ def main():
             non_usate[k] = non_usate.get(k, 0) + 1
             continue
         indirizzo = ", ".join(v for v in [ind, loc] if v and v.strip()) or None
+        # Un indirizzo in un altro alfabeto (thai, cirillico…) vuol dire un luogo finito qui per errore
+        if indirizzo and re.search(r"[\u0370-\u03ff\u0400-\u04ff\u0590-\u06ff\u0e00-\u0e7f\u3040-\u30ff\u4e00-\u9fff]", indirizzo):
+            scartati["categoria non usata"] += 1
+            continue
         candidati.append({
             "id_esterno": oid, "nome": nome.strip()[:120], "categoria": m[0], "sottocategoria": m[1], "area": AREA[m[0]],
             "lat": round(lat, 7), "lng": round(lng, 7), "indirizzo": indirizzo[:200] if indirizzo else None,

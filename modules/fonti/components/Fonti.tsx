@@ -161,7 +161,7 @@ export default function Fonti() {
         </div>
         <select value={categoria} onChange={(e) => setCategoria(e.target.value)} aria-label="Categoria" className="h-11 w-fit rounded-xl border border-linea bg-superficie px-3 text-[15px]">
           <option value="">Tutte le categorie</option>
-          {["locale", "negozio", "azienda", "professionista", "artigiano", "impianto", "animali", "associazione"].map((c) => (
+          {["locale", "negozio", "azienda", "professionista", "artigiano", "impianto", "animali", "associazione", "dormire"].map((c) => (
             <option key={c} value={c}>{CATEGORIE[c] ?? c}{scheda === "nuovo" && rie?.nuovi_per_categoria[c] ? ` (${rie.nuovi_per_categoria[c]})` : ""}</option>
           ))}
         </select>

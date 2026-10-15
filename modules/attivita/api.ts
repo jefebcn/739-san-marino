@@ -5,7 +5,7 @@ import { CAMPI_SCHEDA, type Luogo } from "@/lib/data";
 // poi il titolare la aggiorna. Tutto passa dalle funzioni del database, che controllano chi può fare cosa.
 
 /** Le categorie di luoghi che sono attività private (come categoria_attivita() nel database) */
-export const CATEGORIE_ATTIVITA = new Set(["locale", "negozio", "carburante", "azienda", "professionista", "artigiano", "animali", "associazione"]);
+export const CATEGORIE_ATTIVITA = new Set(["locale", "negozio", "carburante", "azienda", "professionista", "artigiano", "animali", "associazione", "dormire"]);
 
 export type MiaAttivita = { id: string; luogo_id: string; nome: string; categoria: string; sottocategoria: string | null; stato: StatoRichiesta; piano: string; nota_redazione: string | null; creato_il: string };
 export type StatoRichiesta = "richiesta" | "approvata" | "rifiutata" | "revocata";
