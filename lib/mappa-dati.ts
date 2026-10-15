@@ -3,6 +3,7 @@
 // che danno gli stessi luoghi (senza indice spaziale né ricerca tollerante agli errori).
 import { supabaseBrowser } from "@/lib/supabase/browser";
 import { CAMPI_LUOGO, type Luogo } from "@/lib/data";
+import { aPagine } from "@/lib/a-pagine";
 
 /** Il minimo per disegnare un luogo sulla mappa e nell'elenco */
 export type PuntoMappa = {
@@ -44,7 +45,8 @@ export async function luoghiDelTerritorio(segnale: AbortSignal): Promise<{ punti
 export async function luoghiNelRiquadro([o, s, e, n]: Riquadro, segnale: AbortSignal): Promise<{ punti: PuntoMappa[]; completo: boolean }> {
   const db = supabaseBrowser();
   if (!senzaRpc) {
-    const { data, error } = await db.rpc("luoghi_mappa", { p_ovest: o, p_sud: s, p_est: e, p_nord: n, p_limite: LIMITE_RIQUADRO }).abortSignal(segnale);
+    // Al massimo 1000 righe per richiesta (Supabase): le altre a pagine
+    const { data, error } = await aPagine<PuntoMappa>((da, a) => db.rpc("luoghi_mappa", { p_ovest: o, p_sud: s, p_est: e, p_nord: n, p_limite: LIMITE_RIQUADRO }).order("nome").order("id").range(da, a).abortSignal(segnale), LIMITE_RIQUADRO);
     if (!error) {
       const punti = (data ?? []) as PuntoMappa[];
       return { punti, completo: punti.length < LIMITE_RIQUADRO };
@@ -52,9 +54,9 @@ export async function luoghiNelRiquadro([o, s, e, n]: Riquadro, segnale: AbortSi
     if (!manca(error)) throw new Error(error.message);
     senzaRpc = true;
   }
-  const { data, error } = await db.from("luoghi").select(CAMPI_PUNTO)
+  const { data, error } = await aPagine<PuntoMappa>((da, a) => db.from("luoghi").select(CAMPI_PUNTO)
     .gte("lng", o).lte("lng", e).gte("lat", s).lte("lat", n)
-    .order("nome").limit(LIMITE_RIQUADRO).abortSignal(segnale);
+    .order("nome").order("id").range(da, a).abortSignal(segnale), LIMITE_RIQUADRO);
   if (error) throw new Error(error.message);
   const punti = (data ?? []) as PuntoMappa[];
   return { punti, completo: punti.length < LIMITE_RIQUADRO };

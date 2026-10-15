@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
+import { aPagine } from "@/lib/a-pagine";
 
 // I luoghi del territorio per la mappa grande, con i campi minimi. Una risposta sola per tutti, in cache sulla CDN
 // di Vercel per 5 minuti (e servita ancora per un giorno mentre si rigenera): il telefono la scarica in parallelo
@@ -14,10 +15,11 @@ export async function GET() {
   let punti: unknown[] = [];
   if (db) {
     // Con la 0037 la funzione con l'indice spaziale; prima, gli stessi luoghi con i filtri normali
-    const r = await db.rpc("luoghi_mappa", { p_ovest: 12.39, p_sud: 43.88, p_est: 12.53, p_nord: 44.0, p_limite: LIMITE });
+    // Supabase dà al massimo 1000 righe per richiesta: si chiedono a pagine
+    const r = await aPagine<unknown>((da, a) => db.rpc("luoghi_mappa", { p_ovest: 12.39, p_sud: 43.88, p_est: 12.53, p_nord: 44.0, p_limite: LIMITE }).order("nome").order("id").range(da, a), LIMITE);
     if (!r.error) punti = r.data ?? [];
     else {
-      const q = await db.from("luoghi").select(CAMPI).gte("lng", 12.39).lte("lng", 12.53).gte("lat", 43.88).lte("lat", 44.0).order("nome").limit(LIMITE);
+      const q = await aPagine<unknown>((da, a) => db.from("luoghi").select(CAMPI).gte("lng", 12.39).lte("lng", 12.53).gte("lat", 43.88).lte("lat", 44.0).order("nome").order("id").range(da, a), LIMITE);
       punti = q.data ?? [];
     }
   }

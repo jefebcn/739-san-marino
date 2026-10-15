@@ -1,4 +1,5 @@
 import { supabase } from "./supabase";
+import { aPagine } from "./a-pagine";
 
 export type Castello = { id: number; slug: string; nome: string; colore: string; metri?: number };
 export type Luogo = {
@@ -105,9 +106,12 @@ export async function getEvento(id: string): Promise<Evento | null> {
 export async function getLuoghi(castelloId?: number): Promise<Luogo[]> {
   const db = supabase();
   if (!db) return [];
-  let q = db.from("luoghi").select(CAMPI_LUOGO).order("nome");
-  if (castelloId) q = q.eq("castello_id", castelloId);
-  const { data, error } = await q;
+  // Più di 1000 luoghi: a pagine (lib/a-pagine.ts). L'ordine per id a parità di nome tiene stabili le pagine
+  const { data, error } = await aPagine((da, a) => {
+    let q = db.from("luoghi").select(CAMPI_LUOGO).order("nome").order("id");
+    if (castelloId) q = q.eq("castello_id", castelloId);
+    return q.range(da, a);
+  });
   if (error) {
     console.error("luoghi", error.message);
     return [];
