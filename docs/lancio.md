@@ -25,6 +25,13 @@ Cosa deve fare Alex prima di aprire 739 a tutti (passo 1.8, 14/10/2026). In ordi
 - [x] Chiavi VAPID su Vercel messe da Alex il 14/10/2026; provata la catena completa (pg_cron, segreto, /api/notifiche: risposta 200). Non cambiarle più: chi ha acceso le notifiche dovrebbe riaccenderle.
 - [ ] Provarle su un iPhone (con 739 sulla schermata Home) e su un Android.
 
+## 4 bis. Luoghi nuovi da OpenStreetMap
+
+- [ ] Applicare `supabase/migrations/0033_negozi.sql` (contiene anche 0030, 0031, 0032): ristoranti e bar, poste, banche, distributori, scuole, chiese, negozi. Poi lanciare l'aggiornamento subito con `cron.schedule('osm-subito', …)` e toglierlo dopo 2 o 3 minuti con `cron.unschedule('osm-subito')`.
+- [ ] Mandare a Claude i nomi dei ristoranti importanti: quelli che OSM non ha si aggiungono con `/admin/importa`.
+- [ ] Per la Fase 1 mancano dati veri: Giunte di castello, associazioni, società sportive (CONS), orari delle messe. Vanno chiesti agli enti o dati da Alex.
+- [ ] Facoltativo: chiedere all'Ufficio del Turismo l'elenco dei locali e il calendario degli eventi (il loro sito non si può leggere in automatico).
+
 ## 5. Persone
 
 - [ ] Amministratori (vedono tutto):
@@ -37,9 +44,8 @@ Cosa deve fare Alex prima di aprire 739 a tutti (passo 1.8, 14/10/2026). In ordi
 
 ## 6. Dati di prova da togliere
 
-- [ ] I 2 eventi «Esempio · …» e i 3 luoghi «Posizione da verificare».
-- [ ] L'ufficio di esempio (comando in `0020_ufficio_esempio.sql`).
-- [ ] Lo speciale di prova (comando in `0027_speciale_di_prova.sql`).
+- [ ] I 2 eventi «Esempio · …», l'ufficio di esempio e lo speciale di prova: tutto in un colpo con `supabase/pulizia-prima-del-lancio.sql`, il giorno del lancio.
+- [ ] Piazza della Libertà, Prima Torre (Guaita) e stazione della funivia sono luoghi veri con «Posizione da verificare»: si controllano e si toglie l'etichetta (comando d'esempio in fondo allo stesso file).
 - [ ] Controllare alla fonte le schede «Da verificare» più viste (farmacie, parcheggi, funivia) e togliere l'etichetta.
 - [ ] Orari: funivia inserita fino al 31/12/2027, bus Rimini–San Marino fino al 21/3/2027.
 
