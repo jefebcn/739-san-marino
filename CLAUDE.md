@@ -169,7 +169,7 @@ Tabelle: `castelli` (i 9 castelli con colore), `profili`, `luoghi`, `eventi`, `c
 
 ## Prossimi passi
 
-Fase 0 (fondamenta, passi 0.1–0.10) pubblicata il 14/10/2026; Fase 1 (passi 1.1–1.8) il 14/10/2026, con dal catalogo poste, banche, carburante, scuole e chiese (OSM); della Fase 1 restano Giunte, associazioni, società sportive e orari delle messe, che vogliono dati veri da Alex o dagli enti. Fase 2 iniziata il 15/10/2026 con Mangiare e bere, Negozi e il profilo base delle attività (passo 2.1); quello che resta ad Alex prima del lancio è in `docs/lancio.md`. Si lavora per fasi come in `docs/piano.md`; la Fase 1 è il lancio.
+Fase 0 (fondamenta, passi 0.1–0.10) pubblicata il 14/10/2026; Fase 1 (passi 1.1–1.8) il 14/10/2026, con dal catalogo poste, banche, carburante, scuole e chiese (OSM); della Fase 1 restano Giunte, associazioni, società sportive e orari delle messe, che vogliono dati veri da Alex o dagli enti. Fase 2 iniziata il 15/10/2026 con Mangiare e bere, Negozi, il profilo base delle attività (passo 2.1) e 739 Pro (passo 2.2, migrazione 0035 da applicare); quello che resta ad Alex prima del lancio è in `docs/lancio.md`. Si lavora per fasi come in `docs/piano.md`; la Fase 1 è il lancio.
 
 1. Accesso con email e password fatto (`/profile`). Da fare in Supabase (Authentication → URL Configuration): Site URL `https://739-san-marino.vercel.app` e `https://739-san-marino.vercel.app/profile` tra i Redirect URL, altrimenti i link di conferma e di recupero password portano a localhost. Per l'uso reale serve un SMTP proprio: quello di Supabase invia pochissime email l'ora.
 2. Fatto (passo 1.2): check-in con QR e metri veri nella quota.
