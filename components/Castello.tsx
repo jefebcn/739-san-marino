@@ -36,11 +36,11 @@ export function useCastelloScelto() {
 }
 
 /** Griglia per scegliere il proprio castello (per i nuovi utenti). */
-export function ScegliCastello({ castelli }: { castelli: Castello[] }) {
+export function ScegliCastello({ castelli, fila }: { castelli: Castello[]; fila?: boolean }) {
   const scelto = useCastelloScelto();
   const ordinati = [...castelli].sort((a, b) => a.id - b.id);
   return (
-    <div className="scegli" role="group" aria-label="Scegli il tuo castello">
+    <div className={fila ? "scegli fila" : "scegli"} role="group" aria-label="Scegli il tuo castello">
       {ordinati.map((c) => (
         <button
           key={c.id}
@@ -52,7 +52,7 @@ export function ScegliCastello({ castelli }: { castelli: Castello[] }) {
             document.querySelector(".main")?.scrollTo({ top: 0, behavior: "smooth" });
           }}
         >
-          <EmblemaCastello c={c} className="size-14" />
+          <EmblemaCastello c={c} className={fila ? "size-12" : "size-14"} />
           {c.nome}
         </button>
       ))}

@@ -4,7 +4,7 @@ import { Icona, type NomeIcona } from "@/components/Icona";
 import { AREE } from "@/lib/aree";
 import Installa from "@/components/Installa";
 import { Completo } from "@/components/Logo";
-import Tano, { Vuoto } from "@/components/Tano";
+import Tano from "@/components/Tano";
 import { ScegliCastello } from "@/components/Castello";
 import { EmblemaCastello } from "@/components/LogoCastello";
 import { ProssimaPartenza } from "@/components/Partenze";
@@ -28,8 +28,8 @@ export const revalidate = 60;
 
 const fmt = new Intl.NumberFormat("it-IT");
 
-// La fila in alto porta alle cinque aree (lib/aree.ts)
-const CATEGORIE: { href: string; nome: string; icona: NomeIcona }[] = AREE.map((a) => ({ href: a.href, nome: a.nome, icona: a.icona }));
+// Le cinque aree (lib/aree.ts): per chi arriva con la riga che dice cosa contengono, per chi torna una fila di icone
+const CATEGORIE: { href: string; nome: string; icona: NomeIcona; descrizione: string; breve: string }[] = AREE.map((a) => ({ href: a.href, nome: a.nome, icona: a.icona, descrizione: a.descrizione, breve: a.breve }));
 
 const maiuscola = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
@@ -77,7 +77,7 @@ export default async function Home() {
       <section className="flex flex-col gap-4">
         <div className="flex items-end justify-between gap-4">
           <div className="min-w-0">
-            <h1 className="text-[30px] font-semibold leading-tight tracking-[-0.03em]">{saluto()}</h1>
+            <h1 className="text-[26px] font-semibold leading-tight tracking-[-0.03em] lg:text-[30px]">{saluto()}</h1>
             <p className="text-[15px] text-testo-2">{maiuscola(oggiLungo())}</p>
           </div>
           {meteo && tempo ? (
@@ -90,10 +90,49 @@ export default async function Home() {
             </Link>
           ) : null}
         </div>
-        <Link href="/cerca" className="flex h-12 items-center lg:hidden gap-3 rounded-xl bg-superficie px-4 text-[15px] text-testo-2 transition-colors hover:bg-superficie-2">
-          <Icona nome="cerca" size={20} />
-          Cerca eventi, luoghi e servizi
-        </Link>
+      </section>
+
+      {/* Chi arriva la prima volta capisce subito dov'è: cos'è 739, cosa trova nelle cinque aree, un'azione */}
+      <section className="per-nuovi flex flex-col gap-5 rounded-2xl bg-superficie p-5 text-testo lg:p-8">
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex min-w-0 flex-col">
+            {/* Sul telefono il marchio è già nella testata; su computer accompagna il titolo */}
+            <Completo etichetta="739 San Marino" className="mb-5 hidden h-20 w-auto self-start text-testo lg:block" />
+            <h2 className="text-[26px] font-semibold leading-[1.1] tracking-tight lg:text-[34px]">L&apos;app di San Marino</h2>
+            <p className="mt-2 max-w-[34ch] text-[15px] leading-relaxed text-testo-2 lg:max-w-[52ch] lg:text-[17px]">
+              Cosa succede oggi, i servizi aperti adesso, lo sport e i nove castelli: tutto in un posto solo, gratis.
+            </p>
+          </div>
+          <Tano posa="benvenuto" priority className="-mr-1 h-32 w-auto shrink-0 lg:mr-6 lg:h-48" />
+        </div>
+        <nav aria-label="Cosa trovi in 739" className="grid gap-2 lg:grid-cols-5">
+          {CATEGORIE.map((c) => (
+            <Link key={c.href} href={c.href} className="flex items-center gap-3 rounded-xl bg-fondo px-3 py-2.5 transition-colors hover:bg-superficie-2 lg:flex-col lg:items-start lg:gap-2 lg:p-4">
+              <span className="shrink-0 text-testo"><Icona nome={c.icona} size={30} /></span>
+              <span className="flex min-w-0 flex-col">
+                <span className="text-[15px] font-semibold">{c.nome}</span>
+                <span className="text-[13px] text-testo-2 lg:hidden">{c.breve}</span>
+                <span className="hidden text-[13px] text-testo-2 lg:line-clamp-2">{c.descrizione}</span>
+              </span>
+            </Link>
+          ))}
+        </nav>
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
+          <PrimaryButton href="/profile">Crea il tuo SMR ID</PrimaryButton>
+          <Link href="/guida" className="text-sm font-medium text-testo-2 hover:text-testo">Come funziona</Link>
+        </div>
+      </section>
+
+      <Link href="/cerca" className="-mt-2 flex h-12 items-center gap-3 rounded-xl bg-superficie px-4 text-[15px] text-testo-2 transition-colors hover:bg-superficie-2 lg:hidden">
+        <Icona nome="cerca" size={20} />
+        Cerca eventi, luoghi e servizi
+      </Link>
+
+      {/* Il castello, per chi non l'ha ancora scelto: una fila sola, non una griglia che riempie lo schermo */}
+      <section className="per-nuovi flex flex-col gap-3">
+        <Titolo>Qual è il tuo castello?</Titolo>
+        <p className="-mt-1 text-sm text-testo-2">Oggi ti mostra i suoi avvisi e la raccolta dei rifiuti. Lo cambi quando vuoi dal menu in alto.</p>
+        <ScegliCastello castelli={classifica} fila />
       </section>
 
       {/* Uno speciale in corso (Natale delle Meraviglie, Giornate Medievali…) sta in cima, sopra a tutto il resto */}
@@ -104,23 +143,6 @@ export default async function Home() {
 
       {/* Di mattina gli avvisi stanno dentro il Bollettino */}
       {mattina ? null : <AvvisiOggi avvisi={avvisi} castelli={classifica} />}
-
-      {/* Chi arriva la prima volta: il marchio, una frase, un'azione */}
-      <section className="per-nuovi flex flex-col gap-4 overflow-hidden rounded-2xl bg-superficie p-5 text-testo lg:flex-row-reverse lg:items-center lg:justify-between lg:gap-10 lg:px-8 lg:py-6">
-        {/* Il logo prende il colore del testo (bianco sul tema scuro, nero sul chiaro); accanto Tano dà il benvenuto */}
-        <div className="flex items-end justify-between gap-4 lg:gap-8">
-          <Completo etichetta="739 San Marino" className="mb-1 h-24 w-auto text-testo lg:h-32" />
-          <Tano posa="benvenuto" priority className="-mt-1 h-40 w-auto lg:h-48" />
-        </div>
-        <div className="flex flex-col">
-          <h2 className="max-w-[15ch] text-[26px] font-semibold leading-[1.1] tracking-tight lg:max-w-none lg:text-[32px]">Tutto San Marino, in un&apos;app</h2>
-          <p className="mt-2 max-w-[34ch] text-[15px] leading-relaxed text-testo-2 lg:max-w-[52ch]">Eventi, sport e servizi dei nove castelli, con la tua tessera digitale. Tano ti fa strada.</p>
-          <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-3">
-            <PrimaryButton href="/profile">Crea il tuo SMR ID</PrimaryButton>
-            <Link href="/guida" className="text-sm font-medium text-testo-2 hover:text-testo">Come funziona</Link>
-          </div>
-        </div>
-      </section>
 
       {/* Telefono: una colonna, nell'ordine dei numeri. Computer: il programma a sinistra, «Adesso», castelli e 112 a destra */}
       <div className="larga flex flex-col gap-7 lg:grid lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start lg:gap-10">
@@ -165,7 +187,7 @@ export default async function Home() {
               </Link>
             )}
           </div>
-          <div className="order-2 empty:hidden lg:hidden">
+          <div className="per-tornati order-2 empty:hidden lg:hidden">
             <nav aria-label="Aree" className="grid grid-cols-5 gap-x-1.5">
               {CATEGORIE.map((c) => (
                 <Link key={c.href} href={c.href} className="group flex flex-col items-center gap-1.5 text-center">
@@ -200,20 +222,17 @@ export default async function Home() {
           </div>
           <div className="order-6 empty:hidden">
             {partite.length && !altrePartite.length ? null : (
-              <section className="flex flex-col gap-3">
+              // Senza partite la riga vuota serve a chi torna; chi arriva ha già abbastanza da leggere
+              <section className={`flex flex-col gap-3 ${partite.length ? "" : "per-tornati"}`}>
                 <Titolo href="/sport">Partite</Titolo>
                 {altrePartite.length === 0 ? (
-                  <>
-                    {/* Per chi arriva la prima volta Tano è già nel benvenuto: qui solo la riga */}
-                    <Vuoto className="per-tornati" titolo="Oggi non ci sono partite: organizzane una" testo="Ci pensa 739 a fare squadre pari." azione={{ href: "/sport?nuova=1", testo: "Organizza una partita" }} />
-                    <Link href="/sport?nuova=1" className="per-nuovi flex items-center gap-4 rounded-2xl border border-dashed border-linea p-4 transition-colors hover:bg-superficie">
-                      <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-accento-tenue text-accento"><Icona nome="partite" size={28} /></span>
-                      <span className="flex flex-col">
-                        <span className="text-[15px] font-semibold">Nessuna partita in programma</span>
-                        <span className="text-[13px] text-testo-2">Organizzane una: ci pensa 739 a fare squadre pari.</span>
-                      </span>
-                    </Link>
-                  </>
+                  <Link href="/sport?nuova=1" className="flex items-center gap-4 rounded-2xl border border-dashed border-linea p-4 transition-colors hover:bg-superficie">
+                    <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-accento-tenue text-accento"><Icona nome="partite" size={28} /></span>
+                    <span className="flex flex-col">
+                      <span className="text-[15px] font-semibold">Nessuna partita in programma</span>
+                      <span className="text-[13px] text-testo-2">Organizzane una: ci pensa 739 a fare squadre pari.</span>
+                    </span>
+                  </Link>
                 ) : (
                   <ul className="divide-y divide-linea overflow-hidden rounded-2xl bg-superficie">
                     {altrePartite.slice(0, 4).map((p) => (
@@ -240,13 +259,6 @@ export default async function Home() {
           </div>
         </div>
         <aside className="contents lg:sticky lg:top-0 lg:flex lg:flex-col lg:gap-9">
-          <div className="per-nuovi order-3 empty:hidden">
-            <section className="per-nuovi flex flex-col gap-3">
-              <Titolo>Scegli il tuo castello</Titolo>
-              <p className="-mt-1 text-sm text-testo-2">Dove vivi o quello che senti tuo. Lo cambi quando vuoi dal menu in alto.</p>
-              <ScegliCastello castelli={classifica} />
-            </section>
-          </div>
           <div className="order-4 empty:hidden">
             {mattina ? null : (
               <section className="flex flex-col gap-3">
@@ -278,7 +290,8 @@ export default async function Home() {
             )}
           </div>
           <div className="order-7 empty:hidden">
-            {podio.length === 3 ? (
+            {/* Senza metri la classifica è tutta a zero: non dice niente */}
+            {podio.length === 3 && podio.some((c) => (c.metri ?? 0) > 0) ? (
               <section className="flex flex-col gap-3">
                 <Titolo href="/castelli">Castelli in vetta</Titolo>
                 <div className="podio">

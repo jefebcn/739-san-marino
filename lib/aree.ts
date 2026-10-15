@@ -25,6 +25,8 @@ export type Area = {
   slug: SlugArea;
   nome: string;
   descrizione: string;
+  /** Cosa c'è, in poche parole: la riga sotto il nome in Oggi, per chi arriva */
+  breve: string;
   icona: NomeIcona;
   href: string;
   sezioni: Sezione[];
@@ -35,6 +37,7 @@ export const AREE: Area[] = [
     slug: "vivere",
     nome: "Vivere",
     descrizione: "Servizi, uffici, salute, trasporti: quello che serve ogni giorno.",
+    breve: "Farmacie, uffici, bus e parcheggi",
     icona: "vivere",
     href: "/vivere",
     sezioni: [
@@ -55,6 +58,7 @@ export const AREE: Area[] = [
     slug: "uscire",
     nome: "Uscire",
     descrizione: "Eventi, posti da vedere, dove mangiare e dormire.",
+    breve: "Eventi, locali, negozi e musei",
     icona: "uscire",
     href: "/uscire",
     sezioni: [
@@ -71,6 +75,7 @@ export const AREE: Area[] = [
     slug: "sport",
     nome: "Sport",
     descrizione: "Partite aperte, rating, classifiche e impianti.",
+    breve: "Partite, tornei e impianti",
     icona: "sport",
     href: "/sport",
     sezioni: [
@@ -84,6 +89,7 @@ export const AREE: Area[] = [
     slug: "comunita",
     nome: "Comunità",
     descrizione: "I 9 castelli, associazioni, volontariato e chiese.",
+    breve: "Castelli, associazioni e chiese",
     icona: "comunita",
     href: "/comunita",
     sezioni: [
@@ -99,6 +105,7 @@ export const AREE: Area[] = [
     slug: "lavorare",
     nome: "Lavorare",
     descrizione: "Aziende, professionisti, offerte di lavoro e bandi.",
+    breve: "Aziende, studi e artigiani",
     icona: "lavorare",
     href: "/lavorare",
     sezioni: [

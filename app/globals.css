@@ -416,6 +416,13 @@ html[data-utente="tornato"] .per-nuovi { display: none !important; }
 .scegli { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 .scegli button { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; padding: 12px 10px; min-height: 76px; border-radius: 14px; border: 1.5px solid var(--linea); background: var(--sfondo); font-size: 14px; font-weight: 600; text-align: left; line-height: 1.2; cursor: pointer; }
 .scegli button[aria-pressed="true"] { border-color: var(--testo); background: var(--superficie); }
+/* In Oggi, per chi arriva: i nove castelli su una fila che scorre (su computer tutti in riga) */
+.scegli.fila { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: var(--lato); margin-inline: calc(-1 * var(--lato)); padding: 0 var(--lato) 2px; scrollbar-width: none; }
+.scegli.fila button { flex: 0 0 auto; width: 96px; min-height: 0; align-items: center; text-align: center; font-size: 13px; scroll-snap-align: start; }
+@media (min-width: 1024px) {
+  .scegli.fila { display: grid; grid-template-columns: repeat(9, minmax(0, 1fr)); margin-inline: 0; padding: 0; overflow: visible; }
+  .scegli.fila button { width: auto; }
+}
 
 .mio-castello { border: 1px solid var(--linea); border-radius: 20px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
 .stemma { flex: none; width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center; font-family: var(--mono); font-weight: 500; font-size: 19px; letter-spacing: -0.04em; }
