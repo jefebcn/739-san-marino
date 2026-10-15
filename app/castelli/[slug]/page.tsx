@@ -4,6 +4,7 @@ import { getClassifica, getEventi, getLuoghi, CATEGORIE } from "@/lib/data";
 import EventoRiga from "@/components/EventoRiga";
 import { Icona } from "@/components/Icona";
 import { LogoCastello, haLogo } from "@/components/LogoCastello";
+import { ritornoDiCategoria } from "@/lib/aree";
 
 export const revalidate = 60;
 
@@ -30,6 +31,12 @@ export default async function Castello({ params }: Props) {
   if (!c) notFound();
 
   const [eventi, luoghi] = await Promise.all([getEventi(20, c.id), getLuoghi(c.id)]);
+  // La Giunta del castello (dati del portale gov.sm, arrivati dalla redazione)
+  const giunta = luoghi.find((l) => l.categoria === "ufficio" && l.sottocategoria === "giunta di castello");
+  // I luoghi del castello per tipo, con il numero: un elenco di centinaia di nomi non serve a nessuno
+  const perCategoria = Object.entries(
+    luoghi.filter((l) => l !== giunta).reduce<Record<string, number>>((acc, l) => ({ ...acc, [l.categoria]: (acc[l.categoria] ?? 0) + 1 }), {}),
+  ).sort((a, b) => b[1] - a[1]);
 
   return (
     <>
@@ -52,6 +59,31 @@ export default async function Castello({ params }: Props) {
         </div>
       </section>
 
+      {giunta ? (
+        <section className="flex flex-col gap-3">
+          <h2 className="text-[19px] font-semibold tracking-tight">La Giunta di castello</h2>
+          <div className="flex flex-col gap-3 rounded-2xl bg-superficie p-4">
+            {giunta.descrizione ? <p className="text-[15px] leading-relaxed">{giunta.descrizione}</p> : null}
+            {giunta.indirizzo ? <p className="text-[13px] text-testo-2">{giunta.indirizzo}</p> : null}
+            <div className="flex flex-wrap gap-2">
+              {giunta.telefono ? (
+                <a href={`tel:${giunta.telefono.replace(/[^+0-9]/g, "")}`} className="flex h-10 items-center gap-2 rounded-xl bg-fondo px-3 text-sm font-semibold transition-colors hover:bg-superficie-2">
+                  <Icona nome="telefono" size={16} /> Chiama
+                </a>
+              ) : null}
+              {giunta.email ? (
+                <a href={`mailto:${giunta.email}`} className="flex h-10 items-center gap-2 rounded-xl bg-fondo px-3 text-sm font-semibold transition-colors hover:bg-superficie-2">
+                  <Icona nome="email" size={16} /> Scrivi
+                </a>
+              ) : null}
+              <Link prefetch={false} href={`/luoghi/${giunta.id}`} className="flex h-10 items-center gap-1 px-2 text-sm font-semibold text-accento">
+                La scheda <Icona nome="avanti" size={16} />
+              </Link>
+            </div>
+          </div>
+        </section>
+      ) : null}
+
       <section className="sezione">
         <div className="sezione-head"><h2>Eventi a {c.nome}</h2></div>
         {eventi.length === 0 ? (
@@ -63,20 +95,20 @@ export default async function Castello({ params }: Props) {
 
       <section className="sezione">
         <div className="sezione-head"><h2>Luoghi</h2><Link prefetch={false} href="/mappa">Mappa</Link></div>
-        {luoghi.length === 0 ? (
+        {perCategoria.length === 0 ? (
           <p className="vuoto">Nessun luogo segnato in questo castello per ora.</p>
         ) : (
-          <div className="lista">
-            {luoghi.map((l) => (
-              <Link key={l.id} href={`/luoghi/${l.id}`} className="luogo premibile">
-                <Icona nome="pin" size={20} />
-                <div style={{ minWidth: 0 }}>
-                  <h3>{l.nome}</h3>
-                  <div className="meta">{CATEGORIE[l.categoria] ?? l.categoria}</div>
-                </div>
-              </Link>
+          <ul className="divide-y divide-linea rounded-2xl bg-superficie">
+            {perCategoria.map(([cat, n]) => (
+              <li key={cat}>
+                <Link prefetch={false} href={ritornoDiCategoria(cat).href} className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-superficie-2">
+                  <span className="flex-1 text-[15px] font-medium">{CATEGORIE[cat] ?? cat}</span>
+                  <span className="font-mono text-sm font-medium text-testo-2">{n}</span>
+                  <span className="text-testo-2"><Icona nome="avanti" size={16} /></span>
+                </Link>
+              </li>
             ))}
-          </div>
+          </ul>
         )}
       </section>
     </>

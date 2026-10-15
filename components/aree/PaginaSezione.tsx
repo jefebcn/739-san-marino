@@ -22,7 +22,7 @@ const PLURALI: Record<string, string> = {
   meccanico: "Meccanici e carrozzieri", parrucchiere: "Parrucchieri ed estetisti", sartoria: "Sartorie", giardiniere: "Giardinieri",
   veterinario: "Veterinari", toelettatura: "Toelettature", rifugio: "Rifugi e canili", addestramento: "Centri cinofili", pensione: "Pensioni per animali",
   culturale: "Culturali", volontariato: "Volontariato", sportiva: "Società sportive e federazioni", ricreativa: "Circoli e ricreative",
-  religiosa: "Religiose", "di categoria": "Di categoria e sindacati",
+  religiosa: "Religiose", "di categoria": "Di categoria e sindacati", "giunta di castello": "Giunte di castello",
   "nido e infanzia": "Nidi e scuole dell'infanzia", elementare: "Elementari", "media e superiore": "Medie e superiori", università: "Università",
 };
 // Tipi che hanno un ordine naturale (le scuole per età); gli altri vanno dal gruppo più numeroso
