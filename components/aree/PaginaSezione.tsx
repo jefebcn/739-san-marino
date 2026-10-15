@@ -5,6 +5,7 @@ import TestaPagina from "@/components/Indietro";
 import { Icona } from "@/components/Icona";
 import { CATEGORIE, getLuoghi, getOfferteInCorso, type Luogo } from "@/lib/data";
 import { area as trovaArea, sezione as trovaSezione } from "@/lib/aree";
+import { eCategoriaNuova } from "@/modules/attivita/tipi";
 
 const PLURALI: Record<string, string> = {
   ristorante: "Ristoranti", pizzeria: "Pizzerie", piadineria: "Piadinerie", "cibo veloce": "Cibo veloce",
@@ -13,6 +14,12 @@ const PLURALI: Record<string, string> = {
   abbigliamento: "Abbigliamento e pelletteria", profumeria: "Profumerie e ottici", tabaccheria: "Tabacchi e giornali",
   "centro commerciale": "Centri commerciali e outlet", casa: "Casa e fai da te", elettronica: "Elettronica e foto",
   "libri e giochi": "Libri, musica e giochi", auto: "Auto e moto", servizi: "Servizi", negozio: "Altri negozi",
+  informatica: "Informatica e web", edilizia: "Edilizia e immobili", industria: "Industria e produzione", commercio: "Commercio e distribuzione",
+  finanza: "Finanza e assicurazioni", turismo: "Turismo e ospitalità", comunicazione: "Comunicazione e marketing",
+  commercialista: "Commercialisti", avvocato: "Avvocati", notaio: "Notai", architetto: "Architetti", ingegnere: "Ingegneri", geometra: "Geometri",
+  "agenzia immobiliare": "Agenzie immobiliari", "studio medico": "Studi medici", consulente: "Consulenti",
+  idraulico: "Idraulici", elettricista: "Elettricisti", falegname: "Falegnami", edile: "Imprese edili", fabbro: "Fabbri", imbianchino: "Imbianchini",
+  meccanico: "Meccanici e carrozzieri", parrucchiere: "Parrucchieri ed estetisti", sartoria: "Sartorie", giardiniere: "Giardinieri",
   "nido e infanzia": "Nidi e scuole dell'infanzia", elementare: "Elementari", "media e superiore": "Medie e superiori", università: "Università",
 };
 // Tipi che hanno un ordine naturale (le scuole per età); gli altri vanno dal gruppo più numeroso
@@ -41,6 +48,8 @@ export default async function PaginaSezione({ area, sezione, prima, vuoto }: { a
       .sort((a, b) => (ULTIMI.has(a.categoria) ? 1 : ULTIMI.has(b.categoria) ? -1 : posto(a.categoria) >= 0 && posto(b.categoria) >= 0 ? posto(a.categoria) - posto(b.categoria) : b.luoghi.length - a.luoghi.length));
   }
   const totale = gruppi.reduce((n, g) => n + g.luoghi.length, 0);
+  // Sezioni di attività private: chi non trova la sua può aggiungerla (migrazione 0036)
+  const aggiungi = s.categorie.find(eCategoriaNuova);
 
   return (
     <>
@@ -71,6 +80,17 @@ export default async function PaginaSezione({ area, sezione, prima, vuoto }: { a
           </section>
         ))
       )}
+
+      {aggiungi ? (
+        <Link href={`/attivita/aggiungi?categoria=${aggiungi}`} className="flex items-center gap-3 rounded-2xl bg-superficie px-4 py-3.5 transition-colors hover:bg-superficie-2 lg:max-w-[var(--colonna)]">
+          <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-accento-tenue text-accento"><Icona nome="piu" size={18} piatta /></span>
+          <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+            <span className="text-[15px] font-semibold">{totale ? "La tua attività non c'è?" : "È la tua attività?"}</span>
+            <span className="text-[13px] text-testo-2">Aggiungila gratis: la redazione verifica e poi la aggiorni tu.</span>
+          </span>
+          <span className="shrink-0 text-testo-2"><Icona nome="avanti" size={18} /></span>
+        </Link>
+      ) : null}
 
       {s.categorie.some((c) => tutti.some((l) => l.categoria === c && l.fonte === "osm")) ? (
         <p className="fonte">

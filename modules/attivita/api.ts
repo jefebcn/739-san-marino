@@ -5,7 +5,7 @@ import { CAMPI_SCHEDA, type Luogo } from "@/lib/data";
 // poi il titolare la aggiorna. Tutto passa dalle funzioni del database, che controllano chi può fare cosa.
 
 /** Le categorie di luoghi che sono attività private (come categoria_attivita() nel database) */
-export const CATEGORIE_ATTIVITA = new Set(["locale", "negozio", "carburante"]);
+export const CATEGORIE_ATTIVITA = new Set(["locale", "negozio", "carburante", "azienda", "professionista", "artigiano"]);
 
 export type MiaAttivita = { id: string; luogo_id: string; nome: string; categoria: string; sottocategoria: string | null; stato: StatoRichiesta; piano: string; nota_redazione: string | null; creato_il: string };
 export type StatoRichiesta = "richiesta" | "approvata" | "rifiutata" | "revocata";
@@ -103,4 +103,38 @@ export async function impostaPro(luogo: string, fino: string | null) {
 export async function elencoPro() {
   const { data, error } = await db().rpc("elenco_pro");
   return { pro: new Map(((data ?? []) as { luogo_id: string; fino: string }[]).map((p) => [p.luogo_id, p.fino])), errore: error?.code === "PGRST202" ? null : messaggio(error) };
+}
+
+// ——— Aggiungi la tua attività (migrazione 0036): il titolare propone una scheda nuova, la redazione la crea ———
+
+export type NuovaAttivita = {
+  nome: string; categoria: string; sottocategoria: string; castello_id: string; indirizzo: string; lat: number | null; lng: number | null;
+  descrizione: string; telefono: string; email: string; sito: string; chi: string; telefono_verifica: string; nota: string;
+};
+export type MiaProposta = { id: string; nome: string; categoria: string; sottocategoria: string; stato: "richiesta" | "rifiutata"; nota_redazione: string | null; creato_il: string };
+export type Proposta = {
+  id: string; nome: string; categoria: string; sottocategoria: string; castello_id: number | null; indirizzo: string; lat: number; lng: number;
+  descrizione: string | null; telefono: string | null; email_attivita: string | null; sito: string | null; chi: string; telefono_verifica: string;
+  nota: string | null; email: string | null; stato: "richiesta" | "approvata" | "rifiutata"; nota_redazione: string | null; luogo_id: string | null; creato_il: string;
+};
+
+export async function proponiAttivita(dati: NuovaAttivita) {
+  const { error } = await db().rpc("proponi_attivita", { p: dati });
+  return { errore: error?.code === "PGRST202" ? "Questa funzione non è ancora attiva nel database (migrazione 0036)." : messaggio(error) };
+}
+
+export async function mieProposte() {
+  const { data, error } = await db().rpc("mie_proposte_attivita");
+  // Prima della migrazione 0036 la funzione non c'è: nessuna proposta
+  return { proposte: (data ?? []) as MiaProposta[], errore: error?.code === "PGRST202" ? null : messaggio(error) };
+}
+
+export async function proposteAttivita(stato: Proposta["stato"]) {
+  const { data, error } = await db().rpc("proposte_attivita", { p_stato: stato });
+  return { proposte: (data ?? []) as Proposta[], errore: error?.code === "PGRST202" ? null : messaggio(error) };
+}
+
+export async function decidiProposta(id: string, stato: "approvata" | "rifiutata", nota: string) {
+  const { data, error } = await db().rpc("decidi_proposta_attivita", { p_id: id, p_stato: stato, p_nota: nota || null });
+  return { luogo: (data as string | null) ?? null, errore: messaggio(error) };
 }

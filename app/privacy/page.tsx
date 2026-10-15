@@ -34,7 +34,7 @@ Il titolare ha sede a Malta, nell'Unione europea: la regola di riferimento è il
 
 **Notifiche.** Se le accendi salviamo l'indirizzo tecnico che il tuo telefono ci dà per riceverle, le notifiche scelte (Bollettino, Weekend) e il giorno dell'ultimo invio. Se sei entrato con l'SMR ID colleghiamo l'iscrizione al tuo account. Spegnendo entrambi gli interruttori l'iscrizione viene cancellata.
 
-**Titolari di attività.** Se chiedi di gestire la scheda del tuo locale o negozio salviamo chi sei e che ruolo hai, un telefono per la verifica e la nota che scrivi: li vede solo la redazione di 739 e il telefono non compare nella scheda. Quello che scrivi nella scheda (descrizione, contatti, orari, foto) invece è pubblico.
+**Titolari di attività.** Se chiedi di gestire la scheda della tua attività, o ne proponi una nuova, salviamo chi sei e che ruolo hai, un telefono per la verifica e la nota che scrivi: li vede solo la redazione di 739 e il telefono non compare nella scheda. Quello che scrivi nella scheda (descrizione, contatti, orari, foto) invece è pubblico.
 
 **Numeri delle schede delle attività.** Quando apri la scheda di un locale, un negozio o un distributore, o tocchi Chiama, Indicazioni, sito, email, Menu o Prenota, aggiungiamo uno al totale di quel giorno per quella scheda. Non salviamo chi sei, né il tuo indirizzo IP, né l'ora: il titolare con il piano Pro vede solo i totali.
 

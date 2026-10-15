@@ -26,11 +26,11 @@ Quando lo approvi, se in 739 c'è già un luogo con lo stesso nome nello stesso 
 | Campo | Obbligatorio | Cosa contiene |
 |---|---|---|
 | `nome` | sì | Nome del luogo |
-| `categoria` | sì | `luogo`, `parcheggio`, `farmacia`, `impianto`, `trasporti`, `locale`, `servizio`, `cultura`, `panorama`, `bagni`, `acqua`, `ricarica`, `ufficio`, `salute`, `posta`, `banca`, `carburante`, `scuola`, `chiesa`, `negozio` (le ultime sei dopo la migrazione 0033) |
+| `categoria` | sì | `luogo`, `parcheggio`, `farmacia`, `impianto`, `trasporti`, `locale`, `servizio`, `cultura`, `panorama`, `bagni`, `acqua`, `ricarica`, `ufficio`, `salute`, `posta`, `banca`, `carburante`, `scuola`, `chiesa`, `negozio` (le ultime sei dopo la migrazione 0033), `azienda`, `professionista`, `artigiano` (dopo la 0036) |
 | `lat`, `lng` | per i luoghi nuovi | Coordinate, devono cadere a San Marino |
 | `castello` | no | Nome o slug del castello |
 | `area` | no | `vivere`, `uscire`, `sport`, `comunita`, `lavorare` |
-| `sottocategoria` | no | Testo libero, es. «Anagrafe». Per i locali uno di: `ristorante`, `pizzeria`, `piadineria`, `cibo veloce`, `bar`, `gelateria`, `pub` (così finiscono nel gruppo giusto di «Mangiare e bere» e hanno l'icona giusta sulla mappa) |
+| `sottocategoria` | no | Testo libero, es. «Anagrafe». Per i locali uno di: `ristorante`, `pizzeria`, `piadineria`, `cibo veloce`, `bar`, `gelateria`, `pub` (così finiscono nel gruppo giusto di «Mangiare e bere» e hanno l'icona giusta sulla mappa). Per aziende, professionisti e artigiani i tipi sono quelli di `modules/attivita/tipi.ts` |
 | `descrizione`, `indirizzo`, `telefono`, `email`, `sito` | no | |
 | `orari` | no | Orari in testo, come li legge una persona |
 | `orari_settimana` | no | Orari per calcolare «aperto adesso»: `{"1": [["08:00","13:00"]], …}`, 1 = lunedì, 7 = domenica, più fasce per giorno |

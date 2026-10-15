@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { Icona } from "@/components/Icona";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import { useSessione } from "@/modules/core/store";
-import { mieAttivita, type MiaAttivita } from "../api";
+import { mieAttivita, mieProposte, type MiaAttivita, type MiaProposta } from "../api";
 
 const STATI: Record<MiaAttivita["stato"], string> = {
   richiesta: "In verifica dalla redazione",
@@ -19,6 +19,7 @@ export default function MieAttivita() {
   const { stato } = useSessione();
   const [lista, setLista] = useState<MiaAttivita[] | null>(null);
   const [errore, setErrore] = useState<string | null>(null);
+  const [proposte, setProposte] = useState<MiaProposta[]>([]);
 
   useEffect(() => {
     if (stato !== "connesso") return;
@@ -26,6 +27,7 @@ export default function MieAttivita() {
       setLista(r.attivita);
       setErrore(r.errore);
     });
+    mieProposte().then((r) => setProposte(r.proposte));
   }, [stato]);
 
   if (stato === "caricamento" || (stato === "connesso" && !lista && !errore)) {
@@ -40,34 +42,57 @@ export default function MieAttivita() {
     );
   }
   if (errore) return <p role="alert" className="rounded-xl bg-segnale/12 px-4 py-3 text-sm text-segnale">{errore}</p>;
-  if (!lista?.length) {
+  if (!lista?.length && !proposte.length) {
     return (
       <div className="flex flex-col gap-3 rounded-2xl bg-superficie p-5">
         <p className="text-[15px] leading-relaxed">Non gestisci ancora nessuna scheda.</p>
-        <p className="text-sm leading-relaxed text-testo-2">Cerca il tuo locale o negozio in 739, apri la scheda e in fondo tocca «È la tua attività?».</p>
-        <PrimaryButton href="/uscire/mangiare" variante="secondario" className="w-fit">Cerca la tua attività</PrimaryButton>
+        <p className="text-sm leading-relaxed text-testo-2">Se la tua attività è già in 739, apri la scheda e in fondo tocca «È la tua attività?». Se non c&apos;è, aggiungila: è gratis.</p>
+        <div className="flex flex-wrap gap-2">
+          <PrimaryButton href="/attivita/aggiungi" className="w-fit">Aggiungi la tua attività</PrimaryButton>
+          <PrimaryButton href="/cerca" variante="secondario" className="w-fit">Cerca in 739</PrimaryButton>
+        </div>
       </div>
     );
   }
 
   return (
-    <ul className="divide-y divide-linea overflow-hidden rounded-2xl bg-superficie">
-      {lista.map((a) => (
-        <li key={a.id} className="flex items-center gap-3 px-4 py-3.5">
-          <Link href={`/luoghi/${a.luogo_id}`} className="flex min-w-0 flex-1 flex-col gap-0.5">
-            <span className="truncate text-[15px] font-semibold">{a.nome}</span>
-            <span className={`text-[13px] ${a.stato === "approvata" ? "text-accento" : "text-testo-2"}`}>
-              {STATI[a.stato]}
-              {a.nota_redazione && a.stato !== "approvata" ? `: ${a.nota_redazione}` : ""}
-            </span>
-          </Link>
-          {a.stato === "approvata" ? (
-            <Link href={`/profile/attivita/${a.luogo_id}`} aria-label={`Modifica ${a.nome}`} className="grid size-10 shrink-0 place-items-center rounded-xl bg-fondo text-testo transition-colors hover:bg-superficie-2">
-              <Icona nome="modifica" size={18} />
-            </Link>
-          ) : null}
-        </li>
-      ))}
-    </ul>
+    <div className="flex flex-col gap-4">
+      {lista?.length ? (
+        <ul className="divide-y divide-linea overflow-hidden rounded-2xl bg-superficie">
+          {lista.map((a) => (
+            <li key={a.id} className="flex items-center gap-3 px-4 py-3.5">
+              <Link href={`/luoghi/${a.luogo_id}`} className="flex min-w-0 flex-1 flex-col gap-0.5">
+                <span className="truncate text-[15px] font-semibold">{a.nome}</span>
+                <span className={`text-[13px] ${a.stato === "approvata" ? "text-accento" : "text-testo-2"}`}>
+                  {STATI[a.stato]}
+                  {a.nota_redazione && a.stato !== "approvata" ? `: ${a.nota_redazione}` : ""}
+                </span>
+              </Link>
+              {a.stato === "approvata" ? (
+                <Link href={`/profile/attivita/${a.luogo_id}`} aria-label={`Modifica ${a.nome}`} className="grid size-10 shrink-0 place-items-center rounded-xl bg-fondo text-testo transition-colors hover:bg-superficie-2">
+                  <Icona nome="modifica" size={18} />
+                </Link>
+              ) : null}
+            </li>
+          ))}
+        </ul>
+      ) : null}
+      {proposte.length ? (
+        <section className="flex flex-col gap-2" aria-labelledby="titolo-proposte">
+          <h2 id="titolo-proposte" className="text-[17px] font-semibold tracking-tight">Schede proposte</h2>
+          <ul className="divide-y divide-linea overflow-hidden rounded-2xl bg-superficie">
+            {proposte.map((p) => (
+              <li key={p.id} className="flex flex-col gap-0.5 px-4 py-3.5">
+                <span className="truncate text-[15px] font-semibold">{p.nome}</span>
+                <span className="text-[13px] text-testo-2">
+                  {p.stato === "richiesta" ? "In verifica dalla redazione" : `Non approvata${p.nota_redazione ? `: ${p.nota_redazione}` : ""}`}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+      <PrimaryButton href="/attivita/aggiungi" variante="secondario" className="w-fit">Aggiungi un&apos;altra attività</PrimaryButton>
+    </div>
   );
 }

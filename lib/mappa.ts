@@ -24,6 +24,9 @@ export const COLORI: Record<string, string> = {
   scuola: "#5C6BC0",
   chiesa: "#8D6E63",
   negozio: "#8E6C8A",
+  azienda: "#455A64",
+  professionista: "#4E5D8C",
+  artigiano: "#8D6E4F",
 };
 
 /** Icona del segnaposto per categoria (sempre Phosphor, bianca sul colore della categoria) */
@@ -49,6 +52,9 @@ export const ICONE_CATEGORIA: Record<string, NomeIcona> = {
   scuola: "scuola",
   chiesa: "chiese",
   negozio: "negozi",
+  azienda: "business",
+  professionista: "professionisti",
+  artigiano: "artigiani",
 };
 
 /** Per i locali l'icona dice che posto è */

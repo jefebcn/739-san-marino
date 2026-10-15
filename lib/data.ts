@@ -276,6 +276,9 @@ export const CATEGORIE: Record<string, string> = {
   scuola: "Scuole",
   chiesa: "Chiese",
   negozio: "Negozi",
+  azienda: "Aziende",
+  professionista: "Professionisti",
+  artigiano: "Artigiani",
 };
 
 /** Come si legge il tipo di un luogo nella sua scheda, quando non basta la parola della sottocategoria */
@@ -284,4 +287,18 @@ export const TIPI_LEGGIBILI: Record<string, string> = {
   servizi: "Servizi",
   auto: "Auto e moto",
   "libri e giochi": "Libri, musica e giochi",
+  // Lavorare (migrazione 0036)
+  informatica: "Informatica e web",
+  edilizia: "Edilizia e immobili",
+  industria: "Industria e produzione",
+  commercio: "Commercio e distribuzione",
+  finanza: "Finanza e assicurazioni",
+  turismo: "Turismo e ospitalità",
+  comunicazione: "Comunicazione e marketing",
+  edile: "Impresa edile",
+  meccanico: "Meccanico e carrozziere",
+  parrucchiere: "Parrucchiere ed estetista",
 };
+
+/** Il nome di una categoria per una sola scheda, quando il tipo è «altro» */
+export const CATEGORIA_SINGOLA: Record<string, string> = { azienda: "Azienda", professionista: "Studio professionale", artigiano: "Artigiano" };

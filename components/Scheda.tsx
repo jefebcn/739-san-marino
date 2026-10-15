@@ -3,12 +3,12 @@ import type { ReactNode } from "react";
 import { Icona, type NomeIcona } from "./Icona";
 import StatoApertura from "./StatoApertura";
 import MappaPunto from "./MappaPunto";
-import { CATEGORIE, TIPI_LEGGIBILI, linkIndicazioni, type Castello, type DatiPro, type Luogo } from "@/lib/data";
+import { CATEGORIA_SINGOLA, CATEGORIE, TIPI_LEGGIBILI, linkIndicazioni, type Castello, type DatiPro, type Luogo } from "@/lib/data";
 import Condividi from "./Condividi";
 
 // Le attività private, come CATEGORIE_ATTIVITA in modules/attivita/api.ts
-const ATTIVITA = new Set(["locale", "negozio", "carburante"]);
-const SOLO_TIPO = new Set(["locale", "scuola", "chiesa", "banca", "negozio"]);
+const ATTIVITA = new Set(["locale", "negozio", "carburante", "azienda", "professionista", "artigiano"]);
+const SOLO_TIPO = new Set(["locale", "scuola", "chiesa", "banca", "negozio", "azienda", "professionista", "artigiano"]);
 
 const giornoBreve = new Intl.DateTimeFormat("it-IT", { day: "numeric", month: "long", timeZone: "Europe/San_Marino" });
 const giornoLungo = new Intl.DateTimeFormat("it-IT", { day: "numeric", month: "long", year: "numeric", timeZone: "Europe/San_Marino" });
@@ -54,7 +54,7 @@ export default function Scheda({ l, castello, azioni, gestito = false, pro = nul
           <h1 className="text-[28px] font-semibold leading-tight tracking-[-0.03em]">{l.nome}</h1>
           <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-testo-2">
             {/* Locali, scuole, chiese e bancomat: basta il tipo («Pizzeria», «Elementare»); per gli altri luoghi categoria e tipo */}
-            <span>{l.sottocategoria ? (SOLO_TIPO.has(l.categoria) ? TIPI_LEGGIBILI[l.sottocategoria] ?? l.sottocategoria[0].toUpperCase() + l.sottocategoria.slice(1) : `${categoria}, ${l.sottocategoria}`) : categoria}</span>
+            <span>{l.sottocategoria === "altro" && CATEGORIA_SINGOLA[l.categoria] ? CATEGORIA_SINGOLA[l.categoria] : l.sottocategoria ? (SOLO_TIPO.has(l.categoria) ? TIPI_LEGGIBILI[l.sottocategoria] ?? l.sottocategoria[0].toUpperCase() + l.sottocategoria.slice(1) : `${categoria}, ${l.sottocategoria}`) : categoria}</span>
             {castello ? (
               <span className="inline-flex items-center gap-1.5">
                 <span aria-hidden="true" className="size-2.5 rounded-full" style={{ background: castello.colore }} />

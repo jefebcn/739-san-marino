@@ -8,7 +8,7 @@ export default function PaginaAttivita() {
   return (
     <>
       <TestaPagina href="/profile" verso="SMR ID" titolo="Attività">
-        <p className="sottotitolo">I titolari che chiedono la scheda del loro locale o negozio. Verifica e decidi.</p>
+        <p className="sottotitolo">I titolari che chiedono la scheda della loro attività o ne aggiungono una nuova. Verifica e decidi.</p>
       </TestaPagina>
       <Riservato ruolo="redattore">
         <RichiesteAttivita />

@@ -99,9 +99,9 @@ export const AREE: Area[] = [
     icona: "lavorare",
     href: "/lavorare",
     sezioni: [
-      { slug: "aziende", nome: "Aziende", descrizione: "Le imprese del territorio, con contatti e cosa fanno.", icona: "business", parole: "aziende imprese ditte business" },
-      { slug: "professionisti", nome: "Professionisti", descrizione: "Commercialisti, avvocati, architetti, tecnici.", icona: "professionisti", parole: "professionisti commercialista avvocato architetto notaio" },
-      { slug: "artigiani", nome: "Artigiani", descrizione: "Idraulici, elettricisti, falegnami e altri mestieri.", icona: "artigiani", parole: "artigiani idraulico elettricista falegname" },
+      { slug: "aziende", nome: "Aziende", descrizione: "Le imprese del territorio, con contatti e cosa fanno.", icona: "business", href: "/lavorare/aziende", categorie: ["azienda"], parole: "aziende imprese ditte business" },
+      { slug: "professionisti", nome: "Professionisti", descrizione: "Commercialisti, avvocati, architetti, tecnici.", icona: "professionisti", href: "/lavorare/professionisti", categorie: ["professionista"], parole: "professionisti commercialista avvocato architetto notaio" },
+      { slug: "artigiani", nome: "Artigiani", descrizione: "Idraulici, elettricisti, falegnami e altri mestieri.", icona: "artigiani", href: "/lavorare/artigiani", categorie: ["artigiano"], parole: "artigiani idraulico elettricista falegname" },
       { slug: "lavoro", nome: "Offerte di lavoro", descrizione: "Chi cerca personale a San Marino.", icona: "lavoro", parole: "lavoro offerte annunci cerco personale" },
       { slug: "fiere", nome: "Fiere e convegni", descrizione: "Appuntamenti per chi lavora.", icona: "fiere", parole: "fiere convegni congressi" },
       { slug: "bandi", nome: "Bandi", descrizione: "Contributi e bandi pubblici.", icona: "bandi", parole: "bandi contributi finanziamenti" },
