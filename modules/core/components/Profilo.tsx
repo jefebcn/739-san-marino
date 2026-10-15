@@ -17,6 +17,7 @@ import { livello } from "@/lib/quota";
 import Tano, { POSA_DI_LIVELLO } from "@/components/Tano";
 import Notifiche from "@/components/Notifiche";
 import { conteggioBozze } from "@/modules/coda/api";
+import { conteggioRichieste, mieAttivita } from "@/modules/attivita/api";
 import { mieiRuoli, NESSUN_RUOLO, type Ruoli } from "../ruoli";
 import { mieiMetri, type Movimento } from "@/modules/eventi/api";
 
@@ -118,6 +119,16 @@ export default function Profilo({ castelli }: { castelli: Castello[] }) {
       if (!r.redattore) return;
       const { conteggio } = await conteggioBozze();
       if (conteggio) setDaVedere((conteggio?.nuovo ?? 0) + (conteggio?.segnalazioni ?? 0));
+      setRichieste(await conteggioRichieste());
+    });
+  }, [idUtente]);
+  // Titolari di attività (Fase 2): il link compare solo a chi ha chiesto o gestisce una scheda
+  const [attivita, setAttivita] = useState<{ gestite: number; totale: number } | null>(null);
+  const [richieste, setRichieste] = useState<number | null>(null);
+  useEffect(() => {
+    if (!idUtente) return;
+    mieAttivita().then((r) => {
+      if (r.attivita.length) setAttivita({ gestite: r.attivita.filter((a) => a.stato === "approvata").length, totale: r.attivita.length });
     });
   }, [idUtente]);
 
@@ -204,6 +215,19 @@ export default function Profilo({ castelli }: { castelli: Castello[] }) {
 
       <Notifiche />
 
+      {attivita ? (
+        <section className="flex flex-col gap-3">
+          <h2 className="text-xl font-semibold tracking-tight">La tua attività</h2>
+          <ActionCard
+            href="/profile/attivita"
+            icona={<Icona nome="negozi" />}
+            tono="neutro"
+            titolo="Le mie attività"
+            descrizione={attivita.gestite ? (attivita.gestite === 1 ? "1 scheda che gestisci" : `${attivita.gestite} schede che gestisci`) : "Richiesta in verifica"}
+          />
+        </section>
+      ) : null}
+
       <section className="flex flex-col gap-3">
         <h2 className="text-xl font-semibold tracking-tight">Account</h2>
         <ActionCard icona={<Icona nome="persona" />} tono="neutro" titolo={utente.email ?? "Email"} descrizione="Email di accesso" />
@@ -220,6 +244,9 @@ export default function Profilo({ castelli }: { castelli: Castello[] }) {
               titolo="Coda delle bozze"
               descrizione={daVedere === null ? "Bozze e segnalazioni" : daVedere === 1 ? "1 da vedere" : `${daVedere} da vedere`}
             />
+          ) : null}
+          {ruoli.redattore ? (
+            <ActionCard href="/admin/attivita" icona={<Icona nome="negozi" />} tono="neutro" titolo="Attività" descrizione={richieste ? (richieste === 1 ? "1 titolare da verificare" : `${richieste} titolari da verificare`) : "Titolari che chiedono la scheda"} />
           ) : null}
           {ruoli.redattore ? (
             <ActionCard href="/admin/contenuti" icona={<Icona nome="storie" />} tono="neutro" titolo="Contenuti" descrizione="Bollettino, rubriche e storie" />

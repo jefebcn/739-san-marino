@@ -36,6 +36,10 @@ Quando proponi un evento, carichi una foto o mandi una segnalazione:
 
 La redazione può non pubblicare, modificare o togliere quello che non rispetta queste regole. Gli organizzatori che pubblicano direttamente rispondono dei propri eventi.
 
+## Schede delle attività
+
+Il titolare di un locale, di un negozio o di un distributore può chiedere di gestire la sua scheda. La redazione verifica prima di affidarla. Chi la gestisce risponde di quello che scrive, deve tenerla aggiornata e non può usarla per pubblicità che non riguarda l'attività. La redazione può correggere la scheda o toglierne la gestione se queste regole non sono rispettate. Il profilo base è gratis.
+
 ## Le cose da non fare
 
 Usare 739 per spam, raccogliere dati di altri utenti, aggirare i limiti, leggere l'app in automatico in modo massiccio o provare a entrare dove non si ha accesso.
@@ -58,5 +62,5 @@ Per domande scrivi a ${emailContatto()}. Per i tuoi dati personali leggi la [Pri
 `;
 
 export default function Termini() {
-  return <PaginaLegale titolo="Termini d'uso" aggiornata="14 ottobre 2026" testo={TESTO} />;
+  return <PaginaLegale titolo="Termini d'uso" aggiornata="15 ottobre 2026" testo={TESTO} />;
 }

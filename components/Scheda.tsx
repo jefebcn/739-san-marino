@@ -6,6 +6,8 @@ import MappaPunto from "./MappaPunto";
 import { CATEGORIE, TIPI_LEGGIBILI, linkIndicazioni, type Castello, type Luogo } from "@/lib/data";
 import Condividi from "./Condividi";
 
+// Le attività private, come CATEGORIE_ATTIVITA in modules/attivita/api.ts
+const ATTIVITA = new Set(["locale", "negozio", "carburante"]);
 const SOLO_TIPO = new Set(["locale", "scuola", "chiesa", "banca", "negozio"]);
 
 const giornoLungo = new Intl.DateTimeFormat("it-IT", { day: "numeric", month: "long", year: "numeric", timeZone: "Europe/San_Marino" });
@@ -36,7 +38,7 @@ function Dato({ icona, titolo, children }: { icona: NomeIcona; titolo: string; c
  * Nome, castello, stato di apertura, indicazioni, contatti, foto con credito, «Cosa posso fare qui»,
  * «Da verificare», fonte e data dell'ultimo controllo. `azioni` è il posto di «Segnala un errore».
  */
-export default function Scheda({ l, castello, azioni }: { l: Luogo; castello: Castello | null; azioni?: ReactNode }) {
+export default function Scheda({ l, castello, azioni, gestito = false }: { l: Luogo; castello: Castello | null; azioni?: ReactNode; gestito?: boolean }) {
   const categoria = CATEGORIE[l.categoria] ?? l.categoria;
   const fonteNome = l.fonte_nome ?? (l.fonte === "osm" ? "OpenStreetMap" : null);
   const fonteLink = l.fonte_link ?? (l.fonte === "osm" ? "https://www.openstreetmap.org/copyright" : null);
@@ -132,8 +134,14 @@ export default function Scheda({ l, castello, azioni }: { l: Luogo; castello: Ca
             {fonteNome ? (
               <>Fonte: {fonteLink ? <a href={fonteLink} target="_blank" rel="noopener" className="underline">{fonteNome}</a> : fonteNome}{l.fonte === "osm" ? " contributors" : ""}. </>
             ) : null}
-            {l.verificato_il ? <>Controllato il {giornoLungo.format(new Date(`${l.verificato_il}T12:00:00Z`))}.</> : <>Non ancora controllato dalla redazione.</>}
+            {l.verificato_il ? <>{gestito ? "Aggiornata dal titolare il" : "Controllato il"} {giornoLungo.format(new Date(`${l.verificato_il}T12:00:00Z`))}.</> : <>Non ancora controllato dalla redazione.</>}
           </p>
+          {/* Profilo base delle attività (Fase 2): il titolare chiede la scheda */}
+          {!gestito && ATTIVITA.has(l.categoria) ? (
+            <Link href={`/attivita/chiedi?luogo=${l.id}`} className="flex w-fit items-center gap-1 py-1 text-sm font-medium text-accento">
+              È la tua attività? Gestisci la scheda <Icona nome="avanti" size={14} />
+            </Link>
+          ) : null}
           {azioni}
         </footer>
       </div>

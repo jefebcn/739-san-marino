@@ -115,6 +115,14 @@ export async function getLuoghi(castelloId?: number): Promise<Luogo[]> {
   return (data ?? []) as Luogo[];
 }
 
+/** La scheda è gestita dal titolare dell'attività? (migrazione 0034; prima della migrazione: no) */
+export async function getGestito(id: string): Promise<boolean> {
+  const db = supabase();
+  if (!db) return false;
+  const { data, error } = await db.rpc("luogo_gestito", { p_luogo: id });
+  return !error && data === true;
+}
+
 /** Un luogo con tutti i campi della scheda. Finché la migrazione 0013 non c'è, legge solo i campi di base. */
 export async function getLuogo(id: string): Promise<Luogo | null> {
   const db = supabase();

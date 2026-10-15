@@ -33,6 +33,8 @@ Il titolare ha sede a Malta, nell'Unione europea: la regola di riferimento è il
 
 **Notifiche.** Se le accendi salviamo l'indirizzo tecnico che il tuo telefono ci dà per riceverle, le notifiche scelte (Bollettino, Weekend) e il giorno dell'ultimo invio. Se sei entrato con l'SMR ID colleghiamo l'iscrizione al tuo account. Spegnendo entrambi gli interruttori l'iscrizione viene cancellata.
 
+**Titolari di attività.** Se chiedi di gestire la scheda del tuo locale o negozio salviamo chi sei e che ruolo hai, un telefono per la verifica e la nota che scrivi: li vede solo la redazione di 739 e il telefono non compare nella scheda. Quello che scrivi nella scheda (descrizione, contatti, orari, foto) invece è pubblico.
+
 **Posizione.** «Vicino a me» usa la posizione del telefono solo dentro il browser, per ordinare le partite: non la salviamo. Se organizzi una partita e scegli di usare la posizione, salviamo il punto del campo, non il tuo.
 
 ## Dove stanno i dati
@@ -45,7 +47,7 @@ Meteo (Open-Meteo), articoli di Libertas e luoghi di OpenStreetMap li legge il n
 
 ## Per quanto tempo
 
-- Account, check-in, partite e metri: finché tieni l'SMR ID. Se ci chiedi di cancellarlo, cancelliamo anche i dati collegati, tranne i totali anonimi dei castelli.
+- Account, check-in, partite, metri e richieste delle attività: finché tieni l'SMR ID. Se ci chiedi di cancellarlo, cancelliamo anche i dati collegati, tranne i totali anonimi dei castelli.
 - Iscrizioni alle notifiche: finché non le spegni o il telefono smette di accettarle.
 - Impronte anti abuso: restano con la proposta o la segnalazione e contano solo nel giorno in cui sono create.
 
@@ -69,5 +71,5 @@ Se cambiamo questa pagina lo scriviamo qui in cima con la data. Per i cambiament
 `;
 
 export default function Privacy() {
-  return <PaginaLegale titolo="Privacy" aggiornata="14 ottobre 2026" testo={TESTO} />;
+  return <PaginaLegale titolo="Privacy" aggiornata="15 ottobre 2026" testo={TESTO} />;
 }
