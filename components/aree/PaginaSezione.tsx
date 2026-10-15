@@ -9,7 +9,11 @@ import { area as trovaArea, sezione as trovaSezione } from "@/lib/aree";
 const PLURALI: Record<string, string> = {
   ristorante: "Ristoranti", pizzeria: "Pizzerie", piadineria: "Piadinerie", "cibo veloce": "Cibo veloce",
   bar: "Bar", gelateria: "Gelaterie", pub: "Pub",
+  "nido e infanzia": "Nidi e scuole dell'infanzia", elementare: "Elementari", "media e superiore": "Medie e superiori", università: "Università",
 };
+// Tipi che hanno un ordine naturale (le scuole per età); gli altri vanno dal gruppo più numeroso
+const ORDINE = ["nido e infanzia", "elementare", "media e superiore", "università"];
+const posto = (t: string) => (ORDINE.includes(t) ? ORDINE.indexOf(t) : -1);
 
 /** Sezione di un'area fatta di luoghi (es. Musei e monumenti): elenco raggruppato per categoria, con la mappa. */
 export default async function PaginaSezione({ area, sezione, prima, vuoto }: { area: string; sezione: string; prima?: ReactNode; vuoto?: string }) {
@@ -28,7 +32,7 @@ export default async function PaginaSezione({ area, sezione, prima, vuoto }: { a
     const luoghi = gruppi[0].luoghi;
     gruppi = tipi
       .map((t) => ({ categoria: t || "altro", nome: t ? (PLURALI[t] ?? t[0].toUpperCase() + t.slice(1)) : "Altro", luoghi: luoghi.filter((l) => (l.sottocategoria ?? "") === t) }))
-      .sort((a, b) => (a.categoria === "altro" ? 1 : b.categoria === "altro" ? -1 : b.luoghi.length - a.luoghi.length));
+      .sort((a, b) => (a.categoria === "altro" ? 1 : b.categoria === "altro" ? -1 : posto(a.categoria) >= 0 && posto(b.categoria) >= 0 ? posto(a.categoria) - posto(b.categoria) : b.luoghi.length - a.luoghi.length));
   }
   const totale = gruppi.reduce((n, g) => n + g.luoghi.length, 0);
 

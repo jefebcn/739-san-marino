@@ -45,7 +45,7 @@ export const AREE: Area[] = [
       { slug: "meteo", nome: "Meteo", descrizione: "Adesso, prossime ore e settimana.", icona: "meteo", href: "/utili/meteo", parole: "meteo tempo pioggia previsioni temperatura" },
       { slug: "poste-banche", nome: "Poste, banche e carburante", descrizione: "Uffici postali, banche, bancomat e distributori.", icona: "banca", href: "/vivere/poste-banche", categorie: ["posta", "banca", "carburante"], parole: "poste posta ufficio postale banca banche bancomat atm soldi prelievo benzina carburante distributore gasolio diesel gpl metano" },
       { slug: "servizi", nome: "Bagni, fontanelle e ricarica", descrizione: "Bagni pubblici, acqua potabile e colonnine per l'auto elettrica.", icona: "servizi", href: "/vivere/servizi", categorie: ["bagni", "acqua", "ricarica", "servizio"], parole: "bagni toilette fontanelle acqua ricarica colonnine elettrica" },
-      { slug: "scuola", nome: "Scuola e famiglia", descrizione: "Scuole, nidi, calendario scolastico e servizi per le famiglie.", icona: "scuola", parole: "scuola scuole nido asilo famiglia bambini" },
+      { slug: "scuola", nome: "Scuola e famiglia", descrizione: "Nidi, scuole dell'infanzia, elementari, medie e università.", icona: "scuola", href: "/vivere/scuola", categorie: ["scuola"], parole: "scuola scuole nido asilo infanzia materna elementari medie superiori liceo universita famiglia bambini" },
     ],
   },
   {
@@ -88,7 +88,7 @@ export const AREE: Area[] = [
       { slug: "giunte", nome: "Giunte di castello", descrizione: "Chi sono, dove trovarle e cosa organizzano.", icona: "giunte", parole: "giunte giunta capitano castello" },
       { slug: "associazioni", nome: "Associazioni", descrizione: "Culturali, sportive, sociali.", icona: "associazioni", parole: "associazioni associazione club" },
       { slug: "volontariato", nome: "Volontariato", descrizione: "Dove dare una mano.", icona: "lavoro", parole: "volontariato volontari aiutare" },
-      { slug: "chiese", nome: "Chiese e messe", descrizione: "Chiese del territorio e orari delle messe.", icona: "chiese", parole: "chiese chiesa messe messa parrocchia basilica" },
+      { slug: "chiese", nome: "Chiese", descrizione: "Le chiese del territorio. Gli orari delle messe arriveranno dalle parrocchie.", icona: "chiese", href: "/comunita/chiese", categorie: ["chiesa"], parole: "chiese chiesa messe messa parrocchia basilica pieve santuario culto" },
       { slug: "bacheca", nome: "Bacheca", descrizione: "Annunci e iniziative di chi vive qui.", icona: "bacheca", parole: "bacheca annunci" },
     ],
   },

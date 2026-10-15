@@ -246,4 +246,6 @@ export const CATEGORIE: Record<string, string> = {
   posta: "Uffici postali",
   banca: "Banche e bancomat",
   carburante: "Distributori di carburante",
+  scuola: "Scuole",
+  chiesa: "Chiese",
 };
