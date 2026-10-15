@@ -453,3 +453,6 @@ html[data-utente="tornato"] .per-nuovi { display: none !important; }
 @media (pointer: coarse) {
   input, textarea, select { font-size: max(16px, 1em) !important; }
 }
+
+/* Mappa grande: il punto di un indirizzo trovato con la ricerca (fuori dai layer, come gli altri elementi di MapLibre) */
+.segno-indirizzo { width: 22px; height: 22px; border-radius: 999px 999px 999px 0; rotate: -45deg; background: var(--testo); border: 3px solid var(--sfondo); box-shadow: 0 2px 8px rgba(11, 31, 46, 0.45); }

@@ -38,7 +38,7 @@ Il titolare ha sede a Malta, nell'Unione europea: la regola di riferimento è il
 
 **Numeri delle schede delle attività.** Quando apri la scheda di un locale, un negozio o un distributore, o tocchi Chiama, Indicazioni, sito, email, Menu o Prenota, aggiungiamo uno al totale di quel giorno per quella scheda. Non salviamo chi sei, né il tuo indirizzo IP, né l'ora: il titolare con il piano Pro vede solo i totali.
 
-**Posizione.** «Vicino a me» usa la posizione del telefono solo dentro il browser, per ordinare le partite: non la salviamo. Se organizzi una partita e scegli di usare la posizione, salviamo il punto del campo, non il tuo.
+**Posizione.** «Vicino a me» usa la posizione del telefono solo dentro il browser, per ordinare le partite e i luoghi della mappa: non la salviamo e non ce la manda nessuno. Se organizzi una partita e scegli di usare la posizione, salviamo il punto del campo, non il tuo.
 
 ## Su quale base
 
@@ -54,7 +54,7 @@ Nessuna decisione che ti riguarda viene presa in automatico da un programma.
 - **Vercel** (il sito e le statistiche anonime delle visite): società con sede negli Stati Uniti e rete di server internazionale. Il trasferimento fuori dall'Unione europea avviene con le garanzie previste dal GDPR (Data Privacy Framework UE-USA o clausole contrattuali standard).
 - **OpenFreeMap** (le mappe): il tuo browser scarica da loro le immagini della mappa, quindi vedono il tuo indirizzo IP come per qualunque sito.
 
-Meteo (Open-Meteo), articoli di Libertas e luoghi di OpenStreetMap li legge il nostro server: a loro non arriva nessun tuo dato.
+Meteo (Open-Meteo), articoli di Libertas e luoghi di OpenStreetMap li legge il nostro server: a loro non arriva nessun tuo dato. Lo stesso per la ricerca di vie e indirizzi sulla mappa: il testo che scrivi lo passa il nostro server a Photon (komoot, Germania), senza il tuo indirizzo IP né altro su di te.
 
 ## Per quanto tempo
 

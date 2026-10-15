@@ -1,5 +1,5 @@
 import MappaTerritorio from "@/components/MappaTerritorio";
-import { getLuoghi, type Luogo } from "@/lib/data";
+import { getLuogo, type Luogo } from "@/lib/data";
 import { getAvvisi } from "@/lib/avvisi";
 
 export const revalidate = 300;
@@ -8,8 +8,11 @@ export const metadata = { title: "Mappa · 739 San Marino" };
 
 type Props = { searchParams: Promise<{ luogo?: string }> };
 
+// I luoghi non viaggiano più nella pagina: la mappa li chiede al database per l'area che si guarda (lib/mappa-dati.ts).
+// Qui arrivano solo gli avvisi con una posizione e, con ?luogo=, il luogo da aprire subito.
 export default async function Mappa({ searchParams }: Props) {
-  const [{ luogo }, db, avvisi] = await Promise.all([searchParams, getLuoghi(), getAvvisi()]);
+  const { luogo } = await searchParams;
+  const [avvisi, iniziale] = await Promise.all([getAvvisi(), luogo && /^[0-9a-f-]{36}$/.test(luogo) ? getLuogo(luogo) : null]);
   // Gli avvisi con una posizione compaiono sulla mappa come segnali (categoria «avviso», area Vivere)
   const segnali: Luogo[] = avvisi
     .filter((a) => a.lat != null || a.luogo)
@@ -30,18 +33,6 @@ export default async function Mappa({ searchParams }: Props) {
       orari_settimana: null,
       fonte: "avviso",
     }));
-  const luoghi = [...segnali, ...db];
 
-  if (luoghi.length === 0) {
-    return (
-      <>
-        <section className="intro">
-          <h1 className="titolo">Tutto quello che c&apos;è, e dove</h1>
-        </section>
-        <p className="vuoto">Nessun luogo ancora sulla mappa.</p>
-      </>
-    );
-  }
-
-  return <MappaTerritorio luoghi={luoghi} focus={luogo} />;
+  return <MappaTerritorio segnali={segnali} iniziale={iniziale} />;
 }

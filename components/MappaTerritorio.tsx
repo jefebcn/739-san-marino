@@ -2,49 +2,151 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "maplibre-gl/dist/maplibre-gl.css";
-import type { Map as MLMap, Marker } from "maplibre-gl";
+import type { GeoJSONSource, GeolocateControl, Map as MLMap, Marker } from "maplibre-gl";
 import { CATEGORIE, linkIndicazioni, type Luogo } from "@/lib/data";
 import { Icona } from "./Icona";
 import { AREE, areaDiCategoria, type SlugArea } from "@/lib/aree";
 import { CENTRO, STILE_CHIARO, STILE_SCURO } from "@/lib/mappa";
-import { elementoSegnaposto, PuntoCategoria } from "./Segnaposto";
+import {
+  allarga, cercaIndirizzi, cercaLuoghi, contiene, dentro, dettaglioLuogo, distanzaM, leggiDistanza, luoghiNelRiquadro,
+  TERRITORIO, type Indirizzo, type PuntoMappa, type Riquadro,
+} from "@/lib/mappa-dati";
+import { chiaveSegnaposto, immagineSegnaposto, PuntoCategoria } from "./Segnaposto";
 
 /** 0 = solo intestazione, 1 = metà schermo, 2 = quasi tutto lo schermo */
 type Livello = 0 | 1 | 2;
+type Punto = { lat: number; lng: number };
 
-export default function MappaTerritorio({ luoghi, focus }: { luoghi: Luogo[]; focus?: string }) {
+// Quanti luoghi si disegnano nell'elenco del pannello per volta (sulla mappa ci sono tutti, raggruppati)
+const PASSO_ELENCO = 60;
+// I gruppi di segnaposto: ottone pieno come i bottoni principali, numero scuro sopra
+const GRUPPO = "#C9A45C";
+const SU_GRUPPO = "#09090B";
+const VUOTO: GeoJSON.FeatureCollection = { type: "FeatureCollection", features: [] };
+
+const aPunto = (l: Luogo): PuntoMappa => ({
+  id: l.id, nome: l.nome, categoria: l.categoria, sottocategoria: l.sottocategoria ?? null,
+  lat: l.lat, lng: l.lng, indirizzo: l.indirizzo, fonte: l.fonte ?? "manuale",
+});
+
+/**
+ * La mappa del territorio. I luoghi arrivano dal database per l'area che si sta guardando (migrazione 0037),
+ * si disegnano come layer GeoJSON raggruppati quando sono vicini (non centinaia di elementi del DOM) e
+ * l'elenco del pannello mostra quelli dell'area, dal più vicino se si è dato il consenso alla posizione.
+ */
+export default function MappaTerritorio({ segnali, iniziale }: { segnali: Luogo[]; iniziale?: Luogo | null }) {
   const box = useRef<HTMLDivElement>(null);
   const foglio = useRef<HTMLDivElement>(null);
   const mappa = useRef<MLMap | null>(null);
-  const marcatori = useRef<Map<string, Marker>>(new Map());
+  const geo = useRef<GeolocateControl | null>(null);
+  const segnoIndirizzo = useRef<Marker | null>(null);
   const trascina = useRef<{ y: number; dy: number } | null>(null);
-  const [filtro, setFiltro] = useState<string>("tutti");
-  // Prima si sceglie l'area (Vivere, Uscire, Sport), poi una categoria di quell'area
-  const [areaFiltro, setAreaFiltro] = useState<SlugArea | "tutte">("tutte");
-  const [scelto, setScelto] = useState<string | undefined>(focus);
-  const [livelloFoglio, setLivelloFoglio] = useState<Livello>(focus ? 1 : 0);
+  // Tutti i luoghi arrivati finora e i riquadri già chiesti per intero
+  const punti = useRef<Map<string, PuntoMappa>>(new Map());
+  const coperti = useRef<Riquadro[]>([]);
+  const richiesta = useRef<AbortController | null>(null);
+  const inCorso = useRef<Riquadro | null>(null);
+  const immagini = useRef<Set<string>>(new Set());
+  const campoRicerca = useRef<HTMLInputElement>(null);
 
-  const tutteCategorie = useMemo(() => Array.from(new Set(luoghi.map((l) => l.categoria))), [luoghi]);
+  const [versione, setVersione] = useState(0);
+  const [pronta, setPronta] = useState(false);
+  const [statoDati, setStatoDati] = useState<"carico" | "pronto" | "errore">("carico");
+  const [troncato, setTroncato] = useState(false);
+  const [erroreMappa, setErroreMappa] = useState(false);
+  const [vista, setVista] = useState<Riquadro | null>(null);
+  const [posizione, setPosizione] = useState<Punto | null>(null);
+  // La ricerca usa la posizione del momento, ma non riparte quando la posizione si aggiorna
+  const posizioneOra = useRef<Punto | null>(null);
+  posizioneOra.current = posizione;
+  const [filtro, setFiltro] = useState<string>("tutti");
+  // Prima si sceglie l'area (Vivere, Uscire, Sport…), poi una categoria di quell'area
+  const [areaFiltro, setAreaFiltro] = useState<SlugArea | "tutte">("tutte");
+  const [scelto, setScelto] = useState<string | undefined>(iniziale?.id);
+  const [dettaglio, setDettaglio] = useState<Luogo | null>(iniziale ?? null);
+  const [livelloFoglio, setLivelloFoglio] = useState<Livello>(iniziale ? 1 : 0);
+  const [quanti, setQuanti] = useState(PASSO_ELENCO);
+  // Ricerca
+  const [testo, setTesto] = useState("");
+  const [trovati, setTrovati] = useState<PuntoMappa[]>([]);
+  const [indirizzi, setIndirizzi] = useState<Indirizzo[]>([]);
+  const [cerco, setCerco] = useState(false);
+
+  const tuttiPunti = useMemo(() => {
+    void versione;
+    return [...segnali.map(aPunto), ...punti.current.values()];
+  }, [segnali, versione]);
+  const tutteCategorie = useMemo(() => Array.from(new Set(tuttiPunti.map((l) => l.categoria))), [tuttiPunti]);
   const areeMappa = useMemo(() => AREE.filter((a) => tutteCategorie.some((c) => areaDiCategoria(c) === a.slug)), [tutteCategorie]);
   const categorie = useMemo(
     () => (areaFiltro === "tutte" ? [] : tutteCategorie.filter((c) => areaDiCategoria(c) === areaFiltro)),
     [tutteCategorie, areaFiltro],
   );
   const visibile = useCallback(
-    (l: Luogo) => (filtro !== "tutti" ? l.categoria === filtro : areaFiltro === "tutte" || areaDiCategoria(l.categoria) === areaFiltro),
+    (l: { categoria: string }) => (filtro !== "tutti" ? l.categoria === filtro : areaFiltro === "tutte" || areaDiCategoria(l.categoria) === areaFiltro),
     [filtro, areaFiltro],
   );
-  const visibili = useMemo(() => luoghi.filter(visibile), [luoghi, visibile]);
-  const dettaglio = luoghi.find((l) => l.id === scelto);
+  const filtrati = useMemo(() => tuttiPunti.filter(visibile), [tuttiPunti, visibile]);
+  // Nell'elenco: quelli dell'area visibile, dal più vicino se c'è la posizione
+  const elenco = useMemo(() => {
+    const qui = vista ? filtrati.filter((p) => dentro(vista, p)) : filtrati;
+    if (!posizione) return qui;
+    return qui.map((p) => ({ ...p, distanza_m: distanzaM(posizione, p) })).sort((a, b) => a.distanza_m - b.distanza_m);
+  }, [filtrati, vista, posizione]);
+  const puntoScelto = tuttiPunti.find((l) => l.id === scelto) ?? (iniziale && iniziale.id === scelto ? aPunto(iniziale) : undefined);
+
+  const caricaRiquadro = useCallback(async (r: Riquadro) => {
+    richiesta.current?.abort();
+    inCorso.current = r;
+    const ac = new AbortController();
+    richiesta.current = ac;
+    setStatoDati("carico");
+    try {
+      const { punti: nuovi, completo } = await luoghiNelRiquadro(r, ac.signal);
+      if (ac.signal.aborted) return;
+      for (const p of nuovi) punti.current.set(p.id, p);
+      if (completo) coperti.current.push(r);
+      setTroncato(!completo);
+      setStatoDati("pronto");
+      setVersione((x) => x + 1);
+    } catch {
+      if (!ac.signal.aborted) setStatoDati("errore");
+    } finally {
+      if (richiesta.current === ac) inCorso.current = null;
+    }
+  }, []);
+
+  // I luoghi dell'area visibile: si chiede un riquadro un po' più largo, una volta sola, e si annulla la richiesta vecchia.
+  // Fuori dal territorio non c'è niente: la vista si taglia ai suoi bordi prima di controllare se è già coperta.
+  const caricaVista = useCallback(() => {
+    const m = mappa.current;
+    if (!m) return;
+    const b = m.getBounds();
+    const v: Riquadro = [b.getWest(), b.getSouth(), b.getEast(), b.getNorth()];
+    setVista(v);
+    setQuanti(PASSO_ELENCO);
+    const t: Riquadro = [Math.max(v[0], TERRITORIO[0]), Math.max(v[1], TERRITORIO[1]), Math.min(v[2], TERRITORIO[2]), Math.min(v[3], TERRITORIO[3])];
+    if (t[0] >= t[2] || t[1] >= t[3]) return;
+    if (coperti.current.some((c) => contiene(c, t))) return;
+    // Sta già arrivando un riquadro che la contiene: si aspetta quello
+    if (inCorso.current && contiene(inCorso.current, t)) return;
+    caricaRiquadro(allarga(t));
+  }, [caricaRiquadro]);
+
+  // Subito, senza aspettare che la mappa sia pronta: il territorio intero (oggi poche centinaia di luoghi, ~50 KB).
+  // Se un giorno i luoghi saranno più del limite, la risposta è incompleta e la mappa chiederà poi per aree.
+  useEffect(() => {
+    caricaRiquadro(TERRITORIO);
+  }, [caricaRiquadro]);
 
   useEffect(() => {
     let annullato = false;
+    let attesa: ReturnType<typeof setTimeout> | undefined;
     import("maplibre-gl").then((ml) => {
       if (annullato || !box.current) return;
       // Il worker è copiato in public/ da scripts/worker-mappa.mjs
       ml.setWorkerUrl(new URL("/maplibre-gl-worker.mjs", window.location.origin).href);
       const scuro = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      const iniziale = luoghi.find((l) => l.id === focus);
       const m = new ml.Map({
         container: box.current,
         style: scuro ? STILE_SCURO : STILE_CHIARO,
@@ -56,42 +158,223 @@ export default function MappaTerritorio({ luoghi, focus }: { luoghi: Luogo[]; fo
       const computer = window.matchMedia("(min-width: 1024px)").matches;
       m.setPadding(computer ? { top: 60, right: 0, left: 432, bottom: 0 } : { top: 50, right: 0, left: 0, bottom: Math.round(box.current.clientHeight * 0.45) });
       m.addControl(new ml.NavigationControl({ showCompass: false }), "top-right");
-      m.addControl(new ml.GeolocateControl({ positionOptions: { enableHighAccuracy: true } }), "top-right");
+      const g = new ml.GeolocateControl({ positionOptions: { enableHighAccuracy: true }, trackUserLocation: false });
+      g.on("geolocate", (e) => setPosizione({ lat: e.coords.latitude, lng: e.coords.longitude }));
+      m.addControl(g, "top-right");
+      geo.current = g;
       mappa.current = m;
 
-      for (const l of luoghi) {
-        const el = elementoSegnaposto("button", l);
-        el.setAttribute("aria-label", l.nome);
-        el.addEventListener("click", () => {
-          setScelto(l.id);
-          setLivelloFoglio(1);
+      let caricata = false;
+      m.on("error", () => {
+        if (!caricata) setErroreMappa(true);
+      });
+      m.on("load", () => {
+        caricata = true;
+        m.addSource("luoghi", { type: "geojson", data: VUOTO, cluster: true, clusterRadius: 40, clusterMaxZoom: 16 });
+        m.addLayer({
+          id: "gruppi", type: "circle", source: "luoghi", filter: ["has", "point_count"],
+          paint: { "circle-color": GRUPPO, "circle-radius": ["step", ["get", "point_count"], 16, 10, 19, 50, 24], "circle-stroke-width": 2, "circle-stroke-color": "#fff" },
         });
-        const mk = new ml.Marker({ element: el }).setLngLat([l.lng, l.lat]).addTo(m);
-        marcatori.current.set(l.id, mk);
-      }
+        m.addLayer({
+          id: "gruppi-numero", type: "symbol", source: "luoghi", filter: ["has", "point_count"],
+          layout: { "text-field": ["get", "point_count_abbreviated"], "text-font": ["Noto Sans Bold"], "text-size": 13, "text-allow-overlap": true },
+          paint: { "text-color": SU_GRUPPO },
+        });
+        m.addLayer({
+          id: "punti", type: "symbol", source: "luoghi", filter: ["!", ["has", "point_count"]],
+          layout: { "icon-image": ["get", "icona"], "icon-allow-overlap": true, "icon-ignore-placement": true },
+        });
+        // Il luogo scelto sta sopra a tutto, anche quando gli altri sono raggruppati
+        m.addSource("scelto", { type: "geojson", data: VUOTO });
+        m.addLayer({
+          id: "scelto-anello", type: "circle", source: "scelto",
+          paint: { "circle-radius": 23, "circle-color": "rgba(0,0,0,0)", "circle-stroke-width": 3, "circle-stroke-color": scuro ? "#D4B06A" : "#7A5C24" },
+        });
+        m.addLayer({
+          id: "scelto-icona", type: "symbol", source: "scelto",
+          layout: { "icon-image": ["get", "icona"], "icon-size": 1.35, "icon-allow-overlap": true, "icon-ignore-placement": true },
+        });
+
+        const tocca = (id: string) => {
+          setScelto(id);
+          setLivelloFoglio(1);
+        };
+        m.on("click", "punti", (e) => {
+          const id = e.features?.[0]?.properties?.id;
+          if (typeof id === "string") tocca(id);
+        });
+        m.on("click", "gruppi", async (e) => {
+          const f = e.features?.[0];
+          if (!f || f.geometry.type !== "Point") return;
+          const zoom = await (m.getSource("luoghi") as GeoJSONSource).getClusterExpansionZoom(f.properties?.cluster_id);
+          m.easeTo({ center: f.geometry.coordinates as [number, number], zoom: Math.min(zoom + 0.2, 17) });
+        });
+        for (const l of ["punti", "gruppi"]) {
+          m.on("mouseenter", l, () => (m.getCanvas().style.cursor = "pointer"));
+          m.on("mouseleave", l, () => (m.getCanvas().style.cursor = ""));
+        }
+        setPronta(true);
+        // Il primo caricamento è già partito: qui si segna solo l'area visibile per l'elenco
+        const b = m.getBounds();
+        setVista([b.getWest(), b.getSouth(), b.getEast(), b.getNorth()]);
+      });
+      // Si chiede solo quando la mappa si ferma, e non a ogni scatto
+      m.on("moveend", () => {
+        clearTimeout(attesa);
+        attesa = setTimeout(caricaVista, 250);
+      });
     });
     return () => {
       annullato = true;
-      marcatori.current.clear();
+      clearTimeout(attesa);
+      richiesta.current?.abort();
+      segnoIndirizzo.current?.remove();
       mappa.current?.remove();
       mappa.current = null;
     };
-  }, [luoghi, focus]);
+    // La mappa si crea una volta: il luogo iniziale serve solo all'apertura
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  // Filtri e marcatore scelto
-  useEffect(() => {
-    for (const [id, mk] of marcatori.current) {
-      const l = luoghi.find((x) => x.id === id);
-      const el = mk.getElement();
-      el.style.display = !l || visibile(l) ? "" : "none";
-      el.setAttribute("aria-current", id === scelto ? "true" : "false");
+  // Le immagini dei segnaposto si preparano una volta per tipo, prima di passare i dati alla mappa
+  const assicuraImmagini = useCallback(async (lista: PuntoMappa[]) => {
+    const m = mappa.current;
+    if (!m) return;
+    const scala = Math.min(3, Math.max(2, Math.ceil(window.devicePixelRatio || 1)));
+    const mancanti = new Map<string, PuntoMappa>();
+    for (const p of lista) {
+      const k = chiaveSegnaposto(p);
+      if (!immagini.current.has(k)) mancanti.set(k, p);
     }
-  }, [visibile, luoghi, scelto]);
+    await Promise.all(
+      [...mancanti].map(async ([k, p]) => {
+        immagini.current.add(k);
+        try {
+          const dati = await immagineSegnaposto(p, scala);
+          if (!m.hasImage(k)) m.addImage(k, dati, { pixelRatio: scala });
+        } catch {
+          immagini.current.delete(k);
+        }
+      }),
+    );
+  }, []);
 
-  const vaiA = (l: Luogo) => {
+  // Dati e filtri sulla mappa
+  useEffect(() => {
+    const m = mappa.current;
+    if (!pronta || !m) return;
+    let annullato = false;
+    assicuraImmagini(filtrati).then(() => {
+      if (annullato) return;
+      const dati: GeoJSON.FeatureCollection = {
+        type: "FeatureCollection",
+        features: filtrati.map((p) => ({ type: "Feature", geometry: { type: "Point", coordinates: [p.lng, p.lat] }, properties: { id: p.id, icona: chiaveSegnaposto(p) } })),
+      };
+      (m.getSource("luoghi") as GeoJSONSource | undefined)?.setData(dati);
+    });
+    return () => {
+      annullato = true;
+    };
+  }, [pronta, filtrati, assicuraImmagini]);
+
+  // Il luogo scelto: segnaposto grande con l'anello, e tutti i dati per il pannello
+  useEffect(() => {
+    const m = mappa.current;
+    if (pronta && m) {
+      const p = puntoScelto;
+      if (p) {
+        assicuraImmagini([p]).then(() =>
+          (m.getSource("scelto") as GeoJSONSource | undefined)?.setData({
+            type: "FeatureCollection",
+            features: [{ type: "Feature", geometry: { type: "Point", coordinates: [p.lng, p.lat] }, properties: { id: p.id, icona: chiaveSegnaposto(p) } }],
+          }),
+        );
+      } else {
+        (m.getSource("scelto") as GeoJSONSource | undefined)?.setData(VUOTO);
+      }
+    }
+  }, [pronta, puntoScelto, assicuraImmagini]);
+
+  useEffect(() => {
+    if (!scelto) return setDettaglio(null);
+    const segnale = segnali.find((s) => s.id === scelto);
+    if (segnale) return setDettaglio(segnale);
+    if (iniziale?.id === scelto) return setDettaglio(iniziale);
+    let annullato = false;
+    setDettaglio(null);
+    dettaglioLuogo(scelto).then((l) => {
+      if (!annullato) setDettaglio(l);
+    });
+    return () => {
+      annullato = true;
+    };
+  }, [scelto, segnali, iniziale]);
+
+  // Ricerca: luoghi per nome e indirizzi, con attesa breve e richieste vecchie annullate
+  useEffect(() => {
+    const q = testo.trim();
+    if (q.length < 2) {
+      setTrovati([]);
+      setIndirizzi([]);
+      setCerco(false);
+      return;
+    }
+    const ac = new AbortController();
+    setCerco(true);
+    // I luoghi di 739 arrivano subito; gli indirizzi (Photon, a volte lento) si aggiungono quando arrivano
+    const t = setTimeout(() => {
+      let mancano = 2;
+      const fatto = () => {
+        if (--mancano === 0 && !ac.signal.aborted) setCerco(false);
+      };
+      cercaLuoghi(q, posizioneOra.current, ac.signal)
+        .then((l) => !ac.signal.aborted && setTrovati(l))
+        .catch(() => !ac.signal.aborted && setTrovati([]))
+        .finally(fatto);
+      cercaIndirizzi(q, ac.signal)
+        .then((i) => !ac.signal.aborted && setIndirizzi(i))
+        .catch(() => !ac.signal.aborted && setIndirizzi([]))
+        .finally(fatto);
+    }, 300);
+    return () => {
+      clearTimeout(t);
+      ac.abort();
+    };
+  }, [testo]);
+
+  const vaiA = (l: PuntoMappa) => {
+    if (!punti.current.has(l.id) && !segnali.some((s) => s.id === l.id)) {
+      punti.current.set(l.id, l);
+      setVersione((x) => x + 1);
+    }
+    // Un luogo trovato con la ricerca deve vedersi anche se i filtri lo nascondevano
+    if (!visibile(l)) {
+      setAreaFiltro("tutte");
+      setFiltro("tutti");
+    }
+    setTesto("");
     setScelto(l.id);
     setLivelloFoglio(1);
-    mappa.current?.flyTo({ center: [l.lng, l.lat], zoom: 15.5, speed: 1.4 });
+    mappa.current?.flyTo({ center: [l.lng, l.lat], zoom: Math.max(mappa.current.getZoom(), 16.5), speed: 1.4 });
+  };
+
+  const vaiAIndirizzo = async (i: Indirizzo) => {
+    const m = mappa.current;
+    if (!m) return;
+    setTesto("");
+    setScelto(undefined);
+    setLivelloFoglio(1);
+    const ml = await import("maplibre-gl");
+    segnoIndirizzo.current?.remove();
+    const el = document.createElement("span");
+    el.className = "segno-indirizzo";
+    el.setAttribute("aria-label", i.nome);
+    segnoIndirizzo.current = new ml.Marker({ element: el, anchor: "bottom" }).setLngLat([i.lng, i.lat]).addTo(m);
+    m.flyTo({ center: [i.lng, i.lat], zoom: 17, speed: 1.4 });
+  };
+
+  const vicinoAMe = () => {
+    geo.current?.trigger();
   };
 
   // Trascinamento del pannello: si ferma su uno dei tre livelli
@@ -126,16 +409,28 @@ export default function MappaTerritorio({ luoghi, focus }: { luoghi: Luogo[]; fo
     }
   };
 
-  const conteggio = `${visibili.length} ${visibili.length === 1 ? "luogo" : "luoghi"}`;
+  const conteggio = `${elenco.length}${troncato ? "+" : ""} ${elenco.length === 1 ? "luogo" : "luoghi"}`;
+  const titolo = filtro !== "tutti" ? CATEGORIE[filtro] ?? filtro : areaFiltro !== "tutte" ? AREE.find((a) => a.slug === areaFiltro)?.nome : posizione ? "Vicino a te" : "Qui sulla mappa";
+  const inRicerca = testo.trim().length >= 2;
 
   return (
     <div className="mappa-piena">
       {/* Posizione in linea: il CSS di MapLibre (fuori dai layer di Tailwind) vincerebbe su globals.css e la mappa resterebbe alta 0 */}
       <div ref={box} className="mappa" role="region" aria-label="Mappa di San Marino" style={{ position: "absolute", inset: 0 }} />
 
+      {erroreMappa ? (
+        <div className="absolute inset-x-4 top-24 z-[5] mx-auto flex max-w-sm flex-col items-center gap-3 rounded-2xl bg-superficie p-5 text-center shadow-lg" role="alert">
+          <p className="text-[15px]">La mappa non si carica. Controlla la connessione e riprova.</p>
+          <button type="button" className="pulsante" onClick={() => location.reload()}>Riprova</button>
+        </div>
+      ) : null}
+
       {areeMappa.length > 1 ? (
         <div className="mappa-filtri flex flex-col gap-2">
           <div className="chips" role="group" aria-label="Filtra per area" style={{ margin: 0, padding: "0 var(--gutter)" }}>
+            <button type="button" className="chip lg:hidden" aria-label="Cerca un luogo o un indirizzo" onClick={() => { setScelto(undefined); setLivelloFoglio(2); setTimeout(() => campoRicerca.current?.focus(), 350); }}>
+              <Icona nome="cerca" size={16} /> Cerca
+            </button>
             <button type="button" className="chip" aria-pressed={areaFiltro === "tutte"} onClick={() => { setAreaFiltro("tutte"); setFiltro("tutti"); }}>Tutto</button>
             {areeMappa.map((a) => (
               <button key={a.slug} type="button" className="chip" aria-pressed={areaFiltro === a.slug} onClick={() => { setAreaFiltro(a.slug); setFiltro("tutti"); }}>
@@ -173,71 +468,180 @@ export default function MappaTerritorio({ luoghi, focus }: { luoghi: Luogo[]; fo
             }
           }}
         >
-          {dettaglio ? (
+          {puntoScelto ? (
             <>
-              <span className="etichetta">{CATEGORIE[dettaglio.categoria] ?? dettaglio.categoria}</span>
-              <h2>{dettaglio.nome}</h2>
+              <span className="etichetta">{CATEGORIE[puntoScelto.categoria] ?? puntoScelto.categoria}</span>
+              <h2>{puntoScelto.nome}</h2>
             </>
           ) : (
             <>
               <span className="etichetta">Mappa del territorio</span>
-              <h2>{filtro !== "tutti" ? CATEGORIE[filtro] ?? filtro : areaFiltro !== "tutte" ? AREE.find((a) => a.slug === areaFiltro)?.nome : "Tutto quello che c'è"} <span className="meta">{conteggio}</span></h2>
+              <h2>{titolo} <span className="meta">{statoDati === "carico" && !elenco.length ? "…" : conteggio}</span></h2>
             </>
           )}
         </div>
 
         <div className="foglio-corpo">
-          {dettaglio ? (
+          {puntoScelto ? (
             <>
-              {dettaglio.da_verificare ? <span className="verifica" style={{ alignSelf: "flex-start" }}>Posizione da verificare</span> : null}
-              {dettaglio.descrizione ? <p className="descrizione">{dettaglio.descrizione}</p> : null}
-              {dettaglio.indirizzo || dettaglio.orari || dettaglio.tariffa || dettaglio.telefono ? (
-                <div className="dati">
-                  {dettaglio.indirizzo ? <div><Icona nome="pin" /><span><b>Indirizzo</b><span className="meta">{dettaglio.indirizzo}</span></span></div> : null}
-                  {dettaglio.orari ? <div><Icona nome="orologio" /><span><b>Orari</b><span className="meta">{dettaglio.orari}</span></span></div> : null}
-                  {dettaglio.tariffa ? <div><Icona nome="parcheggio" /><span><b>Tariffe{dettaglio.posti ? `, ${dettaglio.posti} posti` : ""}</b><span className="meta">{dettaglio.tariffa}</span></span></div> : null}
-                  {dettaglio.telefono ? <div><Icona nome="telefono" /><span><b>Telefono</b><a className="meta" href={`tel:${dettaglio.telefono.replace(/\s/g, "")}`}>{dettaglio.telefono}</a></span></div> : null}
-                </div>
-              ) : null}
-              {dettaglio.fonte === "osm" ? (
-                <p className="meta">
-                  Dati ©{" "}
-                  <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener" style={{ textDecoration: "underline" }}>
-                    OpenStreetMap
-                  </a>{" "}
-                  contributors
-                </p>
-              ) : null}
+              {!dettaglio ? (
+                <div className="h-24 animate-pulse rounded-2xl bg-superficie" aria-busy="true" aria-label="Caricamento" />
+              ) : (
+                <>
+                  {dettaglio.da_verificare ? <span className="verifica" style={{ alignSelf: "flex-start" }}>Posizione da verificare</span> : null}
+                  {dettaglio.descrizione ? <p className="descrizione">{dettaglio.descrizione}</p> : null}
+                  {dettaglio.indirizzo || dettaglio.orari || dettaglio.tariffa || dettaglio.telefono ? (
+                    <div className="dati">
+                      {dettaglio.indirizzo ? <div><Icona nome="pin" /><span><b>Indirizzo</b><span className="meta">{dettaglio.indirizzo}</span></span></div> : null}
+                      {dettaglio.orari ? <div><Icona nome="orologio" /><span><b>Orari</b><span className="meta">{dettaglio.orari}</span></span></div> : null}
+                      {dettaglio.tariffa ? <div><Icona nome="parcheggio" /><span><b>Tariffe{dettaglio.posti ? `, ${dettaglio.posti} posti` : ""}</b><span className="meta">{dettaglio.tariffa}</span></span></div> : null}
+                      {dettaglio.telefono ? <div><Icona nome="telefono" /><span><b>Telefono</b><a className="meta" href={`tel:${dettaglio.telefono.replace(/\s/g, "")}`}>{dettaglio.telefono}</a></span></div> : null}
+                    </div>
+                  ) : null}
+                  {dettaglio.fonte === "osm" ? (
+                    <p className="meta">
+                      Dati ©{" "}
+                      <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener" style={{ textDecoration: "underline" }}>
+                        OpenStreetMap
+                      </a>{" "}
+                      contributors
+                    </p>
+                  ) : null}
+                </>
+              )}
+              {posizione ? <p className="meta">A {leggiDistanza(distanzaM(posizione, puntoScelto))} da te</p> : null}
               <div className="azioni due">
-                <a className="bottone primario piccolo premibile" href={linkIndicazioni(dettaglio.lat, dettaglio.lng)} target="_blank" rel="noopener">
+                <a className="bottone primario piccolo premibile" href={linkIndicazioni(puntoScelto.lat, puntoScelto.lng)} target="_blank" rel="noopener">
                   <Icona nome="indicazioni" size={18} /> Indicazioni
                 </a>
-                <a className="bottone secondario piccolo premibile" href={dettaglio.categoria === "avviso" ? `/vivere/avvisi#${dettaglio.id}` : `/luoghi/${dettaglio.id}`}>
-                  {dettaglio.categoria === "avviso" ? "Tutti gli avvisi" : "Apri la scheda"}
+                <a className="bottone secondario piccolo premibile" href={puntoScelto.categoria === "avviso" ? `/vivere/avvisi#${puntoScelto.id}` : `/luoghi/${puntoScelto.id}`}>
+                  {puntoScelto.categoria === "avviso" ? "Tutti gli avvisi" : "Apri la scheda"}
                 </a>
               </div>
               <button type="button" className="w-fit self-center py-2 text-sm font-medium text-testo-2" onClick={() => setScelto(undefined)}>
                 Torna a tutti i luoghi
               </button>
             </>
-          ) : visibili.length === 0 ? (
-            <p className="vuoto">Nessun luogo in questa categoria.</p>
           ) : (
-            visibili.map((l) => (
-              <div key={l.id} className="luogo premibile" onClick={() => vaiA(l)} role="button" tabIndex={0} onKeyDown={(ev) => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); vaiA(l); } }}>
-                <PuntoCategoria categoria={l.categoria} sottocategoria={l.sottocategoria} grande />
-                <div style={{ minWidth: 0 }}>
-                  <h3>{l.nome}</h3>
-                  <div className="meta">{CATEGORIE[l.categoria] ?? l.categoria}{l.indirizzo ? `, ${l.indirizzo}` : ""}</div>
-                </div>
-                <a className="vai" href={linkIndicazioni(l.lat, l.lng)} target="_blank" rel="noopener" onClick={(ev) => ev.stopPropagation()}>
-                  Vai
-                </a>
+            <>
+              <div className="flex items-center gap-2">
+                <label className="flex h-11 min-w-0 flex-1 items-center gap-2 rounded-xl border border-linea bg-superficie px-3 focus-within:border-accento">
+                  <span className="shrink-0 text-testo-2"><Icona nome="cerca" size={18} /></span>
+                  <input
+                    ref={campoRicerca}
+                    type="search"
+                    value={testo}
+                    onChange={(e) => setTesto(e.target.value)}
+                    onFocus={() => setLivelloFoglio(2)}
+                    placeholder="Cerca un luogo o un indirizzo"
+                    aria-label="Cerca un luogo o un indirizzo"
+                    maxLength={80}
+                    className="min-w-0 flex-1 bg-transparent text-base text-testo outline-none placeholder:text-testo-2/70 lg:text-[15px]"
+                  />
+                </label>
+                {!inRicerca ? (
+                  <button type="button" onClick={vicinoAMe} className={`flex h-11 shrink-0 items-center gap-1.5 rounded-xl px-3 text-sm font-medium ${posizione ? "bg-accento-tenue text-accento" : "bg-superficie text-testo"}`}>
+                    <Icona nome="indicazioni" size={16} /> Vicino a me
+                  </button>
+                ) : null}
               </div>
-            ))
+
+              {inRicerca ? (
+                <RisultatiRicerca cerco={cerco} trovati={trovati} indirizzi={indirizzi} posizione={posizione} onLuogo={vaiA} onIndirizzo={vaiAIndirizzo} />
+              ) : statoDati === "errore" && !elenco.length ? (
+                <div className="flex flex-col items-start gap-2 rounded-2xl bg-superficie p-4" role="alert">
+                  <p className="text-[15px]">Non riesco a caricare i luoghi. Controlla la connessione.</p>
+                  <button type="button" className="pulsante" onClick={() => { coperti.current = []; caricaVista(); }}>Riprova</button>
+                </div>
+              ) : statoDati === "carico" && !elenco.length ? (
+                <div className="flex flex-col gap-2" aria-busy="true" aria-label="Caricamento">
+                  {[0, 1, 2].map((i) => <div key={i} className="h-16 animate-pulse rounded-2xl bg-superficie" />)}
+                </div>
+              ) : elenco.length === 0 ? (
+                <div className="flex flex-col items-start gap-2">
+                  <p className="vuoto">Nessun luogo {filtro !== "tutti" || areaFiltro !== "tutte" ? "di questo tipo " : ""}in quest&apos;area.</p>
+                  <button type="button" className="text-sm font-medium text-accento" onClick={() => mappa.current?.easeTo({ zoom: Math.max(11.4, (mappa.current?.getZoom() ?? 13) - 2) })}>
+                    Allarga la mappa
+                  </button>
+                </div>
+              ) : (
+                <>
+                  {troncato ? <p className="meta">Qui ci sono tanti luoghi: avvicina la mappa per vederli tutti.</p> : null}
+                  {elenco.slice(0, quanti).map((l) => (
+                    <div key={l.id} className="luogo premibile" onClick={() => vaiA(l)} role="button" tabIndex={0} onKeyDown={(ev) => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); vaiA(l); } }}>
+                      <PuntoCategoria categoria={l.categoria} sottocategoria={l.sottocategoria} grande />
+                      <div style={{ minWidth: 0, flex: 1 }}>
+                        <h3>{l.nome}</h3>
+                        <div className="meta">
+                          {CATEGORIE[l.categoria] ?? l.categoria}
+                          {l.indirizzo ? `, ${l.indirizzo}` : ""}
+                        </div>
+                      </div>
+                      {l.distanza_m != null ? <span className="shrink-0 font-mono text-[13px] font-medium text-testo-2">{leggiDistanza(l.distanza_m)}</span> : null}
+                      <a className="vai" href={linkIndicazioni(l.lat, l.lng)} target="_blank" rel="noopener" onClick={(ev) => ev.stopPropagation()}>
+                        Vai
+                      </a>
+                    </div>
+                  ))}
+                  {elenco.length > quanti ? (
+                    <button type="button" className="self-center py-2 text-sm font-medium text-accento" onClick={() => setQuanti((q) => q + PASSO_ELENCO)}>
+                      Mostra altri {Math.min(PASSO_ELENCO, elenco.length - quanti)}
+                    </button>
+                  ) : null}
+                </>
+              )}
+            </>
           )}
         </div>
       </div>
+    </div>
+  );
+}
+
+function RisultatiRicerca({
+  cerco, trovati, indirizzi, posizione, onLuogo, onIndirizzo,
+}: {
+  cerco: boolean; trovati: PuntoMappa[]; indirizzi: Indirizzo[]; posizione: Punto | null;
+  onLuogo: (l: PuntoMappa) => void; onIndirizzo: (i: Indirizzo) => void;
+}) {
+  if (cerco && !trovati.length && !indirizzi.length) {
+    return <div className="h-16 animate-pulse rounded-2xl bg-superficie" aria-busy="true" aria-label="Cerco" />;
+  }
+  if (!trovati.length && !indirizzi.length) return <p className="vuoto">Nessun luogo e nessun indirizzo con questo nome.</p>;
+  const cercoIndirizzi = cerco && !indirizzi.length;
+  return (
+    <div className="flex flex-col gap-4" aria-live="polite">
+      {trovati.length ? (
+        <section className="flex flex-col gap-2" aria-label="Luoghi">
+          <h3 className="text-[13px] font-medium text-testo-2">Luoghi</h3>
+          {trovati.map((l) => (
+            <button key={l.id} type="button" className="luogo premibile" onClick={() => onLuogo(l)}>
+              <PuntoCategoria categoria={l.categoria} sottocategoria={l.sottocategoria} grande />
+              <span style={{ minWidth: 0, flex: 1 }}>
+                <span className="block truncate text-[15px] font-semibold">{l.nome}</span>
+                <span className="meta block truncate">{CATEGORIE[l.categoria] ?? l.categoria}{l.indirizzo ? `, ${l.indirizzo}` : ""}</span>
+              </span>
+              {posizione ? <span className="shrink-0 font-mono text-[13px] font-medium text-testo-2">{leggiDistanza(l.distanza_m ?? distanzaM(posizione, l))}</span> : null}
+            </button>
+          ))}
+        </section>
+      ) : null}
+      {cercoIndirizzi ? <p className="meta" aria-busy="true">Cerco anche tra gli indirizzi…</p> : null}
+      {indirizzi.length ? (
+        <section className="flex flex-col gap-2" aria-label="Indirizzi">
+          <h3 className="text-[13px] font-medium text-testo-2">Indirizzi</h3>
+          {indirizzi.map((i) => (
+            <button key={`${i.lat},${i.lng},${i.nome}`} type="button" className="luogo premibile" onClick={() => onIndirizzo(i)}>
+              <span className="grid size-7 shrink-0 place-items-center rounded-full bg-superficie-2 text-testo-2"><Icona nome="pin" size={15} piatta /></span>
+              <span style={{ minWidth: 0, flex: 1 }}>
+                <span className="block truncate text-[15px] font-semibold">{i.nome}</span>
+                {i.dettaglio ? <span className="meta block truncate">{i.dettaglio}</span> : null}
+              </span>
+            </button>
+          ))}
+          <p className="meta">Indirizzi da Photon, dati © OpenStreetMap contributors.</p>
+        </section>
+      ) : null}
     </div>
   );
 }
