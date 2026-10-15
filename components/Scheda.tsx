@@ -144,7 +144,7 @@ export default function Scheda({ l, castello, azioni }: { l: Luogo; castello: Ca
             {l.foto_credito ? <figcaption className="text-xs text-testo-2">Foto: {l.foto_credito}</figcaption> : null}
           </figure>
         ) : null}
-        <MappaPunto lat={l.lat} lng={l.lng} nome={l.nome} categoria={l.categoria} />
+        <MappaPunto lat={l.lat} lng={l.lng} nome={l.nome} categoria={l.categoria} sottocategoria={l.sottocategoria} />
       </div>
     </article>
   );

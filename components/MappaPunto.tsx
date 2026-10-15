@@ -2,13 +2,14 @@
 
 import { useEffect, useRef } from "react";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { COLORI, STILE_CHIARO, STILE_SCURO } from "@/lib/mappa";
+import { STILE_CHIARO, STILE_SCURO } from "@/lib/mappa";
+import { elementoSegnaposto } from "./Segnaposto";
 
 /**
  * Mappa piccola con un solo segnaposto, a lato della scheda su computer.
  * Sul telefono non si carica nemmeno: lì c'è il pulsante «Sulla mappa».
  */
-export default function MappaPunto({ lat, lng, nome, categoria }: { lat: number; lng: number; nome: string; categoria: string }) {
+export default function MappaPunto({ lat, lng, nome, categoria, sottocategoria }: { lat: number; lng: number; nome: string; categoria: string; sottocategoria?: string | null }) {
   const box = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -30,9 +31,7 @@ export default function MappaPunto({ lat, lng, nome, categoria }: { lat: number;
         attributionControl: { compact: true },
       });
       m.addControl(new ml.NavigationControl({ showCompass: false }), "top-right");
-      const el = document.createElement("span");
-      el.className = "marcatore";
-      el.style.background = COLORI[categoria] ?? "#0B1F2E";
+      const el = elementoSegnaposto("span", { categoria, sottocategoria });
       new ml.Marker({ element: el }).setLngLat([lng, lat]).addTo(m);
       rimuovi = () => m.remove();
     });
@@ -40,7 +39,7 @@ export default function MappaPunto({ lat, lng, nome, categoria }: { lat: number;
       annullato = true;
       rimuovi?.();
     };
-  }, [lat, lng, categoria]);
+  }, [lat, lng, categoria, sottocategoria]);
 
   return <div ref={box} role="img" aria-label={`Mappa: ${nome}`} className="hidden aspect-square w-full overflow-hidden rounded-2xl bg-superficie lg:block" />;
 }

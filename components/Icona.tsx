@@ -3,6 +3,13 @@ import type { Icon, IconWeight } from "@phosphor-icons/react";
 import {
   ArrowRight,
   Wallet,
+  Info,
+  GasPump,
+  Coffee,
+  IceCream,
+  Pizza,
+  BeerStein,
+  Hamburger,
   ShareNetwork,
   LinkSimple,
   Article,
@@ -169,6 +176,13 @@ const ICONE = {
   importa: FileArrowUp,
   scarica: DownloadSimple,
   banca: Wallet,
+  info: Info,
+  carburante: GasPump,
+  caffe: Coffee,
+  gelato: IceCream,
+  pizza: Pizza,
+  birra: BeerStein,
+  panino: Hamburger,
   numeri: ChartBar,
 } satisfies Record<string, Icon>;
 
@@ -211,13 +225,14 @@ const COLORE: Partial<Record<NomeIcona, string>> = {
   coda: "coda",
 };
 
-export function Icona({ nome, size = 24, peso }: { nome: NomeIcona; size?: number; peso?: IconWeight }) {
-  const colore = COLORE[nome];
+/** `piatta`: sempre l'icona Phosphor, anche dove c'è quella disegnata (segnaposto della mappa) */
+export function Icona({ nome, size = 24, peso, piatta = false }: { nome: NomeIcona; size?: number; peso?: IconWeight; piatta?: boolean }) {
+  const colore = piatta ? undefined : COLORE[nome];
   if (colore) {
     // eslint-disable-next-line @next/next/no-img-element
     return <img src={`/icone-colore/${colore}.webp`} alt="" aria-hidden="true" width={size} height={size} draggable={false} className="icona-colore" style={{ width: size, height: size }} />;
   }
-  if (PROPRIE.has(nome)) {
+  if (!piatta && PROPRIE.has(nome)) {
     return (
       <span
         aria-hidden="true"

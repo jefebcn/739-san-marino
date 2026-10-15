@@ -3,7 +3,8 @@
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { COLORI, STILE_CHIARO, STILE_SCURO } from "@/lib/mappa";
+import { STILE_CHIARO, STILE_SCURO } from "@/lib/mappa";
+import { elementoSegnaposto } from "./Segnaposto";
 
 export type Punto = { id: string; nome: string; lat: number; lng: number; categoria: string; href: string };
 
@@ -35,12 +36,9 @@ export default function MappaPunti({ punti, etichetta }: { punti: Punto[]; etich
       m.addControl(new ml.NavigationControl({ showCompass: false }), "top-right");
       const confini = new ml.LngLatBounds();
       for (const p of punti) {
-        const el = document.createElement("button");
-        el.type = "button";
-        el.className = "marcatore";
+        const el = elementoSegnaposto("button", p);
         el.title = p.nome;
         el.setAttribute("aria-label", p.nome);
-        el.style.background = COLORI[p.categoria] ?? "#0B1F2E";
         el.addEventListener("click", () => router.push(p.href));
         new ml.Marker({ element: el }).setLngLat([p.lng, p.lat]).addTo(m);
         confini.extend([p.lng, p.lat]);

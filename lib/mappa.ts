@@ -1,4 +1,5 @@
-// Costanti della mappa condivise da MappaTerritorio (pagina Mappa) e MappaPunto (scheda su computer).
+// Costanti della mappa condivise da MappaTerritorio (pagina Mappa), MappaPunti (speciali) e MappaPunto (scheda su computer).
+import type { NomeIcona } from "@/components/Icona";
 
 /** Colore del segnaposto per categoria di luogo */
 export const COLORI: Record<string, string> = {
@@ -21,6 +22,38 @@ export const COLORI: Record<string, string> = {
   banca: "#3F5B73",
   carburante: "#6B7280",
 };
+
+/** Icona del segnaposto per categoria (sempre Phosphor, bianca sul colore della categoria) */
+export const ICONE_CATEGORIA: Record<string, NomeIcona> = {
+  luogo: "pin",
+  trasporti: "trasporti",
+  parcheggio: "parcheggio",
+  farmacia: "farmacia",
+  servizio: "info",
+  impianto: "sport",
+  locale: "food",
+  cultura: "cultura",
+  panorama: "panorama",
+  bagni: "bagni",
+  acqua: "acqua",
+  ricarica: "ricarica",
+  avviso: "allerta",
+  ufficio: "uffici",
+  salute: "salute",
+  posta: "email",
+  banca: "banca",
+  carburante: "carburante",
+};
+
+/** Per i locali l'icona dice che posto è */
+const ICONE_LOCALE: Record<string, NomeIcona> = { pizzeria: "pizza", bar: "caffe", gelateria: "gelato", pub: "birra", "cibo veloce": "panino", piadineria: "panino" };
+
+export function iconaDi(categoria: string, sottocategoria?: string | null): NomeIcona {
+  if (categoria === "locale" && sottocategoria && ICONE_LOCALE[sottocategoria]) return ICONE_LOCALE[sottocategoria];
+  return ICONE_CATEGORIA[categoria] ?? "pin";
+}
+
+export const coloreDi = (categoria: string) => COLORI[categoria] ?? "#0B1F2E";
 
 export const CENTRO: [number, number] = [12.4578, 43.9424];
 export const STILE_CHIARO = "https://tiles.openfreemap.org/styles/liberty";

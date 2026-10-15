@@ -6,10 +6,8 @@ import type { Map as MLMap, Marker } from "maplibre-gl";
 import { CATEGORIE, linkIndicazioni, type Luogo } from "@/lib/data";
 import { Icona } from "./Icona";
 import { AREE, areaDiCategoria, type SlugArea } from "@/lib/aree";
-import { CENTRO, COLORI, STILE_CHIARO, STILE_SCURO } from "@/lib/mappa";
-
-
-
+import { CENTRO, STILE_CHIARO, STILE_SCURO } from "@/lib/mappa";
+import { elementoSegnaposto, PuntoCategoria } from "./Segnaposto";
 
 /** 0 = solo intestazione, 1 = metà schermo, 2 = quasi tutto lo schermo */
 type Livello = 0 | 1 | 2;
@@ -62,11 +60,8 @@ export default function MappaTerritorio({ luoghi, focus }: { luoghi: Luogo[]; fo
       mappa.current = m;
 
       for (const l of luoghi) {
-        const el = document.createElement("button");
-        el.type = "button";
-        el.className = "marcatore";
+        const el = elementoSegnaposto("button", l);
         el.setAttribute("aria-label", l.nome);
-        el.style.background = COLORI[l.categoria] ?? "#0B1F2E";
         el.addEventListener("click", () => {
           setScelto(l.id);
           setLivelloFoglio(1);
@@ -152,7 +147,7 @@ export default function MappaTerritorio({ luoghi, focus }: { luoghi: Luogo[]; fo
             <div className="chips" role="group" aria-label={`Categorie di ${areeMappa.find((a) => a.slug === areaFiltro)?.nome ?? ""}`} style={{ margin: 0, padding: "0 var(--gutter)" }}>
               {categorie.map((c) => (
                 <button key={c} type="button" className="chip" aria-pressed={filtro === c} onClick={() => setFiltro(filtro === c ? "tutti" : c)}>
-                  <span className="punto" style={{ background: COLORI[c] ?? "#0B1F2E", width: 10, height: 10, borderRadius: 3 }} />
+                  <PuntoCategoria categoria={c} />
                   {CATEGORIE[c] ?? c}
                 </button>
               ))}
@@ -230,7 +225,7 @@ export default function MappaTerritorio({ luoghi, focus }: { luoghi: Luogo[]; fo
           ) : (
             visibili.map((l) => (
               <div key={l.id} className="luogo premibile" onClick={() => vaiA(l)} role="button" tabIndex={0} onKeyDown={(ev) => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); vaiA(l); } }}>
-                <span className="punto" style={{ background: COLORI[l.categoria] ?? "#0B1F2E" }} />
+                <PuntoCategoria categoria={l.categoria} sottocategoria={l.sottocategoria} grande />
                 <div style={{ minWidth: 0 }}>
                   <h3>{l.nome}</h3>
                   <div className="meta">{CATEGORIE[l.categoria] ?? l.categoria}{l.indirizzo ? `, ${l.indirizzo}` : ""}</div>
