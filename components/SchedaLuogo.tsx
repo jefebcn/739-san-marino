@@ -17,7 +17,7 @@ export default function SchedaLuogo({ l, children }: { l: Luogo; children?: Reac
           <a className="azione-mini premibile" href={`tel:${l.telefono.replace(/\s/g, "")}`}><Icona nome="telefono" /> Chiama</a>
         ) : null}
         <a className="azione-mini premibile" href={linkIndicazioni(l.lat, l.lng)} target="_blank" rel="noopener"><Icona nome="indicazioni" /> Indicazioni</a>
-        <Link className="azione-mini premibile" href={`/mappa?luogo=${l.id}`}><Icona nome="mappa" /> Mappa</Link>
+        <Link prefetch={false} className="azione-mini premibile" href={`/mappa?luogo=${l.id}`}><Icona nome="mappa" /> Mappa</Link>
       </div>
     </article>
   );

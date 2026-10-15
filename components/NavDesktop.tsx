@@ -27,6 +27,7 @@ export function NavDesktop() {
         <Link
           key={v.href}
           href={v.href}
+          prefetch={v.href === "/mappa" ? false : undefined}
           aria-current={qui === v.href ? "page" : undefined}
           className="rounded-xl px-3 py-2 text-[15px] font-medium text-testo-2 transition-colors hover:bg-superficie hover:text-testo aria-[current=page]:text-testo aria-[current=page]:bg-superficie"
         >

@@ -12,7 +12,7 @@ export function DataBadge({ iso }: { iso: string }) {
 
 export default function EventoRiga({ e }: { e: Evento }) {
   return (
-    <Link href={`/eventi/${e.id}`} className="evento premibile">
+    <Link prefetch={false} href={`/eventi/${e.id}`} className="evento premibile">
       <DataBadge iso={e.inizio} />
       <div style={{ minWidth: 0 }}>
         <h3>{e.titolo}</h3>

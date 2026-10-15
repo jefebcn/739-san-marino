@@ -74,7 +74,7 @@ export default async function DettaglioEvento({ params }: Props) {
         {e.luogo ? (
           <div>
             <Icona nome="pin" />
-            <span><b>{e.luogo.nome}</b><Link href={`/mappa?luogo=${e.luogo.id}`} className="meta" style={{ color: "var(--accento)" }}>Vedi sulla mappa</Link></span>
+            <span><b>{e.luogo.nome}</b><Link prefetch={false} href={`/mappa?luogo=${e.luogo.id}`} className="meta" style={{ color: "var(--accento)" }}>Vedi sulla mappa</Link></span>
           </div>
         ) : null}
         {!e.luogo && e.indirizzo ? (

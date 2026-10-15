@@ -62,7 +62,7 @@ export default async function Castello({ params }: Props) {
       </section>
 
       <section className="sezione">
-        <div className="sezione-head"><h2>Luoghi</h2><Link href="/mappa">Mappa</Link></div>
+        <div className="sezione-head"><h2>Luoghi</h2><Link prefetch={false} href="/mappa">Mappa</Link></div>
         {luoghi.length === 0 ? (
           <p className="vuoto">Nessun luogo segnato in questo castello per ora.</p>
         ) : (

@@ -16,7 +16,7 @@ export default async function Parcheggi() {
       <TestaPagina href="/vivere" verso="Vivere" etichetta="Muoversi" titolo="Parcheggi">
         <p className="sottotitolo">A pagamento dalle 8 alle 20 da ottobre a marzo, dalle 8 alle 24 da aprile a settembre. Il multipiano P9 è il più grande ed è collegato al centro con gli ascensori.</p>
       </TestaPagina>
-      <Link href="/mappa" className="bottone secondario premibile"><Icona nome="mappa" size={20} /> Vedili sulla mappa</Link>
+      <Link prefetch={false} href="/mappa" className="bottone secondario premibile"><Icona nome="mappa" size={20} /> Vedili sulla mappa</Link>
       {parcheggi.length === 0 ? (
         <p className="vuoto">Elenco dei parcheggi in arrivo.</p>
       ) : (

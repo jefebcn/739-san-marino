@@ -129,7 +129,7 @@ export default function Ricerca({ eventi, luoghi, castelli, pratiche = [] }: { e
             <ul className="flex flex-col gap-1.5">
               {g.voci.map((v) => (
                 <li key={`${v.href}-${v.titolo}`}>
-                  <Link href={v.href} className="flex items-center gap-3 rounded-xl bg-superficie p-3 transition-colors hover:bg-superficie-2 active:scale-[0.98]">
+                  <Link href={v.href} prefetch={v.href.startsWith("/mappa") ? false : undefined} className="flex items-center gap-3 rounded-xl bg-superficie p-3 transition-colors hover:bg-superficie-2 active:scale-[0.98]">
                     <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-fondo text-testo"><Icona nome={v.icona} size={20} /></span>
                     <span className="flex min-w-0 flex-col">
                       <span className="truncate text-[15px] font-semibold">{v.titolo}</span>

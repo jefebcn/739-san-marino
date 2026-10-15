@@ -72,7 +72,7 @@ export default function Scheda({ l, castello, azioni, gestito = false, pro = nul
           <a href={linkIndicazioni(l.lat, l.lng)} target="_blank" rel="noopener" data-conta="indicazioni" className="flex h-12 items-center justify-center gap-2 rounded-xl bg-metallo text-[15px] font-semibold text-su-accento active:scale-[0.98]">
             <Icona nome="indicazioni" size={20} /> Indicazioni
           </a>
-          <Link href={`/mappa?luogo=${l.id}`} className="flex h-12 items-center justify-center gap-2 rounded-xl bg-superficie text-[15px] font-semibold hover:bg-superficie-2 active:scale-[0.98]">
+          <Link prefetch={false} href={`/mappa?luogo=${l.id}`} className="flex h-12 items-center justify-center gap-2 rounded-xl bg-superficie text-[15px] font-semibold hover:bg-superficie-2 active:scale-[0.98]">
             <Icona nome="mappa" size={20} /> Sulla mappa
           </Link>
           {/* 739 Pro: menu e prenotazioni del titolare */}

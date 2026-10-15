@@ -39,7 +39,7 @@ export default function Guida() {
         <div className="sezione-head"><h2>Cosa trovi</h2></div>
         <div className="lista">
           {COSA_TROVI.map((v) => (
-            <Link key={v.href} href={v.href} className="spiega premibile">
+            <Link key={v.href} href={v.href} prefetch={v.href.startsWith("/mappa") ? false : undefined} className="spiega premibile">
               <span className="icona-tonda"><Icona nome={v.icona} /></span>
               <span><b>{v.titolo}</b><span>{v.testo}</span></span>
             </Link>

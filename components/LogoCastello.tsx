@@ -6,6 +6,12 @@ export const haLogo = (slug: string) => CON_LOGO.has(slug);
 
 type Castello = { slug: string; nome: string; colore: string };
 
+// Quanto è largo a schermo, dalla classe Tailwind size-N (N × 4 px); senza size-N si considera grande
+const larghezza = (className: string) => {
+  const n = /(?:^|\s)size-(\d+)(?:\s|$)/.exec(className)?.[1];
+  return n ? `${Number(n) * 4}px` : "96px";
+};
+
 /** Il logo (intero, con il nome) in un quadrato nero; se il castello non ha logo, il suo punto colore. */
 export function EmblemaCastello({ c, className = "size-9" }: { c: Castello; className?: string }) {
   if (!CON_LOGO.has(c.slug)) {
@@ -13,7 +19,18 @@ export function EmblemaCastello({ c, className = "size-9" }: { c: Castello; clas
   }
   return (
     // eslint-disable-next-line @next/next/no-img-element
-    <img src={`/castelli/${c.slug}-emblema.webp`} alt="" aria-hidden="true" width={192} height={192} loading="lazy" className={`shrink-0 rounded-xl bg-[var(--tessera)] object-contain ${className}`} />
+    <img
+      src={`/castelli/${c.slug}-emblema.webp`}
+      // Due misure: il browser prende la piccola (112 px) quando a schermo l'emblema è fino a 56 px
+      srcSet={`/castelli/${c.slug}-emblema-piccolo.webp 112w, /castelli/${c.slug}-emblema.webp 192w`}
+      sizes={larghezza(className)}
+      alt=""
+      aria-hidden="true"
+      width={192}
+      height={192}
+      loading="lazy"
+      className={`shrink-0 rounded-xl bg-[var(--tessera)] object-contain ${className}`}
+    />
   );
 }
 

@@ -4,7 +4,8 @@
 // il logo sta sul fondo scuro della pagina (tema scuro) o su una tessera grigio scuro (tema chiaro, --tessera).
 // Le parti scure dentro il disegno restano com'erano.
 // - <slug>.webp: 640×480, per la pagina del castello;
-// - <slug>-emblema.webp: 192×192, per classifiche, podio e scelta del castello.
+// - <slug>-emblema.webp: 192×192, per classifiche, podio e scelta del castello;
+//   <slug>-emblema-piccolo.webp: 112×112, per quando a schermo è piccolo (srcset in components/LogoCastello.tsx).
 // Uso: node scripts/castelli.mjs
 import sharp from "sharp";
 import { mkdirSync, readdirSync } from "node:fs";
@@ -54,5 +55,12 @@ for (const file of readdirSync("docs/castelli").filter((f) => f.endsWith(".webp"
     // 192 px bastano fino a 96 px a schermo su display doppi (classifica, podio, scelta): un terzo del peso di prima
     .webp({ quality: 80, alphaQuality: 90, effort: 6 })
     .toFile(`public/castelli/${slug}-emblema.webp`);
+
+  // Versione piccola (112 px) per griglie e righe fino a 56 px a schermo: il browser la sceglie con srcset
+  await sharp(intero)
+    .resize(102, 102, { fit: "contain", background: VUOTO })
+    .extend({ top: 5, bottom: 5, left: 5, right: 5, background: VUOTO })
+    .webp({ quality: 80, alphaQuality: 90, effort: 6 })
+    .toFile(`public/castelli/${slug}-emblema-piccolo.webp`);
   console.log("ok", slug);
 }

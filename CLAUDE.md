@@ -110,7 +110,9 @@ La Home sceglie la versione con l'attributo `data-utente` su `<html>` ("nuovo" o
 - **Mappa**: `/mappa` è statica; i luoghi del territorio arrivano da `/api/luoghi-mappa` (cache CDN 5 minuti, campi minimi) con `preload` nella pagina e `preconnect` ai server di OpenFreeMap; `?luogo=` si legge nel browser; la libreria MapLibre si scarica appena arriva il file del componente.
 - **Icone**: `components/Icona.tsx` non importa più il pacchetto Phosphor (portava in ogni pagina i sei stili di ogni icona, 259 KB): `node scripts/icone-phosphor.mjs` scrive in `components/icone-tracciati.ts` solo lo stile usato (34 KB). **Quando si aggiunge un'icona in `ICONE` si rilancia lo script.**
 - **Supabase dopo il primo disegno**: `SessioneSync` (nel layout) importa il client di Supabase dinamicamente; le pagine che lo usano subito lo caricano da sole.
-- **Loghi dei castelli** piccoli a 192 px (`scripts/castelli.mjs`), 40% più leggeri.
+- **Loghi dei castelli** a 192 px e in versione piccola da 112 px (`-emblema-piccolo.webp`), scelta dal browser con `srcset` secondo la classe `size-N` (`scripts/castelli.mjs`, `components/LogoCastello.tsx`).
+- **Prefetch con misura**: i link alla mappa hanno `prefetch={false}` (preparare la pagina in anticipo scaricava MapLibre, 288 KB, e i dati dei luoghi da qualunque pagina); MapLibre parte solo quando la mappa si disegna davvero. Anche le righe degli elenchi lunghi (luoghi delle sezioni, eventi) non fanno prefetch: la scheda arriva comunque dalla cache in un attimo.
+- Misure del 15/10/2026 (telefono, 4G simulato, sito online): scheda di un luogo e Salute da MISS a HIT della CDN (primo byte da ~500 a ~140 ms); primo contenuto della scheda da 800 a 420 ms; LCP di Salute da 1,8 a 1,05 s; elenco della mappa pronto da 3,2 a ~2 s; Negozi da 508 a 433 KB scaricati.
 
 ## Database
 

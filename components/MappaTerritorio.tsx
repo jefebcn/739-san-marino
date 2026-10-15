@@ -13,8 +13,10 @@ import {
 } from "@/lib/mappa-dati";
 import { chiaveSegnaposto, immagineSegnaposto, PuntoCategoria } from "./Segnaposto";
 
-// La libreria della mappa (la parte più pesante) parte appena si carica questo file, non dopo il primo disegno
-const libreria = typeof window === "undefined" ? null : import("maplibre-gl");
+// La libreria della mappa (la parte più pesante) parte al primo disegno del componente, prima degli effetti;
+// non quando Next prepara la pagina in anticipo (lì il file viene valutato ma il componente non si disegna)
+let libreriaInCorso: Promise<typeof import("maplibre-gl")> | null = null;
+const libreria = () => (libreriaInCorso ??= import("maplibre-gl"));
 
 /** 0 = solo intestazione, 1 = metà schermo, 2 = quasi tutto lo schermo */
 type Livello = 0 | 1 | 2;
@@ -38,6 +40,7 @@ const aPunto = (l: Luogo): PuntoMappa => ({
  * l'elenco del pannello mostra quelli dell'area, dal più vicino se si è dato il consenso alla posizione.
  */
 export default function MappaTerritorio({ segnali }: { segnali: Luogo[] }) {
+  if (typeof window !== "undefined") libreria();
   const box = useRef<HTMLDivElement>(null);
   const foglio = useRef<HTMLDivElement>(null);
   const mappa = useRef<MLMap | null>(null);
@@ -152,7 +155,7 @@ export default function MappaTerritorio({ segnali }: { segnali: Luogo[] }) {
       setScelto(focus.current);
       setLivelloFoglio(1);
     } else focus.current = null;
-    libreria!.then((ml) => {
+    libreria().then((ml) => {
       if (annullato || !box.current) return;
       // Il worker è copiato in public/ da scripts/worker-mappa.mjs
       ml.setWorkerUrl(new URL("/maplibre-gl-worker.mjs", window.location.origin).href);
@@ -317,7 +320,7 @@ export default function MappaTerritorio({ segnali }: { segnali: Luogo[] }) {
         focus.current = null;
         const vai = () => mappa.current?.jumpTo({ center: [l.lng, l.lat], zoom: 15.5 });
         if (mappa.current) vai();
-        else libreria?.then(() => setTimeout(vai, 0));
+        else libreria().then(() => setTimeout(vai, 0));
       }
     });
     return () => {
@@ -379,7 +382,7 @@ export default function MappaTerritorio({ segnali }: { segnali: Luogo[] }) {
     setTesto("");
     setScelto(undefined);
     setLivelloFoglio(1);
-    const ml = await libreria!;
+    const ml = await libreria();
     segnoIndirizzo.current?.remove();
     const el = document.createElement("span");
     el.className = "segno-indirizzo";

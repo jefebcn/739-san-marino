@@ -112,7 +112,8 @@ export default async function PaginaSezione({ area, sezione, prima, vuoto }: { a
 function RigaLuogo({ l, offerta }: { l: Luogo; offerta?: string }) {
   const sotto = [l.indirizzo, l.descrizione].filter(Boolean).join(", ");
   return (
-    <Link href={`/luoghi/${l.id}`} className="flex items-center gap-3 px-4 py-3.5 transition-colors hover:bg-superficie-2">
+    // Niente prefetch: in un elenco lungo scaricherebbe in anticipo una quindicina di schede (circa 120 KB)
+    <Link prefetch={false} href={`/luoghi/${l.id}`} className="flex items-center gap-3 px-4 py-3.5 transition-colors hover:bg-superficie-2">
       <span className="flex min-w-0 flex-1 flex-col gap-0.5">
         <span className="text-[15px] font-medium leading-snug">{l.nome}</span>
         {sotto ? <span className="line-clamp-1 text-[13px] text-testo-2">{sotto}</span> : null}
