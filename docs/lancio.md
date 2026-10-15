@@ -27,7 +27,7 @@ Cosa deve fare Alex prima di aprire 739 a tutti (passo 1.8, 14/10/2026). In ordi
 
 ## 4 bis. Luoghi nuovi da OpenStreetMap
 
-- [ ] Applicare `supabase/migrations/0033_negozi.sql` (contiene anche 0030, 0031, 0032): ristoranti e bar, poste, banche, distributori, scuole, chiese, negozi. Poi lanciare l'aggiornamento subito con `cron.schedule('osm-subito', …)` e toglierlo dopo 2 o 3 minuti con `cron.unschedule('osm-subito')`.
+- [x] Applicare `supabase/migrations/0033_negozi.sql` (fatto da Alex il 15/10/2026, primo aggiornamento lanciato lo stesso giorno) (contiene anche 0030, 0031, 0032): ristoranti e bar, poste, banche, distributori, scuole, chiese, negozi. Poi lanciare l'aggiornamento subito con `cron.schedule('osm-subito', …)` e toglierlo dopo 2 o 3 minuti con `cron.unschedule('osm-subito')`.
 - [ ] Mandare a Claude i nomi dei ristoranti importanti: quelli che OSM non ha si aggiungono con `/admin/importa`.
 - [ ] Per la Fase 1 mancano dati veri: Giunte di castello, associazioni, società sportive (CONS), orari delle messe. Vanno chiesti agli enti o dati da Alex.
 - [ ] Facoltativo: chiedere all'Ufficio del Turismo l'elenco dei locali e il calendario degli eventi (il loro sito non si può leggere in automatico).
