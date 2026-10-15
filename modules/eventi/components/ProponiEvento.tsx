@@ -6,6 +6,7 @@ import { Icona } from "@/components/Icona";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import { useSessione } from "@/modules/core/store";
 import Tano from "@/components/Tano";
+import { PER_LAVORO } from "@/lib/eventi-lavoro";
 import { mieiRuoli } from "@/modules/core/ruoli";
 import { caricaFoto, mieiEventi, proponiEvento, salvaMioEvento, type DatiProposta } from "../api";
 
@@ -14,7 +15,7 @@ export type CastelloScelta = { id: number; nome: string };
 
 const CAMPO =
   "w-full rounded-xl border border-linea bg-superficie px-4 text-[15px] text-testo outline-none transition-colors placeholder:text-testo-2/60 focus:border-accento";
-const PER_CHI = ["Tutti", "Famiglie e bambini", "Ragazzi", "Adulti"];
+const PER_CHI = ["Tutti", "Famiglie e bambini", "Ragazzi", "Adulti", PER_LAVORO];
 
 /** Ora di San Marino di un istante ISO: «2026-10-17» e «21:00» */
 function giornoOra(iso: string | null) {
@@ -66,6 +67,11 @@ export default function ProponiEvento({ luoghi, castelli }: { luoghi: LuogoScelt
   const [caricaInCorso, setCaricaInCorso] = useState(false);
   const [errore, setErrore] = useState<string | null>(null);
   const [fatto, setFatto] = useState<{ tipo: "proposta" } | { tipo: "pubblicato"; id: string } | null>(null);
+
+  // Da «Fiere e convegni» (?per=lavoro) l'evento è già per professionisti e aziende
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("per") === "lavoro") setPerChi(PER_LAVORO);
+  }, []);
 
   // Ruolo e, per gli organizzatori, l'evento da modificare (?id=)
   useEffect(() => {

@@ -91,6 +91,18 @@ export async function getEventi(limite = 50, castelloId?: number): Promise<Event
   return (data ?? []) as unknown as Evento[];
 }
 
+/** I prossimi eventi per un pubblico (per_chi), per esempio fiere e convegni per chi lavora */
+export async function getEventiPerChi(perChi: string, limite = 50): Promise<Evento[]> {
+  const db = supabase();
+  if (!db) return [];
+  const { data, error } = await db.from("eventi").select(CAMPI_EVENTO).eq("per_chi", perChi).gte("inizio", daOra()).order("inizio", { ascending: true }).limit(limite);
+  if (error) {
+    if (error.code !== "42703") console.error("eventi per chi", error.message);
+    return [];
+  }
+  return (data ?? []) as unknown as Evento[];
+}
+
 export async function getEvento(id: string): Promise<Evento | null> {
   const db = supabase();
   if (!db || !/^[0-9a-f-]{36}$/i.test(id)) return null;

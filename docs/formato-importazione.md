@@ -100,6 +100,8 @@ Quando lo approvi diventa un evento del calendario. Se manca il castello, si pre
 | `luogo` | no | Nome esatto di un luogo di 739 |
 | `castello` | no | |
 | `descrizione`, `organizzatore` | no | |
+| `per_chi` | no | `Tutti`, `Famiglie e bambini`, `Ragazzi`, `Adulti` o `Professionisti e aziende` (questi ultimi compaiono anche in Lavorare, Fiere e convegni) |
+| `prezzo`, `indirizzo`, `contatto` | no | Come nel modulo «Proponi un evento» (`indirizzo` se non c'è un `luogo`) |
 | `metri` | no | Metri del check-in, da 0 a 500 (predefinito 20) |
 | `fonte_nome`, `fonte_link` | consigliati | |
 

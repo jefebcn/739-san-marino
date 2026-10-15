@@ -133,10 +133,12 @@ export function valida(elementi: unknown[], rif: Riferimenti): Esito[] {
       if (inizio && fine && fine < inizio) errori.push("«fine» è prima di «inizio».");
       const metri = e.metri === undefined ? 20 : Number(e.metri);
       if (isNaN(metri) || metri < 0 || metri > 500) errori.push("«metri» va da 0 a 500.");
+      if (testo(e.per_chi) && String(e.per_chi).trim().length > 60) errori.push("«per_chi» è troppo lungo (al massimo 60 caratteri).");
       pronto = {
         titolo: testo(e.titolo), descrizione: testo(e.descrizione), inizio, fine,
         luogo_id: luogo(e.luogo ?? e.luogo_id, errori), castello_id: castello(e.castello ?? e.castello_id, errori),
         organizzatore: testo(e.organizzatore), metri, fonte_nome: testo(e.fonte_nome), fonte_link: url(e.fonte_link, "fonte_link", errori),
+        per_chi: testo(e.per_chi), prezzo: testo(e.prezzo), indirizzo: testo(e.indirizzo), contatto: testo(e.contatto),
       };
     } else if (tipo === "avviso") {
       if (!testo(e.titolo)) errori.push("Manca «titolo».");
