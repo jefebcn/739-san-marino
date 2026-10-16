@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Bricolage_Grotesque, Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Sora } from "next/font/google";
 import "./globals.css";
 import BottomNav, { type VoceNav } from "@/components/ui/BottomNav";
 import SessioneSync from "@/modules/core/components/SessioneSync";
@@ -17,8 +17,8 @@ export const revalidate = 60;
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-geist", display: "swap" });
 const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono", display: "swap" });
-// I titoli (16/10/2026, richiesta di Alex): un grottesco con carattere, da testata; l'asse opsz adatta il disegno alla grandezza
-const titoli = Bricolage_Grotesque({ subsets: ["latin", "latin-ext"], variable: "--font-titoli", display: "swap", axes: ["opsz"] });
+// I titoli (16/10/2026, scelta di Alex fra sei caratteri a confronto): Sora, geometrico e moderno
+const titoli = Sora({ subsets: ["latin", "latin-ext"], variable: "--font-titoli", display: "swap" });
 
 const VOCI: VoceNav[] = [
   { href: "/", nome: "Oggi", icona: "home" },

@@ -46,7 +46,7 @@
     --tessera: #27272A;         /* fondo dei loghi dei castelli */
 
     --font: var(--font-geist), "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
-    /* Titoli: Bricolage Grotesque; testi Geist, numeri Geist Mono */
+    /* Titoli: Sora; testi Geist, numeri Geist Mono */
     --titoli: var(--font-titoli), var(--font);
     --mono: var(--font-geist-mono), "Geist Mono", ui-monospace, "SF Mono", Consolas, monospace;
     --r: 16px;
@@ -75,7 +75,7 @@
     font-feature-settings: "ss01";
   }
   h1, h2, h3 { letter-spacing: -0.02em; text-wrap: balance; font-weight: 600; }
-  h1, h2 { font-family: var(--titoli); font-optical-sizing: auto; }
+  h1, h2 { font-family: var(--titoli); }
   a, button, [role="button"] { cursor: pointer; }
   button:disabled { cursor: not-allowed; }
   .num, .meta, .metri, .etichetta { font-variant-numeric: tabular-nums; }
