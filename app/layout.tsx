@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono, Sora } from "next/font/google";
+import { Geist, Geist_Mono, Saira, Sora } from "next/font/google";
 import "./globals.css";
 import BottomNav, { type VoceNav } from "@/components/ui/BottomNav";
 import SessioneSync from "@/modules/core/components/SessioneSync";
@@ -19,6 +19,8 @@ const geist = Geist({ subsets: ["latin"], variable: "--font-geist", display: "sw
 const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono", display: "swap" });
 // I titoli (16/10/2026, scelta di Alex fra sei caratteri a confronto): Sora, geometrico e moderno
 const titoli = Sora({ subsets: ["latin", "latin-ext"], variable: "--font-titoli", display: "swap" });
+// La voce del logo (16/10/2026): largo, corsivo e pesante come il 739; solo per i numeri grandi e l'apertura di Oggi (.voce-logo)
+const logo = Saira({ subsets: ["latin"], style: ["italic"], axes: ["wdth"], variable: "--font-logo", display: "swap" });
 
 const VOCI: VoceNav[] = [
   { href: "/", nome: "Oggi", icona: "home" },
@@ -71,7 +73,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const classifica = await getClassifica();
 
   return (
-    <html lang="it" className={`${geist.variable} ${geistMono.variable} ${titoli.variable}`} suppressHydrationWarning>
+    <html lang="it" className={`${geist.variable} ${geistMono.variable} ${titoli.variable} ${logo.variable}`} suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{

@@ -64,7 +64,7 @@ export default function IlTuoCastello({ castelli, raccolta, avvisi }: { castelli
             </div>
             {/* L'SMR ID si propone qui, con calma: dopo il castello, non prima */}
             {profilo ? null : (
-              <Link href="/profile" className="flex items-center gap-2 border-t border-linea px-4 py-3 text-sm font-medium text-accento transition-colors hover:bg-superficie-2">
+              <Link href="/profile" className="flex items-center gap-2 border-t border-linea px-4 py-3 text-sm font-semibold text-testo transition-colors hover:bg-superficie-2">
                 Crea il tuo SMR ID: i metri che guadagni vanno a {c.nome} <Icona nome="avanti" size={14} />
               </Link>
             )}

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { chiaveGiorno, contaLuoghi, etichettaGiorno, getClassifica, getDaScoprire, getEventi, oggiLungo, ora, saluto, giornoNumero, meseBreve } from "@/lib/data";
-import { Icona, type NomeIcona } from "@/components/Icona";
+import { Icona } from "@/components/Icona";
 import { AREE } from "@/lib/aree";
 import Installa from "@/components/Installa";
 import { EmblemaCastello } from "@/components/LogoCastello";
@@ -45,13 +45,13 @@ function Titolo({ children, href, link = "Tutti" }: { children: ReactNode; href?
   );
 }
 
-/** Una tessera di «Adesso»: etichetta in alto, il dato grande in basso, una riga di nota */
-function Tessera({ href, icona, titolo, nota, children }: { href: string; icona: NomeIcona; titolo: string; nota?: ReactNode; children: ReactNode }) {
+/** Una cella del cruscotto di «Adesso»: etichetta, il numero grande come il 739, una riga di nota */
+function Cella({ href, titolo, nota, bordo = "", children }: { href: string; titolo: string; nota?: ReactNode; bordo?: string; children: ReactNode }) {
   return (
-    <Link href={href} className="flex min-h-[124px] flex-col rounded-2xl bg-superficie p-4 transition-colors hover:bg-superficie-2">
-      <span className="flex items-center gap-2 text-sm font-medium text-testo-2"><Icona nome={icona} size={18} /> {titolo}</span>
-      <span className="mt-auto pt-3 [&_.grande]:text-[30px]">{children}</span>
-      {nota ? <span className="mt-0.5 truncate text-[13px] text-testo-2">{nota}</span> : null}
+    <Link href={href} className={`flex min-h-[132px] flex-col p-4 transition-colors hover:bg-white/[0.06] ${bordo}`}>
+      <span className="text-[13px] font-medium text-zinc-400">{titolo}</span>
+      <span className="mt-auto pt-3">{children}</span>
+      {nota ? <span className="mt-1.5 truncate text-[12px] text-zinc-400">{nota}</span> : null}
     </Link>
   );
 }
@@ -60,7 +60,7 @@ function Tessera({ href, icona, titolo, nota, children }: { href: string; icona:
  * Oggi, la Home (docs/piano.md: «la porta»). Una struttura sola per tutti, sempre nello stesso ordine;
  * cambia il contenuto, non la forma, e nessuna fascia resta vuota:
  * 1. saluto, data e meteo (per chi arriva, una riga su cos'è 739);
- * 2. «Adesso»: farmacie aperte, funivia, parcheggi, avvisi;
+ * 2. «Adesso»: il cruscotto nero con farmacie aperte, funivia, parcheggi, avvisi (numeri nella voce del logo);
  * 3. «Oggi sul Titano»: di mattina il Bollettino, poi il programma della fascia; se non c'è niente, tre posti da scoprire;
  * 4. il tuo castello (chi arriva lo sceglie: è l'unica cosa che 739 gli chiede);
  * 5. le cinque aree; 6. il 112.
@@ -107,7 +107,7 @@ export default async function Home() {
             <Link href="/utili/meteo" aria-label={`${gradi(meteo.temperatura)} ${tempo.testo}, apri il meteo`} className="flex shrink-0 items-center gap-2 rounded-xl px-1 py-1 transition-colors hover:text-testo">
               <Icona nome={tempo.icona} size={30} />
               <span className="flex flex-col leading-tight">
-                <span className="font-mono text-[22px] font-medium tracking-[-0.04em]">{gradi(meteo.temperatura)}</span>
+                <span className="voce-logo text-[26px]">{gradi(meteo.temperatura)}</span>
                 <span className="text-xs text-testo-2">{tempo.testo}</span>
               </span>
             </Link>
@@ -245,22 +245,22 @@ export default async function Home() {
         </div>
 
         <aside className="contents lg:sticky lg:top-0 lg:flex lg:flex-col lg:gap-8">
-          {/* 2. Adesso: quattro tessere sempre piene, con i dati di questo minuto */}
+          {/* 2. Adesso: il cruscotto nero, quattro numeri scritti come il 739 del logo, sempre pieni */}
           <section className="order-2 flex flex-col gap-3">
             <Titolo href="/vivere" link="Vivere">Adesso</Titolo>
-            <div className="grid grid-cols-2 gap-2.5">
-              <Tessera href="/utili/farmacie" icona="farmacia" titolo="Farmacie" nota="Cailungo sempre">
+            <div className="cruscotto">
+              <Cella href="/utili/farmacie" titolo="Farmacie" nota="Cailungo sempre" bordo="border-r border-b">
                 <ConteggioAperte farmacie={farmacie} />
-              </Tessera>
-              <Tessera href="/utili/trasporti" icona="trasporti" titolo="Funivia" nota="Da Borgo a Città">
+              </Cella>
+              <Cella href="/utili/trasporti" titolo="Funivia per Città" nota="Da Borgo Maggiore" bordo="border-b">
                 {funiviaSu.length ? <ProssimaPartenza partenze={funiviaSu} /> : <span className="text-sm">Orari in arrivo</span>}
-              </Tessera>
-              <Tessera href="/utili/parcheggi" icona="parcheggio" titolo="Parcheggi" nota={multipiano?.posti ? `P9: ${fmt.format(multipiano.posti)} posti` : "Tariffe e posti"}>
+              </Cella>
+              <Cella href="/utili/parcheggi" titolo="Parcheggi" nota={multipiano?.posti ? `P9: ${fmt.format(multipiano.posti)} posti` : "Tariffe e posti"} bordo="border-r">
                 <span className="grande">{parcheggi.length}<small>in città</small></span>
-              </Tessera>
-              <Tessera href="/vivere/avvisi" icona="avvisi" titolo="Avvisi" nota={attenzione ? <span className="text-segnale">{attenzione.titolo}</span> : avvisiOra[0]?.titolo ?? "Strade e servizi regolari"}>
+              </Cella>
+              <Cella href="/vivere/avvisi" titolo="Avvisi" nota={attenzione ? <span className="text-[#F28B74]">{attenzione.titolo}</span> : avvisiOra[0]?.titolo ?? "Strade e servizi regolari"}>
                 <span className="grande">{avvisiOra.length}<small>in corso</small></span>
-              </Tessera>
+              </Cella>
             </div>
           </section>
 

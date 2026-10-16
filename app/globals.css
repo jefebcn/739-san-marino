@@ -48,6 +48,8 @@
     --font: var(--font-geist), "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
     /* Titoli: Sora; testi Geist, numeri Geist Mono */
     --titoli: var(--font-titoli), var(--font);
+    /* La voce del logo: Saira largo e corsivo, come il 739 */
+    --logo: var(--font-logo), var(--titoli);
     --mono: var(--font-geist-mono), "Geist Mono", ui-monospace, "SF Mono", Consolas, monospace;
     --r: 16px;
     --gutter: max(18px, env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px));
@@ -297,6 +299,19 @@ li:last-child > .riga { border-bottom: 0; }
 .emergenza a:first-child span { color: var(--bianco); }
 .emergenza a:not(:first-child) { background-color: var(--superficie); color: var(--testo); }
 .emergenza a:not(:first-child) span { color: var(--testo-2); }
+
+/* ——— Lo stile del logo (16/10/2026): bianco e nero, corsivo largo e pesante, tagli obliqui ——— */
+/* Numeri grandi e aperture scritti come il 739 */
+.voce-logo { font-family: var(--logo); font-style: italic; font-stretch: 125%; font-weight: 800; letter-spacing: -0.01em; line-height: 1; }
+/* Il taglio obliquo dei numeri del logo, su pulsanti ed etichette */
+.taglio { clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%); padding-inline: 22px; }
+.taglio-piccolo { clip-path: polygon(5px 0, 100% 0, calc(100% - 5px) 100%, 0 100%); padding-inline: 9px; }
+/* Il cruscotto nero di «Adesso»: i dati di adesso come un tabellone, con i numeri del logo */
+.cruscotto { background: #09090B; color: #FAFAFA; border-radius: 16px; overflow: hidden; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.cruscotto > * { border-color: rgba(255, 255, 255, 0.1); }
+.cruscotto .grande { display: block; font-family: var(--logo); font-style: italic; font-stretch: 125%; font-weight: 800; font-size: clamp(30px, 9vw, 40px); letter-spacing: -0.01em; line-height: 1; color: #FAFAFA; white-space: nowrap; }
+/* La parola sotto il numero, come su un tabellone */
+.cruscotto .grande small { display: block; margin: 6px 0 0; font-family: var(--font); font-style: normal; font-stretch: 100%; font-weight: 500; font-size: 13px; letter-spacing: 0; color: #A1A1AA; }
 
 .servizio { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 14px; border-radius: var(--r); background: var(--superficie); }
 .servizio h3 { font-size: 16px; font-weight: 600; letter-spacing: -0.01em; }

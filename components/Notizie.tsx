@@ -11,7 +11,7 @@ export function RigaNotizia({ n, sommario = true }: { n: NotiziaConData; sommari
   return (
     <a href={n.link} target="_blank" rel="noopener" className="flex flex-col gap-1 px-4 py-3.5 transition-colors hover:bg-superficie-2">
       <span className="text-[13px] text-testo-2">
-        <span className="font-medium text-accento">{n.nomeCategoria}</span>, {n.quando}
+        <span className="font-semibold text-testo">{n.nomeCategoria}</span>, {n.quando}
       </span>
       <span className="text-[15px] font-semibold leading-snug">{n.titolo}</span>
       {sommario && n.sommario ? <span className="line-clamp-2 text-sm leading-relaxed text-testo-2">{n.sommario}</span> : null}
