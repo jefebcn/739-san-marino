@@ -5,6 +5,7 @@ import { getEventiPerChi, getLuoghi } from "@/lib/data";
 import { PER_LAVORO } from "@/lib/eventi-lavoro";
 import { getOfferteLavoro } from "@/lib/lavoro";
 import { getScadenze, oggiSM } from "@/lib/scadenze";
+import { prossimeScadenze } from "@/lib/calendario-fiscale";
 
 export const revalidate = 300;
 
@@ -16,6 +17,8 @@ export default async function Lavorare() {
   const bandi = scadenze.filter((s) => s.tipo === "bando").length;
   const fornitori = conta("azienda") + conta("artigiano") + conta("professionista");
   const prossima = scadenze.find((s) => s.tipo !== "bando");
+  const fisco = prossimeScadenze(2)[0];
+  const giorno = new Intl.DateTimeFormat("it-IT", { day: "numeric", month: "long", timeZone: "UTC" });
   const riga = (n: number, uno: string, tanti: string) => (n ? <><b className="font-mono font-medium text-testo">{n}</b> {n === 1 ? uno : tanti}</> : "Aggiungi la tua, è gratis");
   return (
     <PaginaArea
@@ -35,6 +38,7 @@ export default async function Lavorare() {
         artigiani: riga(conta("artigiano"), "artigiano", "artigiani"),
         lavoro: offerte.length ? <><b className="font-mono font-medium text-testo">{offerte.length}</b> {offerte.length === 1 ? "offerta aperta" : "offerte aperte"}</> : "Pubblica la tua, se hai un'attività",
         fornitori: fornitori ? <><b className="font-mono font-medium text-testo">{fornitori}</b> tra aziende, artigiani e studi</> : undefined,
+        "calendario-fiscale": fisco ? <>Prossima il {giorno.format(new Date(`${fisco.data}T12:00:00Z`))}: {fisco.voce.titolo.charAt(0).toLowerCase() + fisco.voce.titolo.slice(1)}</> : undefined,
         scadenze: prossima ? <>Prossima: {prossima.titolo}</> : undefined,
         bandi: bandi ? <><b className="font-mono font-medium text-testo">{bandi}</b> {bandi === 1 ? "aperto" : "aperti"}</> : undefined,
         fiere: fiere.length ? <><b className="font-mono font-medium text-testo">{fiere.length}</b> in calendario</> : "Proponi la tua",

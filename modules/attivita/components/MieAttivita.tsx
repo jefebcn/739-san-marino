@@ -19,7 +19,8 @@ function PerLaTuaAttivita() {
       .then(({ data }) => setProssime((data ?? []) as Scadenza[]));
   }, []);
   const STRUMENTI = [
-    { href: "/lavorare/scadenze", titolo: "Scadenze e novità", riga: "Cosa scade e cosa cambia, con la fonte" },
+    { href: "/lavorare/calendario-fiscale", titolo: "Calendario fiscale", riga: "IGR, ritenute, ISS e dichiarazioni" },
+    { href: "/lavorare/scadenze", titolo: "Scadenze e novità", riga: "Nuove regole e servizi dello Stato" },
     { href: "/lavorare/fornitori", titolo: "Fornitori e preventivi", riga: "Trova chi ti serve e chiedi un preventivo" },
     { href: "/lavorare/bandi", titolo: "Bandi", riga: "Contributi e bandi aperti" },
     { href: "/lavorare/lavoro", titolo: "Offerte di lavoro", riga: "Le pubblichi dalla modifica della scheda" },

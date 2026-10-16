@@ -7,9 +7,12 @@ import { RigaNotizia } from "@/components/Notizie";
 import { getNotizie, FONTE_NOTIZIE } from "@/lib/notizie";
 import { getScadenze, notiziaPerAttivita, oggiSM, SERVIZI_STATO } from "@/lib/scadenze";
 import { metadatiCondivisione } from "@/lib/condivisione";
+import { prossimeScadenze } from "@/lib/calendario-fiscale";
 import { etichettaGiorno, ora } from "@/lib/data";
 
 export const revalidate = 900;
+
+const MESE = new Intl.DateTimeFormat("it-IT", { month: "long", timeZone: "UTC" });
 
 export const metadata = metadatiCondivisione({
   titolo: "Scadenze e novità per le attività",
@@ -24,6 +27,7 @@ export default async function PaginaScadenze() {
   const norme = scadenze.filter((s) => s.tipo === "norme");
   const altre = scadenze.filter((s) => s.tipo !== "norme" && s.tipo !== "bando");
   const bandi = scadenze.filter((s) => s.tipo === "bando").length;
+  const fiscali = prossimeScadenze(3).slice(0, 3);
 
   return (
     <>
@@ -33,16 +37,33 @@ export default async function PaginaScadenze() {
 
       <div className="larga flex flex-col gap-8 lg:grid lg:grid-cols-[minmax(0,1fr)_380px] lg:items-start lg:gap-10">
         <div className="flex flex-col gap-8">
-          <section className="flex flex-col gap-3" aria-labelledby="prossime">
-            <h2 id="prossime" className="text-[19px] font-semibold tracking-tight">Prossime scadenze</h2>
-            {altre.length ? (
-              <Scadenze scadenze={altre} />
-            ) : (
-              <p className="rounded-2xl bg-superficie p-5 text-[15px] leading-relaxed text-testo-2">
-                Nessuna scadenza in calendario per adesso. La redazione le aggiunge solo dalle fonti ufficiali: per le date del tuo caso chiedi al tuo commercialista o all&apos;Ufficio Tributario.
-              </p>
-            )}
+          <section className="flex flex-col gap-3" aria-labelledby="fisco">
+            <div className="flex items-baseline justify-between gap-3">
+              <h2 id="fisco" className="text-[19px] font-semibold tracking-tight">Dal calendario fiscale</h2>
+              <Link href="/lavorare/calendario-fiscale" className="flex items-center gap-0.5 text-sm font-medium text-testo-2 hover:text-testo">Tutto <Icona nome="avanti" size={14} /></Link>
+            </div>
+            <ul className="divide-y divide-linea overflow-hidden rounded-2xl bg-superficie">
+              {fiscali.map((s) => (
+                <li key={s.chiave}>
+                  <Link href="/lavorare/calendario-fiscale" className="flex items-center gap-4 px-4 py-3 transition-colors hover:bg-superficie-2">
+                    <span className="voce-logo w-9 shrink-0 text-center text-[22px] leading-none">{Number(s.data.slice(8))}</span>
+                    <span className="flex min-w-0 flex-1 flex-col">
+                      <span className="text-[12px] text-testo-2">{MESE.format(new Date(`${s.data}T12:00:00Z`))}, {s.voce.categoria}{s.stato !== "confermato" ? ", da verificare" : ""}</span>
+                      <span className="text-[15px] font-semibold leading-snug">{s.voce.titolo}</span>
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <p className="text-[12px] text-testo-2">Informativo, non ufficiale: verifica sempre con l&apos;Ufficio Tributario, l&apos;ISS o il tuo commercialista.</p>
           </section>
+
+          {altre.length ? (
+            <section className="flex flex-col gap-3" aria-labelledby="prossime">
+              <h2 id="prossime" className="text-[19px] font-semibold tracking-tight">Altre scadenze</h2>
+              <Scadenze scadenze={altre} />
+            </section>
+          ) : null}
 
           <Notifiche scadenzePrima />
 
