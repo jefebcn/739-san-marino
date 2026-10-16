@@ -1,6 +1,6 @@
 // Service worker di 739 (passi 1.6 e 1.8): notifiche e funzionamento minimo senza rete.
 // Registrato da components/RegistraSW.tsx. Cambiare VERSIONE quando cambia questo file.
-const VERSIONE = "739-v2";
+const VERSIONE = "739-v3";
 const PAGINE = `${VERSIONE}-pagine`;
 const STATICI = `${VERSIONE}-statici`;
 const RISORSE = `${VERSIONE}-risorse`;
