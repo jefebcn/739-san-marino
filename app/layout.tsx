@@ -30,8 +30,8 @@ const VOCI_EN: VoceNav[] = [
   { href: "/en", nome: "Today", icona: "home" },
   { href: "/en/map", nome: "Map", icona: "mappa" },
   { href: "/en/events", nome: "Events", icona: "eventi" },
-  { href: "/en/transport", nome: "Transport", icona: "trasporti" },
-  { href: "/en/emergency", nome: "Emergency", icona: "telefono" },
+  { href: "/en/eat", nome: "Eat", icona: "food" },
+  { href: "/en/stay", nome: "Stay", icona: "dormire" },
 ];
 
 export const metadata: Metadata = {

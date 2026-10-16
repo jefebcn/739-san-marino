@@ -60,7 +60,7 @@ function PiedeEn({ anno }: { anno: number }) {
         </div>
         <nav aria-label="Visit" className="flex flex-col gap-2 text-sm">
           <span className="font-medium">Visit</span>
-          {VOCI_EN.map((v) => (
+          {[...VOCI_EN, { href: "/en/pharmacies", nome: "Pharmacies" }, { href: "/en/emergency", nome: "Emergency" }].map((v) => (
             <Link key={v.href} href={v.href} className="text-testo-2 transition-colors hover:text-testo">{v.nome}</Link>
           ))}
         </nav>

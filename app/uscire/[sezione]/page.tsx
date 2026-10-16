@@ -1,5 +1,6 @@
 import PaginaSezione from "@/components/aree/PaginaSezione";
 import { area as trovaArea, sezione as trovaSezione } from "@/lib/aree";
+import { alternati, traduzione } from "@/lib/lingua";
 
 export const revalidate = 300;
 
@@ -12,7 +13,9 @@ type Props = { params: Promise<{ sezione: string }> };
 
 export async function generateMetadata({ params }: Props) {
   const { sezione } = await params;
-  return { title: `${trovaSezione("uscire", sezione)?.nome ?? "Sezione"} · 739 San Marino` };
+  const percorso = `/uscire/${sezione}`;
+  const inglese = traduzione("en", percorso);
+  return { title: `${trovaSezione("uscire", sezione)?.nome ?? "Sezione"} · 739 San Marino`, ...(inglese ? { alternates: alternati(percorso, inglese, "it") } : {}) };
 }
 
 export default async function Sezione({ params }: Props) {

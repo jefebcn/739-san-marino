@@ -20,6 +20,8 @@ const PERCORSI: [string, string][] = [
   ["/", "/en"],
   ["/mappa", "/en/map"],
   ["/eventi", "/en/events"],
+  ["/uscire/mangiare", "/en/eat"],
+  ["/uscire/dormire", "/en/stay"],
   ["/utili/farmacie", "/en/pharmacies"],
   ["/utili/trasporti", "/en/transport"],
   ["/utili/parcheggi", "/en/parking"],
@@ -65,6 +67,8 @@ export function ritornoEn(categoria: string) {
   const pagine: Record<string, { href: string; nome: string }> = {
     farmacia: { href: "/en/pharmacies", nome: "Pharmacies" },
     parcheggio: { href: "/en/parking", nome: "Car parks" },
+    locale: { href: "/en/eat", nome: "Where to eat" },
+    dormire: { href: "/en/stay", nome: "Where to stay" },
   };
   return pagine[categoria] ?? { href: "/en/map", nome: "Map" };
 }
@@ -207,6 +211,12 @@ export const CATEGORIA_SINGOLA_EN: Record<string, string> = {
   animali: "Pet services",
   associazione: "Association",
   dormire: "Accommodation",
+};
+
+/** I gruppi delle sezioni in inglese (PaginaSezione), al plurale */
+export const PLURALI_EN: Record<string, string> = {
+  ristorante: "Restaurants", pizzeria: "Pizzerias", piadineria: "Piadina bars", "cibo veloce": "Fast food", bar: "Cafés and bars", gelateria: "Ice cream", pub: "Pubs",
+  hotel: "Hotels", "bed and breakfast": "Bed and breakfasts", residence: "Apartment hotels", campeggio: "Campsites", agriturismo: "Farm stays", altro: "Other",
 };
 
 /** Le sottocategorie in inglese; quelle che mancano si mostrano con la categoria */

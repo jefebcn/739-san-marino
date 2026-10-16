@@ -21,6 +21,8 @@ const fmt = new Intl.NumberFormat("en-GB");
 /** Le pagine inglesi pronte, per chi visita (lib/lingua.ts) */
 const PAGINE: { href: string; nome: string; riga: string; icona: NomeIcona }[] = [
   { href: "/en/events", nome: "What's on", riga: "Events, concerts and exhibitions", icona: "eventi" },
+  { href: "/en/eat", nome: "Where to eat", riga: "Restaurants, pizzerias, cafés and ice cream", icona: "food" },
+  { href: "/en/stay", nome: "Where to stay", riga: "Hotels, bed and breakfasts and apartments", icona: "dormire" },
   { href: "/en/map", nome: "Map", riga: "Car parks, museums, viewpoints, toilets and more", icona: "mappa" },
   { href: "/en/transport", nome: "Cable car and buses", riga: "Next departures and fares", icona: "trasporti" },
   { href: "/en/parking", nome: "Car parks", riga: "Spaces and fares in the old town", icona: "parcheggio" },
@@ -106,9 +108,6 @@ export default async function Today() {
                 </li>
               ))}
             </ul>
-            <p className="text-sm leading-relaxed text-testo-2">
-              Where to eat and sleep are on their way in English. Until then they are in <Link href="/" hrefLang="it" lang="it" className="font-medium text-testo underline underline-offset-2">739 in italiano</Link>.
-            </p>
           </section>
         </div>
 
