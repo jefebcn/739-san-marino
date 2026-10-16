@@ -8,8 +8,8 @@ import { traEn, type Lingua } from "@/lib/lingua";
 import { traduci } from "@/lib/traduci";
 
 const T = {
-  it: { nessuna: "Nessuna corsa", domani: "domani", Domani: "Domani", Oggi: "Oggi", nessunaProgramma: "Nessuna corsa in programma.", funivia: "Prossima funivia", bus: "Prossimo bus", partenze: "Partenze", biglietto: "Biglietto", ufficiali: "Orari ufficiali", verificare: "Da verificare", vuoto: "Orari non ancora disponibili.", linea: "Linea" },
-  en: { nessuna: "No more runs", domani: "tomorrow", Domani: "Tomorrow", Oggi: "Today", nessunaProgramma: "No runs scheduled.", funivia: "Next cable car", bus: "Next bus", partenze: "Departures", biglietto: "Tickets", ufficiali: "Official timetable", verificare: "To be checked", vuoto: "Timetable not available yet.", linea: "Line" },
+  it: { ora: "adesso", nessuna: "Nessuna corsa", domani: "domani", Domani: "Domani", Oggi: "Oggi", nessunaProgramma: "Nessuna corsa in programma.", funivia: "Prossima funivia", bus: "Prossimo bus", partenze: "Partenze", biglietto: "Biglietto", ufficiali: "Orari ufficiali", verificare: "Da verificare", vuoto: "Orari non ancora disponibili.", linea: "Linea" },
+  en: { ora: "now", nessuna: "No more runs", domani: "tomorrow", Domani: "Tomorrow", Oggi: "Today", nessunaProgramma: "No runs scheduled.", funivia: "Next cable car", bus: "Next bus", partenze: "Departures", biglietto: "Tickets", ufficiali: "Official timetable", verificare: "To be checked", vuoto: "Timetable not available yet.", linea: "Line" },
 };
 
 /** Nomi e direzioni delle linee come si leggono in inglese */
@@ -37,7 +37,7 @@ export function ProssimaPartenza({ partenze, lingua = "it" }: { partenze: Parten
   if (!p) return <span className="text-sm text-testo-2">{t.nessuna}</span>;
   return (
     <span className="grande">
-      {p.tra < 60 && !p.domani ? <>{p.tra}<small>min</small></> : <>{oraBreve(p.p.ora)}{p.domani ? <small>{t.domani}</small> : null}</>}
+      {p.tra === 0 && !p.domani ? <>{oraBreve(p.p.ora)}<small>{t.ora}</small></> : p.tra < 60 && !p.domani ? <>{p.tra}<small>min</small></> : <>{oraBreve(p.p.ora)}{p.domani ? <small>{t.domani}</small> : null}</>}
     </span>
   );
 }

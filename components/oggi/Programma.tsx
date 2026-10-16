@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { Icona } from "@/components/Icona";
 import { chiaveGiorno, etichettaGiorno, ora, type Evento } from "@/lib/data";
 import type { Contenuto } from "@/lib/contenuti";
@@ -20,6 +21,8 @@ export default function Programma({
   rubrica,
   massimo = 8,
   perGiorno = false,
+  link = { href: "/eventi", testo: "Calendario" },
+  vuoto,
 }: {
   titolo: string;
   eventi: Evento[];
@@ -30,6 +33,10 @@ export default function Programma({
   massimo?: number;
   /** Il titolo del giorno anche quando il giorno è uno solo (nel weekend) */
   perGiorno?: boolean;
+  /** Il link accanto al titolo (di mattina «Apri» il Bollettino) */
+  link?: { href: string; testo: string };
+  /** Cosa mostrare quando la fascia non ha eventi né partite: mai una sezione vuota */
+  vuoto?: ReactNode;
 }) {
   const voci: Voce[] = [
     ...eventi.map((e) => ({ tipo: "evento" as const, inizio: e.inizio, e })),
@@ -42,8 +49,8 @@ export default function Programma({
     <section className="flex flex-col gap-3" aria-labelledby="titolo-programma">
       <div className="flex items-baseline justify-between gap-3">
         <h2 id="titolo-programma" className="text-[19px] font-semibold tracking-tight">{titolo}</h2>
-        <Link href="/eventi" className="flex items-center gap-0.5 text-sm font-medium text-testo-2 hover:text-testo">
-          Calendario <Icona nome="avanti" size={14} />
+        <Link href={link.href} className="flex items-center gap-0.5 text-sm font-medium text-testo-2 hover:text-testo">
+          {link.testo} <Icona nome="avanti" size={14} />
         </Link>
       </div>
 
@@ -53,6 +60,8 @@ export default function Programma({
           {rubrica.sommario ? <span className="text-sm leading-relaxed text-testo">{rubrica.sommario}</span> : null}
         </Link>
       ) : null}
+
+      {voci.length === 0 ? vuoto : null}
 
       {giorni.map((g) => (
         <div key={g} className="flex flex-col gap-2">

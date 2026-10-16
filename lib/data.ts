@@ -131,6 +131,35 @@ export async function getLuoghi(castelloId?: number): Promise<Luogo[]> {
   return (data ?? []) as Luogo[];
 }
 
+/**
+ * Tre posti da scoprire per Oggi, quando la fascia non ha eventi: due tra musei, monumenti e panorami con un nome
+ * vero (non «Punto panoramico»: almeno due parole) e un ristorante o una piadineria con telefono o sito, non una mensa.
+ * Cambiano ogni giorno (giorno dell'anno), uguali per tutti nello stesso giorno.
+ */
+export async function getDaScoprire(adesso: Date = new Date()): Promise<Luogo[]> {
+  const db = supabase();
+  if (!db) return [];
+  const { data, error } = await db
+    .from("luoghi")
+    .select(`${CAMPI_LUOGO}, sito`)
+    .in("categoria", ["cultura", "panorama", "locale"])
+    .eq("da_verificare", false)
+    .order("id");
+  if (error) {
+    console.error("da scoprire", error.message);
+    return [];
+  }
+  const luoghi = (data ?? []) as Luogo[];
+  const giorno = Math.floor(new Date(chiaveGiorno(adesso.toISOString())).getTime() / 86400000);
+  const vedere = luoghi.filter((l) => (l.categoria === "cultura" || l.categoria === "panorama") && l.nome.trim().split(/\s+/).length >= 2 && !/^punto panoramico$/i.test(l.nome.trim()));
+  const mangiare = luoghi.filter((l) => l.categoria === "locale" && ["ristorante", "piadineria"].includes(l.sottocategoria ?? "") && (l.telefono || l.sito) && !/camst|mensa/i.test(l.nome));
+  const scelti: Luogo[] = [];
+  if (vedere.length) scelti.push(vedere[giorno % vedere.length]);
+  if (vedere.length > 1) scelti.push(vedere[(giorno + Math.ceil(vedere.length / 2)) % vedere.length]);
+  if (mangiare.length) scelti.push(mangiare[giorno % mangiare.length]);
+  return scelti;
+}
+
 /** Quanti luoghi ci sono sulla mappa (per Oggi): solo il numero, senza scaricarli */
 export async function contaLuoghi(): Promise<number> {
   const db = supabase();
