@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Icona } from "@/components/Icona";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import { useSessione } from "@/modules/core/store";
-import { CONTRATTI, leggiGiorno, type Contratto, type Orario } from "@/lib/lavoro";
+import { CONTRATTI, leggiGiorno, type Contratto, type Orario } from "@/modules/lavorare/offerte";
 import { luogoDaModificare } from "../api";
 import { chiudiOffertaLavoro, mieOfferteLavoro, salvaOffertaLavoro, type DatiOfferta, type MiaOffertaLavoro } from "../lavoro-api";
 import { CAMPO } from "./stile";

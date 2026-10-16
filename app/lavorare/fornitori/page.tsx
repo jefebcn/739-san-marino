@@ -1,7 +1,7 @@
 import Link from "next/link";
 import TestaPagina from "@/components/Indietro";
 import { Icona } from "@/components/Icona";
-import Fornitori from "@/components/lavoro/Fornitori";
+import Fornitori from "@/modules/lavorare/components/Fornitori";
 import { getClassifica, getFornitori } from "@/lib/data";
 import { metadatiCondivisione } from "@/lib/condivisione";
 

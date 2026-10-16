@@ -1,8 +1,8 @@
 import Link from "next/link";
 import TestaPagina from "@/components/Indietro";
 import { Icona } from "@/components/Icona";
-import Scadenze from "@/components/lavoro/Scadenze";
-import { getScadenze, oggiSM } from "@/lib/scadenze";
+import Scadenze from "@/modules/lavorare/components/Scadenze";
+import { getScadenze, oggiSM } from "@/modules/lavorare/scadenze";
 import { TITOLARE } from "@/lib/legale";
 import { metadatiCondivisione } from "@/lib/condivisione";
 

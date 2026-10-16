@@ -4,7 +4,7 @@ import TestaPagina from "@/components/Indietro";
 import Condividi from "@/components/Condividi";
 import { Icona } from "@/components/Icona";
 import { getClassifica } from "@/lib/data";
-import { CONTRATTI, getOffertaLavoro, leggiGiorno, tipoImpiego } from "@/lib/lavoro";
+import { CONTRATTI, getOffertaLavoro, leggiGiorno, tipoImpiego } from "@/modules/lavorare/offerte";
 import { metadatiCondivisione } from "@/lib/condivisione";
 
 export const revalidate = 300;

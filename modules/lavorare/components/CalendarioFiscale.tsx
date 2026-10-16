@@ -2,8 +2,8 @@
 
 import { useMemo, useState } from "react";
 import { Icona } from "@/components/Icona";
-import { CATEGORIE_FISCALI, DESTINATARI, filtra, fontiOrdinate, type Scadenza } from "@/lib/calendario-fiscale";
-import type { StatoVerifica, TipoFonte, Voce } from "@/lib/dati/calendario-fiscale";
+import { CATEGORIE_FISCALI, DESTINATARI, filtra, fontiOrdinate, type Scadenza } from "@/modules/lavorare/calendario-fiscale";
+import type { StatoVerifica, TipoFonte, Voce } from "@/modules/lavorare/dati/calendario-fiscale";
 
 const giornoSett = new Intl.DateTimeFormat("it-IT", { weekday: "short", timeZone: "UTC" });
 const mese = new Intl.DateTimeFormat("it-IT", { month: "long", year: "numeric", timeZone: "UTC" });

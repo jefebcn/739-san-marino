@@ -1,13 +1,13 @@
 import Link from "next/link";
 import TestaPagina from "@/components/Indietro";
 import { Icona } from "@/components/Icona";
-import Scadenze from "@/components/lavoro/Scadenze";
+import Scadenze from "@/modules/lavorare/components/Scadenze";
 import Notifiche from "@/components/Notifiche";
 import { RigaNotizia } from "@/components/Notizie";
 import { getNotizie, FONTE_NOTIZIE } from "@/lib/notizie";
-import { getScadenze, notiziaPerAttivita, oggiSM, SERVIZI_STATO } from "@/lib/scadenze";
+import { getScadenze, notiziaPerAttivita, oggiSM, SERVIZI_STATO } from "@/modules/lavorare/scadenze";
 import { metadatiCondivisione } from "@/lib/condivisione";
-import { prossimeScadenze } from "@/lib/calendario-fiscale";
+import { prossimeScadenze } from "@/modules/lavorare/calendario-fiscale";
 import { etichettaGiorno, ora } from "@/lib/data";
 
 export const revalidate = 900;

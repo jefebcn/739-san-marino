@@ -1,5 +1,5 @@
 import { supabaseBrowser } from "@/lib/supabase/browser";
-import type { Contratto, Orario } from "@/lib/lavoro";
+import type { Contratto, Orario } from "@/modules/lavorare/offerte";
 
 // Offerte di lavoro del titolare e della redazione (migrazione 0043). I permessi li controlla il database.
 

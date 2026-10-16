@@ -11,7 +11,7 @@ export default async function PaginaOfferteAttivita({ params }: Props) {
   if (!/^[0-9a-f-]{36}$/.test(id)) notFound();
   return (
     <>
-      <TestaPagina href={`/profile/attivita/${id}`} verso="Modifica la scheda" titolo="Offerte di lavoro">
+      <TestaPagina href={`/profile/attivita/${id}`} verso="La tua attività" titolo="Offerte di lavoro">
         <p className="sottotitolo">Cerchi personale? Pubblica l&apos;offerta: va online subito in Lavorare e nella scheda della tua attività.</p>
       </TestaPagina>
       <OfferteLavoroAttivita id={id} />

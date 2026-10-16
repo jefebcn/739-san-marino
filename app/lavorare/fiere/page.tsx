@@ -4,7 +4,7 @@ import EventoRiga from "@/components/EventoRiga";
 import { Icona } from "@/components/Icona";
 import { Vuoto } from "@/components/Tano";
 import { chiaveGiorno, etichettaGiorno, getEventiPerChi, type Evento } from "@/lib/data";
-import { PER_LAVORO } from "@/lib/eventi-lavoro";
+import { PER_LAVORO } from "@/modules/lavorare/fiere";
 
 export const revalidate = 300;
 

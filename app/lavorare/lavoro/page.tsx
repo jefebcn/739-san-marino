@@ -2,9 +2,9 @@ import Link from "next/link";
 import TestaPagina from "@/components/Indietro";
 import { Icona } from "@/components/Icona";
 import { Vuoto } from "@/components/Tano";
-import ElencoOfferte from "@/components/lavoro/ElencoOfferte";
+import ElencoOfferte from "@/modules/lavorare/components/ElencoOfferte";
 import { getClassifica } from "@/lib/data";
-import { getOfferteLavoro } from "@/lib/lavoro";
+import { getOfferteLavoro } from "@/modules/lavorare/offerte";
 import { metadatiCondivisione } from "@/lib/condivisione";
 
 export const revalidate = 300;

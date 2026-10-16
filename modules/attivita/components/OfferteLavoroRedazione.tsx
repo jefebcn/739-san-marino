@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
-import { CONTRATTI, leggiGiorno } from "@/lib/lavoro";
+import { CONTRATTI, leggiGiorno } from "@/modules/lavorare/offerte";
 import { offerteLavoroRedazione, ritiraOffertaLavoro, type OffertaRedazione } from "../lavoro-api";
 import { CAMPO } from "./stile";
 

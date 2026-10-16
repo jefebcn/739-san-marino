@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import { supabaseBrowser } from "@/lib/supabase/browser";
-import { TIPI_SCADENZA, oggiSM, type Scadenza, type TipoScadenza } from "@/lib/scadenze";
+import { TIPI_SCADENZA, oggiSM, type Scadenza, type TipoScadenza } from "@/modules/lavorare/scadenze";
 
 const CAMPO = "w-full rounded-xl border border-linea bg-superficie px-4 text-[15px] text-testo outline-none transition-colors placeholder:text-testo-2/60 focus:border-accento";
 const data = new Intl.DateTimeFormat("it-IT", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });

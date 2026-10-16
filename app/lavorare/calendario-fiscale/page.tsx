@@ -1,9 +1,9 @@
 import Link from "next/link";
 import TestaPagina from "@/components/Indietro";
 import { Icona } from "@/components/Icona";
-import CalendarioFiscale from "@/components/lavoro/CalendarioFiscale";
-import { oggiSM, prossimeScadenze, vociSenzaData } from "@/lib/calendario-fiscale";
-import { AGGIORNATO_IL, CONTATTI } from "@/lib/dati/calendario-fiscale";
+import CalendarioFiscale from "@/modules/lavorare/components/CalendarioFiscale";
+import { oggiSM, prossimeScadenze, vociSenzaData } from "@/modules/lavorare/calendario-fiscale";
+import { AGGIORNATO_IL, CONTATTI } from "@/modules/lavorare/dati/calendario-fiscale";
 import { metadatiCondivisione } from "@/lib/condivisione";
 
 // Le date si calcolano dal file dei dati: la pagina si rifà ogni ora, così «le prossime» seguono il giorno
@@ -18,7 +18,7 @@ export const metadata = metadatiCondivisione({
 const aggiornato = new Intl.DateTimeFormat("it-IT", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(`${AGGIORNATO_IL}T12:00:00Z`));
 const tel = (t: string) => `tel:+378${t.replace(/\D/g, "")}`;
 
-/** Calendario fiscale (Lavorare): le scadenze del file lib/dati/calendario-fiscale.ts, con le fonti e i filtri */
+/** Calendario fiscale (Lavorare): le scadenze del file modules/lavorare/dati/calendario-fiscale.ts, con le fonti e i filtri */
 export default function PaginaCalendarioFiscale() {
   const { tributario, iss } = CONTATTI;
   return (

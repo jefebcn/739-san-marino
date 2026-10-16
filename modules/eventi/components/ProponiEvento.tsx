@@ -6,7 +6,7 @@ import { Icona } from "@/components/Icona";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import { useSessione } from "@/modules/core/store";
 import Tano from "@/components/Tano";
-import { PER_LAVORO } from "@/lib/eventi-lavoro";
+import { PER_LAVORO } from "@/modules/lavorare/fiere";
 import { mieiRuoli } from "@/modules/core/ruoli";
 import { caricaFoto, mieiEventi, proponiEvento, salvaMioEvento, type DatiProposta } from "../api";
 

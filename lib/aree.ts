@@ -19,6 +19,8 @@ export type Sezione = {
   tipi?: string[];
   /** Parole in più per la ricerca */
   parole?: string;
+  /** Il gruppo in cui sta nella pagina dell'area (Lavorare: Trova, Opportunità, Fisco e Stato); senza gruppi l'area è un elenco solo */
+  gruppo?: string;
 };
 
 export type Area = {
@@ -104,20 +106,20 @@ export const AREE: Area[] = [
   {
     slug: "lavorare",
     nome: "Lavorare",
-    descrizione: "Aziende, professionisti, offerte di lavoro e bandi.",
-    breve: "Aziende, studi e artigiani",
+    descrizione: "Chi trovare, le opportunità e il fisco per chi lavora a San Marino.",
+    breve: "Fornitori, lavoro e calendario fiscale",
     icona: "lavorare",
     href: "/lavorare",
     sezioni: [
-      { slug: "aziende", nome: "Aziende", descrizione: "Le imprese del territorio, con contatti e cosa fanno.", icona: "business", href: "/lavorare/aziende", categorie: ["azienda"], parole: "aziende imprese ditte business" },
-      { slug: "professionisti", nome: "Professionisti", descrizione: "Commercialisti, avvocati, architetti, tecnici.", icona: "professionisti", href: "/lavorare/professionisti", categorie: ["professionista"], parole: "professionisti commercialista avvocato architetto notaio" },
-      { slug: "artigiani", nome: "Artigiani", descrizione: "Idraulici, elettricisti, falegnami e altri mestieri.", icona: "artigiani", href: "/lavorare/artigiani", categorie: ["artigiano"], parole: "artigiani idraulico elettricista falegname" },
-      { slug: "lavoro", nome: "Offerte di lavoro", descrizione: "Chi cerca personale a San Marino.", icona: "lavoro", href: "/lavorare/lavoro", parole: "lavoro offerte annunci cerco personale assunzioni posto impiego cameriere commessa stagionale" },
-      { slug: "fiere", nome: "Fiere e convegni", descrizione: "Appuntamenti per chi lavora: fiere, convegni e incontri.", icona: "fiere", href: "/lavorare/fiere", parole: "fiere fiera convegni convegno congressi kursaal incontri formazione" },
-      { slug: "fornitori", nome: "Fornitori e preventivi", descrizione: "Trova chi ti serve per la tua attività e chiedi un preventivo.", icona: "collegamento", href: "/lavorare/fornitori", parole: "fornitori fornitore preventivo preventivi rifornimento ingrosso grossista forniture b2b" },
-      { slug: "calendario-fiscale", nome: "Calendario fiscale", descrizione: "Le scadenze fiscali e contributive dei prossimi 12 mesi, con la fonte.", icona: "calendario", href: "/lavorare/calendario-fiscale", parole: "calendario fiscale scadenze fiscali tasse imposte igr acconto ritenute iss contributi fondiss dichiarazione redditi monofase bollo commercialista" },
-      { slug: "scadenze", nome: "Scadenze e novità", descrizione: "Nuove regole, notizie e servizi online dello Stato per chi ha un'attività.", icona: "stampa", href: "/lavorare/scadenze", parole: "scadenze fisco tasse imposte igr iss contributi fattura elettronica fatturazione dichiarazione tributario finanze novita leggi decreti" },
-      { slug: "bandi", nome: "Bandi", descrizione: "Contributi e bandi pubblici aperti.", icona: "bandi", href: "/lavorare/bandi", parole: "bandi contributi finanziamenti agevolazioni incentivi" },
+      { slug: "aziende", nome: "Aziende", descrizione: "Le imprese del territorio, con contatti e cosa fanno.", icona: "business", href: "/lavorare/aziende", categorie: ["azienda"], parole: "aziende imprese ditte business", gruppo: "Trova chi ti serve" },
+      { slug: "professionisti", nome: "Professionisti", descrizione: "Commercialisti, avvocati, architetti, tecnici.", icona: "professionisti", href: "/lavorare/professionisti", categorie: ["professionista"], parole: "professionisti commercialista avvocato architetto notaio", gruppo: "Trova chi ti serve" },
+      { slug: "artigiani", nome: "Artigiani", descrizione: "Idraulici, elettricisti, falegnami e altri mestieri.", icona: "artigiani", href: "/lavorare/artigiani", categorie: ["artigiano"], parole: "artigiani idraulico elettricista falegname", gruppo: "Trova chi ti serve" },
+      { slug: "fornitori", nome: "Fornitori e preventivi", descrizione: "Trova chi ti serve per la tua attività e chiedi un preventivo.", icona: "collegamento", href: "/lavorare/fornitori", parole: "fornitori fornitore preventivo preventivi rifornimento ingrosso grossista forniture b2b", gruppo: "Trova chi ti serve" },
+      { slug: "lavoro", nome: "Offerte di lavoro", descrizione: "Chi cerca personale a San Marino.", icona: "lavoro", href: "/lavorare/lavoro", parole: "lavoro offerte annunci cerco personale assunzioni posto impiego cameriere commessa stagionale", gruppo: "Opportunità" },
+      { slug: "bandi", nome: "Bandi", descrizione: "Contributi e bandi pubblici aperti.", icona: "bandi", href: "/lavorare/bandi", parole: "bandi contributi finanziamenti agevolazioni incentivi", gruppo: "Opportunità" },
+      { slug: "fiere", nome: "Fiere e convegni", descrizione: "Appuntamenti per chi lavora: fiere, convegni e incontri.", icona: "fiere", href: "/lavorare/fiere", parole: "fiere fiera convegni convegno congressi kursaal incontri formazione", gruppo: "Opportunità" },
+      { slug: "calendario-fiscale", nome: "Calendario fiscale", descrizione: "Le scadenze fiscali e contributive dei prossimi 12 mesi, con la fonte.", icona: "calendario", href: "/lavorare/calendario-fiscale", parole: "calendario fiscale scadenze fiscali tasse imposte igr acconto ritenute iss contributi fondiss dichiarazione redditi monofase bollo commercialista", gruppo: "Fisco e Stato" },
+      { slug: "scadenze", nome: "Scadenze e novità", descrizione: "Nuove regole, notizie e servizi online dello Stato per chi ha un'attività.", icona: "stampa", href: "/lavorare/scadenze", parole: "scadenze fisco tasse imposte igr iss contributi fattura elettronica fatturazione dichiarazione tributario finanze novita leggi decreti", gruppo: "Fisco e Stato" },
     ],
   },
 ];

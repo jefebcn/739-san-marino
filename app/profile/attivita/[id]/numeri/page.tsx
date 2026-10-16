@@ -11,7 +11,7 @@ export default async function PaginaNumeriAttivita({ params }: Props) {
   if (!/^[0-9a-f-]{36}$/.test(id)) notFound();
   return (
     <>
-      <TestaPagina href={`/profile/attivita/${id}`} verso="Modifica la scheda" titolo="I numeri della scheda">
+      <TestaPagina href={`/profile/attivita/${id}`} verso="La tua attività" titolo="I numeri della scheda">
         <p className="sottotitolo">Quante persone aprono la tua scheda e cosa toccano.</p>
       </TestaPagina>
       <NumeriAttivita id={id} />

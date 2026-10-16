@@ -1,4 +1,4 @@
-import { supabase } from "./supabase";
+import { supabase } from "@/lib/supabase";
 
 // Scadenze, bandi e novità per le attività (Lavorare, migrazione 0044). Le scrive la redazione, sempre con la
 // fonte ufficiale; 739 non inventa date. Qui anche i servizi online dello Stato per le attività, presi da gov.sm.

@@ -7,7 +7,7 @@ import PrimaryButton from "@/components/ui/PrimaryButton";
 import { useSessione } from "@/modules/core/store";
 import { mieAttivita, mieProposte, type MiaAttivita, type MiaProposta } from "../api";
 import { supabaseBrowser } from "@/lib/supabase/browser";
-import { oggiSM, TIPI_SCADENZA, type Scadenza } from "@/lib/scadenze";
+import { oggiSM, TIPI_SCADENZA, type Scadenza } from "@/modules/lavorare/scadenze";
 
 const giornoBreve = new Intl.DateTimeFormat("it-IT", { day: "numeric", month: "long", timeZone: "UTC" });
 
@@ -109,19 +109,19 @@ export default function MieAttivita() {
       {lista?.length ? (
         <ul className="divide-y divide-linea overflow-hidden rounded-2xl bg-superficie">
           {lista.map((a) => (
-            <li key={a.id} className="flex items-center gap-3 px-4 py-3.5">
-              <Link href={`/luoghi/${a.luogo_id}`} className="flex min-w-0 flex-1 flex-col gap-0.5">
-                <span className="truncate text-[15px] font-semibold">{a.nome}</span>
-                <span className={`text-[13px] ${a.stato === "approvata" ? "text-accento" : "text-testo-2"}`}>
-                  {STATI[a.stato]}
-                  {a.nota_redazione && a.stato !== "approvata" ? `: ${a.nota_redazione}` : ""}
+            <li key={a.id}>
+              {/* Le schede che gestisci aprono il loro cruscotto; le altre la scheda pubblica */}
+              <Link href={a.stato === "approvata" ? `/profile/attivita/${a.luogo_id}` : `/luoghi/${a.luogo_id}`} className="flex items-center gap-3 px-4 py-3.5 transition-colors hover:bg-superficie-2">
+                <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+                  <span className="truncate text-[15px] font-semibold">{a.nome}</span>
+                  <span className={`text-[13px] ${a.stato === "approvata" ? "font-medium text-ok" : "text-testo-2"}`}>
+                    {STATI[a.stato]}
+                    {a.nota_redazione && a.stato !== "approvata" ? `: ${a.nota_redazione}` : ""}
+                  </span>
                 </span>
+                {a.stato === "approvata" ? <span className="shrink-0 text-sm font-semibold">Gestisci</span> : null}
+                <span className="shrink-0 text-testo-2"><Icona nome="avanti" size={18} /></span>
               </Link>
-              {a.stato === "approvata" ? (
-                <Link href={`/profile/attivita/${a.luogo_id}`} aria-label={`Modifica ${a.nome}`} className="grid size-10 shrink-0 place-items-center rounded-xl bg-fondo text-testo transition-colors hover:bg-superficie-2">
-                  <Icona nome="modifica" size={18} />
-                </Link>
-              ) : null}
             </li>
           ))}
         </ul>

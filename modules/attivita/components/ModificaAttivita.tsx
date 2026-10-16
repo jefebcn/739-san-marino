@@ -9,6 +9,8 @@ import { caricaFoto } from "@/modules/eventi/api";
 import type { Luogo } from "@/lib/data";
 import { luogoDaModificare, salvaMiaAttivita, type Orari } from "../api";
 import ProAttivita from "./ProAttivita";
+import CruscottoAttivita from "./CruscottoAttivita";
+import { tipoDi } from "@/lib/data";
 import OrariSettimana from "./OrariSettimana";
 import { CAMPO } from "./stile";
 
@@ -118,7 +120,18 @@ export default function ModificaAttivita({ id }: { id: string }) {
 
   return (
     <div className="flex flex-col gap-8">
-    <form onSubmit={salva} className="flex flex-col gap-5">
+    <section className="flex flex-col gap-3" aria-labelledby="nome-attivita">
+      <div className="flex flex-col gap-0.5">
+        <h2 id="nome-attivita" className="text-[24px] font-semibold leading-tight tracking-tight">{luogo.nome}</h2>
+        <p className="text-sm text-testo-2">{[tipoDi(luogo), luogo.indirizzo].filter(Boolean).join(", ")}</p>
+      </div>
+      <CruscottoAttivita luogo={luogo} />
+    </section>
+    <form onSubmit={salva} className="flex flex-col gap-5" aria-labelledby="titolo-scheda">
+      <div className="flex flex-col gap-0.5">
+        <h2 id="titolo-scheda" className="text-[19px] font-semibold tracking-tight">La scheda</h2>
+        <p className="text-sm text-testo-2">Quello che vede chi la apre. Nome e posizione li cambia la redazione.</p>
+      </div>
       <Campo testo="Descrizione" nota="Cosa si trova da voi, in poche righe. Massimo 1000 caratteri.">
         <textarea rows={5} maxLength={1000} value={descrizione} onChange={(e) => setDescrizione(e.target.value)} placeholder="Es. Cucina sammarinese, pasta fatta in casa, terrazza sulla valle." className={`${CAMPO} py-3 leading-relaxed`} />
       </Campo>
@@ -175,7 +188,9 @@ export default function ModificaAttivita({ id }: { id: string }) {
       </span>
       <Icona nome="avanti" size={18} />
     </Link>
-    <ProAttivita id={id} nome={luogo.nome} />
+    <div id="pro" className="scroll-mt-20">
+      <ProAttivita id={id} nome={luogo.nome} />
+    </div>
     </div>
   );
 }

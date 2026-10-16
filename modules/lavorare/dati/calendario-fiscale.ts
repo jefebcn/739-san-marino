@@ -1,6 +1,6 @@
 // Calendario fiscale di San Marino: le scadenze fiscali e contributive per chi ha un'attività (Lavorare).
 // Dati raccolti e verificati sul web da Alex il 16/10/2026. È l'unico file da aggiornare ogni anno:
-// la pagina (/lavorare/calendario-fiscale) e il file .ics si costruiscono da qui (lib/calendario-fiscale.ts).
+// la pagina (/lavorare/calendario-fiscale) e il file .ics si costruiscono da qui (modules/lavorare/calendario-fiscale.ts).
 //
 // Regole: mai date, link o riferimenti inventati. Se un dato manca resta vuoto e la voce è «da verificare».
 // Ogni voce elenca le sue fonti (chiavi di FONTI): la pagina mostra per prima la più autorevole

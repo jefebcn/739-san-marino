@@ -9,8 +9,8 @@ import ContaScheda from "@/components/ContaScheda";
 import { CATEGORIE_ATTIVITA } from "@/modules/attivita/api";
 import { ritornoDiCategoria } from "@/lib/aree";
 import { metadatiCondivisione } from "@/lib/condivisione";
-import { getOfferteLavoro } from "@/lib/lavoro";
-import { RigaOfferta } from "@/components/lavoro/ElencoOfferte";
+import { getOfferteLavoro } from "@/modules/lavorare/offerte";
+import { RigaOfferta } from "@/modules/lavorare/components/ElencoOfferte";
 
 export const revalidate = 300;
 

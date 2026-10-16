@@ -1,5 +1,5 @@
 import { Icona } from "@/components/Icona";
-import { TIPI_SCADENZA, type Scadenza } from "@/lib/scadenze";
+import { TIPI_SCADENZA, type Scadenza } from "@/modules/lavorare/scadenze";
 
 const giorno = new Intl.DateTimeFormat("it-IT", { weekday: "short", day: "numeric", timeZone: "UTC" });
 const mese = new Intl.DateTimeFormat("it-IT", { month: "long", year: "numeric", timeZone: "UTC" });

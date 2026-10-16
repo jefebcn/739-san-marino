@@ -4,7 +4,7 @@ import { chiaveGiorno, getEventi } from "@/lib/data";
 import { cielo, getMeteo, gradi } from "@/lib/meteo";
 import { getAvvisi } from "@/lib/avvisi";
 import { TITOLARE } from "@/lib/legale";
-import { getScadenze, oggiSM } from "@/lib/scadenze";
+import { getScadenze, oggiSM } from "@/modules/lavorare/scadenze";
 
 // Invio delle notifiche (passo 1.6). La chiama solo pg_cron alle 7:39 di San Marino (manda_notifiche(),
 // migrazione 0029) con il segreto della cassaforte: il database lo controlla in notifiche_da_inviare().

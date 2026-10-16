@@ -1,5 +1,5 @@
-import { filtra, oggiSM, piuMesi, scadenzeTra } from "@/lib/calendario-fiscale";
-import { AGGIORNATO_IL } from "@/lib/dati/calendario-fiscale";
+import { filtra, oggiSM, piuMesi, scadenzeTra } from "@/modules/lavorare/calendario-fiscale";
+import { AGGIORNATO_IL } from "@/modules/lavorare/dati/calendario-fiscale";
 
 // Il calendario fiscale come file .ics (Google Calendar, Apple Calendar, Outlook): un evento di un giorno per
 // ogni scadenza dei prossimi 12 mesi, con gli stessi filtri della pagina (?categoria=…&destinatari=…).

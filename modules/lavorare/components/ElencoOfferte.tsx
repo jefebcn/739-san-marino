@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Icona } from "@/components/Icona";
-import { CONTRATTI, leggiGiorno, type OffertaLavoro } from "@/lib/lavoro";
+import { CONTRATTI, leggiGiorno, type OffertaLavoro } from "@/modules/lavorare/offerte";
 
 /** Una offerta in un elenco: chi cercano, l'attività e il castello, contratto, orario e fino a quando resta online */
 export function RigaOfferta({ o, castello }: { o: OffertaLavoro; castello?: string | null }) {

@@ -3,7 +3,7 @@ import { AREE } from "@/lib/aree";
 import { getClassifica, getEventi, getLuoghi } from "@/lib/data";
 import { getContenuti } from "@/lib/contenuti";
 import { PAGINE_EN } from "@/lib/lingua";
-import { getOfferteLavoro } from "@/lib/lavoro";
+import { getOfferteLavoro } from "@/modules/lavorare/offerte";
 
 const SITO = "https://739-san-marino.vercel.app";
 

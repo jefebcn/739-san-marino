@@ -1,4 +1,4 @@
-import { supabase } from "./supabase";
+import { supabase } from "@/lib/supabase";
 
 // Offerte di lavoro (Lavorare, migrazione 0043): le pubblica chi gestisce la scheda di un'attività in 739,
 // restano online fino alla scadenza (al massimo 60 giorni) e le candidature vanno direttamente all'attività.
