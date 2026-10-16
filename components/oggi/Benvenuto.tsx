@@ -56,7 +56,7 @@ export default function Benvenuto({ farmacie, luoghi, eventi }: { farmacie: Luog
               prefetch={f.senzaPrefetch ? false : undefined}
               className="flex h-full items-center gap-2.5 p-3 transition-colors hover:bg-white/[0.06] lg:items-start lg:gap-3.5 lg:p-5"
             >
-              <span className="grid size-9 shrink-0 place-items-center text-white lg:size-10"><Icona nome={f.icona} size={24} piatta /></span>
+              <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-white/[0.08] text-white lg:size-11"><Icona nome={f.icona} size={22} /></span>
               <span className="flex min-w-0 flex-col gap-1">
                 <span className="text-[13px] font-semibold leading-tight text-white lg:text-[15px] lg:leading-snug">{f.titolo}</span>
                 {/* Sul telefono basta il titolo: i dati di adesso sono subito sotto, in «Adesso» */}

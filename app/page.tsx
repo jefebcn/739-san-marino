@@ -228,7 +228,7 @@ export default async function Home() {
             <nav aria-label="Le aree di 739" className="grid gap-2 lg:grid-cols-5">
               {AREE.map((a) => (
                 <Link key={a.href} href={a.href} className="flex items-center gap-3 rounded-2xl bg-superficie px-3.5 py-3 transition-colors hover:bg-superficie-2 lg:flex-col lg:items-start lg:gap-2 lg:p-4">
-                  <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#09090B] text-white"><Icona nome={a.icona} size={22} piatta /></span>
+                  <span className="shrink-0 text-testo"><Icona nome={a.icona} size={30} /></span>
                   <span className="flex min-w-0 flex-1 flex-col">
                     <span className="text-[15px] font-semibold">{a.nome}</span>
                     <span className="text-[13px] leading-snug text-testo-2">{a.breve}</span>
