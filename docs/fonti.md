@@ -116,3 +116,10 @@ Ufficio del Turismo (calendario eventi), AASS (funivia, bus, rifiuti, avvisi), I
 ### Promemoria fissi
 
 Ricontrollare a marzo gli orari dei bus Rimini–San Marino e a dicembre gli ecocalendari dell'anno nuovo.
+
+## San Marino RTV (collegata il 16/10/2026)
+
+- Feed RSS ufficiali, uno per categoria, elencati in https://www.sanmarinortv.sm/help/feed-rss; il robots.txt non vieta niente.
+- Usati: cronaca (`/news/cronaca-c3.xml`), attualità (`c4`), politica (`c2`), economia (`c5`), cultura (`c6`), sport sammarinese (`/sport/sport-sammarinese-c16.xml`). Fuori Italia, Mondo, comunicati e pubbliredazionali.
+- Nel feed ci sono titolo, sommario, data, categoria e link, niente immagini. In 739 (`/notizie` e Oggi) si mostrano così come sono, con il link all'articolo e la fonte.
+- Immagini: le foto degli articoli sono di San Marino RTV; per mostrarle serve il loro permesso (da chiedere alla redazione di RTV).

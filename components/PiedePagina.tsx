@@ -9,6 +9,7 @@ import { AREE } from "@/lib/aree";
 
 const ALTRE = [
   { href: "/bollettino", nome: "Il Bollettino" },
+  { href: "/notizie", nome: "Notizie" },
   { href: "/rubriche", nome: "Rubriche" },
   { href: "/eventi", nome: "Calendario" },
   { href: "/castelli", nome: "I 9 castelli" },

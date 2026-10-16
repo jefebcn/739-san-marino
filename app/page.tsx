@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { chiaveGiorno, contaLuoghi, getClassifica, getDaScoprire, getEventi, oggiLungo, ora, saluto, giornoNumero, meseBreve } from "@/lib/data";
+import { chiaveGiorno, contaLuoghi, etichettaGiorno, getClassifica, getDaScoprire, getEventi, oggiLungo, ora, saluto, giornoNumero, meseBreve } from "@/lib/data";
 import { Icona, type NomeIcona } from "@/components/Icona";
 import { AREE } from "@/lib/aree";
 import Installa from "@/components/Installa";
@@ -15,6 +15,8 @@ import Programma from "@/components/oggi/Programma";
 import DaScoprire from "@/components/oggi/DaScoprire";
 import IlTuoCastello from "@/components/oggi/IlTuoCastello";
 import Benvenuto from "@/components/oggi/Benvenuto";
+import { RigaNotizia } from "@/components/Notizie";
+import { FONTE_NOTIZIE, getNotizie } from "@/lib/notizie";
 import { fasciaDi, nelPeriodo } from "@/lib/oggi";
 import { getUltimo } from "@/lib/contenuti";
 import { getSpecialeInCorso } from "@/lib/speciali";
@@ -68,12 +70,13 @@ export default async function Home() {
   const adesso = new Date();
   const fascia = fasciaDi(adesso);
   const mattina = fascia.tipo === "mattina";
-  const [eventi, classifica, farmacie, linee, raccolta, parcheggi, partite, sport, meteo, avvisi, scritto, speciale, daScoprire, nLuoghi] = await Promise.all([
+  const [eventi, classifica, farmacie, linee, raccolta, parcheggi, partite, sport, meteo, avvisi, scritto, speciale, daScoprire, nLuoghi, notizie] = await Promise.all([
     getEventi(40), getClassifica(), getFarmacie(), getLinee(), getRaccolta(), getParcheggi(), getPartiteAperte(), getSport(), getMeteo(), getAvvisi(),
     mattina ? getUltimo("bollettino", 1) : fascia.tipo === "weekend" ? getUltimo("weekend", 4) : Promise.resolve(null),
     getSpecialeInCorso(),
     getDaScoprire(adesso),
     contaLuoghi(),
+    getNotizie(4),
   ]);
   const tempo = meteo ? cielo(meteo.codice, meteo.giorno) : null;
   const funivia = linee.find((l) => l.tipo === "funivia");
@@ -140,6 +143,19 @@ export default async function Home() {
               vuoto={<DaScoprire luoghi={daScoprire} castelli={classifica} />}
             />
           </div>
+
+          {/* Le notizie di San Marino (San Marino RTV, ogni 15 minuti): solo se il feed risponde */}
+          {notizie.length ? (
+            <section className="order-4 flex flex-col gap-3">
+              <Titolo href="/notizie" link="Tutte">Notizie</Titolo>
+              <ul className="divide-y divide-linea overflow-hidden rounded-2xl bg-superficie">
+                {notizie.map((n) => (
+                  <li key={n.link}><RigaNotizia n={{ ...n, quando: `${etichettaGiorno(n.data).toLowerCase()} alle ${ora(n.data)}` }} sommario={false} /></li>
+                ))}
+              </ul>
+              <p className="-mt-1 text-[13px] text-testo-2">Da <a href={FONTE_NOTIZIE.link} target="_blank" rel="noopener" className="underline underline-offset-2">{FONTE_NOTIZIE.nome}</a></p>
+            </section>
+          ) : null}
 
           {dopo.length ? (
             <section className="order-4 flex flex-col gap-3">
