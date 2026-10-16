@@ -188,6 +188,14 @@ export async function getOfferteInCorso(): Promise<Map<string, string>> {
   return new Map((data as { luogo_id: string; titolo: string }[]).map((o) => [o.luogo_id, o.titolo]));
 }
 
+/** Il centro prenota con 739 (migrazione 0046; prima della migrazione: no) */
+export async function getPrenotaAperta(id: string): Promise<boolean> {
+  const db = supabase();
+  if (!db) return false;
+  const { data, error } = await db.rpc("prenota_aperta", { p_luogo: id });
+  return !error && data === true;
+}
+
 /** La scheda è gestita dal titolare dell'attività? (migrazione 0034; prima della migrazione: no) */
 export async function getGestito(id: string): Promise<boolean> {
   const db = supabase();

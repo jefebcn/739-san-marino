@@ -38,6 +38,8 @@ Il titolare ha sede a Malta, nell'Unione europea: la regola di riferimento è il
 
 **Offerte di lavoro.** Le offerte sono pubbliche e contengono i contatti per candidarsi scelti dall'attività. Per sapere chi le ha pubblicate le colleghiamo all'SMR ID di chi gestisce la scheda; questo lo vede solo la redazione. Se ti candidi lo fai direttamente con l'attività (email, sito o telefono): 739 non riceve né conserva le candidature.
 
+**Prenotazioni.** Se prenoti un campo, una sala o un servizio con 739 salviamo il centro, cosa e quando, lo stato (richiesta, confermata, annullata, non presentato), il telefono e la nota se li scrivi, e la risposta del centro. Chi gestisce il centro vede il tuo nome, l'email del tuo SMR ID e il telefono, solo per le prenotazioni fatte da lui e solo per gestirle; gli altri vedono soltanto che quell'orario è occupato. Teniamo le prenotazioni finché tieni l'SMR ID; l'elenco nell'app mostra le ultime di 30 giorni.
+
 **Schede da fonti aperte.** Molte schede di negozi, locali, aziende, studi, veterinari e associazioni arrivano da OpenStreetMap e da Overture Maps: sono dati pubblici delle attività e delle associazioni (nome, indirizzo, telefono e sito), con la fonte scritta nella scheda. Se una scheda riguarda te o la tua attività e vuoi correggerla o toglierla, usa «Segnala un errore» o scrivici: lo facciamo.
 
 **Numeri delle schede delle attività.** Quando apri la scheda di un'attività (un locale, un negozio, uno studio…) o di un'associazione, o tocchi Chiama, Indicazioni, sito, email, Menu o Prenota, aggiungiamo uno al totale di quel giorno per quella scheda. Non salviamo chi sei, né il tuo indirizzo IP, né l'ora: il titolare con il piano Pro vede solo i totali.
@@ -46,7 +48,7 @@ Il titolare ha sede a Malta, nell'Unione europea: la regola di riferimento è il
 
 ## Su quale base
 
-- **Per darti il servizio che chiedi** (GDPR art. 6.1.b): account SMR ID, check-in e metri, partite e tornei, eventi proposti, schede delle attività.
+- **Per darti il servizio che chiedi** (GDPR art. 6.1.b): account SMR ID, check-in e metri, partite e tornei, eventi proposti, schede delle attività, prenotazioni.
 - **Con il tuo consenso** (art. 6.1.a), che puoi togliere quando vuoi: notifiche e posizione del telefono.
 - **Per un nostro interesse legittimo** (art. 6.1.f), con il minimo dei dati: limiti anti abuso con l'impronta cifrata, conteggi anonimi delle visite e delle schede delle attività, sicurezza del servizio.
 
@@ -62,7 +64,7 @@ Meteo (Open-Meteo), articoli di Libertas e luoghi di OpenStreetMap li legge il n
 
 ## Per quanto tempo
 
-- Account, check-in, partite, metri e richieste delle attività: finché tieni l'SMR ID. Se ci chiedi di cancellarlo, cancelliamo anche i dati collegati, tranne i totali anonimi dei castelli.
+- Account, check-in, partite, metri, prenotazioni e richieste delle attività: finché tieni l'SMR ID. Se ci chiedi di cancellarlo, cancelliamo anche i dati collegati, tranne i totali anonimi dei castelli.
 - Iscrizioni alle notifiche: finché non le spegni o il telefono smette di accettarle.
 - Impronte anti abuso: restano con la proposta o la segnalazione e contano solo nel giorno in cui sono create.
 

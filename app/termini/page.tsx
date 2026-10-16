@@ -44,6 +44,8 @@ Il titolare di un locale, di un negozio, di un distributore, di un'azienda, di u
 
 **Offerte di lavoro.** Chi gestisce la scheda di un'attività può pubblicare offerte di lavoro per quell'attività, al massimo cinque aperte alla volta e ognuna per non più di 60 giorni. Devono essere posti veri, presso l'attività, con il tipo di contratto e l'orario giusti, nel rispetto delle leggi sul lavoro; non possono chiedere soldi a chi si candida né escludere qualcuno per età, sesso, origine, religione, disabilità, orientamento o stato civile. Le candidature vanno direttamente all'attività: 739 non le riceve e non partecipa alla selezione. La redazione può ritirare le offerte che non rispettano queste regole.
 
+**Prenotazioni con 739.** Chi gestisce la scheda di un centro (un impianto sportivo, una sala, un servizio) può aprire le prenotazioni da 739: sceglie cosa si prenota, gli orari, se conferma lui o in automatico e fino a quando si può annullare. Il servizio è un accordo tra te e il centro: 739 porta la richiesta e mostra gli orari liberi, ma non è parte del contratto, non incassa niente (si paga sul posto) e non risponde di prezzi, qualità o annullamenti decisi dal centro. Per prenotare serve l'SMR ID. Se non puoi andare annulla da 739 nei tempi indicati, o chiama il centro: chi non si presenta a due prenotazioni confermate in 90 giorni non può prenotare da 739 per un mese. Il centro usa nome, email e telefono di chi prenota solo per quella prenotazione, non per pubblicità o altro.
+
 ## Le cose da non fare
 
 Usare 739 per spam, raccogliere dati di altri utenti, aggirare i limiti, leggere l'app in automatico in modo massiccio o provare a entrare dove non si ha accesso.

@@ -3,7 +3,7 @@ import Link from "next/link";
 import Scheda from "@/components/Scheda";
 import SegnalaErrore from "@/components/SegnalaErrore";
 import { Icona } from "@/components/Icona";
-import { CATEGORIE, getClassifica, getGestito, getLuogo, getPro, getSimili } from "@/lib/data";
+import { CATEGORIE, getClassifica, getGestito, getLuogo, getPrenotaAperta, getPro, getSimili } from "@/lib/data";
 import Simili from "@/components/luoghi/Simili";
 import ContaScheda from "@/components/ContaScheda";
 import { CATEGORIE_ATTIVITA } from "@/modules/attivita/api";
@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: Props) {
 /** La pagina di un luogo: la scheda unica, aperta dalla mappa, dalla ricerca e dalle sezioni. */
 export default async function PaginaLuogo({ params }: Props) {
   const { id } = await params;
-  const [l, castelli, gestito, pro, offerte] = await Promise.all([getLuogo(id), getClassifica(), getGestito(id), getPro(id), getOfferteLavoro()]);
+  const [l, castelli, gestito, pro, offerte, prenota] = await Promise.all([getLuogo(id), getClassifica(), getGestito(id), getPro(id), getOfferteLavoro(), getPrenotaAperta(id)]);
   if (!l) notFound();
   const castello = castelli.find((c) => c.id === l.castello_id) ?? null;
   const ritorno = ritornoDiCategoria(l.categoria, l.sottocategoria);
@@ -43,7 +43,7 @@ export default async function PaginaLuogo({ params }: Props) {
       <Link href={ritorno.href} className="-mb-2 flex w-fit items-center gap-1 text-sm font-medium text-accento">
         <Icona nome="freccia" size={16} /> {ritorno.nome}
       </Link>
-      <Scheda l={l} castello={castello} gestito={gestito} pro={pro} azioni={<SegnalaErrore luogo={l.id} />} />
+      <Scheda l={l} castello={castello} gestito={gestito} pro={pro} prenota={prenota} azioni={<SegnalaErrore luogo={l.id} />} />
       {lavoro.length ? (
         <section className="flex flex-col gap-3" aria-labelledby="cercano">
           <h2 id="cercano" className="text-[19px] font-semibold tracking-tight">Cercano personale</h2>

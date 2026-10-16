@@ -18,6 +18,7 @@ import Tano, { POSA_DI_LIVELLO } from "@/components/Tano";
 import Notifiche from "@/components/Notifiche";
 import { conteggioBozze } from "@/modules/coda/api";
 import { conteggioRichieste, mieAttivita } from "@/modules/attivita/api";
+import { miePrenotazioni } from "@/modules/prenotazioni/api";
 import { mieiRuoli, NESSUN_RUOLO, type Ruoli } from "../ruoli";
 import { mieiMetri, type Movimento } from "@/modules/eventi/api";
 
@@ -131,6 +132,14 @@ export default function Profilo({ castelli }: { castelli: Castello[] }) {
       if (r.attivita.length) setAttivita({ gestite: r.attivita.filter((a) => a.stato === "approvata").length, totale: r.attivita.length });
     });
   }, [idUtente]);
+  // Prenotazioni con 739 (0046): il link compare a chi ne ha, con quante sono in arrivo
+  const [prenotazioni, setPrenotazioni] = useState<number | null>(null);
+  useEffect(() => {
+    if (!idUtente) return;
+    miePrenotazioni().then((r) => {
+      if (r.prenotazioni.length) setPrenotazioni(r.prenotazioni.filter((p) => (p.stato === "richiesta" || p.stato === "confermata") && Date.parse(p.fine) > Date.now()).length);
+    });
+  }, [idUtente]);
 
   if (stato === "caricamento") {
     return (
@@ -214,6 +223,19 @@ export default function Profilo({ castelli }: { castelli: Castello[] }) {
       </section>
 
       <Notifiche />
+
+      {prenotazioni !== null ? (
+        <section className="flex flex-col gap-3">
+          <h2 className="text-xl font-semibold tracking-tight">Prenotazioni</h2>
+          <ActionCard
+            href="/profile/prenotazioni"
+            icona={<Icona nome="calendario" />}
+            tono="neutro"
+            titolo="Le mie prenotazioni"
+            descrizione={prenotazioni ? (prenotazioni === 1 ? "1 in arrivo" : `${prenotazioni} in arrivo`) : "Niente in arrivo"}
+          />
+        </section>
+      ) : null}
 
       {attivita ? (
         <section className="flex flex-col gap-3">

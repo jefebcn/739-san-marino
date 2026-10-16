@@ -38,7 +38,9 @@ Qualunque cosa abbia un posto (ufficio, ristorante, parcheggio, impianto) ha la 
 | 3 | Dormire, itinerari, bacheca, offerte di lavoro, bandi |
 | 4 | Campionato sammarinese (solo con accordo FSGC), feed ufficiali degli enti |
 
-Fuori per ora: dati clinici, pagamenti in app, prenotazioni gestite da 739, politica, campionato senza accordo.
+Fuori per ora: dati clinici, pagamenti in app, politica, campionato senza accordo.
+
+Prenotazioni con 739 (scelta di Alex del 16/10/2026, prima erano fuori): i centri senza un sistema loro (campi, sale, servizi) aprono le prenotazioni dalla scheda che gestiscono; orari e regole li sceglie il centro, si paga sul posto, 739 non incassa niente. Chi ha già un sistema resta col link «Prenota» del Pro. Prezzo da decidere: per ora gratis, come prova.
 
 ## Piano editoriale
 

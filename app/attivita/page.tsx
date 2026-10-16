@@ -37,6 +37,7 @@ const BASE = [
   "Sulla mappa, nella ricerca e nella sezione giusta di 739",
   "Offerte di lavoro, fino a 5 aperte alla volta",
   "Eventi nel calendario, dopo il controllo della redazione",
+  "Prenotazioni da 739 per campi, sale e servizi, se non hai già un sistema (per ora in prova)",
 ];
 
 const PRO = [
@@ -58,6 +59,7 @@ const ANCHE: { icona: NomeIcona; titolo: string; testo: ReactNode; href: string;
 const DOMANDE: { d: string; r: string }[] = [
   { d: "Il Pro mi mette davanti agli altri?", r: "No. Le liste e la ricerca sono uguali per tutti: chi cerca una pizzeria vede le pizzerie, non chi paga. Il Pro aggiunge strumenti alla tua scheda." },
   { d: "Come si paga il Pro?", r: `Con un accordo scritto con ${TITOLARE.nome}, che fa la fattura. Nell'app non si paga niente e non chiediamo carte.` },
+  { d: "I clienti possono prenotare da 739?", r: "Sì, se hai un centro con campi, sale o servizi a orario e non hai già un sistema tuo: scrivi cosa si prenota, gli orari e le regole, e scegli se confermare tu o in automatico. Si paga sul posto. Se hai già un sistema, col Pro c'è il pulsante «Prenota» verso il tuo." },
   { d: "E se smetto?", r: "Alla scadenza la scheda torna al profilo base: restano descrizione, contatti, orari e foto. Il profilo base è gratis." },
   { d: "Chi vede i miei dati per la verifica?", r: "Solo la redazione di 739. Il telefono che ci dai per la verifica non compare nella scheda." },
 ];

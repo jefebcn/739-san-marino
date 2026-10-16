@@ -9,7 +9,7 @@ import { CATEGORIA_SINGOLA_EN, TIPI_EN, type Lingua } from "@/lib/lingua";
 import { traduci } from "@/lib/traduci";
 
 // Le attività private, come CATEGORIE_ATTIVITA in modules/attivita/api.ts
-const ATTIVITA = new Set(["locale", "negozio", "carburante", "azienda", "professionista", "artigiano", "animali", "associazione", "dormire"]);
+const ATTIVITA = new Set(["locale", "negozio", "carburante", "azienda", "professionista", "artigiano", "animali", "associazione", "dormire", "impianto"]);
 const SOLO_TIPO = new Set(["locale", "scuola", "chiesa", "banca", "negozio", "azienda", "professionista", "artigiano", "animali", "associazione", "dormire"]);
 
 const giornoBreve = new Intl.DateTimeFormat("it-IT", { day: "numeric", month: "long", timeZone: "Europe/San_Marino" });
@@ -61,7 +61,7 @@ function Dato({ icona, titolo, children }: { icona: NomeIcona; titolo: string; c
  * Nome, castello, stato di apertura, indicazioni, contatti, foto con credito, «Cosa posso fare qui»,
  * «Da verificare», fonte e data dell'ultimo controllo. `azioni` è il posto di «Segnala un errore».
  */
-export default function Scheda({ l, castello, azioni, gestito = false, pro = null, lingua = "it" }: { l: Luogo; castello: Castello | null; azioni?: ReactNode; gestito?: boolean; pro?: DatiPro | null; lingua?: Lingua }) {
+export default function Scheda({ l, castello, azioni, gestito = false, pro = null, lingua = "it", prenota = false }: { l: Luogo; castello: Castello | null; azioni?: ReactNode; gestito?: boolean; pro?: DatiPro | null; lingua?: Lingua; /** Il centro prenota con 739 (migrazione 0046) */ prenota?: boolean }) {
   // In inglese: etichette e dati dei servizi tradotti; descrizione, pratiche e testi dei titolari restano in italiano
   const t = T[lingua];
   const en = lingua === "en";
@@ -100,13 +100,19 @@ export default function Scheda({ l, castello, azioni, gestito = false, pro = nul
           <Link prefetch={false} href={`${en ? "/en/map" : "/mappa"}?luogo=${l.id}`} className="flex h-12 items-center justify-center gap-2 rounded-xl bg-superficie text-[15px] font-semibold hover:bg-superficie-2 active:scale-[0.98]">
             <Icona nome="mappa" size={20} /> {t.mappa}
           </Link>
+          {/* Prenotazioni di 739 (0046): il pulsante grande, prima di tutto il resto */}
+          {prenota && !en ? (
+            <Link href={`/luoghi/${l.id}/prenota`} prefetch={false} data-conta="prenota" className="taglio col-span-2 flex h-12 items-center justify-center gap-2 bg-metallo text-[15px] font-semibold text-su-accento active:scale-[0.98]">
+              <Icona nome="calendario" size={20} /> Prenota con 739
+            </Link>
+          ) : null}
           {/* 739 Pro: menu e prenotazioni del titolare */}
           {pro?.menu_url ? (
-            <a href={pro.menu_url} target="_blank" rel="noopener" data-conta="menu" className={`${pro.prenota_url ? "" : "col-span-2 "}flex h-12 items-center justify-center gap-2 rounded-xl bg-superficie text-[15px] font-semibold hover:bg-superficie-2 active:scale-[0.98]`}>
+            <a href={pro.menu_url} target="_blank" rel="noopener" data-conta="menu" className={`${pro.prenota_url && !(prenota && !en) ? "" : "col-span-2 "}flex h-12 items-center justify-center gap-2 rounded-xl bg-superficie text-[15px] font-semibold hover:bg-superficie-2 active:scale-[0.98]`}>
               <Icona nome="food" size={20} /> {t.menu}
             </a>
           ) : null}
-          {pro?.prenota_url ? (
+          {pro?.prenota_url && !(prenota && !en) ? (
             <a href={pro.prenota_url} target="_blank" rel="noopener" data-conta="prenota" className={`${pro.menu_url ? "" : "col-span-2 "}flex h-12 items-center justify-center gap-2 rounded-xl bg-superficie text-[15px] font-semibold hover:bg-superficie-2 active:scale-[0.98]`}>
               <Icona nome="calendario" size={20} /> {t.prenota}
             </a>
