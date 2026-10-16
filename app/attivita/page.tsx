@@ -49,6 +49,9 @@ const PRO = [
 const ANCHE: { icona: NomeIcona; titolo: string; testo: ReactNode; href: string; link: string }[] = [
   { icona: "lavoro", titolo: "Offerte di lavoro", testo: "Cerchi personale? L'offerta va online subito in Lavorare, nella tua scheda e su Google. Le candidature arrivano a te.", href: "/lavorare/lavoro", link: "Le offerte aperte" },
   { icona: "eventi", titolo: "Eventi e serate", testo: "Proponi i tuoi eventi: finiscono nel calendario e nel Bollettino delle 7:39. Chi viene può fare il check-in e guadagnare metri.", href: "/eventi/proponi", link: "Proponi un evento" },
+  { icona: "collegamento", titolo: "Fornitori e preventivi", testo: "Trova aziende, artigiani e studi del territorio per tipo e chiedi un preventivo: la richiesta parte da te e va a loro.", href: "/lavorare/fornitori", link: "Trova un fornitore" },
+  { icona: "calendario", titolo: "Scadenze e novità", testo: "Cosa scade e cosa cambia per le attività, ognuna con la fonte ufficiale, più i servizi online dello Stato in un posto solo.", href: "/lavorare/scadenze", link: "Le scadenze" },
+  { icona: "bandi", titolo: "Bandi", testo: "Contributi e bandi pubblici aperti, in ordine di chiusura.", href: "/lavorare/bandi", link: "I bandi aperti" },
   { icona: "fiere", titolo: "Fiere e convegni", testo: "Gli incontri per professionisti e aziende hanno una sezione tutta loro in Lavorare.", href: "/lavorare/fiere", link: "Fiere e convegni" },
 ];
 

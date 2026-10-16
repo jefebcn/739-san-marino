@@ -377,3 +377,48 @@ export const TIPI_LEGGIBILI: Record<string, string> = {
 export const CATEGORIA_SINGOLA: Record<string, string> = {
   azienda: "Azienda", professionista: "Studio professionale", artigiano: "Artigiano", animali: "Servizi per animali", associazione: "Associazione", dormire: "Struttura ricettiva",
 };
+
+/** Un luogo vicino a un altro, con la distanza in metri (luoghi_vicini, migrazione 0037) */
+export type Vicino = { id: string; nome: string; categoria: string; sottocategoria: string | null; indirizzo: string | null; distanza_m: number };
+
+/** Il tipo da mostrare sotto il nome: «Pizzeria», «Commercialista», altrimenti la categoria al singolare */
+export function tipoDi(l: { categoria: string; sottocategoria?: string | null }) {
+  const s = l.sottocategoria;
+  if (s && s !== "altro") return TIPI_LEGGIBILI[s] ?? s[0].toUpperCase() + s.slice(1);
+  return CATEGORIA_SINGOLA[l.categoria] ?? CATEGORIE[l.categoria] ?? l.categoria;
+}
+
+/**
+ * Luoghi simili vicino a una scheda: stessa categoria entro 3 km, prima quelli dello stesso tipo, poi i più vicini.
+ * Servono a chi cerca alternative (un'altra pizzeria) e alle attività che cercano chi fa lo stesso lavoro intorno.
+ */
+export async function getSimili(l: Pick<Luogo, "id" | "lat" | "lng" | "categoria" | "sottocategoria">, quanti = 4): Promise<Vicino[]> {
+  const db = supabase();
+  if (!db || l.categoria === "avviso") return [];
+  const { data, error } = await db.rpc("luoghi_vicini", { p_lat: l.lat, p_lng: l.lng, p_raggio: 3000, p_categorie: [l.categoria], p_limite: 20 });
+  if (error) {
+    if (error.code !== "PGRST202") console.error("simili", error.message);
+    return [];
+  }
+  const altri = ((data ?? []) as Vicino[]).filter((v) => v.id !== l.id);
+  const stesso = (v: Vicino) => (l.sottocategoria && v.sottocategoria === l.sottocategoria ? 0 : 1);
+  return altri.sort((a, b) => stesso(a) - stesso(b) || a.distanza_m - b.distanza_m).slice(0, quanti);
+}
+
+/** Un fornitore: aziende, artigiani e studi professionali, con i contatti per chiedere un preventivo */
+export type Fornitore = Pick<Luogo, "id" | "nome" | "categoria" | "castello_id" | "indirizzo" | "telefono" | "descrizione"> & { sottocategoria: string | null; email: string | null; sito: string | null };
+export const CATEGORIE_FORNITORI = ["azienda", "artigiano", "professionista"] as const;
+
+export async function getFornitori(): Promise<Fornitore[]> {
+  const db = supabase();
+  if (!db) return [];
+  const { data, error } = await aPagine((da, a) =>
+    db.from("luoghi").select("id, nome, categoria, sottocategoria, castello_id, indirizzo, telefono, email, sito, descrizione")
+      .in("categoria", [...CATEGORIE_FORNITORI]).order("nome").order("id").range(da, a),
+  );
+  if (error) {
+    console.error("fornitori", error.message);
+    return [];
+  }
+  return (data ?? []) as Fornitore[];
+}

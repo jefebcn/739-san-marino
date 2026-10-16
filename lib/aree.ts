@@ -114,7 +114,9 @@ export const AREE: Area[] = [
       { slug: "artigiani", nome: "Artigiani", descrizione: "Idraulici, elettricisti, falegnami e altri mestieri.", icona: "artigiani", href: "/lavorare/artigiani", categorie: ["artigiano"], parole: "artigiani idraulico elettricista falegname" },
       { slug: "lavoro", nome: "Offerte di lavoro", descrizione: "Chi cerca personale a San Marino.", icona: "lavoro", href: "/lavorare/lavoro", parole: "lavoro offerte annunci cerco personale assunzioni posto impiego cameriere commessa stagionale" },
       { slug: "fiere", nome: "Fiere e convegni", descrizione: "Appuntamenti per chi lavora: fiere, convegni e incontri.", icona: "fiere", href: "/lavorare/fiere", parole: "fiere fiera convegni convegno congressi kursaal incontri formazione" },
-      { slug: "bandi", nome: "Bandi", descrizione: "Contributi e bandi pubblici.", icona: "bandi", parole: "bandi contributi finanziamenti" },
+      { slug: "fornitori", nome: "Fornitori e preventivi", descrizione: "Trova chi ti serve per la tua attività e chiedi un preventivo.", icona: "collegamento", href: "/lavorare/fornitori", parole: "fornitori fornitore preventivo preventivi rifornimento ingrosso grossista forniture b2b" },
+      { slug: "scadenze", nome: "Scadenze e novità", descrizione: "Cosa scade e cosa cambia per chi ha un'attività, con la fonte ufficiale.", icona: "calendario", href: "/lavorare/scadenze", parole: "scadenze fisco tasse imposte igr iss contributi fattura elettronica fatturazione dichiarazione tributario finanze novita leggi decreti" },
+      { slug: "bandi", nome: "Bandi", descrizione: "Contributi e bandi pubblici aperti.", icona: "bandi", href: "/lavorare/bandi", parole: "bandi contributi finanziamenti agevolazioni incentivi" },
     ],
   },
 ];

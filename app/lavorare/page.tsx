@@ -4,14 +4,18 @@ import { Icona } from "@/components/Icona";
 import { getEventiPerChi, getLuoghi } from "@/lib/data";
 import { PER_LAVORO } from "@/lib/eventi-lavoro";
 import { getOfferteLavoro } from "@/lib/lavoro";
+import { getScadenze, oggiSM } from "@/lib/scadenze";
 
 export const revalidate = 300;
 
 export const metadata = { title: "Lavorare · 739 San Marino" };
 
 export default async function Lavorare() {
-  const [luoghi, fiere, offerte] = await Promise.all([getLuoghi(), getEventiPerChi(PER_LAVORO, 60), getOfferteLavoro()]);
+  const [luoghi, fiere, offerte, scadenze] = await Promise.all([getLuoghi(), getEventiPerChi(PER_LAVORO, 60), getOfferteLavoro(), getScadenze({ da: oggiSM() })]);
   const conta = (c: string) => luoghi.filter((l) => l.categoria === c).length;
+  const bandi = scadenze.filter((s) => s.tipo === "bando").length;
+  const fornitori = conta("azienda") + conta("artigiano") + conta("professionista");
+  const prossima = scadenze.find((s) => s.tipo !== "bando");
   const riga = (n: number, uno: string, tanti: string) => (n ? <><b className="font-mono font-medium text-testo">{n}</b> {n === 1 ? uno : tanti}</> : "Aggiungi la tua, è gratis");
   return (
     <PaginaArea
@@ -30,6 +34,9 @@ export default async function Lavorare() {
         professionisti: riga(conta("professionista"), "studio", "studi"),
         artigiani: riga(conta("artigiano"), "artigiano", "artigiani"),
         lavoro: offerte.length ? <><b className="font-mono font-medium text-testo">{offerte.length}</b> {offerte.length === 1 ? "offerta aperta" : "offerte aperte"}</> : "Pubblica la tua, se hai un'attività",
+        fornitori: fornitori ? <><b className="font-mono font-medium text-testo">{fornitori}</b> tra aziende, artigiani e studi</> : undefined,
+        scadenze: prossima ? <>Prossima: {prossima.titolo}</> : undefined,
+        bandi: bandi ? <><b className="font-mono font-medium text-testo">{bandi}</b> {bandi === 1 ? "aperto" : "aperti"}</> : undefined,
         fiere: fiere.length ? <><b className="font-mono font-medium text-testo">{fiere.length}</b> in calendario</> : "Proponi la tua",
       }}
     />

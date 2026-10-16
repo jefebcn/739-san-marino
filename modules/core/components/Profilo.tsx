@@ -249,6 +249,9 @@ export default function Profilo({ castelli }: { castelli: Castello[] }) {
             <ActionCard href="/admin/attivita" icona={<Icona nome="negozi" />} tono="neutro" titolo="Attività" descrizione={richieste ? (richieste === 1 ? "1 titolare da verificare" : `${richieste} titolari da verificare`) : "Titolari che chiedono la scheda"} />
           ) : null}
           {ruoli.redattore ? (
+            <ActionCard href="/admin/scadenze" icona={<Icona nome="calendario" />} tono="neutro" titolo="Scadenze e bandi" descrizione="Per le attività, sempre con la fonte ufficiale" />
+          ) : null}
+          {ruoli.redattore ? (
             <ActionCard href="/admin/contenuti" icona={<Icona nome="storie" />} tono="neutro" titolo="Contenuti" descrizione="Bollettino, rubriche e storie" />
           ) : null}
           {ruoli.amministratore ? (

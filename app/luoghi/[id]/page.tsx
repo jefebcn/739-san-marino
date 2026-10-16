@@ -3,7 +3,8 @@ import Link from "next/link";
 import Scheda from "@/components/Scheda";
 import SegnalaErrore from "@/components/SegnalaErrore";
 import { Icona } from "@/components/Icona";
-import { CATEGORIE, getClassifica, getGestito, getLuogo, getPro } from "@/lib/data";
+import { CATEGORIE, getClassifica, getGestito, getLuogo, getPro, getSimili } from "@/lib/data";
+import Simili from "@/components/luoghi/Simili";
 import ContaScheda from "@/components/ContaScheda";
 import { CATEGORIE_ATTIVITA } from "@/modules/attivita/api";
 import { ritornoDiCategoria } from "@/lib/aree";
@@ -35,6 +36,7 @@ export default async function PaginaLuogo({ params }: Props) {
   const castello = castelli.find((c) => c.id === l.castello_id) ?? null;
   const ritorno = ritornoDiCategoria(l.categoria, l.sottocategoria);
   const lavoro = offerte.filter((o) => o.luogo_id === l.id);
+  const simili = await getSimili(l);
 
   return (
     <>
@@ -50,6 +52,7 @@ export default async function PaginaLuogo({ params }: Props) {
           </ul>
         </section>
       ) : null}
+      <Simili vicini={simili} />
       {CATEGORIE_ATTIVITA.has(l.categoria) ? <ContaScheda luogo={l.id} /> : null}
     </>
   );
