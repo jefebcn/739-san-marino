@@ -8,6 +8,8 @@ import ContaScheda from "@/components/ContaScheda";
 import { CATEGORIE_ATTIVITA } from "@/modules/attivita/api";
 import { ritornoDiCategoria } from "@/lib/aree";
 import { metadatiCondivisione } from "@/lib/condivisione";
+import { getOfferteLavoro } from "@/lib/lavoro";
+import { RigaOfferta } from "@/components/lavoro/ElencoOfferte";
 
 export const revalidate = 300;
 
@@ -28,10 +30,11 @@ export async function generateMetadata({ params }: Props) {
 /** La pagina di un luogo: la scheda unica, aperta dalla mappa, dalla ricerca e dalle sezioni. */
 export default async function PaginaLuogo({ params }: Props) {
   const { id } = await params;
-  const [l, castelli, gestito, pro] = await Promise.all([getLuogo(id), getClassifica(), getGestito(id), getPro(id)]);
+  const [l, castelli, gestito, pro, offerte] = await Promise.all([getLuogo(id), getClassifica(), getGestito(id), getPro(id), getOfferteLavoro()]);
   if (!l) notFound();
   const castello = castelli.find((c) => c.id === l.castello_id) ?? null;
   const ritorno = ritornoDiCategoria(l.categoria, l.sottocategoria);
+  const lavoro = offerte.filter((o) => o.luogo_id === l.id);
 
   return (
     <>
@@ -39,6 +42,14 @@ export default async function PaginaLuogo({ params }: Props) {
         <Icona nome="freccia" size={16} /> {ritorno.nome}
       </Link>
       <Scheda l={l} castello={castello} gestito={gestito} pro={pro} azioni={<SegnalaErrore luogo={l.id} />} />
+      {lavoro.length ? (
+        <section className="flex flex-col gap-3" aria-labelledby="cercano">
+          <h2 id="cercano" className="text-[19px] font-semibold tracking-tight">Cercano personale</h2>
+          <ul className="divide-y divide-linea overflow-hidden rounded-2xl bg-superficie">
+            {lavoro.map((o) => <li key={o.id}><RigaOfferta o={o} /></li>)}
+          </ul>
+        </section>
+      ) : null}
       {CATEGORIE_ATTIVITA.has(l.categoria) ? <ContaScheda luogo={l.id} /> : null}
     </>
   );

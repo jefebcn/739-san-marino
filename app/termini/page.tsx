@@ -42,6 +42,8 @@ Il titolare di un locale, di un negozio, di un distributore, di un'azienda, di u
 
 **739 Pro.** Chi gestisce la scheda può chiedere il piano Pro, a pagamento (oggi 3,99 € al mese o 39 € all'anno): i pulsanti «Menu» e «Prenota» con i propri link, fino a tre offerte con la scadenza e i numeri della scheda (solo totali). Si attiva con un accordo scritto con ${titolare()}, che indica prezzo, durata e fattura; nell'app non si paga niente. Il Pro non cambia l'ordine delle liste né i risultati della ricerca: le offerte devono essere vere, valide nelle date indicate e riguardare l'attività. Alla scadenza la scheda torna al profilo base e restano descrizione, contatti, orari e foto.
 
+**Offerte di lavoro.** Chi gestisce la scheda di un'attività può pubblicare offerte di lavoro per quell'attività, al massimo cinque aperte alla volta e ognuna per non più di 60 giorni. Devono essere posti veri, presso l'attività, con il tipo di contratto e l'orario giusti, nel rispetto delle leggi sul lavoro; non possono chiedere soldi a chi si candida né escludere qualcuno per età, sesso, origine, religione, disabilità, orientamento o stato civile. Le candidature vanno direttamente all'attività: 739 non le riceve e non partecipa alla selezione. La redazione può ritirare le offerte che non rispettano queste regole.
+
 ## Le cose da non fare
 
 Usare 739 per spam, raccogliere dati di altri utenti, aggirare i limiti, leggere l'app in automatico in modo massiccio o provare a entrare dove non si ha accesso.
@@ -64,5 +66,5 @@ Per domande scrivi a ${emailContatto()}. Per i tuoi dati personali leggi la [Pri
 `;
 
 export default function Termini() {
-  return <PaginaLegale titolo="Termini d'uso" aggiornata="15 ottobre 2026" testo={TESTO} />;
+  return <PaginaLegale titolo="Termini d'uso" aggiornata="16 ottobre 2026" testo={TESTO} />;
 }

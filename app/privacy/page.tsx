@@ -36,6 +36,8 @@ Il titolare ha sede a Malta, nell'Unione europea: la regola di riferimento è il
 
 **Titolari di attività e associazioni.** Se chiedi di gestire la scheda della tua attività o della tua associazione, o ne proponi una nuova, salviamo chi sei e che ruolo hai, un telefono per la verifica e la nota che scrivi: li vede solo la redazione di 739 e il telefono non compare nella scheda. Quello che scrivi nella scheda (descrizione, contatti, orari, foto) invece è pubblico.
 
+**Offerte di lavoro.** Le offerte sono pubbliche e contengono i contatti per candidarsi scelti dall'attività. Per sapere chi le ha pubblicate le colleghiamo all'SMR ID di chi gestisce la scheda; questo lo vede solo la redazione. Se ti candidi lo fai direttamente con l'attività (email, sito o telefono): 739 non riceve né conserva le candidature.
+
 **Schede da fonti aperte.** Molte schede di negozi, locali, aziende, studi, veterinari e associazioni arrivano da OpenStreetMap e da Overture Maps: sono dati pubblici delle attività e delle associazioni (nome, indirizzo, telefono e sito), con la fonte scritta nella scheda. Se una scheda riguarda te o la tua attività e vuoi correggerla o toglierla, usa «Segnala un errore» o scrivici: lo facciamo.
 
 **Numeri delle schede delle attività.** Quando apri la scheda di un'attività (un locale, un negozio, uno studio…) o di un'associazione, o tocchi Chiama, Indicazioni, sito, email, Menu o Prenota, aggiungiamo uno al totale di quel giorno per quella scheda. Non salviamo chi sei, né il tuo indirizzo IP, né l'ora: il titolare con il piano Pro vede solo i totali.
@@ -95,5 +97,5 @@ Se cambiamo questa pagina lo scriviamo qui in cima con la data. Per i cambiament
 `;
 
 export default function Privacy() {
-  return <PaginaLegale titolo="Privacy" aggiornata="15 ottobre 2026" testo={TESTO} />;
+  return <PaginaLegale titolo="Privacy" aggiornata="16 ottobre 2026" testo={TESTO} />;
 }

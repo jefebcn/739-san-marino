@@ -51,6 +51,7 @@ export default function MieAttivita() {
           <PrimaryButton href="/attivita/aggiungi" className="w-fit">Aggiungi la tua attività</PrimaryButton>
           <PrimaryButton href="/cerca" variante="secondario" className="w-fit">Cerca in 739</PrimaryButton>
         </div>
+        <Link href="/attivita" className="flex w-fit items-center gap-1 text-sm font-semibold text-accento">Cosa offre 739 alle attività <Icona nome="avanti" size={14} /></Link>
       </div>
     );
   }

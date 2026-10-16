@@ -6,14 +6,16 @@ import { Icona } from "@/components/Icona";
 import { mieiRuoli } from "@/modules/core/ruoli";
 import { decidiAttivita, elencoPro, impostaPro, richiesteAttivita, type Richiesta, type StatoRichiesta } from "../api";
 import ProposteAttivita from "./ProposteAttivita";
+import OfferteLavoroRedazione from "./OfferteLavoroRedazione";
 import { CAMPO } from "./stile";
 
-type Scheda = StatoRichiesta | "nuove";
+type Scheda = StatoRichiesta | "nuove" | "lavoro";
 const SCHEDE: { stato: Scheda; nome: string }[] = [
   { stato: "richiesta", nome: "Da verificare" },
   { stato: "nuove", nome: "Schede nuove" },
   { stato: "approvata", nome: "Approvate" },
   { stato: "rifiutata", nome: "Rifiutate" },
+  { stato: "lavoro", nome: "Offerte di lavoro" },
 ];
 const quando = new Intl.DateTimeFormat("it-IT", { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit", timeZone: "Europe/San_Marino" });
 const giorno = new Intl.DateTimeFormat("it-IT", { day: "numeric", month: "long", year: "numeric", timeZone: "Europe/San_Marino" });
@@ -36,7 +38,7 @@ export default function RichiesteAttivita() {
 
   const carica = useCallback(() => {
     setLista(null);
-    if (scheda === "nuove") return;
+    if (scheda === "nuove" || scheda === "lavoro") return;
     richiesteAttivita(scheda).then((r) => {
       setLista(r.richieste);
       setErrore(r.errore);
@@ -71,8 +73,9 @@ export default function RichiesteAttivita() {
         ))}
       </div>
       {scheda === "nuove" ? <ProposteAttivita /> : null}
-      {scheda !== "nuove" && errore ? <p role="alert" className="rounded-xl bg-segnale/12 px-4 py-3 text-sm text-segnale">{errore}</p> : null}
-      {scheda === "nuove" ? null : !lista ? (
+      {scheda === "lavoro" ? <OfferteLavoroRedazione /> : null}
+      {scheda !== "nuove" && scheda !== "lavoro" && errore ? <p role="alert" className="rounded-xl bg-segnale/12 px-4 py-3 text-sm text-segnale">{errore}</p> : null}
+      {scheda === "nuove" || scheda === "lavoro" ? null : !lista ? (
         <div className="h-40 animate-pulse rounded-2xl bg-superficie" aria-busy="true" aria-label="Caricamento" />
       ) : lista.length === 0 ? (
         <p className="rounded-2xl bg-superficie p-5 text-[15px] text-testo-2">{scheda === "richiesta" ? "Nessuna richiesta da verificare." : "Niente qui."}</p>

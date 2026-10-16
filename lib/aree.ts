@@ -112,7 +112,7 @@ export const AREE: Area[] = [
       { slug: "aziende", nome: "Aziende", descrizione: "Le imprese del territorio, con contatti e cosa fanno.", icona: "business", href: "/lavorare/aziende", categorie: ["azienda"], parole: "aziende imprese ditte business" },
       { slug: "professionisti", nome: "Professionisti", descrizione: "Commercialisti, avvocati, architetti, tecnici.", icona: "professionisti", href: "/lavorare/professionisti", categorie: ["professionista"], parole: "professionisti commercialista avvocato architetto notaio" },
       { slug: "artigiani", nome: "Artigiani", descrizione: "Idraulici, elettricisti, falegnami e altri mestieri.", icona: "artigiani", href: "/lavorare/artigiani", categorie: ["artigiano"], parole: "artigiani idraulico elettricista falegname" },
-      { slug: "lavoro", nome: "Offerte di lavoro", descrizione: "Chi cerca personale a San Marino.", icona: "lavoro", parole: "lavoro offerte annunci cerco personale" },
+      { slug: "lavoro", nome: "Offerte di lavoro", descrizione: "Chi cerca personale a San Marino.", icona: "lavoro", href: "/lavorare/lavoro", parole: "lavoro offerte annunci cerco personale assunzioni posto impiego cameriere commessa stagionale" },
       { slug: "fiere", nome: "Fiere e convegni", descrizione: "Appuntamenti per chi lavora: fiere, convegni e incontri.", icona: "fiere", href: "/lavorare/fiere", parole: "fiere fiera convegni convegno congressi kursaal incontri formazione" },
       { slug: "bandi", nome: "Bandi", descrizione: "Contributi e bandi pubblici.", icona: "bandi", parole: "bandi contributi finanziamenti" },
     ],

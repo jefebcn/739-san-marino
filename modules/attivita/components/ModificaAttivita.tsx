@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Icona } from "@/components/Icona";
 import PrimaryButton from "@/components/ui/PrimaryButton";
@@ -166,6 +167,14 @@ export default function ModificaAttivita({ id }: { id: string }) {
       <PrimaryButton type="submit" disabled={invio || caricaInCorso}>{invio ? "Salvo…" : "Salva la scheda"}</PrimaryButton>
       <p className="-mt-2 text-[13px] text-testo-2">Le modifiche vanno online subito, con la scritta «Aggiornata dal titolare». Il nome e la posizione li cambia la redazione: chiedili con «Segnala un errore».</p>
     </form>
+    <Link href={`/profile/attivita/${id}/lavoro`} className="flex items-center gap-3.5 rounded-2xl bg-superficie p-4 transition-colors hover:bg-superficie-2">
+      <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-fondo text-testo"><Icona nome="lavoro" size={22} /></span>
+      <span className="flex min-w-0 flex-1 flex-col">
+        <span className="text-[16px] font-semibold">Offerte di lavoro</span>
+        <span className="text-[13px] text-testo-2">Cerchi personale? Pubblica l&apos;offerta qui.</span>
+      </span>
+      <Icona nome="avanti" size={18} />
+    </Link>
     <ProAttivita id={id} nome={luogo.nome} />
     </div>
   );

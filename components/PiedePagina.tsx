@@ -14,6 +14,7 @@ const ALTRE = [
   { href: "/eventi", nome: "Calendario" },
   { href: "/castelli", nome: "I 9 castelli" },
   { href: "/guida", nome: "Come funziona 739" },
+  { href: "/attivita", nome: "Per le attività" },
   { href: "/profile", nome: "Il tuo SMR ID" },
 ];
 
