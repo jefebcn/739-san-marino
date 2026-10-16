@@ -3,13 +3,20 @@
 import type { Luogo } from "@/lib/data";
 import { apertura } from "@/lib/orario";
 import { useAdesso } from "@/lib/useAdesso";
+import { riapreEn, type Lingua } from "@/lib/lingua";
 
 /** «Aperto adesso, chiude alle 19:30» dagli orari settimanali del luogo (stessa logica delle farmacie). */
-export default function StatoApertura({ orari }: { orari: Luogo["orari_settimana"] }) {
+export default function StatoApertura({ orari, lingua = "it" }: { orari: Luogo["orari_settimana"]; lingua?: Lingua }) {
   const ora = useAdesso();
   const a = ora ? apertura(orari, ora) : null;
   if (!a) return null;
-  const testo = a.sempre
+  const testo = lingua === "en"
+    ? a.sempre
+      ? "Always open"
+      : a.aperta
+        ? `Open now${a.chiude ? `, closes at ${a.chiude}` : ""}`
+        : `Closed now${a.riapre ? `, opens ${riapreEn(a.riapre)}` : ""}`
+    : a.sempre
     ? "Sempre aperto"
     : a.aperta
       ? `Aperto adesso${a.chiude ? `, chiude alle ${a.chiude}` : ""}`

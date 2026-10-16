@@ -12,12 +12,13 @@ export function riassunto(testo: string | null | undefined, max = 160) {
   return t.slice(0, t.lastIndexOf(" ", max - 1)).replace(/[,.;:]$/, "") + "…";
 }
 
-export function metadatiCondivisione({ titolo, descrizione, percorso, tipo = "website" }: { titolo: string; descrizione?: string | null; percorso: string; tipo?: "website" | "article" }): Metadata {
+/** `inglese`: la stessa pagina in inglese (/en/…), per l'hreflang */
+export function metadatiCondivisione({ titolo, descrizione, percorso, tipo = "website", inglese }: { titolo: string; descrizione?: string | null; percorso: string; tipo?: "website" | "article"; inglese?: string }): Metadata {
   const descr = riassunto(descrizione) || "Tutto San Marino, dalla vetta. Eventi, mappa, castelli e servizi utili in un'unica app.";
   return {
     title: `${titolo} · ${SITO}`,
     description: descr,
-    alternates: { canonical: percorso },
+    alternates: inglese ? { canonical: percorso, languages: { it: percorso, en: inglese, "x-default": percorso } } : { canonical: percorso },
     openGraph: { title: titolo, description: descr, url: percorso, siteName: SITO, locale: "it_IT", type: tipo },
     twitter: { card: "summary_large_image", title: titolo, description: descr },
   };

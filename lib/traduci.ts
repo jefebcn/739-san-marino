@@ -16,6 +16,10 @@ const ordinale = (n: string) => n + (({ "1": "st", "2": "nd", "3": "rd" } as Rec
 const FRASI: Coppia[] = [
   // Prima delle parole che contiene
   ["a persona con navetta andata e ritorno, fino alle 21", "per person with return shuttle, until 21:00"],
+  // Le tre torri
+  ["Prima Torre", "First Tower"],
+  ["Seconda Torre", "Second Tower"],
+  ["Terza Torre", "Third Tower"],
   // Farmacie
   ["Sempre aperta, 24 ore su 24.", "Always open, 24 hours a day."],
   ["Dalle 23 alle 6 solo per casi urgenti, festivi compresi.", "From 23:00 to 6:00 urgent cases only, holidays included."],

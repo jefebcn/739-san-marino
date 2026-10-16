@@ -12,6 +12,33 @@ import {
   TERRITORIO, type Indirizzo, type PuntoMappa, type Riquadro,
 } from "@/lib/mappa-dati";
 import { chiaveSegnaposto, immagineSegnaposto, PuntoCategoria } from "./Segnaposto";
+import { AREE_EN, CATEGORIA_SINGOLA_EN, CATEGORIE_EN, type Lingua } from "@/lib/lingua";
+import { traduci } from "@/lib/traduci";
+
+const T = {
+  it: {
+    mappa: "Mappa di San Marino", nonCarica: "La mappa non si carica. Controlla la connessione e riprova.", riprova: "Riprova", filtraArea: "Filtra per area",
+    cerca: "Cerca un luogo o un indirizzo", cercaBreve: "Cerca", tutto: "Tutto", categorieDi: "Categorie di", abbassa: "Abbassa il pannello", alza: "Alza il pannello",
+    territorio: "Mappa del territorio", caricamento: "Caricamento", verificare: "Posizione da verificare", indirizzo: "Indirizzo", orari: "Orari", tariffe: "Tariffe",
+    posti: "posti", telefono: "Telefono", daVerificare: "da verificare", da: (d: string) => `A ${d} da te`, indicazioni: "Indicazioni", avvisi: "Tutti gli avvisi",
+    scheda: "Apri la scheda", torna: "Torna a tutti i luoghi", vicino: "Vicino a me", vicinoTe: "Vicino a te", qui: "Qui sulla mappa",
+    nonLuoghi: "Non riesco a caricare i luoghi. Controlla la connessione.", nessuno: (tipo: boolean) => `Nessun luogo ${tipo ? "di questo tipo " : ""}in quest'area.`,
+    allarga: "Allarga la mappa", tanti: "Qui ci sono tanti luoghi: avvicina la mappa per vederli tutti.", vai: "Vai", altri: (n: number) => `Mostra altri ${n}`,
+    luogo: "luogo", luoghi: "luoghi", cerco: "Cerco", nessunNome: "Nessun luogo e nessun indirizzo con questo nome.", indirizzi: "Indirizzi",
+    cercoIndirizzi: "Cerco anche tra gli indirizzi…", photon: "Indirizzi da Photon, dati © OpenStreetMap contributors.",
+  },
+  en: {
+    mappa: "Map of San Marino", nonCarica: "The map is not loading. Check your connection and try again.", riprova: "Try again", filtraArea: "Filter by area",
+    cerca: "Search places or addresses", cercaBreve: "Search", tutto: "All", categorieDi: "Categories in", abbassa: "Lower the panel", alza: "Raise the panel",
+    territorio: "Map of San Marino", caricamento: "Loading", verificare: "Location to be checked", indirizzo: "Address", orari: "Opening hours", tariffe: "Fares",
+    posti: "spaces", telefono: "Phone", daVerificare: "to be checked", da: (d: string) => `${d} from you`, indicazioni: "Directions", avvisi: "All notices",
+    scheda: "Open the page", torna: "Back to all places", vicino: "Near me", vicinoTe: "Near you", qui: "On the map",
+    nonLuoghi: "Places are not loading. Check your connection.", nessuno: (tipo: boolean) => `No places ${tipo ? "of this kind " : ""}in this area.`,
+    allarga: "Zoom out", tanti: "There are lots of places here: zoom in to see them all.", vai: "Go", altri: (n: number) => `Show ${n} more`,
+    luogo: "place", luoghi: "places", cerco: "Searching", nessunNome: "No place or address with this name.", indirizzi: "Addresses",
+    cercoIndirizzi: "Also searching addresses…", photon: "Addresses from Photon, data © OpenStreetMap contributors.",
+  },
+};
 
 // La libreria della mappa (la parte più pesante) parte al primo disegno del componente, prima degli effetti;
 // non quando Next prepara la pagina in anticipo (lì il file viene valutato ma il componente non si disegna)
@@ -39,7 +66,13 @@ const aPunto = (l: Luogo): PuntoMappa => ({
  * si disegnano come layer GeoJSON raggruppati quando sono vicini (non centinaia di elementi del DOM) e
  * l'elenco del pannello mostra quelli dell'area, dal più vicino se si è dato il consenso alla posizione.
  */
-export default function MappaTerritorio({ segnali }: { segnali: Luogo[] }) {
+export default function MappaTerritorio({ segnali, lingua = "it" }: { segnali: Luogo[]; lingua?: Lingua }) {
+  const t = T[lingua];
+  const en = lingua === "en";
+  const nomeCategoria = (c: string) => (en ? CATEGORIE_EN[c] : CATEGORIE[c]) ?? c;
+  // Un luogo solo: in inglese al singolare («Pharmacy»), in italiano come sempre
+  const nomeDi = (c: string) => (en ? CATEGORIA_SINGOLA_EN[c] ?? nomeCategoria(c) : nomeCategoria(c));
+  const nomeArea = (a: { slug: string; nome: string }) => (en ? AREE_EN[a.slug] ?? a.nome : a.nome);
   if (typeof window !== "undefined") libreria();
   const box = useRef<HTMLDivElement>(null);
   const foglio = useRef<HTMLDivElement>(null);
@@ -427,41 +460,42 @@ export default function MappaTerritorio({ segnali }: { segnali: Luogo[] }) {
     }
   };
 
-  const conteggio = `${elenco.length}${troncato ? "+" : ""} ${elenco.length === 1 ? "luogo" : "luoghi"}`;
-  const titolo = filtro !== "tutti" ? CATEGORIE[filtro] ?? filtro : areaFiltro !== "tutte" ? AREE.find((a) => a.slug === areaFiltro)?.nome : posizione ? "Vicino a te" : "Qui sulla mappa";
+  const conteggio = `${elenco.length}${troncato ? "+" : ""} ${elenco.length === 1 ? t.luogo : t.luoghi}`;
+  const areaScelta = AREE.find((a) => a.slug === areaFiltro);
+  const titolo = filtro !== "tutti" ? nomeCategoria(filtro) : areaScelta ? nomeArea(areaScelta) : posizione ? t.vicinoTe : t.qui;
   const inRicerca = testo.trim().length >= 2;
 
   return (
     <div className="mappa-piena">
       {/* Posizione in linea: il CSS di MapLibre (fuori dai layer di Tailwind) vincerebbe su globals.css e la mappa resterebbe alta 0 */}
-      <div ref={box} className="mappa" role="region" aria-label="Mappa di San Marino" style={{ position: "absolute", inset: 0 }} />
+      <div ref={box} className="mappa" role="region" aria-label={t.mappa} style={{ position: "absolute", inset: 0 }} />
 
       {erroreMappa ? (
         <div className="absolute inset-x-4 top-24 z-[5] mx-auto flex max-w-sm flex-col items-center gap-3 rounded-2xl bg-superficie p-5 text-center shadow-lg" role="alert">
-          <p className="text-[15px]">La mappa non si carica. Controlla la connessione e riprova.</p>
-          <button type="button" className="pulsante" onClick={() => location.reload()}>Riprova</button>
+          <p className="text-[15px]">{t.nonCarica}</p>
+          <button type="button" className="pulsante" onClick={() => location.reload()}>{t.riprova}</button>
         </div>
       ) : null}
 
       {areeMappa.length > 1 ? (
         <div className="mappa-filtri flex flex-col gap-2">
-          <div className="chips" role="group" aria-label="Filtra per area" style={{ margin: 0, padding: "0 var(--gutter)" }}>
-            <button type="button" className="chip lg:hidden" aria-label="Cerca un luogo o un indirizzo" onClick={() => { setScelto(undefined); setLivelloFoglio(2); setTimeout(() => campoRicerca.current?.focus(), 350); }}>
-              <Icona nome="cerca" size={16} /> Cerca
+          <div className="chips" role="group" aria-label={t.filtraArea} style={{ margin: 0, padding: "0 var(--gutter)" }}>
+            <button type="button" className="chip lg:hidden" aria-label={t.cerca} onClick={() => { setScelto(undefined); setLivelloFoglio(2); setTimeout(() => campoRicerca.current?.focus(), 350); }}>
+              <Icona nome="cerca" size={16} /> {t.cercaBreve}
             </button>
-            <button type="button" className="chip" aria-pressed={areaFiltro === "tutte"} onClick={() => { setAreaFiltro("tutte"); setFiltro("tutti"); }}>Tutto</button>
+            <button type="button" className="chip" aria-pressed={areaFiltro === "tutte"} onClick={() => { setAreaFiltro("tutte"); setFiltro("tutti"); }}>{t.tutto}</button>
             {areeMappa.map((a) => (
               <button key={a.slug} type="button" className="chip" aria-pressed={areaFiltro === a.slug} onClick={() => { setAreaFiltro(a.slug); setFiltro("tutti"); }}>
-                <Icona nome={a.icona} size={16} /> {a.nome}
+                <Icona nome={a.icona} size={16} /> {nomeArea(a)}
               </button>
             ))}
           </div>
           {categorie.length > 1 ? (
-            <div className="chips" role="group" aria-label={`Categorie di ${areeMappa.find((a) => a.slug === areaFiltro)?.nome ?? ""}`} style={{ margin: 0, padding: "0 var(--gutter)" }}>
+            <div className="chips" role="group" aria-label={`${t.categorieDi} ${areaScelta ? nomeArea(areaScelta) : ""}`} style={{ margin: 0, padding: "0 var(--gutter)" }}>
               {categorie.map((c) => (
                 <button key={c} type="button" className="chip" aria-pressed={filtro === c} onClick={() => setFiltro(filtro === c ? "tutti" : c)}>
                   <PuntoCategoria categoria={c} />
-                  {CATEGORIE[c] ?? c}
+                  {nomeCategoria(c)}
                 </button>
               ))}
             </div>
@@ -478,7 +512,7 @@ export default function MappaTerritorio({ segnali }: { segnali: Luogo[] }) {
           onPointerCancel={fine}
           role="button"
           tabIndex={0}
-          aria-label={livelloFoglio === 2 ? "Abbassa il pannello" : "Alza il pannello"}
+          aria-label={livelloFoglio === 2 ? t.abbassa : t.alza}
           onKeyDown={(ev) => {
             if (ev.key === "Enter" || ev.key === " ") {
               ev.preventDefault();
@@ -488,12 +522,12 @@ export default function MappaTerritorio({ segnali }: { segnali: Luogo[] }) {
         >
           {puntoScelto ? (
             <>
-              <span className="etichetta">{CATEGORIE[puntoScelto.categoria] ?? puntoScelto.categoria}</span>
+              <span className="etichetta">{nomeDi(puntoScelto.categoria)}</span>
               <h2>{puntoScelto.nome}</h2>
             </>
           ) : (
             <>
-              <span className="etichetta">Mappa del territorio</span>
+              <span className="etichetta">{t.territorio}</span>
               <h2>{titolo} <span className="meta">{statoDati === "carico" && !elenco.length ? "…" : conteggio}</span></h2>
             </>
           )}
@@ -503,17 +537,17 @@ export default function MappaTerritorio({ segnali }: { segnali: Luogo[] }) {
           {puntoScelto ? (
             <>
               {!dettaglio ? (
-                <div className="h-24 animate-pulse rounded-2xl bg-superficie" aria-busy="true" aria-label="Caricamento" />
+                <div className="h-24 animate-pulse rounded-2xl bg-superficie" aria-busy="true" aria-label={t.caricamento} />
               ) : (
                 <>
-                  {dettaglio.da_verificare ? <span className="verifica" style={{ alignSelf: "flex-start" }}>Posizione da verificare</span> : null}
-                  {dettaglio.descrizione ? <p className="descrizione">{dettaglio.descrizione}</p> : null}
+                  {dettaglio.da_verificare ? <span className="verifica" style={{ alignSelf: "flex-start" }}>{t.verificare}</span> : null}
+                  {dettaglio.descrizione ? <p className="descrizione" lang="it">{en ? traduci(dettaglio.descrizione) : dettaglio.descrizione}</p> : null}
                   {dettaglio.indirizzo || dettaglio.orari || dettaglio.tariffa || dettaglio.telefono ? (
                     <div className="dati">
-                      {dettaglio.indirizzo ? <div><Icona nome="pin" /><span><b>Indirizzo</b><span className="meta">{dettaglio.indirizzo}</span></span></div> : null}
-                      {dettaglio.orari ? <div><Icona nome="orologio" /><span><b>Orari</b><span className="meta">{dettaglio.orari}</span></span></div> : null}
-                      {dettaglio.tariffa ? <div><Icona nome="parcheggio" /><span><b>Tariffe{dettaglio.posti ? `, ${dettaglio.posti} posti` : ""}</b><span className="meta">{dettaglio.tariffa}</span></span></div> : null}
-                      {dettaglio.telefono ? <div><Icona nome="telefono" /><span><b>Telefono</b><a className="meta" href={`tel:${dettaglio.telefono.replace(/\s/g, "")}`}>{dettaglio.telefono}</a></span></div> : null}
+                      {dettaglio.indirizzo ? <div><Icona nome="pin" /><span><b>{t.indirizzo}</b><span className="meta">{dettaglio.indirizzo}</span></span></div> : null}
+                      {dettaglio.orari ? <div><Icona nome="orologio" /><span><b>{t.orari}</b><span className="meta">{en ? traduci(dettaglio.orari) : dettaglio.orari}</span></span></div> : null}
+                      {dettaglio.tariffa ? <div><Icona nome="parcheggio" /><span><b>{t.tariffe}{dettaglio.posti ? `, ${dettaglio.posti} ${t.posti}` : ""}</b><span className="meta">{en ? traduci(dettaglio.tariffa) : dettaglio.tariffa}</span></span></div> : null}
+                      {dettaglio.telefono ? <div><Icona nome="telefono" /><span><b>{t.telefono}</b><a className="meta" href={`tel:${dettaglio.telefono.replace(/\s/g, "")}`}>{dettaglio.telefono}</a></span></div> : null}
                     </div>
                   ) : null}
                   {dettaglio.fonte === "overture" ? (
@@ -522,7 +556,7 @@ export default function MappaTerritorio({ segnali }: { segnali: Luogo[] }) {
                       <a href="https://docs.overturemaps.org/attribution/" target="_blank" rel="noopener" style={{ textDecoration: "underline" }}>
                         Overture Maps Foundation
                       </a>
-                      , da verificare
+                      , {t.daVerificare}
                     </p>
                   ) : null}
                   {dettaglio.fonte === "osm" ? (
@@ -536,17 +570,17 @@ export default function MappaTerritorio({ segnali }: { segnali: Luogo[] }) {
                   ) : null}
                 </>
               )}
-              {posizione ? <p className="meta">A {leggiDistanza(distanzaM(posizione, puntoScelto))} da te</p> : null}
+              {posizione ? <p className="meta">{t.da(leggiDistanza(distanzaM(posizione, puntoScelto), lingua))}</p> : null}
               <div className="azioni due">
                 <a className="bottone primario piccolo premibile" href={linkIndicazioni(puntoScelto.lat, puntoScelto.lng)} target="_blank" rel="noopener">
-                  <Icona nome="indicazioni" size={18} /> Indicazioni
+                  <Icona nome="indicazioni" size={18} /> {t.indicazioni}
                 </a>
-                <a className="bottone secondario piccolo premibile" href={puntoScelto.categoria === "avviso" ? `/vivere/avvisi#${puntoScelto.id}` : `/luoghi/${puntoScelto.id}`}>
-                  {puntoScelto.categoria === "avviso" ? "Tutti gli avvisi" : "Apri la scheda"}
+                <a className="bottone secondario piccolo premibile" href={puntoScelto.categoria === "avviso" ? `/vivere/avvisi#${puntoScelto.id}` : en ? `/en/places/${puntoScelto.id}` : `/luoghi/${puntoScelto.id}`}>
+                  {puntoScelto.categoria === "avviso" ? t.avvisi : t.scheda}
                 </a>
               </div>
               <button type="button" className="w-fit self-center py-2 text-sm font-medium text-testo-2" onClick={() => setScelto(undefined)}>
-                Torna a tutti i luoghi
+                {t.torna}
               </button>
             </>
           ) : (
@@ -560,59 +594,59 @@ export default function MappaTerritorio({ segnali }: { segnali: Luogo[] }) {
                     value={testo}
                     onChange={(e) => setTesto(e.target.value)}
                     onFocus={() => setLivelloFoglio(2)}
-                    placeholder="Cerca un luogo o un indirizzo"
-                    aria-label="Cerca un luogo o un indirizzo"
+                    placeholder={t.cerca}
+                    aria-label={t.cerca}
                     maxLength={80}
                     className="min-w-0 flex-1 bg-transparent text-base text-testo outline-none placeholder:text-testo-2/70 lg:text-[15px]"
                   />
                 </label>
                 {!inRicerca ? (
                   <button type="button" onClick={vicinoAMe} className={`flex h-11 shrink-0 items-center gap-1.5 rounded-xl px-3 text-sm font-medium ${posizione ? "bg-accento-tenue text-accento" : "bg-superficie text-testo"}`}>
-                    <Icona nome="indicazioni" size={16} /> Vicino a me
+                    <Icona nome="indicazioni" size={16} /> {t.vicino}
                   </button>
                 ) : null}
               </div>
 
               {inRicerca ? (
-                <RisultatiRicerca cerco={cerco} trovati={trovati} indirizzi={indirizzi} posizione={posizione} onLuogo={vaiA} onIndirizzo={vaiAIndirizzo} />
+                <RisultatiRicerca lingua={lingua} cerco={cerco} trovati={trovati} indirizzi={indirizzi} posizione={posizione} onLuogo={vaiA} onIndirizzo={vaiAIndirizzo} />
               ) : statoDati === "errore" && !elenco.length ? (
                 <div className="flex flex-col items-start gap-2 rounded-2xl bg-superficie p-4" role="alert">
-                  <p className="text-[15px]">Non riesco a caricare i luoghi. Controlla la connessione.</p>
-                  <button type="button" className="pulsante" onClick={() => { coperti.current = []; caricaVista(); }}>Riprova</button>
+                  <p className="text-[15px]">{t.nonLuoghi}</p>
+                  <button type="button" className="pulsante" onClick={() => { coperti.current = []; caricaVista(); }}>{t.riprova}</button>
                 </div>
               ) : statoDati === "carico" && !elenco.length ? (
-                <div className="flex flex-col gap-2" aria-busy="true" aria-label="Caricamento">
+                <div className="flex flex-col gap-2" aria-busy="true" aria-label={t.caricamento}>
                   {[0, 1, 2].map((i) => <div key={i} className="h-16 animate-pulse rounded-2xl bg-superficie" />)}
                 </div>
               ) : elenco.length === 0 ? (
                 <div className="flex flex-col items-start gap-2">
-                  <p className="vuoto">Nessun luogo {filtro !== "tutti" || areaFiltro !== "tutte" ? "di questo tipo " : ""}in quest&apos;area.</p>
+                  <p className="vuoto">{t.nessuno(filtro !== "tutti" || areaFiltro !== "tutte")}</p>
                   <button type="button" className="text-sm font-medium text-accento" onClick={() => mappa.current?.easeTo({ zoom: Math.max(11.4, (mappa.current?.getZoom() ?? 13) - 2) })}>
-                    Allarga la mappa
+                    {t.allarga}
                   </button>
                 </div>
               ) : (
                 <>
-                  {troncato ? <p className="meta">Qui ci sono tanti luoghi: avvicina la mappa per vederli tutti.</p> : null}
+                  {troncato ? <p className="meta">{t.tanti}</p> : null}
                   {elenco.slice(0, quanti).map((l) => (
                     <div key={l.id} className="luogo premibile" onClick={() => vaiA(l)} role="button" tabIndex={0} onKeyDown={(ev) => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); vaiA(l); } }}>
                       <PuntoCategoria categoria={l.categoria} sottocategoria={l.sottocategoria} grande />
                       <div style={{ minWidth: 0, flex: 1 }}>
                         <h3>{l.nome}</h3>
                         <div className="meta">
-                          {CATEGORIE[l.categoria] ?? l.categoria}
+                          {nomeDi(l.categoria)}
                           {l.indirizzo ? `, ${l.indirizzo}` : ""}
                         </div>
                       </div>
-                      {l.distanza_m != null ? <span className="shrink-0 font-mono text-[13px] font-medium text-testo-2">{leggiDistanza(l.distanza_m)}</span> : null}
+                      {l.distanza_m != null ? <span className="shrink-0 font-mono text-[13px] font-medium text-testo-2">{leggiDistanza(l.distanza_m, lingua)}</span> : null}
                       <a className="vai" href={linkIndicazioni(l.lat, l.lng)} target="_blank" rel="noopener" onClick={(ev) => ev.stopPropagation()}>
-                        Vai
+                        {t.vai}
                       </a>
                     </div>
                   ))}
                   {elenco.length > quanti ? (
                     <button type="button" className="self-center py-2 text-sm font-medium text-accento" onClick={() => setQuanti((q) => q + PASSO_ELENCO)}>
-                      Mostra altri {Math.min(PASSO_ELENCO, elenco.length - quanti)}
+                      {t.altri(Math.min(PASSO_ELENCO, elenco.length - quanti))}
                     </button>
                   ) : null}
                 </>
@@ -626,37 +660,39 @@ export default function MappaTerritorio({ segnali }: { segnali: Luogo[] }) {
 }
 
 function RisultatiRicerca({
-  cerco, trovati, indirizzi, posizione, onLuogo, onIndirizzo,
+  lingua, cerco, trovati, indirizzi, posizione, onLuogo, onIndirizzo,
 }: {
-  cerco: boolean; trovati: PuntoMappa[]; indirizzi: Indirizzo[]; posizione: Punto | null;
+  lingua: Lingua; cerco: boolean; trovati: PuntoMappa[]; indirizzi: Indirizzo[]; posizione: Punto | null;
   onLuogo: (l: PuntoMappa) => void; onIndirizzo: (i: Indirizzo) => void;
 }) {
+  const t = T[lingua];
+  const nomeCategoria = (c: string) => (lingua === "en" ? CATEGORIA_SINGOLA_EN[c] : CATEGORIE[c]) ?? c;
   if (cerco && !trovati.length && !indirizzi.length) {
-    return <div className="h-16 animate-pulse rounded-2xl bg-superficie" aria-busy="true" aria-label="Cerco" />;
+    return <div className="h-16 animate-pulse rounded-2xl bg-superficie" aria-busy="true" aria-label={t.cerco} />;
   }
-  if (!trovati.length && !indirizzi.length) return <p className="vuoto">Nessun luogo e nessun indirizzo con questo nome.</p>;
+  if (!trovati.length && !indirizzi.length) return <p className="vuoto">{t.nessunNome}</p>;
   const cercoIndirizzi = cerco && !indirizzi.length;
   return (
     <div className="flex flex-col gap-4" aria-live="polite">
       {trovati.length ? (
-        <section className="flex flex-col gap-2" aria-label="Luoghi">
-          <h3 className="text-[13px] font-medium text-testo-2">Luoghi</h3>
+        <section className="flex flex-col gap-2" aria-label={t.luoghi}>
+          <h3 className="text-[13px] font-medium text-testo-2 first-letter:uppercase">{t.luoghi}</h3>
           {trovati.map((l) => (
             <button key={l.id} type="button" className="luogo premibile" onClick={() => onLuogo(l)}>
               <PuntoCategoria categoria={l.categoria} sottocategoria={l.sottocategoria} grande />
               <span style={{ minWidth: 0, flex: 1 }}>
                 <span className="block truncate text-[15px] font-semibold">{l.nome}</span>
-                <span className="meta block truncate">{CATEGORIE[l.categoria] ?? l.categoria}{l.indirizzo ? `, ${l.indirizzo}` : ""}</span>
+                <span className="meta block truncate">{nomeCategoria(l.categoria)}{l.indirizzo ? `, ${l.indirizzo}` : ""}</span>
               </span>
-              {posizione ? <span className="shrink-0 font-mono text-[13px] font-medium text-testo-2">{leggiDistanza(l.distanza_m ?? distanzaM(posizione, l))}</span> : null}
+              {posizione ? <span className="shrink-0 font-mono text-[13px] font-medium text-testo-2">{leggiDistanza(l.distanza_m ?? distanzaM(posizione, l), lingua)}</span> : null}
             </button>
           ))}
         </section>
       ) : null}
-      {cercoIndirizzi ? <p className="meta" aria-busy="true">Cerco anche tra gli indirizzi…</p> : null}
+      {cercoIndirizzi ? <p className="meta" aria-busy="true">{t.cercoIndirizzi}</p> : null}
       {indirizzi.length ? (
-        <section className="flex flex-col gap-2" aria-label="Indirizzi">
-          <h3 className="text-[13px] font-medium text-testo-2">Indirizzi</h3>
+        <section className="flex flex-col gap-2" aria-label={t.indirizzi}>
+          <h3 className="text-[13px] font-medium text-testo-2">{t.indirizzi}</h3>
           {indirizzi.map((i) => (
             <button key={`${i.lat},${i.lng},${i.nome}`} type="button" className="luogo premibile" onClick={() => onIndirizzo(i)}>
               <span className="grid size-7 shrink-0 place-items-center rounded-full bg-superficie-2 text-testo-2"><Icona nome="pin" size={15} piatta /></span>
@@ -666,7 +702,7 @@ function RisultatiRicerca({
               </span>
             </button>
           ))}
-          <p className="meta">Indirizzi da Photon, dati © OpenStreetMap contributors.</p>
+          <p className="meta">{t.photon}</p>
         </section>
       ) : null}
     </div>

@@ -28,6 +28,7 @@ const VOCI: VoceNav[] = [
 // Le pagine inglesi (/en) hanno la loro barra, senza il + (lib/lingua.ts)
 const VOCI_EN: VoceNav[] = [
   { href: "/en", nome: "Today", icona: "home" },
+  { href: "/en/map", nome: "Map", icona: "mappa" },
   { href: "/en/transport", nome: "Transport", icona: "trasporti" },
   { href: "/en/pharmacies", nome: "Pharmacies", icona: "farmacia" },
   { href: "/en/emergency", nome: "Emergency", icona: "telefono" },

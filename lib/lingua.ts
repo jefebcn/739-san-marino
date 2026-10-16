@@ -18,6 +18,7 @@ export function linguaDi(path: string | null | undefined): Lingua {
 /** Le pagine che esistono in tutte e due le lingue: italiano, inglese */
 const PERCORSI: [string, string][] = [
   ["/", "/en"],
+  ["/mappa", "/en/map"],
   ["/utili/farmacie", "/en/pharmacies"],
   ["/utili/trasporti", "/en/transport"],
   ["/utili/parcheggi", "/en/parking"],
@@ -27,7 +28,7 @@ const PERCORSI: [string, string][] = [
 const VERSO_IT: Record<string, string> = { "/en/emergency": "/vivere" };
 
 /** Pagine con un id: la parte dopo il prefisso resta uguale */
-const DINAMICI: [string, string][] = [];
+const DINAMICI: [string, string][] = [["/luoghi", "/en/places"]];
 
 /** Le pagine inglesi fisse, per la mappa del sito */
 export const PAGINE_EN = [...PERCORSI.map((p) => p[1]), ...Object.keys(VERSO_IT)];
@@ -56,6 +57,15 @@ export function alternati(it: string, en: string, lingua: Lingua) {
     canonical: lingua === "en" ? en : it,
     languages: { it, en, "x-default": it },
   };
+}
+
+/** Dove torna la scheda inglese di un luogo: la pagina inglese della sua categoria, se c'è, se no la mappa */
+export function ritornoEn(categoria: string) {
+  const pagine: Record<string, { href: string; nome: string }> = {
+    farmacia: { href: "/en/pharmacies", nome: "Pharmacies" },
+    parcheggio: { href: "/en/parking", nome: "Car parks" },
+  };
+  return pagine[categoria] ?? { href: "/en/map", nome: "Map" };
 }
 
 /** Titolo, descrizione, hreflang e anteprima delle pagine inglesi */
@@ -131,6 +141,9 @@ export const CIELO_EN: Record<string, string> = {
   Temporale: "Thunderstorm",
   Variabile: "Changeable",
 };
+
+/** Le cinque aree in inglese (lib/aree.ts) */
+export const AREE_EN: Record<string, string> = { vivere: "Services", uscire: "Going out", sport: "Sport", comunita: "Community", lavorare: "Work" };
 
 /* Categorie e tipi dei luoghi in inglese (gli stessi di lib/data.ts) */
 

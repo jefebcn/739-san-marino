@@ -9,7 +9,7 @@ export default function SchedaLuogo({ l, children, lingua = "it" }: { l: Luogo; 
   return (
     <article className="card">
       <div className="card-testa">
-        <h3>{en ? l.nome : <Link href={`/luoghi/${l.id}`}>{l.nome}</Link>}</h3>
+        <h3><Link href={en ? `/en/places/${l.id}` : `/luoghi/${l.id}`}>{l.nome}</Link></h3>
         {l.da_verificare ? <span className="verifica">{en ? "Location to be checked" : "Posizione da verificare"}</span> : null}
       </div>
       {l.indirizzo ? <span className="meta">{l.indirizzo}</span> : null}
@@ -19,7 +19,7 @@ export default function SchedaLuogo({ l, children, lingua = "it" }: { l: Luogo; 
           <a className="azione-mini premibile" href={`tel:${l.telefono.replace(/\s/g, "")}`}><Icona nome="telefono" /> {en ? "Call" : "Chiama"}</a>
         ) : null}
         <a className="azione-mini premibile" href={linkIndicazioni(l.lat, l.lng)} target="_blank" rel="noopener"><Icona nome="indicazioni" /> {en ? "Directions" : "Indicazioni"}</a>
-        {en ? null : <Link prefetch={false} className="azione-mini premibile" href={`/mappa?luogo=${l.id}`}><Icona nome="mappa" /> Mappa</Link>}
+        <Link prefetch={false} className="azione-mini premibile" href={`${en ? "/en/map" : "/mappa"}?luogo=${l.id}`}><Icona nome="mappa" /> {en ? "Map" : "Mappa"}</Link>
       </div>
     </article>
   );

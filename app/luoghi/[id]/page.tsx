@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: Props) {
   const { id } = await params;
   const l = await getLuogo(id);
   if (!l) return { title: "Luogo · 739 San Marino" };
-  return metadatiCondivisione({ titolo: l.nome, descrizione: [CATEGORIE[l.categoria], l.indirizzo, l.descrizione].filter(Boolean).join(". "), percorso: `/luoghi/${l.id}` });
+  return metadatiCondivisione({ titolo: l.nome, descrizione: [CATEGORIE[l.categoria], l.indirizzo, l.descrizione].filter(Boolean).join(". "), percorso: `/luoghi/${l.id}`, inglese: `/en/places/${l.id}` });
 }
 
 /** La pagina di un luogo: la scheda unica, aperta dalla mappa, dalla ricerca e dalle sezioni. */

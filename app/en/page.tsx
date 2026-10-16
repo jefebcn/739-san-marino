@@ -20,6 +20,7 @@ const fmt = new Intl.NumberFormat("en-GB");
 
 /** Le pagine inglesi pronte, per chi visita (lib/lingua.ts) */
 const PAGINE: { href: string; nome: string; riga: string; icona: NomeIcona }[] = [
+  { href: "/en/map", nome: "Map", riga: "Car parks, museums, viewpoints, toilets and more", icona: "mappa" },
   { href: "/en/transport", nome: "Cable car and buses", riga: "Next departures and fares", icona: "trasporti" },
   { href: "/en/parking", nome: "Car parks", riga: "Spaces and fares in the old town", icona: "parcheggio" },
   { href: "/en/pharmacies", nome: "Pharmacies", riga: "Which ones are open right now", icona: "farmacia" },
@@ -93,7 +94,7 @@ export default async function Today() {
             <ul className="divide-y divide-linea overflow-hidden rounded-2xl bg-superficie">
               {PAGINE.map((p) => (
                 <li key={p.href}>
-                  <Link href={p.href} className="flex items-center gap-3.5 px-4 py-3.5 transition-colors hover:bg-superficie-2">
+                  <Link href={p.href} prefetch={p.href === "/en/map" ? false : undefined} className="flex items-center gap-3.5 px-4 py-3.5 transition-colors hover:bg-superficie-2">
                     <span className="shrink-0 text-testo"><Icona nome={p.icona} size={26} /></span>
                     <span className="flex min-w-0 flex-1 flex-col">
                       <span className="text-[15px] font-semibold">{p.nome}</span>
@@ -105,7 +106,7 @@ export default async function Today() {
               ))}
             </ul>
             <p className="text-sm leading-relaxed text-testo-2">
-              The map, events and where to eat and sleep are on their way in English. Until then they are in <Link href="/" hrefLang="it" lang="it" className="font-medium text-testo underline underline-offset-2">739 in italiano</Link>.
+              Events and where to eat and sleep are on their way in English. Until then they are in <Link href="/" hrefLang="it" lang="it" className="font-medium text-testo underline underline-offset-2">739 in italiano</Link>.
             </p>
           </section>
         </div>

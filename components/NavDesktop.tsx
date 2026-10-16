@@ -17,6 +17,7 @@ const VOCI = [
 /** In inglese: le pagine per chi visita (lib/lingua.ts) */
 export const VOCI_EN = [
   { href: "/en", nome: "Today", percorsi: ["/en"] },
+  { href: "/en/map", nome: "Map", percorsi: ["/en/map", "/en/places"] },
   { href: "/en/transport", nome: "Getting around", percorsi: ["/en/transport", "/en/parking"] },
   { href: "/en/pharmacies", nome: "Pharmacies", percorsi: ["/en/pharmacies"] },
   { href: "/en/emergency", nome: "Emergency", percorsi: ["/en/emergency"] },
@@ -37,7 +38,7 @@ export function NavDesktop() {
         <Link
           key={v.href}
           href={v.href}
-          prefetch={v.href === "/mappa" ? false : undefined}
+          prefetch={v.href === "/mappa" || v.href === "/en/map" ? false : undefined}
           aria-current={qui === v.href ? "page" : undefined}
           className="rounded-xl px-3 py-2 text-[15px] font-medium text-testo-2 transition-colors hover:bg-superficie hover:text-testo aria-[current=page]:text-testo aria-[current=page]:bg-superficie"
         >

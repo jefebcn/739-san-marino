@@ -2,10 +2,11 @@ import { preconnect, preload } from "react-dom";
 import MappaTerritorio from "@/components/MappaTerritorio";
 import type { Luogo } from "@/lib/data";
 import { getAvvisi } from "@/lib/avvisi";
+import { alternati } from "@/lib/lingua";
 
 export const revalidate = 300;
 
-export const metadata = { title: "Mappa · 739 San Marino" };
+export const metadata = { title: "Mappa · 739 San Marino", alternates: alternati("/mappa", "/en/map", "it") };
 
 // Pagina statica, in cache sulla CDN: i luoghi non viaggiano nella pagina ma in /api/luoghi-mappa (anche quella in cache),
 // che il browser comincia a scaricare subito grazie al preload; la connessione ai server delle mappe si apre in anticipo.

@@ -29,7 +29,7 @@ export default function BottomNav({ voci: vociIt, vociEn, centro: centroIt }: { 
         key={v.href}
         href={v.href}
         // La mappa non si scarica in anticipo: porta con sé MapLibre (288 KB). Arriva dalla cache quando la tocchi.
-        prefetch={v.href === "/mappa" ? false : undefined}
+        prefetch={v.href === "/mappa" || v.href === "/en/map" ? false : undefined}
         aria-current={qui ? "page" : undefined}
         className="flex min-h-[52px] flex-col items-center justify-center gap-1 text-[11px] font-medium text-testo-2 transition-colors aria-[current=page]:text-testo"
       >

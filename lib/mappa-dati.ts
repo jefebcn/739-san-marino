@@ -109,4 +109,5 @@ export function distanzaM(a: { lat: number; lng: number }, b: { lat: number; lng
   return Math.round(2 * R * Math.asin(Math.sqrt(h)));
 }
 
-export const leggiDistanza = (m: number) => (m < 1000 ? `${Math.round(m / 10) * 10} m` : `${(m / 1000).toFixed(m < 10000 ? 1 : 0).replace(".", ",")} km`);
+export const leggiDistanza = (m: number, lingua: "it" | "en" = "it") =>
+  m < 1000 ? `${Math.round(m / 10) * 10} m` : `${(m / 1000).toFixed(m < 10000 ? 1 : 0).replace(".", lingua === "en" ? "." : ",")} km`;
