@@ -6,6 +6,7 @@ import { Icona } from "@/components/Icona";
 import { CATEGORIE, getClassifica, getGestito, getLuogo, getPrenotaAperta, getPro, getSimili } from "@/lib/data";
 import Simili from "@/components/luoghi/Simili";
 import ContaScheda from "@/components/ContaScheda";
+import GestisciScheda from "@/components/luoghi/GestisciScheda";
 import { CATEGORIE_ATTIVITA } from "@/modules/attivita/api";
 import { ritornoDiCategoria } from "@/lib/aree";
 import { metadatiCondivisione } from "@/lib/condivisione";
@@ -53,6 +54,7 @@ export default async function PaginaLuogo({ params }: Props) {
         </section>
       ) : null}
       <Simili vicini={simili} />
+      {CATEGORIE_ATTIVITA.has(l.categoria) ? <GestisciScheda luogo={l.id} /> : null}
       {CATEGORIE_ATTIVITA.has(l.categoria) ? <ContaScheda luogo={l.id} /> : null}
     </>
   );
