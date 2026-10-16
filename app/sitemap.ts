@@ -17,6 +17,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...new Set([...fisse, ...sezioni, ...PAGINE_EN]),
     ...castelli.map((c) => `/castelli/${c.slug}`),
     ...eventi.map((e) => `/eventi/${e.id}`),
+    ...eventi.map((e) => `/en/events/${e.id}`),
     ...luoghi.map((l) => `/luoghi/${l.id}`),
     ...luoghi.map((l) => `/en/places/${l.id}`),
     ...contenuti.map((c) => (c.tipo === "speciale" ? `/speciali/${c.slug}` : `/storie/${c.slug}`)),

@@ -4,12 +4,13 @@ import { chiaveGiorno, etichettaGiorno, getEventi, type Evento } from "@/lib/dat
 import EventoRiga from "@/components/EventoRiga";
 import { Icona } from "@/components/Icona";
 import { getNotizieEventi } from "@/lib/stampa";
+import { alternati } from "@/lib/lingua";
 
 const dataBreve = new Intl.DateTimeFormat("it-IT", { day: "numeric", month: "long", timeZone: "Europe/San_Marino" });
 
 export const revalidate = 60;
 
-export const metadata = { title: "Eventi · 739 San Marino" };
+export const metadata = { title: "Eventi · 739 San Marino", alternates: alternati("/eventi", "/en/events", "it") };
 
 export default async function Eventi() {
   const [eventi, notizie] = await Promise.all([getEventi(80), getNotizieEventi()]);

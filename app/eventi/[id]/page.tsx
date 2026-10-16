@@ -34,6 +34,7 @@ export async function generateMetadata({ params }: Props) {
     titolo: e.titolo,
     descrizione: `${formatData(e.inizio).replace(" · ", " alle ").replace(/^./, (x) => x.toUpperCase())}${dove ? `, ${dove}` : ""}. ${e.descrizione ?? ""}`,
     percorso: `/eventi/${e.id}`,
+    inglese: `/en/events/${e.id}`,
   });
 }
 
