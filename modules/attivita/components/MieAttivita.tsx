@@ -6,6 +6,53 @@ import { Icona } from "@/components/Icona";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import { useSessione } from "@/modules/core/store";
 import { mieAttivita, mieProposte, type MiaAttivita, type MiaProposta } from "../api";
+import { supabaseBrowser } from "@/lib/supabase/browser";
+import { oggiSM, TIPI_SCADENZA, type Scadenza } from "@/lib/scadenze";
+
+const giornoBreve = new Intl.DateTimeFormat("it-IT", { day: "numeric", month: "long", timeZone: "UTC" });
+
+/** Per chi gestisce un'attività: le prossime scadenze e gli strumenti di Lavorare, in un posto solo */
+function PerLaTuaAttivita() {
+  const [prossime, setProssime] = useState<Scadenza[]>([]);
+  useEffect(() => {
+    supabaseBrowser().from("scadenze").select("id, tipo, titolo, giorno, fonte_nome, fonte_link").eq("stato", "pubblicata").gte("giorno", oggiSM()).order("giorno").limit(3)
+      .then(({ data }) => setProssime((data ?? []) as Scadenza[]));
+  }, []);
+  const STRUMENTI = [
+    { href: "/lavorare/scadenze", titolo: "Scadenze e novità", riga: "Cosa scade e cosa cambia, con la fonte" },
+    { href: "/lavorare/fornitori", titolo: "Fornitori e preventivi", riga: "Trova chi ti serve e chiedi un preventivo" },
+    { href: "/lavorare/bandi", titolo: "Bandi", riga: "Contributi e bandi aperti" },
+    { href: "/lavorare/lavoro", titolo: "Offerte di lavoro", riga: "Le pubblichi dalla modifica della scheda" },
+  ];
+  return (
+    <section className="flex flex-col gap-3" aria-labelledby="per-attivita">
+      <h2 id="per-attivita" className="text-[17px] font-semibold tracking-tight">Per la tua attività</h2>
+      {prossime.length ? (
+        <ul className="divide-y divide-linea overflow-hidden rounded-2xl bg-superficie">
+          {prossime.map((x) => (
+            <li key={x.id}>
+              <Link href="/lavorare/scadenze" className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-superficie-2">
+                <span className="w-20 shrink-0 font-mono text-[13px] font-medium">{giornoBreve.format(new Date(`${x.giorno}T12:00:00Z`))}</span>
+                <span className="flex min-w-0 flex-1 flex-col">
+                  <span className="text-[12px] text-testo-2">{TIPI_SCADENZA[x.tipo]}</span>
+                  <span className="text-[14px] font-semibold leading-snug">{x.titolo}</span>
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      ) : null}
+      <div className="grid grid-cols-2 gap-2">
+        {STRUMENTI.map((t) => (
+          <Link key={t.href} href={t.href} className="flex flex-col gap-0.5 rounded-2xl bg-superficie p-3.5 transition-colors hover:bg-superficie-2">
+            <span className="text-[14px] font-semibold leading-snug">{t.titolo}</span>
+            <span className="text-[12px] leading-snug text-testo-2">{t.riga}</span>
+          </Link>
+        ))}
+      </div>
+    </section>
+  );
+}
 
 const STATI: Record<MiaAttivita["stato"], string> = {
   richiesta: "In verifica dalla redazione",
@@ -94,6 +141,7 @@ export default function MieAttivita() {
         </section>
       ) : null}
       <PrimaryButton href="/attivita/aggiungi" variante="secondario" className="w-fit">Aggiungi un&apos;altra attività</PrimaryButton>
+      {lista?.some((a) => a.stato === "approvata") ? <PerLaTuaAttivita /> : null}
     </div>
   );
 }

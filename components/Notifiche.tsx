@@ -10,7 +10,7 @@ import { Icona } from "./Icona";
 const CHIAVE = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ?? "";
 const CHIESTO = "739-notifiche-chiesto";
 
-type Scelte = { bollettino: boolean; weekend: boolean };
+type Scelte = { bollettino: boolean; weekend: boolean; scadenze?: boolean };
 type Stato = "attesa" | "nonsupportato" | "installa" | "negato" | "pronto";
 
 function chiaveBinaria(base64: string) {
@@ -31,9 +31,12 @@ function useNotifiche() {
   const [scelte, setScelte] = useState<Scelte | null>(null);
   const [errore, setErrore] = useState<string | null>(null);
   const [invio, setInvio] = useState(false);
+  // Le scadenze per le attività arrivano con la migrazione 0045: finché non c'è, l'interruttore non compare
+  const [conScadenze, setConScadenze] = useState(false);
 
   useEffect(() => {
     if (!CHIAVE) return setStato("nonsupportato");
+    supabaseBrowser().rpc("scegli_scadenze_notifiche", { p_endpoint: "https://prova.invalid", p_scadenze: false }).then(({ error }) => setConScadenze(!error));
     if (iPhoneNonInstallato()) return setStato("installa");
     if (!("serviceWorker" in navigator) || !("PushManager" in window) || !("Notification" in window)) return setStato("nonsupportato");
     if (Notification.permission === "denied") return setStato("negato");
@@ -55,7 +58,7 @@ function useNotifiche() {
     setErrore(null);
     try {
       const reg = await navigator.serviceWorker.ready;
-      if (!nuove.bollettino && !nuove.weekend) {
+      if (!nuove.bollettino && !nuove.weekend && !nuove.scadenze) {
         const s = await reg.pushManager.getSubscription();
         if (s) {
           await supabaseBrowser().rpc("togli_notifiche", { p_endpoint: s.endpoint });
@@ -81,6 +84,7 @@ function useNotifiche() {
         p_weekend: nuove.weekend,
       });
       if (error) throw new Error(error.code === "P0001" ? error.message : "Le notifiche non si sono accese. Riprova tra poco.");
+      if (conScadenze) await supabaseBrowser().rpc("scegli_scadenze_notifiche", { p_endpoint: s.endpoint, p_scadenze: !!nuove.scadenze });
       setScelte(nuove);
     } catch (e) {
       setErrore((e as Error).message || "Le notifiche non si sono accese. Riprova tra poco.");
@@ -89,7 +93,7 @@ function useNotifiche() {
     }
   };
 
-  return { stato, scelte, salva, errore, invio };
+  return { stato, scelte, salva, errore, invio, conScadenze };
 }
 
 function Interruttore({ acceso, onCambia, titolo, testo, disattivo }: { acceso: boolean; onCambia: (v: boolean) => void; titolo: string; testo: string; disattivo: boolean }) {
@@ -106,8 +110,12 @@ function Interruttore({ acceso, onCambia, titolo, testo, disattivo }: { acceso: 
 }
 
 /** Le notifiche con i due interruttori: pagina del Bollettino e profilo */
-export default function Notifiche() {
-  const { stato, scelte, salva, errore, invio } = useNotifiche();
+export default function Notifiche({ scadenzePrima = false }: { scadenzePrima?: boolean } = {}) {
+  const { stato, scelte, salva, errore, invio, conScadenze } = useNotifiche();
+  const attuali = { bollettino: !!scelte?.bollettino, weekend: !!scelte?.weekend, scadenze: !!scelte?.scadenze };
+  const scadenze = conScadenze ? (
+    <Interruttore acceso={attuali.scadenze} disattivo={invio} onCambia={(v) => salva({ ...attuali, scadenze: v })} titolo="Scadenze per le attività" testo="7 giorni prima e il giorno prima di una scadenza, al posto del Bollettino." />
+  ) : null;
   if (stato === "attesa" || stato === "nonsupportato") return null;
 
   return (
@@ -123,8 +131,10 @@ export default function Notifiche() {
         <>
           <p className="text-sm text-testo-2">Al massimo una al giorno, solo quelle che scegli.</p>
           <div className="divide-y divide-linea">
-            <Interruttore acceso={!!scelte?.bollettino} disattivo={invio} onCambia={(v) => salva({ bollettino: v, weekend: scelte?.weekend ?? false })} titolo="Il Bollettino" testo="Ogni mattina alle 7:39: meteo, eventi e avvisi del giorno." />
-            <Interruttore acceso={!!scelte?.weekend} disattivo={invio} onCambia={(v) => salva({ bollettino: scelte?.bollettino ?? false, weekend: v })} titolo="Il weekend" testo="Il venerdì mattina, al posto del Bollettino: cosa succede fino a domenica." />
+            {scadenzePrima ? scadenze : null}
+            <Interruttore acceso={attuali.bollettino} disattivo={invio} onCambia={(v) => salva({ ...attuali, bollettino: v })} titolo="Il Bollettino" testo="Ogni mattina alle 7:39: meteo, eventi e avvisi del giorno." />
+            <Interruttore acceso={attuali.weekend} disattivo={invio} onCambia={(v) => salva({ ...attuali, weekend: v })} titolo="Il weekend" testo="Il venerdì mattina, al posto del Bollettino: cosa succede fino a domenica." />
+            {scadenzePrima ? null : scadenze}
           </div>
           {errore ? <p role="alert" className="pb-3 text-sm text-segnale">{errore}</p> : null}
         </>

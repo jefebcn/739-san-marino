@@ -2,6 +2,7 @@ import Link from "next/link";
 import TestaPagina from "@/components/Indietro";
 import { Icona } from "@/components/Icona";
 import Scadenze from "@/components/lavoro/Scadenze";
+import Notifiche from "@/components/Notifiche";
 import { RigaNotizia } from "@/components/Notizie";
 import { getNotizie, FONTE_NOTIZIE } from "@/lib/notizie";
 import { getScadenze, notiziaPerAttivita, oggiSM, SERVIZI_STATO } from "@/lib/scadenze";
@@ -42,6 +43,8 @@ export default async function PaginaScadenze() {
               </p>
             )}
           </section>
+
+          <Notifiche scadenzePrima />
 
           {norme.length ? (
             <section className="flex flex-col gap-3" aria-labelledby="regole">

@@ -4,6 +4,7 @@ import { chiaveGiorno, getEventi } from "@/lib/data";
 import { cielo, getMeteo, gradi } from "@/lib/meteo";
 import { getAvvisi } from "@/lib/avvisi";
 import { TITOLARE } from "@/lib/legale";
+import { getScadenze, oggiSM } from "@/lib/scadenze";
 
 // Invio delle notifiche (passo 1.6). La chiama solo pg_cron alle 7:39 di San Marino (manda_notifiche(),
 // migrazione 0029) con il segreto della cassaforte: il database lo controlla in notifiche_da_inviare().
@@ -13,14 +14,14 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
-type Iscrizione = { id: string; endpoint: string; p256dh: string; auth: string; tipo: "bollettino" | "weekend" };
+type Iscrizione = { id: string; endpoint: string; p256dh: string; auth: string; tipo: "bollettino" | "weekend" | "scadenze" };
 type Messaggio = { titolo: string; corpo: string; url: string; tag: string };
 
 const plurale = (n: number, uno: string, tanti: string) => `${n} ${n === 1 ? uno : tanti}`;
 
 /** Il testo del Bollettino e quello del weekend, uguali per tutti, composti una volta sola */
 async function messaggi(): Promise<Record<Iscrizione["tipo"], Messaggio>> {
-  const [meteo, eventi, avvisi] = await Promise.all([getMeteo(), getEventi(100), getAvvisi()]);
+  const [meteo, eventi, avvisi, scadenze] = await Promise.all([getMeteo(), getEventi(100), getAvvisi(), getScadenze({ da: oggiSM() })]);
   const oggi = chiaveGiorno(new Date().toISOString());
   const diOggi = eventi.filter((e) => chiaveGiorno(e.inizio) === oggi);
   const tempo = meteo ? `${cielo(meteo.codice, true).testo}, ${gradi(meteo.temperatura)}` : null;
@@ -33,7 +34,20 @@ async function messaggi(): Promise<Record<Iscrizione["tipo"], Messaggio>> {
   // Il weekend: da oggi (venerdì) a domenica compresa
   const fine = new Date(Date.now() + 3 * 86_400_000).toISOString();
   const weekend = eventi.filter((e) => chiaveGiorno(e.inizio) >= oggi && chiaveGiorno(e.inizio) < chiaveGiorno(fine));
+  // Le scadenze per le attività (migrazione 0045): domani prima di tutto, poi quelle tra 7 giorni
+  const traGiorni = (n: number) => new Date(Date.parse(`${oggiSM()}T12:00:00Z`) + n * 86_400_000).toISOString().slice(0, 10);
+  const domani = scadenze.filter((x) => x.giorno === traGiorni(1));
+  const settimana = scadenze.filter((x) => x.giorno === traGiorni(7));
+  const prime = domani.length ? domani : settimana;
+  const quando = domani.length ? "domani" : "tra 7 giorni";
+
   return {
+    scadenze: {
+      titolo: prime.length === 1 ? `Scadenza ${quando}` : `${prime.length} scadenze ${quando}`,
+      corpo: prime.length ? prime.slice(0, 2).map((x) => x.titolo).join("; ") + (prime.length > 2 ? "…" : ".") : "Le scadenze per le attività.",
+      url: "/lavorare/scadenze",
+      tag: `scadenze-${oggi}`,
+    },
     bollettino: {
       titolo: "Il Bollettino delle 7:39",
       corpo: pezzi.length ? `${pezzi.join(", ")}. Le cose da sapere su San Marino.` : "Le cose da sapere oggi su San Marino.",
