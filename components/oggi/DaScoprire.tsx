@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Icona } from "@/components/Icona";
-import { PuntoCategoria } from "@/components/Segnaposto";
+import { iconaDi } from "@/lib/mappa";
 import { CATEGORIA_SINGOLA, CATEGORIE, TIPI_LEGGIBILI, type Castello, type Luogo } from "@/lib/data";
 
 /** Il tipo di un posto in una parola: «Museo», «Panorama», «Piadineria» */
@@ -26,7 +26,7 @@ export default function DaScoprire({ luoghi, castelli }: { luoghi: Luogo[]; cast
           return (
             <li key={l.id}>
               <Link prefetch={false} href={`/luoghi/${l.id}`} className="flex items-center gap-3 px-4 py-3.5 transition-colors hover:bg-superficie-2">
-                <PuntoCategoria categoria={l.categoria} sottocategoria={l.sottocategoria} grande />
+                <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-[#09090B] text-white"><Icona nome={iconaDi(l.categoria, l.sottocategoria)} size={18} piatta /></span>
                 <span className="flex min-w-0 flex-1 flex-col">
                   <span className="truncate text-[15px] font-semibold">{l.nome}</span>
                   <span className="truncate text-[13px] text-testo-2">{tipo(l)}{c ? `, ${c.nome}` : ""}</span>

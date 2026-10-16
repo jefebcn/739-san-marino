@@ -23,7 +23,10 @@
     --ottone: #C9A45C;
     --ottone-scuro: #9C7A3C;
     /* Ottone pieno, con appena un filo di luce in alto: niente effetto "metallo lucido" */
-    --ottone-metallo: linear-gradient(180deg, #D4B26C 0%, #C9A45C 100%);
+    /* Pulsanti principali: neri come il logo (16/10/2026); l'ottone resta solo per i metri e il gioco dei castelli */
+    --ottone-metallo: linear-gradient(#09090B, #09090B); /* un'immagine: bg-metallo è background-image */
+    --ottone-tenue: #F4EBD3;
+    --ottone-testo: #7A5C24;
 
     --sfondo: #FFFFFF;        /* bianco: il fondo di San Marino */
     --superficie: #F4F4F5;    /* zinc-100: le schede si staccano dal bianco */
@@ -31,18 +34,18 @@
     --testo: #09090B;
     --testo-2: #52525B;       /* zinc-600 */
     --linea: #E4E4E7;         /* zinc-200 */
-    --accento: #7A5C24;
-    --accento-tenue: #F4EBD3;
-    --pannello: #27272A;      /* i pannelli strumento restano scuri, ma più morbidi del nero */
-    --pannello-2: #3F3F46;
-    --pannello-testo: #D4D4D8;
+    --accento: #09090B;
+    --accento-tenue: #E4E4E7;
+    --pannello: #09090B;      /* i pannelli strumento: neri pieni, come il logo */
+    --pannello-2: #27272A;
+    --pannello-testo: #A1A1AA;
     --segnale-tenue: #FDEDE8;
     --segnale-bordo: #F3C2B6;
     --vetro: rgba(255, 255, 255, 0.82);
     --griglia: rgba(9, 9, 11, 0.04);
     --ombra: 0 1px 2px rgba(9, 9, 11, 0.06);
     --ok: #18793A;
-    --su-accento: #09090B;      /* testo sopra l'ottone */
+    --su-accento: #FFFFFF;      /* testo sopra il nero dei pulsanti */
     --tessera: #27272A;         /* fondo dei loghi dei castelli */
 
     --font: var(--font-geist), "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -125,7 +128,7 @@
 .titolo { font-family: var(--titoli); font-size: 30px; font-weight: 600; line-height: 1.08; letter-spacing: -0.03em; }
 .sottotitolo { color: var(--testo-2); font-size: 15px; }
 .meta { font-size: 13px; color: var(--testo-2); }
-.metri { font-family: var(--mono); font-size: 12px; font-weight: 600; white-space: nowrap; padding: 3px 8px; border-radius: 6px; background: var(--accento-tenue); color: var(--accento); }
+.metri { font-family: var(--mono); font-size: 12px; font-weight: 600; white-space: nowrap; padding: 3px 8px; border-radius: 6px; background: var(--ottone-tenue); color: var(--ottone-testo); }
 .intro { display: flex; flex-direction: column; gap: 6px; }
 
 /* ——— Sezioni ——— */
@@ -284,7 +287,7 @@ li:last-child > .riga { border-bottom: 0; }
 .azioni { display: grid; gap: 10px; }
 .azioni.due { grid-template-columns: 1fr 1fr; }
 .bottone { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 50px; border-radius: 12px; font-weight: 600; font-size: 16px; border: 0; cursor: pointer; padding: 0 16px; }
-.bottone.primario { background: var(--ottone-metallo); color: var(--su-accento); }
+.bottone.primario { background: var(--ottone-metallo); color: var(--su-accento); border-radius: 0; clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%); }
 .bottone.secondario { background: var(--superficie); color: var(--testo); }
 .bottone.piccolo { min-height: 42px; font-size: 14px; border-radius: 12px; }
 .bottone[disabled] { opacity: 0.55; cursor: not-allowed; }
@@ -293,7 +296,7 @@ li:last-child > .riga { border-bottom: 0; }
 /* ——— Utili e servizi ——— */
 .emergenza { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 .emergenza a { background-color: var(--pannello); color: var(--bianco); border-radius: var(--r); padding: 14px; display: flex; flex-direction: column; gap: 2px; position: relative; }
-.emergenza a strong { font-family: var(--mono); font-size: 32px; font-weight: 500; letter-spacing: -0.04em; line-height: 1.05; }
+.emergenza a strong { font-family: var(--logo); font-style: italic; font-stretch: 125%; font-size: 32px; font-weight: 800; letter-spacing: -0.01em; line-height: 1.05; }
 .emergenza a span { font-size: 14px; color: var(--pannello-testo); }
 .emergenza a:first-child { background: var(--segnale-pieno); }
 .emergenza a:first-child span { color: var(--bianco); }
@@ -350,8 +353,8 @@ li:last-child > .riga { border-bottom: 0; }
 .tabellone .ora { font-family: var(--mono); font-size: 18px; font-weight: 500; letter-spacing: -0.02em; }
 .tabellone .tra { font-family: var(--mono); font-size: 12px; font-weight: 600; color: var(--accento); white-space: nowrap; }
 .tabellone .prima { background: var(--accento-tenue); }
-.conto { font-family: var(--mono); font-size: 56px; font-weight: 500; letter-spacing: -0.05em; line-height: 0.9; }
-.conto small { font-size: 18px; font-weight: 500; letter-spacing: 0; margin-left: 4px; }
+.conto { font-family: var(--logo); font-style: italic; font-stretch: 125%; font-size: 56px; font-weight: 800; letter-spacing: -0.01em; line-height: 0.9; }
+.conto small { font-family: var(--font); font-style: normal; font-stretch: 100%; font-size: 18px; font-weight: 500; letter-spacing: 0; margin-left: 6px; }
 
 /* Settimana raccolta */
 .settimana { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
@@ -384,7 +387,7 @@ html[data-utente="tornato"] .per-nuovi { display: none !important; }
 .benvenuto h1 { font-size: 40px; font-weight: 600; line-height: 1; letter-spacing: -0.045em; max-width: 11ch; }
 .benvenuto p { font-size: 17px; line-height: 1.45; color: var(--pannello-testo); max-width: 34ch; position: relative; }
 .benvenuto .cta { display: flex; flex-direction: column; gap: 10px; margin-top: 6px; position: relative; z-index: 1; }
-.bottone.primario-chiaro { background: var(--ottone-metallo); color: var(--su-accento); }
+.bottone.primario-chiaro { background: #FFFFFF; color: #09090B; border-radius: 0; clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%); }
 .bottone.fantasma { background: rgba(255, 255, 255, 0.08); color: var(--bianco); border: 1px solid rgba(255, 255, 255, 0.22); }
 
 .spiega { display: flex; gap: 14px; align-items: flex-start; padding: 14px; background: var(--superficie); border-radius: var(--r); }
@@ -427,8 +430,8 @@ html[data-utente="tornato"] .per-nuovi { display: none !important; }
 .adesso { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 .adesso a { border: 1px solid var(--linea); border-radius: var(--r); padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; min-height: 104px; background: var(--sfondo); }
 .adesso b { font-size: 15px; font-weight: 600; line-height: 1.2; }
-.grande { font-family: var(--mono); font-size: 24px; font-weight: 500; letter-spacing: -0.04em; line-height: 1.05; margin-top: auto; }
-.grande small { font-size: 13px; font-weight: 500; letter-spacing: 0; color: var(--testo-2); margin-left: 3px; }
+.grande { font-family: var(--logo); font-style: italic; font-stretch: 125%; font-size: 26px; font-weight: 800; letter-spacing: -0.01em; line-height: 1.05; margin-top: auto; }
+.grande small { font-family: var(--font); font-style: normal; font-stretch: 100%; font-size: 13px; font-weight: 500; letter-spacing: 0; color: var(--testo-2); margin-left: 6px; }
 
 /* ——— Caricamento ——— */
 .scheletro { background: linear-gradient(90deg, var(--superficie) 25%, var(--linea) 50%, var(--superficie) 75%); background-size: 200% 100%; animation: luce 1.2s infinite linear; border-radius: 16px; }

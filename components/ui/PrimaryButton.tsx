@@ -21,7 +21,8 @@ const BASE =
   "inline-flex select-none items-center justify-center gap-2 rounded-xl font-semibold tracking-tight transition-[transform,filter,background-color] duration-150 ease-out active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-5 [&_svg]:shrink-0";
 
 const VARIANTI: Record<Variante, string> = {
-  primario: "bg-metallo text-su-accento hover:brightness-105",
+  // Nero col taglio obliquo dei numeri del logo
+  primario: "taglio bg-metallo text-su-accento !rounded-none hover:bg-zinc-800",
   secondario: "bg-superficie text-testo hover:bg-superficie-2",
   // Dentro una scheda bg-superficie, dove il secondario sparirebbe
   interno: "bg-fondo text-testo hover:bg-superficie-2",
@@ -33,7 +34,7 @@ const DIMENSIONI: Record<Dimensione, string> = {
   sm: "h-10 px-4 text-sm",
 };
 
-/** Bottone principale di 739: ottone metallico per le azioni primarie. Diventa un link se riceve `href`. */
+/** Bottone principale di 739: nero col taglio obliquo del logo per le azioni primarie. Diventa un link se riceve `href`. */
 export default function PrimaryButton(props: ComeLink | ComeBottone) {
   const { children, variante = "primario", dimensione = "md", icona, pieno, className = "" } = props;
   const classi = `${BASE} ${VARIANTI[variante]} ${DIMENSIONI[dimensione]} ${pieno ? "w-full" : ""} ${className}`;

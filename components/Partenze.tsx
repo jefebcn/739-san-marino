@@ -89,7 +89,7 @@ export default function Partenze({ linee, lingua = "it" }: { linee: Linea[]; lin
                 className="chip"
                 aria-pressed={d === dir}
                 onClick={() => setDirezione(d)}
-                style={d === dir ? { background: "var(--ottone-metallo)", borderColor: "transparent", color: "var(--su-accento)" } : { background: "transparent", color: "#fff", borderColor: "rgba(255,255,255,.25)" }}
+                style={d === dir ? { background: "#FFFFFF", borderColor: "transparent", color: "#09090B" } : { background: "transparent", color: "#fff", borderColor: "rgba(255,255,255,.25)" }}
               >
                 {nomeDirezione(d, lingua)}
               </button>

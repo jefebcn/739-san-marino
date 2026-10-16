@@ -27,9 +27,10 @@ export default function Benvenuto({ farmacie, luoghi, eventi }: { farmacie: Luog
 
   return (
     // Nero pieno come il logo sul fondo scuro: niente grigi, niente colore; il marchio grande a sinistra
-    <section aria-labelledby="benvenuto" className="per-nuovi flex flex-col gap-6 overflow-hidden rounded-2xl bg-[#09090B] px-5 py-7 text-white lg:gap-10 lg:px-12 lg:py-12">
-      <div className="flex flex-col items-center gap-5 text-center lg:flex-row lg:items-center lg:gap-14 lg:text-left">
-        <Completo etichetta="739 San Marino" className="h-24 w-auto shrink-0 text-white lg:h-56" />
+    <section aria-labelledby="benvenuto" className="per-nuovi flex flex-col gap-5 overflow-hidden rounded-2xl bg-[#09090B] px-5 py-6 text-white lg:gap-10 lg:px-12 lg:py-12">
+      <div className="flex flex-col items-center gap-4 text-center lg:flex-row lg:items-center lg:gap-14 lg:text-left">
+        {/* Sul telefono il 739 è già nella testata: il marchio grande solo su computer */}
+        <Completo etichetta="739 San Marino" className="hidden h-56 w-auto shrink-0 text-white lg:block" />
         <div className="flex flex-col items-center gap-4 lg:items-start">
           <h2 id="benvenuto" className="voce-logo text-[30px] text-white [text-wrap:balance] lg:text-[52px]">
             San Marino, tutta in un&apos;app
