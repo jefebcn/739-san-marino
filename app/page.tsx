@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { chiaveGiorno, getClassifica, getEventi, oggiLungo, ora, etichettaGiorno, saluto, giornoNumero, meseBreve } from "@/lib/data";
+import { chiaveGiorno, contaLuoghi, getClassifica, getEventi, oggiLungo, ora, etichettaGiorno, saluto, giornoNumero, meseBreve } from "@/lib/data";
 import { Icona, type NomeIcona } from "@/components/Icona";
 import { AREE } from "@/lib/aree";
 import Installa from "@/components/Installa";
@@ -7,7 +7,7 @@ import { Completo } from "@/components/Logo";
 import Tano from "@/components/Tano";
 import { ScegliCastello } from "@/components/Castello";
 import { EmblemaCastello } from "@/components/LogoCastello";
-import { ProssimaPartenza } from "@/components/Partenze";
+import { ProssimaPartenza, TestoProssima } from "@/components/Partenze";
 import { ConteggioAperte } from "@/components/Farmacie";
 import { RaccoltaBreve } from "@/components/Raccolta";
 import PrimaryButton from "@/components/ui/PrimaryButton";
@@ -55,10 +55,11 @@ export default async function Home() {
   const adesso = new Date();
   const fascia = fasciaDi(adesso);
   const mattina = fascia.tipo === "mattina";
-  const [eventi, classifica, farmacie, linee, raccolta, parcheggi, partite, sport, meteo, avvisi, scritto, speciale] = await Promise.all([
+  const [eventi, classifica, farmacie, linee, raccolta, parcheggi, partite, sport, meteo, avvisi, scritto, speciale, nLuoghi] = await Promise.all([
     getEventi(40), getClassifica(), getFarmacie(), getLinee(), getRaccolta(), getParcheggi(), getPartiteAperte(), getSport(), getMeteo(), getAvvisi(),
     mattina ? getUltimo("bollettino", 1) : fascia.tipo === "weekend" ? getUltimo("weekend", 4) : Promise.resolve(null),
     getSpecialeInCorso(),
+    contaLuoghi(),
   ]);
   const tempo = meteo ? cielo(meteo.codice, meteo.giorno) : null;
   const podio = classifica.slice(0, 3);
@@ -76,9 +77,14 @@ export default async function Home() {
   const bollettinoDiOggi = scritto && scritto.tipo === "bollettino" && scritto.pubblicato_il && chiaveGiorno(scritto.pubblicato_il) === chiaveGiorno(adesso.toISOString()) ? scritto : null;
   const multipiano = parcheggi.find((p) => p.nome.startsWith("P9"));
 
+  const funiviaSu = funivia?.partenze.filter((p) => p.direzione === "Borgo Maggiore → Città") ?? [];
+  const settimana = eventi.filter((e) => new Date(e.inizio).getTime() - adesso.getTime() < 7 * 86400000);
+  const meteoBreve = meteo && tempo ? `${gradi(meteo.temperatura)}, ${tempo.testo.toLowerCase()}` : null;
+
   return (
     <>
-      <section className="flex flex-col gap-4">
+      {/* Chi torna: saluto, data e meteo */}
+      <section className="per-tornati flex flex-col gap-4">
         <div className="flex items-end justify-between gap-4">
           <div className="min-w-0">
             <h1 className="text-[26px] font-semibold leading-tight tracking-[-0.03em] lg:text-[30px]">{saluto()}</h1>
@@ -96,33 +102,53 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Chi arriva la prima volta capisce subito dov'è: cos'è 739, cosa trova nelle cinque aree, un'azione */}
+      {/*
+        Chi arriva la prima volta (docs/piano.md: «spiega 739 in tre righe»): cos'è in una frase,
+        poi tre cose che 739 fa, ognuna con il dato di adesso, così si capisce subito a cosa serve
+      */}
       <section className="per-nuovi flex flex-col gap-5 rounded-2xl bg-superficie p-5 text-testo lg:p-8">
-        <div className="flex items-start justify-between gap-4">
+        <div className="flex items-start justify-between gap-3">
           <div className="flex min-w-0 flex-col">
-            {/* Sul telefono il marchio è già nella testata; su computer accompagna il titolo */}
             <Completo etichetta="739 San Marino" className="mb-5 hidden h-20 w-auto self-start text-testo lg:block" />
-            <h2 className="text-[26px] font-semibold leading-[1.1] tracking-tight lg:text-[34px]">L&apos;app di San Marino</h2>
-            <p className="mt-2 max-w-[34ch] text-[15px] leading-relaxed text-testo-2 lg:max-w-[52ch] lg:text-[17px]">
-              Cosa succede oggi, i servizi aperti adesso, lo sport e i nove castelli: tutto in un posto solo, gratis.
+            <p className="text-sm text-testo-2">{maiuscola(oggiLungo())}{meteoBreve ? `, ${meteoBreve}` : ""}</p>
+            <h1 className="mt-1 text-[28px] font-semibold leading-[1.08] tracking-tight [text-wrap:balance] lg:text-[38px]">San Marino, tutta in un&apos;app</h1>
+            <p className="mt-2 max-w-[32ch] text-[15px] leading-relaxed text-testo-2 lg:max-w-[52ch] lg:text-[17px]">
+              Servizi, eventi, sport e luoghi dei nove castelli, aggiornati adesso. Gratis, per chi ci vive e per chi la visita.
             </p>
           </div>
-          <Tano posa="benvenuto" priority className="-mr-1 h-32 w-auto shrink-0 lg:mr-6 lg:h-48" />
+          <Tano posa="benvenuto" priority className="-mr-1 h-28 w-auto shrink-0 lg:mr-6 lg:h-48" />
         </div>
-        <nav aria-label="Cosa trovi in 739" className="grid gap-2 lg:grid-cols-5">
-          {CATEGORIE.map((c) => (
-            <Link key={c.href} href={c.href} className="flex items-center gap-3 rounded-xl bg-fondo px-3 py-2.5 transition-colors hover:bg-superficie-2 lg:flex-col lg:items-start lg:gap-2 lg:p-4">
-              <span className="shrink-0 text-testo"><Icona nome={c.icona} size={30} /></span>
-              <span className="flex min-w-0 flex-col">
-                <span className="text-[15px] font-semibold">{c.nome}</span>
-                <span className="text-[13px] text-testo-2 lg:hidden">{c.breve}</span>
-                <span className="hidden text-[13px] text-testo-2 lg:line-clamp-2">{c.descrizione}</span>
+        <nav aria-label="Cosa fa 739" className="grid gap-2 lg:grid-cols-3">
+          <Link href="/vivere" className="flex items-center gap-3.5 rounded-xl bg-fondo px-3.5 py-3 transition-colors hover:bg-superficie-2 lg:flex-col lg:items-start lg:gap-2 lg:p-4">
+            <span className="shrink-0"><Icona nome="farmacia" size={30} /></span>
+            <span className="flex min-w-0 flex-1 flex-col">
+              <span className="text-[15px] font-semibold">Cosa è aperto adesso</span>
+              <span className="text-[13px] leading-snug text-testo-2">
+                <ConteggioAperte farmacie={farmacie} breve />{funiviaSu.length ? <>, funivia per Città <TestoProssima partenze={funiviaSu} /></> : null}
               </span>
-            </Link>
-          ))}
+            </span>
+          </Link>
+          <Link href="/eventi" className="flex items-center gap-3.5 rounded-xl bg-fondo px-3.5 py-3 transition-colors hover:bg-superficie-2 lg:flex-col lg:items-start lg:gap-2 lg:p-4">
+            <span className="shrink-0"><Icona nome="eventi" size={30} /></span>
+            <span className="flex min-w-0 flex-1 flex-col">
+              <span className="text-[15px] font-semibold">Cosa succede</span>
+              <span className="text-[13px] leading-snug text-testo-2">
+                {settimana.length ? <><b className="font-mono font-medium text-testo">{settimana.length}</b> {settimana.length === 1 ? "evento" : "eventi"} questa settimana{partite.length ? `, ${partite.length} ${partite.length === 1 ? "partita aperta" : "partite aperte"}` : ""}</> : "Eventi, partite e tornei tra i nove castelli"}
+              </span>
+            </span>
+          </Link>
+          <Link href="/mappa" prefetch={false} className="flex items-center gap-3.5 rounded-xl bg-fondo px-3.5 py-3 transition-colors hover:bg-superficie-2 lg:flex-col lg:items-start lg:gap-2 lg:p-4">
+            <span className="shrink-0"><Icona nome="mappa" size={30} /></span>
+            <span className="flex min-w-0 flex-1 flex-col">
+              <span className="text-[15px] font-semibold">Dove andare</span>
+              <span className="text-[13px] leading-snug text-testo-2">
+                {nLuoghi ? <><b className="font-mono font-medium text-testo">{fmt.format(nLuoghi)}</b> luoghi sulla mappa, dai parcheggi ai ristoranti</> : "Parcheggi, ristoranti, musei e panorami sulla mappa"}
+              </span>
+            </span>
+          </Link>
         </nav>
         <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
-          <PrimaryButton href="/profile">Crea il tuo SMR ID</PrimaryButton>
+          <PrimaryButton href="/esplora">Guarda tutto quello che c&apos;è</PrimaryButton>
           <Link href="/guida" className="text-sm font-medium text-testo-2 hover:text-testo">Come funziona</Link>
         </div>
       </section>
@@ -131,13 +157,6 @@ export default async function Home() {
         <Icona nome="cerca" size={20} />
         Cerca eventi, luoghi e servizi
       </Link>
-
-      {/* Il castello, per chi non l'ha ancora scelto: una fila sola, non una griglia che riempie lo schermo */}
-      <section className="per-nuovi flex flex-col gap-3">
-        <Titolo>Qual è il tuo castello?</Titolo>
-        <p className="-mt-1 text-sm text-testo-2">Oggi ti mostra i suoi avvisi e la raccolta dei rifiuti. Lo cambi quando vuoi dal menu in alto.</p>
-        <ScegliCastello castelli={classifica} fila />
-      </section>
 
       {/* Uno speciale in corso (Natale delle Meraviglie, Giornate Medievali…) sta in cima, sopra a tutto il resto */}
       {speciale ? <SpecialeOggi s={speciale} /> : null}
@@ -151,7 +170,8 @@ export default async function Home() {
       {/* Telefono: una colonna, nell'ordine dei numeri. Computer: il programma a sinistra, «Adesso», castelli e 112 a destra */}
       <div className="larga flex flex-col gap-7 lg:grid lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start lg:gap-10">
         <div className="contents lg:flex lg:flex-col lg:gap-9">
-          <div className="order-1 empty:hidden">
+          {/* Di mattina il Bollettino è per chi torna: chi arriva vede «Adesso», senza righe da completare */}
+          <div className={`order-1 empty:hidden ${mattina ? "per-tornati" : ""}`}>
             {/* La fascia dell'ora: Bollettino, programma di oggi, di stasera o del weekend; se è vuoto, il prossimo evento */}
             {mattina ? (
               <Bollettino
@@ -224,7 +244,8 @@ export default async function Home() {
               </section>
             ) : null}
           </div>
-          <div className="order-6 empty:hidden">
+          {/* Senza partite la riga vuota serve a chi torna: per chi arriva sparisce anche il contenitore (niente spazio vuoto) */}
+          <div className={`order-6 empty:hidden ${partite.length ? "" : "per-tornati"}`}>
             {partite.length && !altrePartite.length ? null : (
               // Senza partite la riga vuota serve a chi torna; chi arriva ha già abbastanza da leggere
               <section className={`flex flex-col gap-3 ${partite.length ? "" : "per-tornati"}`}>
@@ -258,12 +279,19 @@ export default async function Home() {
               </section>
             )}
           </div>
+          {/* Il castello si chiede dopo aver mostrato cosa fa 739: una fila sola, non una griglia */}
+          <section className="per-nuovi order-6 flex flex-col gap-3">
+            <Titolo>Qual è il tuo castello?</Titolo>
+            <p className="-mt-1 text-sm text-testo-2">Sceglilo e Oggi ti mostra i suoi avvisi e la raccolta dei rifiuti. Lo cambi quando vuoi dal menu in alto.</p>
+            <ScegliCastello castelli={classifica} fila />
+          </section>
           <div className="order-8 empty:hidden">
             <Installa />
           </div>
         </div>
         <aside className="contents lg:sticky lg:top-0 lg:flex lg:flex-col lg:gap-9">
-          <div className="order-4 empty:hidden">
+          {/* Per chi arriva i dati di adesso sono già nella scheda in cima; di mattina chi torna li ha nel Bollettino */}
+          <div className="per-tornati order-4 empty:hidden">
             {mattina ? null : (
               <section className="flex flex-col gap-3">
                 <Titolo href="/vivere">Adesso</Titolo>

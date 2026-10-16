@@ -131,6 +131,15 @@ export async function getLuoghi(castelloId?: number): Promise<Luogo[]> {
   return (data ?? []) as Luogo[];
 }
 
+/** Quanti luoghi ci sono sulla mappa (per Oggi): solo il numero, senza scaricarli */
+export async function contaLuoghi(): Promise<number> {
+  const db = supabase();
+  if (!db) return 0;
+  const { count, error } = await db.from("luoghi").select("id", { count: "exact", head: true });
+  if (error) console.error("conta luoghi", error.message);
+  return count ?? 0;
+}
+
 /** 739 Pro di una scheda (migrazione 0035): menu, prenota e offerte in corso. null se non è Pro. */
 export type DatiPro = { menu_url: string | null; prenota_url: string | null; offerte: { titolo: string; testo: string | null; al: string }[] };
 
