@@ -2,10 +2,11 @@ import TestaPagina from "@/components/Indietro";
 import Partenze from "@/components/Partenze";
 import { getLinee } from "@/lib/servizi";
 import { FONTI } from "@/lib/fonti";
+import { alternati } from "@/lib/lingua";
 
 export const revalidate = 300;
 
-export const metadata = { title: "Bus e funivia · 739 San Marino" };
+export const metadata = { title: "Bus e funivia · 739 San Marino", alternates: alternati("/utili/trasporti", "/en/transport", "it") };
 
 export default async function Trasporti() {
   const linee = await getLinee();

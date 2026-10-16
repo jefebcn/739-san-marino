@@ -20,18 +20,23 @@ const POSE: Record<Posa, { w: number; cosa: string }> = {
   "braccia-conserte": { w: 702, cosa: "a braccia conserte" },
 };
 
+const POSE_EN: Record<Posa, string> = {
+  benvenuto: "welcoming you", saluta: "waving", esulta: "cheering", corre: "running", scatto: "sprinting", fiero: "standing proud",
+  indica: "pointing", pollice: "giving a thumbs up", tranquillo: "relaxed", "braccia-conserte": "with arms folded",
+};
+
 /** La posa per ogni livello dei metri: Valle saluta, Mura pollice, Torri fiero, Vetta esulta */
 export const POSA_DI_LIVELLO: Record<string, Posa> = { Valle: "saluta", Mura: "pollice", Torri: "fiero", Vetta: "esulta" };
 
 /** Tano in una posa. L'altezza la decide `className` (sul telefono al massimo un terzo dello schermo). */
-export default function Tano({ posa, className = "h-36 w-auto", priority = false }: { posa: Posa; className?: string; priority?: boolean }) {
+export default function Tano({ posa, className = "h-36 w-auto", priority = false, lingua = "it" }: { posa: Posa; className?: string; priority?: boolean; lingua?: "it" | "en" }) {
   const p = POSE[posa];
   return (
     <Image
       src={`/mascotte/tano-${posa}.webp`}
       width={p.w}
       height={1200}
-      alt={`Tano, la mascotte di 739, ${p.cosa}`}
+      alt={lingua === "en" ? `Tano, the 739 mascot, ${POSE_EN[posa]}` : `Tano, la mascotte di 739, ${p.cosa}`}
       sizes="160px"
       priority={priority}
       draggable={false}

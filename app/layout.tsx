@@ -6,8 +6,7 @@ import SessioneSync from "@/modules/core/components/SessioneSync";
 import { Analytics } from "@vercel/analytics/next";
 import RegistraSW from "@/components/RegistraSW";
 import SenzaRete from "@/components/SenzaRete";
-import { Ridotto } from "@/components/Logo";
-import Link from "next/link";
+import { LinguaHtml, LogoTesta, ProponiInglese } from "@/components/Lingua";
 import AzioniTesta from "@/components/AzioniTesta";
 import AzioniRapide from "@/components/AzioniRapide";
 import { CercaDesktop, NavDesktop } from "@/components/NavDesktop";
@@ -24,6 +23,14 @@ const VOCI: VoceNav[] = [
   { href: "/mappa", nome: "Mappa", icona: "mappa" },
   { href: "/sport", nome: "Sport", icona: "sport" },
   { href: "/esplora", nome: "Esplora", icona: "esplora" },
+];
+
+// Le pagine inglesi (/en) hanno la loro barra, senza il + (lib/lingua.ts)
+const VOCI_EN: VoceNav[] = [
+  { href: "/en", nome: "Today", icona: "home" },
+  { href: "/en/transport", nome: "Transport", icona: "trasporti" },
+  { href: "/en/pharmacies", nome: "Pharmacies", icona: "farmacia" },
+  { href: "/en/emergency", nome: "Emergency", icona: "telefono" },
 ];
 
 export const metadata: Metadata = {
@@ -67,7 +74,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `try{document.documentElement.dataset.utente=localStorage.getItem("739-castello")?"tornato":"nuovo"}catch(e){document.documentElement.dataset.utente="nuovo"}`,
+            __html: `var p=location.pathname;if(p==="/en"||p.indexOf("/en/")===0)document.documentElement.lang="en";try{var l=localStorage.getItem("739-lingua"),n=navigator.languages||[navigator.language];if(l==="en"||(!l&&!n.some(function(x){return /^it/i.test(x)})))document.documentElement.dataset.ospite="1"}catch(e){}try{document.documentElement.dataset.utente=localStorage.getItem("739-castello")?"tornato":"nuovo"}catch(e){document.documentElement.dataset.utente="nuovo"}`,
           }}
         />
       </head>
@@ -76,9 +83,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <header className="top">
             {/* Telefono: logo e azioni. Computer (da 1024 px): testata da sito con aree e ricerca */}
             <div className="top-riga mx-auto max-w-[var(--colonna)] lg:max-w-[var(--larga)] lg:gap-6">
-              <Link href="/" aria-label="739, torna a Oggi" className="shrink-0">
-                <Ridotto etichetta="739 San Marino" className="h-[22px] w-auto text-testo" />
-              </Link>
+              <LogoTesta />
               <NavDesktop />
               <div className="flex min-w-0 items-center gap-2">
                 <CercaDesktop />
@@ -88,10 +93,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           </header>
           <main className="main">
             <SenzaRete />
+            <ProponiInglese />
             {children}
             <PiedePagina />
           </main>
-          <BottomNav voci={VOCI} centro={<AzioniRapide />} />
+          <BottomNav voci={VOCI} vociEn={VOCI_EN} centro={<AzioniRapide />} />
+          <LinguaHtml />
           <SessioneSync castelli={classifica} />
           {/* Visite anonime, senza cookie (Vercel Web Analytics): si accende dal pannello di Vercel */}
           <Analytics />

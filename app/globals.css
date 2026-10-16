@@ -385,6 +385,8 @@ li:last-child > .riga { border-bottom: 0; }
 /* ——— Home: nuovi utenti e utenti che tornano ——— */
 html:not([data-utente="tornato"]) .per-tornati { display: none !important; }
 html[data-utente="tornato"] .per-nuovi { display: none !important; }
+/* L'interruttore EN sul telefono: solo per chi ha il telefono in un'altra lingua o ha scelto l'inglese (script nel layout) */
+@media (max-width: 1023px) { html:not([data-ospite]) .per-ospiti { display: none !important; } }
 
 .benvenuto { margin: -18px calc(var(--gutter) * -1) 0; padding: 30px 20px 26px; background-color: var(--pannello); color: var(--bianco); display: flex; flex-direction: column; gap: 14px; position: relative; overflow: hidden; }
 .benvenuto h1 { font-size: 40px; font-weight: 600; line-height: 1; letter-spacing: -0.045em; max-width: 11ch; }

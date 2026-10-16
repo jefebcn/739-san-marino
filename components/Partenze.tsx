@@ -4,6 +4,18 @@ import { useEffect, useMemo, useState } from "react";
 import { oraBreve, prossimePartenze, testoTra, type Partenza } from "@/lib/orario";
 import type { Linea } from "@/lib/servizi";
 import { Icona } from "./Icona";
+import { traEn, type Lingua } from "@/lib/lingua";
+import { traduci } from "@/lib/traduci";
+
+const T = {
+  it: { nessuna: "Nessuna corsa", domani: "domani", Domani: "Domani", Oggi: "Oggi", nessunaProgramma: "Nessuna corsa in programma.", funivia: "Prossima funivia", bus: "Prossimo bus", partenze: "Partenze", biglietto: "Biglietto", ufficiali: "Orari ufficiali", verificare: "Da verificare", vuoto: "Orari non ancora disponibili.", linea: "Linea" },
+  en: { nessuna: "No more runs", domani: "tomorrow", Domani: "Tomorrow", Oggi: "Today", nessunaProgramma: "No runs scheduled.", funivia: "Next cable car", bus: "Next bus", partenze: "Departures", biglietto: "Tickets", ufficiali: "Official timetable", verificare: "To be checked", vuoto: "Timetable not available yet.", linea: "Line" },
+};
+
+/** Nomi e direzioni delle linee come si leggono in inglese */
+const DIREZIONI_EN: Record<string, string> = { "Borgo Maggiore → Città": "Borgo Maggiore → Città (old town)", "Città → Borgo Maggiore": "Città (old town) → Borgo Maggiore" };
+const nomeDirezione = (d: string, lingua: Lingua) => (lingua === "en" ? DIREZIONI_EN[d] ?? d : d);
+const tra = (n: number, lingua: Lingua) => (lingua === "en" ? traEn(n) : testoTra(n));
 
 /** Ora corrente aggiornata ogni 20 secondi; null finché la pagina non è nel browser (evita differenze col server). */
 function useAdesso() {
@@ -17,14 +29,15 @@ function useAdesso() {
 }
 
 /** Prossima partenza in una riga, per le tessere di Oggi e Vivere. */
-export function ProssimaPartenza({ partenze }: { partenze: Partenza[] }) {
+export function ProssimaPartenza({ partenze, lingua = "it" }: { partenze: Partenza[]; lingua?: Lingua }) {
+  const t = T[lingua];
   const ora = useAdesso();
   if (!ora) return <span className="grande">--:--</span>;
   const [p] = prossimePartenze(partenze, 1, ora);
-  if (!p) return <span className="text-sm text-testo-2">Nessuna corsa</span>;
+  if (!p) return <span className="text-sm text-testo-2">{t.nessuna}</span>;
   return (
     <span className="grande">
-      {p.tra < 60 && !p.domani ? <>{p.tra}<small>min</small></> : <>{oraBreve(p.p.ora)}{p.domani ? <small>domani</small> : null}</>}
+      {p.tra < 60 && !p.domani ? <>{p.tra}<small>min</small></> : <>{oraBreve(p.p.ora)}{p.domani ? <small>{t.domani}</small> : null}</>}
     </span>
   );
 }
@@ -37,7 +50,9 @@ export function TestoProssima({ partenze }: { partenze: Partenza[] }) {
   return <><b>{oraBreve(p.p.ora)}</b>, {p.domani ? "domani" : testoTra(p.tra)}</>;
 }
 
-export default function Partenze({ linee }: { linee: Linea[] }) {
+export default function Partenze({ linee, lingua = "it" }: { linee: Linea[]; lingua?: Lingua }) {
+  const t = T[lingua];
+  const en = lingua === "en";
   const ora = useAdesso();
   const [lineaId, setLineaId] = useState(linee[0]?.id);
   const linea = linee.find((l) => l.id === lineaId) ?? linee[0];
@@ -45,7 +60,7 @@ export default function Partenze({ linee }: { linee: Linea[] }) {
   const [direzione, setDirezione] = useState<string | undefined>(undefined);
   const dir = direzione && direzioni.includes(direzione) ? direzione : direzioni[0];
 
-  if (!linea) return <p className="vuoto">Orari non ancora disponibili.</p>;
+  if (!linea) return <p className="vuoto">{t.vuoto}</p>;
 
   const lista = ora ? prossimePartenze(linea.partenze.filter((p) => p.direzione === dir), 6, ora) : [];
   const prima = lista[0];
@@ -53,18 +68,18 @@ export default function Partenze({ linee }: { linee: Linea[] }) {
   return (
     <>
       {linee.length > 1 ? (
-        <div className="chips" role="tablist" aria-label="Linea">
+        <div className="chips" role="tablist" aria-label={t.linea}>
           {linee.map((l) => (
             <button key={l.id} type="button" role="tab" className="chip" aria-selected={l.id === linea.id} onClick={() => setLineaId(l.id)}>
               <Icona nome={l.tipo === "funivia" ? "funivia" : "bus"} size={18} />
-              {l.nome}
+              {en ? traduci(l.nome) : l.nome}
             </button>
           ))}
         </div>
       ) : null}
 
       <section className="pannello topo" aria-live="polite">
-        <span className="etichetta">{linea.tipo === "funivia" ? "Prossima funivia" : "Prossimo bus"}</span>
+        <span className="etichetta">{linea.tipo === "funivia" ? t.funivia : t.bus}</span>
         {direzioni.length > 1 ? (
           <div style={{ display: "flex", gap: 6, flexWrap: "wrap", position: "relative", zIndex: 2 }}>
             {direzioni.map((d) => (
@@ -76,7 +91,7 @@ export default function Partenze({ linee }: { linee: Linea[] }) {
                 onClick={() => setDirezione(d)}
                 style={d === dir ? { background: "var(--ottone-metallo)", borderColor: "transparent", color: "var(--su-accento)" } : { background: "transparent", color: "#fff", borderColor: "rgba(255,255,255,.25)" }}
               >
-                {d}
+                {nomeDirezione(d, lingua)}
               </button>
             ))}
           </div>
@@ -85,27 +100,27 @@ export default function Partenze({ linee }: { linee: Linea[] }) {
           <span className="conto">--<small>min</small></span>
         ) : prima ? (
           prima.domani ? (
-            <span className="conto">{oraBreve(prima.p.ora)}<small>domani</small></span>
+            <span className="conto">{oraBreve(prima.p.ora)}<small>{t.domani}</small></span>
           ) : prima.tra < 90 ? (
             <span className="conto">{prima.tra}<small>min</small></span>
           ) : (
             <span className="conto">{oraBreve(prima.p.ora)}</span>
           )
         ) : (
-          <span style={{ fontSize: 18, fontWeight: 600 }}>Nessuna corsa in programma.</span>
+          <span style={{ fontSize: 18, fontWeight: 600 }}>{t.nessunaProgramma}</span>
         )}
-        {linea.descrizione ? <p style={{ fontSize: 14, color: "var(--pannello-testo)", lineHeight: 1.45 }}>{linea.descrizione}</p> : null}
+        {linea.descrizione ? <p style={{ fontSize: 14, color: "var(--pannello-testo)", lineHeight: 1.45 }}>{en ? traduci(linea.descrizione) : linea.descrizione}</p> : null}
       </section>
 
       {lista.length > 1 ? (
         <section className="sezione">
-          <div className="sezione-head"><h2>Partenze</h2><span className="meta">{dir}</span></div>
+          <div className="sezione-head"><h2>{t.partenze}</h2><span className="meta">{dir ? nomeDirezione(dir, lingua) : null}</span></div>
           <div className="tabellone">
             {lista.map((x, i) => (
               <div key={`${x.p.ora}-${x.domani}`} className={i === 0 ? "prima" : undefined}>
                 <span className="ora">{oraBreve(x.p.ora)}</span>
-                <span className="meta">{x.domani ? "Domani" : "Oggi"}</span>
-                <span className="tra">{x.domani ? "" : testoTra(x.tra)}</span>
+                <span className="meta">{x.domani ? t.Domani : t.Oggi}</span>
+                <span className="tra">{x.domani ? "" : tra(x.tra, lingua)}</span>
               </div>
             ))}
           </div>
@@ -114,12 +129,12 @@ export default function Partenze({ linee }: { linee: Linea[] }) {
 
       <section className="card">
         <div className="card-testa">
-          <h3>{linea.nome}</h3>
-          {linea.da_verificare ? <span className="verifica">Da verificare</span> : null}
+          <h3>{en ? traduci(linea.nome) : linea.nome}</h3>
+          {linea.da_verificare ? <span className="verifica">{t.verificare}</span> : null}
         </div>
-        {linea.biglietto ? <span className="meta">Biglietto: {linea.biglietto}</span> : null}
+        {linea.biglietto ? <span className="meta">{t.biglietto}: {en ? traduci(linea.biglietto) : linea.biglietto}</span> : null}
         {linea.fonte ? (
-          <p className="fonte">Orari ufficiali: <a href={linea.fonte} target="_blank" rel="noopener">{new URL(linea.fonte).hostname.replace("www.", "")}</a></p>
+          <p className="fonte">{t.ufficiali}: <a href={linea.fonte} target="_blank" rel="noopener">{new URL(linea.fonte).hostname.replace("www.", "")}</a></p>
         ) : null}
       </section>
     </>

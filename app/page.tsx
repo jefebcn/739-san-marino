@@ -23,8 +23,12 @@ import { getUltimo } from "@/lib/contenuti";
 import { getSpecialeInCorso } from "@/lib/speciali";
 import SpecialeOggi from "@/components/oggi/SpecialeOggi";
 import RubricheOggi from "@/components/oggi/RubricheOggi";
+import { alternati } from "@/lib/lingua";
 
 export const revalidate = 60;
+
+// La stessa pagina per chi visita, in inglese
+export const metadata = { alternates: alternati("/", "/en", "it") };
 
 const fmt = new Intl.NumberFormat("it-IT");
 

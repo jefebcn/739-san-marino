@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AREE } from "@/lib/aree";
+import { linguaDi } from "@/lib/lingua";
 import { Icona } from "./Icona";
 
 /** Le voci della testata su computer: Oggi, le cinque aree, la mappa. Sul telefono c'è la barra in basso. */
@@ -13,17 +14,26 @@ const VOCI = [
   { href: "/mappa", nome: "Mappa", percorsi: ["/mappa"] },
 ];
 
+/** In inglese: le pagine per chi visita (lib/lingua.ts) */
+export const VOCI_EN = [
+  { href: "/en", nome: "Today", percorsi: ["/en"] },
+  { href: "/en/transport", nome: "Getting around", percorsi: ["/en/transport", "/en/parking"] },
+  { href: "/en/pharmacies", nome: "Pharmacies", percorsi: ["/en/pharmacies"] },
+  { href: "/en/emergency", nome: "Emergency", percorsi: ["/en/emergency"] },
+];
+
 function attiva(path: string, percorsi: string[]) {
-  return percorsi.some((p) => (p === "/" ? path === "/" : path === p || path.startsWith(p + "/")));
+  return percorsi.some((p) => (p === "/" || p === "/en" ? path === p : path === p || path.startsWith(p + "/")));
 }
 
 export function NavDesktop() {
   const path = usePathname();
+  const voci = linguaDi(path) === "en" ? VOCI_EN : VOCI;
   // Con percorsi annidati (/sport e /sport/impianti) vince la prima area che li contiene
-  const qui = VOCI.find((v) => attiva(path, v.percorsi))?.href;
+  const qui = voci.find((v) => attiva(path, v.percorsi))?.href;
   return (
-    <nav aria-label="Sezioni" className="hidden min-w-0 flex-1 items-center gap-0.5 lg:flex">
-      {VOCI.map((v) => (
+    <nav aria-label={voci === VOCI_EN ? "Sections" : "Sezioni"} className="hidden min-w-0 flex-1 items-center gap-0.5 lg:flex">
+      {voci.map((v) => (
         <Link
           key={v.href}
           href={v.href}
@@ -40,6 +50,8 @@ export function NavDesktop() {
 
 /** Ricerca nella testata su computer: una casella vera sugli schermi grandi, un'icona sugli altri. */
 export function CercaDesktop() {
+  // La ricerca è in italiano: nelle pagine inglesi non c'è ancora
+  if (linguaDi(usePathname()) === "en") return null;
   return (
     <>
       <form action="/cerca" role="search" className="hidden h-10 w-56 shrink-0 items-center gap-2 rounded-xl bg-superficie px-3 text-testo-2 focus-within:ring-2 focus-within:ring-accento xl:flex">

@@ -11,6 +11,7 @@ const AZIONI: { href: string; icona: NomeIcona; titolo: string; testo: string; a
   { href: "/profile?qr=1", icona: "qr", titolo: "Mostra il mio QR", testo: "Il tuo SMR ID, pronto da scansionare" },
   { href: "/cerca", icona: "cerca", titolo: "Cerca", testo: "Eventi, luoghi, servizi e castelli" },
   { href: "/utili/farmacie", icona: "farmacia", titolo: "Farmacie aperte", testo: "Chi è aperto adesso" },
+  { href: "/en", icona: "sito", titolo: "739 in English", testo: "Per chi visita: trasporti, farmacie, emergenze" },
   { href: "tel:112", icona: "telefono", titolo: "Chiama il 112", testo: "Emergenza", allerta: true },
 ];
 

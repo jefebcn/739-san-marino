@@ -4,10 +4,11 @@ import SchedaLuogo from "@/components/SchedaLuogo";
 import { Icona } from "@/components/Icona";
 import { getParcheggi } from "@/lib/servizi";
 import { FONTI } from "@/lib/fonti";
+import { alternati } from "@/lib/lingua";
 
 export const revalidate = 300;
 
-export const metadata = { title: "Parcheggi · 739 San Marino" };
+export const metadata = { title: "Parcheggi · 739 San Marino", alternates: alternati("/utili/parcheggi", "/en/parking", "it") };
 
 export default async function Parcheggi() {
   const parcheggi = await getParcheggi();
