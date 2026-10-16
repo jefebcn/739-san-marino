@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { chiaveGiorno, getClassifica, getDaScoprire, getEventi, oggiLungo, ora, saluto, giornoNumero, meseBreve } from "@/lib/data";
+import { chiaveGiorno, contaLuoghi, getClassifica, getDaScoprire, getEventi, oggiLungo, ora, saluto, giornoNumero, meseBreve } from "@/lib/data";
 import { Icona, type NomeIcona } from "@/components/Icona";
 import { AREE } from "@/lib/aree";
 import Installa from "@/components/Installa";
@@ -14,6 +14,7 @@ import { getAvvisi, inCorso } from "@/lib/avvisi";
 import Programma from "@/components/oggi/Programma";
 import DaScoprire from "@/components/oggi/DaScoprire";
 import IlTuoCastello from "@/components/oggi/IlTuoCastello";
+import Benvenuto from "@/components/oggi/Benvenuto";
 import { fasciaDi, nelPeriodo } from "@/lib/oggi";
 import { getUltimo } from "@/lib/contenuti";
 import { getSpecialeInCorso } from "@/lib/speciali";
@@ -67,11 +68,12 @@ export default async function Home() {
   const adesso = new Date();
   const fascia = fasciaDi(adesso);
   const mattina = fascia.tipo === "mattina";
-  const [eventi, classifica, farmacie, linee, raccolta, parcheggi, partite, sport, meteo, avvisi, scritto, speciale, daScoprire] = await Promise.all([
+  const [eventi, classifica, farmacie, linee, raccolta, parcheggi, partite, sport, meteo, avvisi, scritto, speciale, daScoprire, nLuoghi] = await Promise.all([
     getEventi(40), getClassifica(), getFarmacie(), getLinee(), getRaccolta(), getParcheggi(), getPartiteAperte(), getSport(), getMeteo(), getAvvisi(),
     mattina ? getUltimo("bollettino", 1) : fascia.tipo === "weekend" ? getUltimo("weekend", 4) : Promise.resolve(null),
     getSpecialeInCorso(),
     getDaScoprire(adesso),
+    contaLuoghi(),
   ]);
   const tempo = meteo ? cielo(meteo.codice, meteo.giorno) : null;
   const funivia = linee.find((l) => l.tipo === "funivia");
@@ -108,11 +110,10 @@ export default async function Home() {
             </Link>
           ) : null}
         </div>
-        {/* Per chi arriva la prima volta, una riga sola: il resto della pagina fa vedere cosa fa 739 */}
-        <p className="per-nuovi max-w-[46ch] text-[15px] leading-relaxed text-testo-2">
-          <b className="font-semibold text-testo">739 è l&apos;app di San Marino.</b> Cosa è aperto adesso, cosa succede oggi e dove andare, nei nove castelli.
-        </p>
       </section>
+
+      {/* Per chi arriva la prima volta: a cosa serve 739 e cosa sa fare, con i dati di adesso */}
+      <Benvenuto farmacie={farmacie} luoghi={nLuoghi} eventi={eventi.filter((e) => new Date(e.inizio).getTime() - adesso.getTime() < 7 * 86400000).length} />
 
       <Link href="/cerca" className="-mt-2 flex h-12 items-center gap-3 rounded-xl bg-superficie px-4 text-[15px] text-testo-2 transition-colors hover:bg-superficie-2 lg:hidden">
         <Icona nome="cerca" size={20} />

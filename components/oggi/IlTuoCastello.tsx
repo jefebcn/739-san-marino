@@ -27,7 +27,7 @@ export default function IlTuoCastello({ castelli, raccolta, avvisi }: { castelli
 
   return (
     <>
-      <section className="per-nuovi flex flex-col gap-3">
+      <section id="castello" className="per-nuovi flex scroll-mt-4 flex-col gap-3">
         <h2 className="text-[19px] font-semibold tracking-tight">Qual è il tuo castello?</h2>
         <p className="-mt-1 text-sm text-testo-2">Sceglilo e Oggi ti mostra la raccolta dei rifiuti e gli avvisi di casa tua. Lo cambi quando vuoi dal menu in alto.</p>
         <ScegliCastello castelli={castelli} fila />
