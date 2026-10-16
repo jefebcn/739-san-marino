@@ -25,9 +25,9 @@
     /* Ottone pieno, con appena un filo di luce in alto: niente effetto "metallo lucido" */
     --ottone-metallo: linear-gradient(180deg, #D4B26C 0%, #C9A45C 100%);
 
-    --sfondo: #FAFAFA;        /* zinc-50 */
-    --superficie: #F4F4F5;    /* zinc-100 */
-    --superficie-2: #FFFFFF;
+    --sfondo: #FFFFFF;        /* bianco: il fondo di San Marino */
+    --superficie: #F4F4F5;    /* zinc-100: le schede si staccano dal bianco */
+    --superficie-2: #E9E9EC;  /* schede al passaggio del dito o del mouse */
     --testo: #09090B;
     --testo-2: #52525B;       /* zinc-600 */
     --linea: #E4E4E7;         /* zinc-200 */
@@ -38,7 +38,7 @@
     --pannello-testo: #D4D4D8;
     --segnale-tenue: #FDEDE8;
     --segnale-bordo: #F3C2B6;
-    --vetro: rgba(250, 250, 250, 0.78);
+    --vetro: rgba(255, 255, 255, 0.82);
     --griglia: rgba(9, 9, 11, 0.04);
     --ombra: 0 1px 2px rgba(9, 9, 11, 0.06);
     --ok: #18793A;
@@ -58,31 +58,7 @@
     color-scheme: light;
   }
 
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --sfondo: #09090B;          /* zinc-950 */
-      --superficie: #18181B;      /* zinc-900 */
-      --superficie-2: #27272A;    /* zinc-800 */
-      --testo: #FAFAFA;           /* zinc-50 */
-      --testo-2: #A1A1AA;         /* zinc-400 */
-      --linea: rgba(255, 255, 255, 0.08);
-      --accento: #D4B06A;
-      --accento-tenue: rgba(201, 164, 92, 0.14);
-      --su-accento: #09090B;      /* testo sopra l'ottone */
-      --pannello: #141416;        /* pannelli "strumento" */
-      --pannello-2: #3F3F46;
-      --pannello-testo: #D4D4D8;
-      --segnale: #E8573A;
-      --segnale-tenue: rgba(232, 87, 58, 0.14);
-      --segnale-bordo: rgba(232, 87, 58, 0.4);
-      --vetro: rgba(9, 9, 11, 0.72);
-      --griglia: rgba(255, 255, 255, 0.035);
-      --ombra: 0 1px 2px rgba(0, 0, 0, 0.4);
-      --ok: #6FDC8C;
-      --tessera: transparent;
-      color-scheme: dark;
-    }
-  }
+  /* Un tema solo, chiaro per tutti (scelta di Alex del 16/10/2026): il tema scuro è nella storia di git, migrazione di stile del 16/10 */
 
   * { -webkit-tap-highlight-color: transparent; }
   html, body { height: 100%; }
@@ -232,7 +208,7 @@
 /* ——— Classifica ——— */
 .icona-colore { display: inline-block; flex: none; vertical-align: middle; object-fit: contain; user-select: none; }
 /* Nel tema chiaro le parti bianche delle icone a colori hanno bisogno di un bordo leggero per staccarsi dal fondo */
-@media not (prefers-color-scheme: dark) { .icona-colore { filter: drop-shadow(0 0 0.6px rgb(9 9 11 / 0.7)) drop-shadow(0 1px 2px rgb(9 9 11 / 0.22)); } }
+.icona-colore { filter: drop-shadow(0 0 0.6px rgb(9 9 11 / 0.7)) drop-shadow(0 1px 2px rgb(9 9 11 / 0.22)); }
 /* Barra in basso: la voce non attiva è più spenta, quella attiva a colori pieni */
 nav a:not([aria-current="page"]) > .icona-colore { opacity: 0.55; filter: grayscale(0.85); }
 .icona-propria { display: inline-block; position: relative; flex: none; vertical-align: middle; }
@@ -316,10 +292,8 @@ li:last-child > .riga { border-bottom: 0; }
 .emergenza a span { font-size: 14px; color: var(--pannello-testo); }
 .emergenza a:first-child { background: var(--segnale-pieno); }
 .emergenza a:first-child span { color: var(--bianco); }
-@media not (prefers-color-scheme: dark) {
-  .emergenza a:not(:first-child) { background-color: var(--superficie); color: var(--testo); }
-  .emergenza a:not(:first-child) span { color: var(--testo-2); }
-}
+.emergenza a:not(:first-child) { background-color: var(--superficie); color: var(--testo); }
+.emergenza a:not(:first-child) span { color: var(--testo-2); }
 
 .servizio { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 14px; border-radius: var(--r); background: var(--superficie); }
 .servizio h3 { font-size: 16px; font-weight: 600; letter-spacing: -0.01em; }

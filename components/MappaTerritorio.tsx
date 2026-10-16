@@ -6,7 +6,7 @@ import type { GeoJSONSource, GeolocateControl, Map as MLMap, Marker } from "mapl
 import { CATEGORIE, linkIndicazioni, type Luogo } from "@/lib/data";
 import { Icona } from "./Icona";
 import { AREE, areaDiCategoria, type SlugArea } from "@/lib/aree";
-import { CENTRO, STILE_CHIARO, STILE_SCURO } from "@/lib/mappa";
+import { CENTRO, STILE_CHIARO } from "@/lib/mappa";
 import {
   allarga, cercaIndirizzi, cercaLuoghi, contiene, dentro, dettaglioLuogo, distanzaM, leggiDistanza, luoghiDelTerritorio, luoghiNelRiquadro,
   TERRITORIO, type Indirizzo, type PuntoMappa, type Riquadro,
@@ -192,10 +192,9 @@ export default function MappaTerritorio({ segnali, lingua = "it" }: { segnali: L
       if (annullato || !box.current) return;
       // Il worker è copiato in public/ da scripts/worker-mappa.mjs
       ml.setWorkerUrl(new URL("/maplibre-gl-worker.mjs", window.location.origin).href);
-      const scuro = window.matchMedia("(prefers-color-scheme: dark)").matches;
       const m = new ml.Map({
         container: box.current,
-        style: scuro ? STILE_SCURO : STILE_CHIARO,
+        style: STILE_CHIARO,
         center: CENTRO,
         zoom: focus.current ? 13 : 11.4,
         attributionControl: { compact: true },
@@ -234,7 +233,7 @@ export default function MappaTerritorio({ segnali, lingua = "it" }: { segnali: L
         m.addSource("scelto", { type: "geojson", data: VUOTO });
         m.addLayer({
           id: "scelto-anello", type: "circle", source: "scelto",
-          paint: { "circle-radius": 23, "circle-color": "rgba(0,0,0,0)", "circle-stroke-width": 3, "circle-stroke-color": scuro ? "#D4B06A" : "#7A5C24" },
+          paint: { "circle-radius": 23, "circle-color": "rgba(0,0,0,0)", "circle-stroke-width": 3, "circle-stroke-color": "#7A5C24" },
         });
         m.addLayer({
           id: "scelto-icona", type: "symbol", source: "scelto",

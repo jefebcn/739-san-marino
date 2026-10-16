@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { STILE_CHIARO, STILE_SCURO } from "@/lib/mappa";
+import { STILE_CHIARO } from "@/lib/mappa";
 import { elementoSegnaposto } from "./Segnaposto";
 
 export type Punto = { id: string; nome: string; lat: number; lng: number; categoria: string; href: string };
@@ -24,10 +24,9 @@ export default function MappaPunti({ punti, etichetta }: { punti: Punto[]; etich
     import("maplibre-gl").then((ml) => {
       if (annullato || !box.current) return;
       ml.setWorkerUrl(new URL("/maplibre-gl-worker.mjs", window.location.origin).href);
-      const scuro = window.matchMedia("(prefers-color-scheme: dark)").matches;
       const m = new ml.Map({
         container: box.current,
-        style: scuro ? STILE_SCURO : STILE_CHIARO,
+        style: STILE_CHIARO,
         center: [punti[0].lng, punti[0].lat],
         zoom: 15,
         cooperativeGestures: true,

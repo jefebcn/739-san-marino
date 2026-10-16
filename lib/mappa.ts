@@ -75,4 +75,3 @@ export const coloreDi = (categoria: string) => COLORI[categoria] ?? "#0B1F2E";
 
 export const CENTRO: [number, number] = [12.4578, 43.9424];
 export const STILE_CHIARO = "https://tiles.openfreemap.org/styles/liberty";
-export const STILE_SCURO = "https://tiles.openfreemap.org/styles/dark";

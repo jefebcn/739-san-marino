@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import "maplibre-gl/dist/maplibre-gl.css";
 import type { Map as MappaML, Marker } from "maplibre-gl";
 import { Icona } from "./Icona";
-import { CENTRO, STILE_CHIARO, STILE_SCURO } from "@/lib/mappa";
+import { CENTRO, STILE_CHIARO } from "@/lib/mappa";
 import { elementoSegnaposto } from "./Segnaposto";
 
 type Punto = { lat: number; lng: number };
@@ -29,10 +29,9 @@ export default function ScegliPunto({ valore, onCambia, categoria, sottocategori
     import("maplibre-gl").then((ml) => {
       if (annullato || !box.current) return;
       ml.setWorkerUrl(new URL("/maplibre-gl-worker.mjs", window.location.origin).href);
-      const scuro = window.matchMedia("(prefers-color-scheme: dark)").matches;
       const m = new ml.Map({
         container: box.current,
-        style: scuro ? STILE_SCURO : STILE_CHIARO,
+        style: STILE_CHIARO,
         center: CENTRO,
         zoom: 12,
         cooperativeGestures: true,

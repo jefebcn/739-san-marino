@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { STILE_CHIARO, STILE_SCURO } from "@/lib/mappa";
+import { STILE_CHIARO } from "@/lib/mappa";
 import { elementoSegnaposto } from "./Segnaposto";
 
 /**
@@ -20,10 +20,9 @@ export default function MappaPunto({ lat, lng, nome, categoria, sottocategoria }
       if (annullato || !box.current) return;
       // Il worker è copiato in public/ da scripts/worker-mappa.mjs
       ml.setWorkerUrl(new URL("/maplibre-gl-worker.mjs", window.location.origin).href);
-      const scuro = window.matchMedia("(prefers-color-scheme: dark)").matches;
       const m = new ml.Map({
         container: box.current,
-        style: scuro ? STILE_SCURO : STILE_CHIARO,
+        style: STILE_CHIARO,
         center: [lng, lat],
         zoom: 15.5,
         // La rotella fa scorrere la pagina, non la mappa
