@@ -1,5 +1,5 @@
 // Calendario fiscale di San Marino: le scadenze fiscali e contributive per chi ha un'attività (Lavorare).
-// Dati raccolti e verificati sul web da Alex il 16/10/2026. È l'unico file da aggiornare ogni anno:
+// Dati raccolti e verificati sul web da Alex il 16/10/2026 (fattura elettronica aggiunta da Claude il 18/10/2026, dal testo del DD 133/2026). È l'unico file da aggiornare ogni anno:
 // la pagina (/lavorare/calendario-fiscale) e il file .ics si costruiscono da qui (modules/lavorare/calendario-fiscale.ts).
 //
 // Regole: mai date, link o riferimenti inventati. Se un dato manca resta vuoto e la voce è «da verificare».
@@ -13,7 +13,7 @@
 // - ogni mese: { id, ricorrenza: { tipo: "mensile", giorno }, … }
 // - senza data fissa: { id, ricorrenza: { tipo: "senza data", quando: "…" }, … }
 
-export const AGGIORNATO_IL = "2026-10-16";
+export const AGGIORNATO_IL = "2026-10-18";
 
 export type Categoria = "IGR" | "Ritenute" | "Contributi ISS" | "Dichiarazioni" | "Monofase/Importazioni" | "Bollo/Servizi" | "Altro";
 export type Destinatario = "persone fisiche" | "persone giuridiche" | "autonomi e professionisti" | "datori di lavoro";
@@ -37,6 +37,8 @@ export const FONTI = {
   "HLB-10": { nome: "HLB San Marino, scadenziario ottobre 2026", url: "https://www.hlbsanmarino.com/scadenziario-ottobre-2026/", tipo: "studio" },
   "HLB-LEG": { nome: "HLB San Marino, sintesi della Legge 141/2025", url: "https://www.hlbsanmarino.com/legge-12-novembre-2025-nr-141-modifiche-alla-legge-16-dicembre-2013-n-166-imposta-generale-sui-redditi-e-successive-modifiche/", tipo: "studio" },
   USC: { nome: "USC, scadenziario adempimenti", url: "https://www.usc.sm/scadenziario-adempimenti/", tipo: "studio" },
+  "DD-133": { nome: "Decreto Delegato 4 settembre 2026 n. 133 (testo pubblicato da HLB San Marino)", url: "https://www.hlbsanmarino.com/wp-content/uploads/2026/09/171603612-DD133-2026-1.pdf", tipo: "ufficiale" },
+  "UFF-FE": { nome: "Segreteria di Stato Finanze e Bilancio, fattura elettronica interna (25 maggio 2026)", url: "https://finanze.sm/pub1/dam/jcr:2651de7b-4955-4d29-9bd5-cc2d471ade55/25-05-2026%20Slides%20Fatturazione%20elettronica%20interna%20a%20San%20Marino.pdf", tipo: "ufficiale" },
   "STAMPA-1": { nome: "San Marino RTV, proroga al 31 agosto", url: "https://www.sanmarinortv.sm/news/economia-c5/dichiarazioni-dei-redditi-prorogata-al-31-agosto-a292195", tipo: "stampa" },
   "STAMPA-2": { nome: "GiornaleSM, proroga e DD 80/2026", url: "https://giornalesm.com/san-marino-proroga-fiscale-slitta-al-31-agosto-la-scadenza-per-le-dichiarazioni-dei-redditi-delle-persone-fisiche/", tipo: "stampa" },
 } satisfies Record<string, Fonte>;
@@ -348,6 +350,47 @@ export const VOCI: Voce[] = [
     riferimento_normativo: "L. 141/2025, art. 25",
     stato_verifica: "confermato",
     note: "Se presentata entro 30 giorni dalla scadenza è valida, ma con sanzione.",
+  },
+  // ——— Fattura elettronica tra operatori sammarinesi (DD 133/2026, letto il 18/10/2026) ———
+  {
+    id: "fe-obbligo",
+    data: "2027-01-01",
+    titolo: "Fattura elettronica obbligatoria tra operatori sammarinesi",
+    descrizione: "Le fatture e le note di variazione verso altri operatori sammarinesi con codice operatore economico vanno emesse in formato elettronico e trasmesse all'HUB SM. Esclusi, salvo opzione, i soggetti con ricavi dell'anno precedente sotto 100.000 €, che fanno la fattura cartacea.",
+    categoria: "Altro",
+    destinatari: IMPRESE,
+    per_chi: "Operatori economici con ricavi dell'anno precedente da 100.000 € in su",
+    fonti: ["DD-133", "UFF-FE"],
+    riferimento_normativo: "DD 4 settembre 2026 n. 133, art. 2 e art. 11",
+    stato_verifica: "confermato",
+    note: "Dal 1° ottobre al 31 dicembre 2026 è facoltativa. Per lo Stato e la Pubblica Amministrazione serve un regolamento.",
+  },
+  {
+    id: "fe-sanzioni",
+    data: "2028-01-01",
+    titolo: "Fattura elettronica: partono le sanzioni",
+    descrizione: "Sanzione di 100 € per la fattura o la nota di variazione omessa o trasmessa in ritardo; vale anche per le fatture cartacee non predisposte o non consegnate, e per il cliente che non regolarizza la fattura non ricevuta.",
+    categoria: "Altro",
+    destinatari: IMPRESE,
+    per_chi: "Operatori economici",
+    fonti: ["DD-133"],
+    riferimento_normativo: "DD 4 settembre 2026 n. 133, art. 6, 7 e 11",
+    stato_verifica: "confermato",
+    note: "",
+  },
+  {
+    id: "fe-termini",
+    ricorrenza: { tipo: "senza data", quando: "Entro il secondo mese dopo consegna, fine del servizio o pagamento dell'acconto" },
+    dal: "2026-10-01",
+    titolo: "Fattura elettronica: termine di trasmissione all'HUB SM",
+    descrizione: "La fattura elettronica va predisposta e trasmessa entro il secondo mese successivo alla consegna o spedizione dei beni, all'ultimazione del servizio o al pagamento dell'acconto. Scartata dall'HUB SM, si considera non emessa.",
+    categoria: "Altro",
+    destinatari: IMPRESE,
+    per_chi: "Chi emette fattura elettronica verso operatori sammarinesi",
+    fonti: ["DD-133", "UFF-FE"],
+    riferimento_normativo: "DD 4 settembre 2026 n. 133, art. 3 e 4",
+    stato_verifica: "confermato",
+    note: "",
   },
 ];
 
