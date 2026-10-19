@@ -40,7 +40,10 @@ function pulisci(s: string) {
   return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
 }
 
-export default function Ricerca({ eventi, luoghi, castelli, pratiche = [] }: { eventi: Evento[]; luoghi: Luogo[]; castelli: Castello[]; pratiche?: PraticaDi[] }) {
+/** Un sentiero di Itinerari, già pronto per la ricerca */
+export type SentieroCercato = { slug: string; titolo: string; sotto: string; testo: string };
+
+export default function Ricerca({ eventi, luoghi, castelli, pratiche = [], sentieri = [] }: { eventi: Evento[]; luoghi: Luogo[]; castelli: Castello[]; pratiche?: PraticaDi[]; sentieri?: SentieroCercato[] }) {
   const [q, setQ] = useState("");
   // Dalla casella della testata su computer si arriva con /cerca?q=…
   useEffect(() => {
@@ -83,12 +86,16 @@ export default function Ricerca({ eventi, luoghi, castelli, pratiche = [] }: { e
         })),
       },
       {
+        nome: "Sentieri",
+        voci: sentieri.map((x) => ({ href: `/uscire/itinerari/${x.slug}`, titolo: x.titolo, sotto: x.sotto, icona: "itinerari" as NomeIcona, testo: pulisci(`${x.titolo} sentiero ${x.testo}`) })),
+      },
+      {
         nome: "Castelli",
         voci: castelli.map((c) => ({ href: `/castelli/${c.slug}`, titolo: c.nome, sotto: "Castello", icona: "castelli" as NomeIcona, testo: pulisci(`${c.nome} castello`) })),
       },
     ];
     return gruppi;
-  }, [eventi, luoghi, castelli, pratiche]);
+  }, [eventi, luoghi, castelli, pratiche, sentieri]);
 
   const parole = pulisci(q).split(/\s+/).filter(Boolean);
   const risultati = parole.length

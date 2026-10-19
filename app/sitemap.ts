@@ -3,6 +3,7 @@ import { AREE } from "@/lib/aree";
 import { getClassifica, getEventi, getLuoghi } from "@/lib/data";
 import { getContenuti } from "@/lib/contenuti";
 import { PAGINE_EN } from "@/lib/lingua";
+import { SENTIERI } from "@/modules/itinerari/sentieri";
 import { getOfferteLavoro } from "@/modules/lavorare/offerte";
 
 const SITO = "https://739-san-marino.vercel.app";
@@ -23,6 +24,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...luoghi.map((l) => `/en/places/${l.id}`),
     ...offerte.map((o) => `/lavorare/lavoro/${o.id}`),
     ...contenuti.map((c) => (c.tipo === "speciale" ? `/speciali/${c.slug}` : `/storie/${c.slug}`)),
+    ...SENTIERI.map((s) => `/uscire/itinerari/${s.slug}`),
   ];
   return percorsi.map((p) => ({ url: `${SITO}${p}` }));
 }

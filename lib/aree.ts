@@ -70,7 +70,7 @@ export const AREE: Area[] = [
       { slug: "natura", nome: "Panorami e natura", descrizione: "I punti panoramici del territorio.", icona: "panorama", href: "/uscire/natura", categorie: ["panorama"], parole: "panorama panorami vista natura sentieri" },
       { slug: "dormire", nome: "Dormire", descrizione: "Hotel, bed and breakfast, residence e campeggi.", icona: "dormire", href: "/uscire/dormire", categorie: ["dormire"], parole: "dormire hotel albergo alberghi bed breakfast b&b residence campeggio camping agriturismo notte stanza" },
       { slug: "negozi", nome: "Negozi e outlet", descrizione: "Souvenir, gioiellerie, alimentari, abbigliamento e centri commerciali.", icona: "negozi", href: "/uscire/negozi", categorie: ["negozio"], parole: "negozi negozio shopping outlet botteghe souvenir gioielleria gioielli orologi armeria supermercato alimentari abbigliamento vestiti profumeria tabacchi centro commerciale" },
-      { slug: "itinerari", nome: "Itinerari", descrizione: "Percorsi a piedi per scoprire il territorio.", icona: "itinerari", parole: "itinerari percorsi passeggiate trekking" },
+      { slug: "itinerari", nome: "Itinerari", descrizione: "I sentieri segnati del territorio, con mappa, dislivello e traccia GPX.", icona: "itinerari", href: "/uscire/itinerari", parole: "itinerari percorsi passeggiate trekking sentieri sentiero escursioni camminate gpx natura rupe monte cerreto" },
     ],
   },
   {

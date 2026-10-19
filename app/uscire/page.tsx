@@ -1,5 +1,6 @@
 import PaginaArea from "@/components/aree/PaginaArea";
 import { getEventi, getLuoghi } from "@/lib/data";
+import { SENTIERI } from "@/modules/itinerari/sentieri";
 
 export const revalidate = 300;
 
@@ -20,6 +21,7 @@ export default async function Uscire() {
         dormire: conta(["dormire"]) ? <><b className="font-mono font-medium text-testo">{conta(["dormire"])}</b> tra hotel, bed and breakfast e campeggi</> : "Hotel, b&b e campeggi in arrivo",
         cultura: <><b className="font-mono font-medium text-testo">{conta(["cultura", "luogo"])}</b> tra musei, torri e monumenti</>,
         natura: <><b className="font-mono font-medium text-testo">{conta(["panorama"])}</b> punti panoramici</>,
+        itinerari: <><b className="font-mono font-medium text-testo">{SENTIERI.length}</b> sentieri, dalla Rupe del Titano a Monte Cerreto</>,
       }}
     />
   );
