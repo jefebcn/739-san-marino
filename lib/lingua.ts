@@ -22,6 +22,8 @@ const PERCORSI: [string, string][] = [
   ["/eventi", "/en/events"],
   ["/uscire/mangiare", "/en/eat"],
   ["/uscire/dormire", "/en/stay"],
+  ["/uscire/cultura", "/en/sights"],
+  ["/uscire/natura", "/en/viewpoints"],
   ["/utili/farmacie", "/en/pharmacies"],
   ["/utili/trasporti", "/en/transport"],
   ["/utili/parcheggi", "/en/parking"],
@@ -69,6 +71,9 @@ export function ritornoEn(categoria: string) {
     parcheggio: { href: "/en/parking", nome: "Car parks" },
     locale: { href: "/en/eat", nome: "Where to eat" },
     dormire: { href: "/en/stay", nome: "Where to stay" },
+    cultura: { href: "/en/sights", nome: "Museums and monuments" },
+    luogo: { href: "/en/sights", nome: "Museums and monuments" },
+    panorama: { href: "/en/viewpoints", nome: "Viewpoints" },
   };
   return pagine[categoria] ?? { href: "/en/map", nome: "Map" };
 }

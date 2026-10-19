@@ -21,6 +21,7 @@ export const VOCI_EN = [
   { href: "/en/events", nome: "What's on", percorsi: ["/en/events"] },
   { href: "/en/eat", nome: "Eat", percorsi: ["/en/eat"] },
   { href: "/en/stay", nome: "Stay", percorsi: ["/en/stay"] },
+  { href: "/en/sights", nome: "Sights", percorsi: ["/en/sights", "/en/viewpoints"] },
   { href: "/en/transport", nome: "Getting around", percorsi: ["/en/transport", "/en/parking", "/en/pharmacies"] },
   { href: "/en/emergency", nome: "Emergency", percorsi: ["/en/emergency"] },
 ];
