@@ -42,6 +42,8 @@ Il titolare ha sede a Malta, nell'Unione europea: la regola di riferimento è il
 
 **Bacheca.** Se scrivi in bacheca salviamo l'annuncio (tipo, titolo, testo, castello, fino a quando resta) e il contatto che scegli, collegati al tuo SMR ID. L'annuncio è pubblico dopo il controllo della redazione; il contatto lo vede solo chi è entrato con l'SMR ID. La redazione vede anche il nome del tuo profilo. Gli annunci restano nel tuo profilo anche dopo la scadenza, finché tieni l'SMR ID.
 
+**Premi dei metri.** Quando un'attività legge il QR del tuo SMR ID (o il numero della tessera) per un premio, vede solo il tuo nome (la prima parola), i tuoi metri e se puoi ritirarlo. Se lo consegna salviamo quale premio, quando e chi l'ha registrato, per controllare quante volte lo ritiri; l'attività vede solo quanti premi ha consegnato, non a chi. Li teniamo finché tieni l'SMR ID.
+
 **Prenotazioni.** Se prenoti un campo, una sala o un servizio con 739 salviamo il centro, cosa e quando, lo stato (richiesta, confermata, annullata, non presentato), il telefono e la nota se li scrivi, e la risposta del centro. Chi gestisce il centro vede il tuo nome, l'email del tuo SMR ID e il telefono, solo per le prenotazioni fatte da lui e solo per gestirle; gli altri vedono soltanto che quell'orario è occupato. Teniamo le prenotazioni finché tieni l'SMR ID; l'elenco nell'app mostra le ultime di 30 giorni.
 
 **Schede da fonti aperte.** Molte schede di negozi, locali, aziende, studi, veterinari e associazioni arrivano da OpenStreetMap e da Overture Maps: sono dati pubblici delle attività e delle associazioni (nome, indirizzo, telefono e sito), con la fonte scritta nella scheda. Se una scheda riguarda te o la tua attività e vuoi correggerla o toglierla, usa «Segnala un errore» o scrivici: lo facciamo.
@@ -52,7 +54,7 @@ Il titolare ha sede a Malta, nell'Unione europea: la regola di riferimento è il
 
 ## Su quale base
 
-- **Per darti il servizio che chiedi** (GDPR art. 6.1.b): account SMR ID, check-in e metri, partite e tornei, eventi proposti, schede delle attività, prenotazioni, annunci in bacheca.
+- **Per darti il servizio che chiedi** (GDPR art. 6.1.b): account SMR ID, check-in e metri, partite e tornei, eventi proposti, schede delle attività, prenotazioni, premi dei metri, annunci in bacheca.
 - **Con il tuo consenso** (art. 6.1.a), che puoi togliere quando vuoi: notifiche e posizione del telefono.
 - **Per un nostro interesse legittimo** (art. 6.1.f), con il minimo dei dati: limiti anti abuso con l'impronta cifrata, conteggi anonimi delle visite e delle schede delle attività, sicurezza del servizio.
 

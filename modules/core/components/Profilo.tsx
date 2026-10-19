@@ -262,6 +262,14 @@ export default function Profilo({ castelli }: { castelli: Castello[] }) {
         <SmrCard nome={profilo.nome} tessera={profilo.tessera} castello={castello} rating={rating} metri={metri?.totale ?? null} apriQr={apriQr} key={apriQr ? "qr" : "card"} />
 
         <QuotaHud metri={metri?.totale ?? null} rating={rating} castello={castello} posizione={posizione} />
+        <Link href="/premi" className="flex items-center gap-3.5 rounded-2xl bg-superficie p-4 transition-colors hover:bg-superficie-2">
+          <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-fondo text-testo"><Icona nome="coppa" size={22} /></span>
+          <span className="flex min-w-0 flex-1 flex-col">
+            <span className="text-[16px] font-semibold">Premi dei metri</span>
+            <span className="text-[13px] text-testo-2">Cosa ti danno le attività del territorio per i metri che hai.</span>
+          </span>
+          <Icona nome="avanti" size={18} />
+        </Link>
       </div>
 
       <div className="flex flex-col gap-8">

@@ -46,6 +46,8 @@ Il titolare di un locale, di un negozio, di un distributore, di un'azienda, di u
 
 **Bacheca.** Chi ha l'SMR ID può scrivere annunci in bacheca: cerco, offro, regalo, perso, trovato, iniziative. Ogni annuncio lo legge la redazione prima che esca e resta online per il tempo scelto (al massimo 60 giorni); si può chiudere quando si vuole. Non sono ammessi: pubblicità o vendite di attività (per quelle c'è la scheda), offerte di lavoro (ci sono le Offerte di lavoro), propaganda politica, vendita di cose o animali che la legge non permette, nomi, foto o dati di altre persone, offese. Chi scrive risponde di quello che scrive; gli accordi tra chi si contatta dalla bacheca riguardano solo loro: 739 non è parte e non risponde di quello che succede dopo. La redazione può non pubblicare o ritirare un annuncio, scrivendo il perché.
 
+**Premi dei metri.** Chi gestisce la scheda di un'attività può offrire premi a chi ha raggiunto un livello di metri (Valle, Mura, Torri, Vetta), con le sue regole: ogni quanto, quanti in tutto, fino a quando. Il premio lo offre e lo consegna l'attività, che ne risponde: 739 controlla solo i metri e quante volte è stato ritirato, e non risponde di premi esauriti, cambiati o non consegnati. I metri non si comprano, non si scambiano e non valgono denaro. Chi registra premi falsi o usa la tessera di un altro perde l'accesso a 739.
+
 **Prenotazioni con 739.** Chi gestisce la scheda di un centro (un impianto sportivo, una sala, un servizio) può aprire le prenotazioni da 739: sceglie cosa si prenota, gli orari, se conferma lui o in automatico e fino a quando si può annullare. Il servizio è un accordo tra te e il centro: 739 porta la richiesta e mostra gli orari liberi, ma non è parte del contratto, non incassa niente (si paga sul posto) e non risponde di prezzi, qualità o annullamenti decisi dal centro. Per prenotare serve l'SMR ID. Se non puoi andare annulla da 739 nei tempi indicati, o chiama il centro: chi non si presenta a due prenotazioni confermate in 90 giorni non può prenotare da 739 per un mese. Il centro usa nome, email e telefono di chi prenota solo per quella prenotazione, non per pubblicità o altro.
 
 ## Le cose da non fare
@@ -70,5 +72,5 @@ Per domande scrivi a ${emailContatto()}. Per i tuoi dati personali leggi la [Pri
 `;
 
 export default function Termini() {
-  return <PaginaLegale titolo="Termini d'uso" aggiornata="16 ottobre 2026" testo={TESTO} />;
+  return <PaginaLegale titolo="Termini d'uso" aggiornata="19 ottobre 2026" testo={TESTO} />;
 }

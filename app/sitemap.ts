@@ -13,7 +13,7 @@ export const revalidate = 3600;
 /** Mappa del sito per i motori di ricerca: pagine fisse (anche quelle inglesi), aree e sezioni, castelli, eventi, luoghi e contenuti. */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [castelli, eventi, luoghi, contenuti, offerte] = await Promise.all([getClassifica(), getEventi(200), getLuoghi(), getContenuti({ limite: 200 }), getOfferteLavoro()]);
-  const fisse = ["/", "/notizie", "/esplora", "/mappa", "/eventi", "/castelli", "/sport", "/sport/tornei", "/bollettino", "/rubriche", "/guida", "/cerca", "/attivita", "/privacy", "/termini", "/utili/farmacie", "/utili/trasporti", "/utili/rifiuti", "/utili/parcheggi", "/utili/meteo"];
+  const fisse = ["/", "/notizie", "/esplora", "/mappa", "/eventi", "/castelli", "/sport", "/sport/tornei", "/bollettino", "/rubriche", "/guida", "/cerca", "/attivita", "/premi", "/privacy", "/termini", "/utili/farmacie", "/utili/trasporti", "/utili/rifiuti", "/utili/parcheggi", "/utili/meteo"];
   const sezioni = AREE.flatMap((a) => [a.href, ...a.sezioni.flatMap((s) => (s.href && !s.href.includes("#") ? [s.href] : []))]);
   const percorsi = [
     ...new Set([...fisse, ...sezioni, ...PAGINE_EN]),

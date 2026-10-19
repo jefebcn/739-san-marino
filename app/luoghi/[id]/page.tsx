@@ -12,6 +12,8 @@ import { ritornoDiCategoria } from "@/lib/aree";
 import { metadatiCondivisione } from "@/lib/condivisione";
 import { getOfferteLavoro } from "@/modules/lavorare/offerte";
 import { RigaOfferta } from "@/modules/lavorare/components/ElencoOfferte";
+import { getPremi } from "@/modules/premi/dati";
+import { OGNI, nomeSoglia } from "@/modules/premi/api";
 
 export const revalidate = 300;
 
@@ -32,7 +34,7 @@ export async function generateMetadata({ params }: Props) {
 /** La pagina di un luogo: la scheda unica, aperta dalla mappa, dalla ricerca e dalle sezioni. */
 export default async function PaginaLuogo({ params }: Props) {
   const { id } = await params;
-  const [l, castelli, gestito, pro, offerte, prenota] = await Promise.all([getLuogo(id), getClassifica(), getGestito(id), getPro(id), getOfferteLavoro(), getPrenotaAperta(id)]);
+  const [l, castelli, gestito, pro, offerte, prenota, premi] = await Promise.all([getLuogo(id), getClassifica(), getGestito(id), getPro(id), getOfferteLavoro(), getPrenotaAperta(id), getPremi(id)]);
   if (!l) notFound();
   const castello = castelli.find((c) => c.id === l.castello_id) ?? null;
   const ritorno = ritornoDiCategoria(l.categoria, l.sottocategoria);
@@ -51,6 +53,24 @@ export default async function PaginaLuogo({ params }: Props) {
           <ul className="divide-y divide-linea overflow-hidden rounded-2xl bg-superficie">
             {lavoro.map((o) => <li key={o.id}><RigaOfferta o={o} /></li>)}
           </ul>
+        </section>
+      ) : null}
+      {premi.length ? (
+        <section className="flex flex-col gap-3" aria-labelledby="premi">
+          <h2 id="premi" className="text-[19px] font-semibold tracking-tight">Premi dei metri</h2>
+          <ul className="divide-y divide-linea overflow-hidden rounded-2xl bg-superficie">
+            {premi.map((p) => (
+              <li key={p.id} className="flex items-start gap-3 p-4">
+                <span className="taglio-piccolo shrink-0 bg-metallo py-0.5 text-[12px] font-semibold text-su-accento">{nomeSoglia(p.metri_min)}</span>
+                <span className="flex min-w-0 flex-col gap-0.5">
+                  <span className="text-[15px] font-semibold">{p.titolo}</span>
+                  {p.descrizione ? <span className="text-[14px] leading-snug text-testo-2">{p.descrizione}</span> : null}
+                  <span className="text-[12px] text-testo-2">{OGNI[p.ogni].riga}{p.rimasti !== null ? `, ${p.rimasti} rimasti` : ""}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+          <p className="text-[13px] text-testo-2">Mostra il QR del tuo SMR ID alla cassa. <Link href="/premi" className="underline underline-offset-2">Tutti i premi</Link></p>
         </section>
       ) : null}
       <Simili vicini={simili} />

@@ -196,6 +196,14 @@ export default function ModificaAttivita({ id }: { id: string }) {
       </span>
       <Icona nome="avanti" size={18} />
     </Link>
+    <Link href={`/profile/attivita/${id}/premi`} className="flex items-center gap-3.5 rounded-2xl bg-superficie p-4 transition-colors hover:bg-superficie-2">
+      <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-fondo text-testo"><Icona nome="coppa" size={22} /></span>
+      <span className="flex min-w-0 flex-1 flex-col">
+        <span className="text-[16px] font-semibold">Premi dei metri</span>
+        <span className="text-[13px] text-testo-2">Un premio per chi sale con 739: lo consegni leggendo il QR dell&apos;SMR ID.</span>
+      </span>
+      <Icona nome="avanti" size={18} />
+    </Link>
     <div id="pro" className="scroll-mt-20">
       <ProAttivita id={id} nome={luogo.nome} />
     </div>

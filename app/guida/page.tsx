@@ -19,6 +19,7 @@ const PASSI = [
   { titolo: "Crea il tuo SMR ID", testo: "Nome, email e castello: ricevi la tessera digitale con il QR." },
   { titolo: "Vai a un evento o a una partita", testo: "Concerti, tornei, serate e partite tra residenti." },
   { titolo: "Sali di quota", testo: "Ogni partecipazione vale metri per te e per il tuo castello. La vetta è a 739 m." },
+  { titolo: "Ritira i premi", testo: "Le attività del territorio premiano chi sale: mostri il QR del tuo SMR ID e il titolare ti consegna il premio." },
 ];
 
 /** Guida di benvenuto: cosa c'è in 739 e come funzionano i metri. */

@@ -38,6 +38,7 @@ const BASE = [
   "Offerte di lavoro, fino a 5 aperte alla volta",
   "Eventi nel calendario, dopo il controllo della redazione",
   "Prenotazioni da 739 per campi, sale e servizi, se non hai già un sistema (per ora in prova)",
+  "Premi dei metri: un premio per chi sale con 739, che consegni leggendo il QR dell'SMR ID (per ora in prova)",
 ];
 
 const PRO = [
