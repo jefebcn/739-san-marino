@@ -25,6 +25,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...offerte.map((o) => `/lavorare/lavoro/${o.id}`),
     ...contenuti.map((c) => (c.tipo === "speciale" ? `/speciali/${c.slug}` : `/storie/${c.slug}`)),
     ...SENTIERI.map((s) => `/uscire/itinerari/${s.slug}`),
+    ...SENTIERI.map((s) => `/en/trails/${s.slug}`),
   ];
   return percorsi.map((p) => ({ url: `${SITO}${p}` }));
 }

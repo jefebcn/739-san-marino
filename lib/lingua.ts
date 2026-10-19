@@ -24,6 +24,7 @@ const PERCORSI: [string, string][] = [
   ["/uscire/dormire", "/en/stay"],
   ["/uscire/cultura", "/en/sights"],
   ["/uscire/natura", "/en/viewpoints"],
+  ["/uscire/itinerari", "/en/trails"],
   ["/utili/farmacie", "/en/pharmacies"],
   ["/utili/trasporti", "/en/transport"],
   ["/utili/parcheggi", "/en/parking"],
@@ -33,7 +34,7 @@ const PERCORSI: [string, string][] = [
 const VERSO_IT: Record<string, string> = { "/en/emergency": "/vivere" };
 
 /** Pagine con un id: la parte dopo il prefisso resta uguale */
-const DINAMICI: [string, string][] = [["/luoghi", "/en/places"], ["/eventi", "/en/events"]];
+const DINAMICI: [string, string][] = [["/luoghi", "/en/places"], ["/eventi", "/en/events"], ["/uscire/itinerari", "/en/trails"]];
 
 /** Le pagine inglesi fisse, per la mappa del sito */
 export const PAGINE_EN = [...PERCORSI.map((p) => p[1]), ...Object.keys(VERSO_IT)];

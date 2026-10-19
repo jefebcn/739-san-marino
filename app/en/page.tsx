@@ -25,6 +25,7 @@ const PAGINE: { href: string; nome: string; riga: string; icona: NomeIcona }[] =
   { href: "/en/stay", nome: "Where to stay", riga: "Hotels, bed and breakfasts and apartments", icona: "dormire" },
   { href: "/en/sights", nome: "Museums and monuments", riga: "The three towers, gates and museums", icona: "cultura" },
   { href: "/en/viewpoints", nome: "Viewpoints", riga: "The sea and the Apennines from the top", icona: "panorama" },
+  { href: "/en/trails", nome: "Walking trails", riga: "Waymarked trails with map, climb and GPX track", icona: "itinerari" },
   { href: "/en/map", nome: "Map", riga: "Car parks, museums, viewpoints, toilets and more", icona: "mappa" },
   { href: "/en/transport", nome: "Cable car and buses", riga: "Next departures and fares", icona: "trasporti" },
   { href: "/en/parking", nome: "Car parks", riga: "Spaces and fares in the old town", icona: "parcheggio" },

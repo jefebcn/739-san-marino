@@ -1,3 +1,4 @@
+import type { Lingua } from "@/lib/lingua";
 import dati from "./dati/sentieri.json";
 
 // I sentieri di San Marino da OpenStreetMap (scripts/sentieri.mjs scrive dati/sentieri.json, niente database).
@@ -57,7 +58,11 @@ export function collegati(s: Sentiero) {
   return base ? SENTIERI.filter((x) => x.id !== s.id && numeroBase(x) === base) : [];
 }
 
-export const km = (m: number) => (m < 1000 ? `${Math.round(m / 10) * 10} m` : `${(m / 1000).toFixed(1).replace(".", ",")} km`);
+/** Dove stanno le pagine dei sentieri in ogni lingua */
+export const BASE: Record<Lingua, string> = { it: "/uscire/itinerari", en: "/en/trails" };
+
+export const km = (m: number, lingua: Lingua = "it") =>
+  m < 1000 ? `${Math.round(m / 10) * 10} m` : `${(m / 1000).toFixed(1).replace(".", lingua === "it" ? "," : ".")} km`;
 
 /** Il dislivello: nel verso più faticoso se il tracciato è continuo, se no tra il punto più basso e il più alto */
 export function dislivello(s: Sentiero) {
@@ -80,19 +85,18 @@ export function durata(minuti: number) {
 export type Fascia = "breve" | "media" | "lunga";
 export const fascia = (s: Sentiero): Fascia => (s.lunghezza_m < 1500 ? "breve" : s.lunghezza_m <= 3000 ? "media" : "lunga");
 
-export const DIFFICOLTA: Record<NonNullable<Sentiero["difficolta"]>, string> = {
-  facile: "Facile",
-  "medio-facile": "Medio-facile",
-  media: "Media",
-  "medio-difficile": "Medio-difficile",
-  impegnativo: "Impegnativo",
+export const DIFFICOLTA: Record<Lingua, Record<NonNullable<Sentiero["difficolta"]>, string>> = {
+  it: { facile: "Facile", "medio-facile": "Medio-facile", media: "Media", "medio-difficile": "Medio-difficile", impegnativo: "Impegnativo" },
+  en: { facile: "Easy", "medio-facile": "Easy to moderate", media: "Moderate", "medio-difficile": "Moderate to hard", impegnativo: "Hard" },
 };
 
-/** La riga sotto il nome: da dove a dove, o anello */
-export function percorso(s: Sentiero) {
-  if (s.anello) return s.via ? `Anello: ${s.via.replace(/\s+-\s+/g, ", ")}` : "Anello";
-  if (s.da && s.a) return `Da ${s.da} a ${s.a}`;
-  return s.via ? s.via.replace(/\s+-\s+/g, ", ") : null;
+/** La riga sotto il nome: da dove a dove, o anello. I nomi dei posti restano come su OSM */
+export function percorso(s: Sentiero, lingua: Lingua = "it") {
+  const via = s.via?.replace(/\s+-\s+/g, ", ");
+  const en = lingua === "en";
+  if (s.anello) return via ? `${en ? "Loop" : "Anello"}: ${via}` : en ? "Loop" : "Anello";
+  if (s.da && s.a) return en ? `From ${s.da} to ${s.a}` : `Da ${s.da} a ${s.a}`;
+  return via ?? null;
 }
 
-export const titolo = (s: Sentiero) => (s.numero ? `Sentiero ${s.numero}, ${s.nome}` : s.nome);
+export const titolo = (s: Sentiero, lingua: Lingua = "it") => (s.numero ? `${lingua === "en" ? "Trail" : "Sentiero"} ${s.numero}, ${s.nome}` : s.nome);

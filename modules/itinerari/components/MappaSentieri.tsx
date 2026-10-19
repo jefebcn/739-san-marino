@@ -8,6 +8,8 @@ import { STILE_CHIARO } from "@/lib/mappa";
 type Tracciato = { slug: string; numero: string | null; nome: string; linee: [number, number][][] };
 
 const NERO = "#09090B";
+// Margini dell'inquadratura: in basso c'è il riquadro dei crediti (due righe sul telefono), a destra lo zoom
+const MARGINI = { top: 32, left: 32, right: 56, bottom: 72 };
 
 /** Il cartello del sentiero: tondo nero col numero, come `.marcatore` */
 function cartello(numero: string | null, fine = false) {
@@ -25,10 +27,10 @@ function cartello(numero: string | null, fine = false) {
 
 /**
  * La mappa dei sentieri. Con `sentiero` disegna quello solo, con la partenza (il numero) e l'arrivo;
- * senza, scarica tutti i tracciati (`/uscire/itinerari/sentieri.geojson`) e un tocco su una linea apre il sentiero.
+ * senza, scarica tutti i tracciati (`/uscire/itinerari/sentieri.geojson`) e un tocco su una linea apre il sentiero (in `base`, italiana o inglese).
  * Come le altre mappe nelle pagine: si muove con due dita.
  */
-export default function MappaSentieri({ sentiero, etichetta }: { sentiero?: Tracciato & { anello: boolean }; etichetta: string }) {
+export default function MappaSentieri({ sentiero, etichetta, base = "/uscire/itinerari" }: { sentiero?: Tracciato & { anello: boolean }; etichetta: string; base?: string }) {
   const box = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const chiave = sentiero?.slug ?? "tutti";
@@ -53,7 +55,7 @@ export default function MappaSentieri({ sentiero, etichetta }: { sentiero?: Trac
         container: box.current,
         style: STILE_CHIARO,
         bounds: confini,
-        fitBoundsOptions: { padding: 36, maxZoom: 16 },
+        fitBoundsOptions: { padding: MARGINI, maxZoom: 16 },
         cooperativeGestures: true,
         attributionControl: { compact: true },
       });
@@ -61,7 +63,7 @@ export default function MappaSentieri({ sentiero, etichetta }: { sentiero?: Trac
       m.on("load", () => {
         // L'inquadratura si rifà quando il riquadro ha la sua altezza vera
         m.resize();
-        m.fitBounds(confini, { padding: 36, maxZoom: 16, duration: 0 });
+        m.fitBounds(confini, { padding: MARGINI, maxZoom: 16, duration: 0 });
         m.addSource("sentieri", { type: "geojson", data: geo });
         m.addLayer({ id: "sentieri-bordo", type: "line", source: "sentieri", layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": "#FFFFFF", "line-width": sentiero ? 8 : 6 } });
         m.addLayer({ id: "sentieri-linea", type: "line", source: "sentieri", layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": NERO, "line-width": sentiero ? 4.5 : 3 } });
@@ -75,7 +77,7 @@ export default function MappaSentieri({ sentiero, etichetta }: { sentiero?: Trac
           m.addLayer({ id: "sentieri-tocco", type: "line", source: "sentieri", paint: { "line-color": NERO, "line-width": 18, "line-opacity": 0 } });
           m.on("click", "sentieri-tocco", (e) => {
             const slug = e.features?.[0]?.properties?.slug;
-            if (slug) router.push(`/uscire/itinerari/${slug}`);
+            if (slug) router.push(`${base}/${slug}`);
           });
           m.on("mouseenter", "sentieri-tocco", () => { m.getCanvas().style.cursor = "pointer"; });
           m.on("mouseleave", "sentieri-tocco", () => { m.getCanvas().style.cursor = ""; });

@@ -1,9 +1,10 @@
+import type { Lingua } from "@/lib/lingua";
 import { km } from "../sentieri";
 
 const L = 600, H = 150;
 
 /** Il profilo altimetrico del sentiero (quote EU-DEM ogni ~1/100 del percorso): area nera tenue, linea nera, quote ai lati */
-export default function Profilo({ profilo, da, a }: { profilo: [number, number][]; da: string | null; a: string | null }) {
+export default function Profilo({ profilo, da, a, lingua = "it" }: { profilo: [number, number][]; da: string | null; a: string | null; lingua?: Lingua }) {
   const distanza = profilo.at(-1)![0] || 1;
   const quote = profilo.map((p) => p[1]);
   const min = Math.min(...quote), max = Math.max(...quote);
@@ -22,7 +23,7 @@ export default function Profilo({ profilo, da, a }: { profilo: [number, number][
           <span>{basso} m</span>
         </div>
         <svg viewBox={`0 0 ${L} ${H}`} preserveAspectRatio="none" className="h-36 min-w-0 flex-1 overflow-visible" role="img"
-          aria-label={`Profilo altimetrico: quota tra ${min} e ${max} metri lungo ${km(distanza)}`}>
+          aria-label={lingua === "en" ? `Elevation profile: between ${min} and ${max} metres over ${km(distanza, "en")}` : `Profilo altimetrico: quota tra ${min} e ${max} metri lungo ${km(distanza)}`}>
           <line x1="0" x2={L} y1={H / 2} y2={H / 2} stroke="var(--linea)" strokeDasharray="4 6" vectorEffect="non-scaling-stroke" />
           <path d={`${linea}L${L},${H}L0,${H}Z`} fill="var(--testo)" opacity="0.08" />
           <path d={linea} fill="none" stroke="var(--testo)" strokeWidth="2.25" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
@@ -30,7 +31,7 @@ export default function Profilo({ profilo, da, a }: { profilo: [number, number][
       </div>
       <figcaption className="flex justify-between gap-3 pl-15 text-[12px] text-testo-2">
         <span className="min-w-0 truncate"><span className="font-mono">0</span>{da ? `, ${da}` : ""}</span>
-        <span className="min-w-0 truncate text-right">{a ? `${a}, ` : ""}<span className="font-mono">{km(distanza)}</span></span>
+        <span className="min-w-0 truncate text-right">{a ? `${a}, ` : ""}<span className="font-mono">{km(distanza, lingua)}</span></span>
       </figcaption>
     </figure>
   );
