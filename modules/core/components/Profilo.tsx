@@ -326,6 +326,7 @@ export default function Profilo({ castelli }: { castelli: Castello[] }) {
               <Riga href="/admin/attivita" icona="negozi" titolo="Attività" nota="Titolari, schede nuove, offerte di lavoro" numero={richieste} />
               <Riga href="/admin/contenuti" icona="storie" titolo="Contenuti" nota="Bollettino, rubriche e storie" />
               <Riga href="/admin/scadenze" icona="calendario" titolo="Scadenze e bandi" nota="Sempre con la fonte ufficiale" />
+              <Riga href="/admin/servizi" icona="trasporti" titolo="Orari e raccolta" nota="Corse di funivia e bus, raccolta dei rifiuti" />
               <Riga href="/admin/importa" icona="importa" titolo="Importa" nota="Luoghi, eventi, avvisi e contenuti da JSON" />
               {ruoli.amministratore ? <Riga href="/admin/fonti" icona="mappa" titolo="Fonti dei luoghi" nota="Overture Maps da controllare e pubblicare" /> : null}
               {ruoli.amministratore ? <Riga href="/admin/numeri" icona="numeri" titolo="Numeri" nota="SMR ID, chi torna, eventi, schede" /> : null}

@@ -3,9 +3,9 @@ import { NextResponse } from "next/server";
 
 // Le schede dei luoghi restano in cache (ISR, 5 minuti). Quando un titolare salva la sua scheda o il suo Pro
 // la pagina si rigenera subito, così le modifiche si vedono «subito» come promette il modulo.
-// Lo stesso per le offerte di lavoro (elenco e pagina dell'offerta) e per scadenze e bandi.
+// Lo stesso per le offerte di lavoro (elenco e pagina dell'offerta), per scadenze e bandi, per orari e raccolta (0047).
 // Accetta solo questi indirizzi: al massimo fa rigenerare una pagina, nessun dato cambia da qui.
-const SCHEDA = /^\/(luoghi|lavorare\/lavoro)\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$|^\/lavorare\/(lavoro|scadenze|bandi)$/;
+const SCHEDA = /^\/(luoghi|lavorare\/lavoro)\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$|^\/lavorare\/(lavoro|scadenze|bandi)$|^\/utili\/(trasporti|rifiuti)$|^\/en\/transport$/;
 
 export async function POST(req: Request) {
   const { percorso } = (await req.json().catch(() => ({}))) as { percorso?: string };

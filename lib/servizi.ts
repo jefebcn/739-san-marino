@@ -58,7 +58,7 @@ export async function getLinee(): Promise<Linea[]> {
 export async function getRaccolta(): Promise<Raccolta[]> {
   const db = supabase();
   if (!db) return [];
-  const { data, error } = await db.from("raccolta_rifiuti").select("castello_id, zona, frazione, giorni, orario, note, da_verificare").order("zona");
+  const { data, error } = await db.from("raccolta_rifiuti").select("castello_id, zona, frazione, giorni, orario, note, da_verificare").neq("giorni", "{}").order("zona");
   if (error) {
     console.error("raccolta", error.message);
     return [];
