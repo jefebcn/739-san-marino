@@ -16,6 +16,7 @@ import { EtichetteScala, Scala } from "@/components/Quota";
 import { livello } from "@/lib/quota";
 import Tano, { POSA_DI_LIVELLO } from "@/components/Tano";
 import Notifiche from "@/components/Notifiche";
+import AvvisiPersonali from "@/components/AvvisiPersonali";
 import { conteggioBozze } from "@/modules/coda/api";
 import { conteggioRichieste, mieAttivita } from "@/modules/attivita/api";
 import { miePrenotazioni } from "@/modules/prenotazioni/api";
@@ -329,6 +330,7 @@ export default function Profilo({ castelli }: { castelli: Castello[] }) {
         </section>
 
         <Notifiche />
+        <AvvisiPersonali testo="Avvisi solo per te, per esempio quando un centro risponde a una tua prenotazione. Non sono il Bollettino." />
 
         {ruoli.redattore ? (
           <section className="flex flex-col gap-3" aria-labelledby="titolo-redazione">

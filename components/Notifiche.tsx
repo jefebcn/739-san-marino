@@ -2,28 +2,17 @@
 
 import { useEffect, useState } from "react";
 import { supabaseBrowser } from "@/lib/supabase/browser";
+import { CHIAVE_VAPID, chiaveBinaria, iPhoneNonInstallato, type StatoPush } from "@/lib/push";
 import { Icona } from "./Icona";
 
 // Notifiche dell'app installata (passo 1.6): solo con consenso esplicito, chiesto al momento giusto
 // (pagina del Bollettino, profilo, dopo il primo check-in), mai all'apertura. Al massimo una al giorno.
 
-const CHIAVE = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ?? "";
+const CHIAVE = CHIAVE_VAPID;
 const CHIESTO = "739-notifiche-chiesto";
 
 type Scelte = { bollettino: boolean; weekend: boolean; scadenze?: boolean };
-type Stato = "attesa" | "nonsupportato" | "installa" | "negato" | "pronto";
-
-function chiaveBinaria(base64: string) {
-  const pad = "=".repeat((4 - (base64.length % 4)) % 4);
-  const b = atob((base64 + pad).replace(/-/g, "+").replace(/_/g, "/"));
-  return Uint8Array.from(b, (c) => c.charCodeAt(0));
-}
-
-function iPhoneNonInstallato() {
-  const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
-  const installata = window.matchMedia("(display-mode: standalone)").matches || (navigator as Navigator & { standalone?: boolean }).standalone === true;
-  return ios && !installata;
-}
+type Stato = StatoPush;
 
 /** Lo stato delle notifiche su questo telefono e le funzioni per cambiarle */
 function useNotifiche() {
@@ -62,7 +51,9 @@ function useNotifiche() {
         const s = await reg.pushManager.getSubscription();
         if (s) {
           await supabaseBrowser().rpc("togli_notifiche", { p_endpoint: s.endpoint });
-          await s.unsubscribe();
+          // Se su questo telefono ci sono gli avvisi personali (0049), l'iscrizione resta per loro
+          const { data: avvisi } = await supabaseBrowser().rpc("avvisi_attivi", { p_endpoint: s.endpoint });
+          if (avvisi !== true) await s.unsubscribe();
         }
         setScelte(null);
         return;

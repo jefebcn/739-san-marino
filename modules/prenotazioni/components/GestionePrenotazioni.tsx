@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Cella, Cruscotto } from "@/components/Cruscotto";
+import AvvisiPersonali from "@/components/AvvisiPersonali";
 import { Icona } from "@/components/Icona";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import type { Orari } from "@/modules/attivita/api";
@@ -60,6 +61,8 @@ export default function GestionePrenotazioni({ luogo }: { luogo: string }) {
         <Cella titolo="Oggi" valore={g.oggi} unita={g.oggi === 1 ? "prenotazione" : "prenotazioni"} />
         <Cella titolo="Prossima" valore={prossima ? leggiOra(prossima.inizio) : "–"} unita={prossima ? (giornoDi(prossima.inizio) === giornoSM(0) ? "oggi" : leggiGiorno(prossima.inizio)) : "nessuna confermata"} nota={prossima ? `${prossima.risorsa}, ${prossima.nome ?? "SMR ID"}` : undefined} />
       </Cruscotto>
+
+      <AvvisiPersonali testo="Un avviso sul telefono per ogni richiesta nuova o disdetta, così non devi aprire 739 per controllare." />
 
       <div role="tablist" aria-label="Prenotazioni" className="grid grid-cols-2 gap-1 rounded-xl bg-superficie p-1">
         {(["agenda", "impostazioni"] as const).map((v) => (

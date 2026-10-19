@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import AvvisiPersonali from "@/components/AvvisiPersonali";
 import { Icona } from "@/components/Icona";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import Tano from "@/components/Tano";
@@ -97,6 +98,9 @@ export default function Prenota({ luogo, nome }: { luogo: string; nome: string }
           {r?.nome}, {leggiGiorno(fatto.slot.inizio)} dalle <span className="font-mono">{leggiOra(fatto.slot.inizio)}</span> alle <span className="font-mono">{leggiOra(fatto.slot.fine)}</span>.{" "}
           {confermata ? "Ti aspettano: si paga sul posto." : `${nome} la conferma il prima possibile: lo vedi in «Le mie prenotazioni».`}
         </p>
+        <div className="w-full">
+          <AvvisiPersonali compatto testo={confermata ? "Ti avvisiamo sul telefono se il centro deve annullarla." : "Ti avvisiamo sul telefono appena il centro risponde."} />
+        </div>
         <div className="flex w-full flex-col gap-2 sm:flex-row">
           <PrimaryButton href="/profile/prenotazioni" pieno>Le mie prenotazioni</PrimaryButton>
           <PrimaryButton variante="interno" href={`/luoghi/${luogo}`} pieno>Torna alla scheda</PrimaryButton>

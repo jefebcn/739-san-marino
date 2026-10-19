@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Icona } from "@/components/Icona";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import { Vuoto } from "@/components/Tano";
+import AvvisiPersonali from "@/components/AvvisiPersonali";
 import { useSessione } from "@/modules/core/store";
 import { annullaPrenotazione, leggiGiorno, leggiOra, miePrenotazioni, STATI, type MiaPrenotazione } from "../api";
 
@@ -99,6 +100,7 @@ export default function MiePrenotazioni() {
   return (
     <div className="flex flex-col gap-6">
       {errore ? <p role="alert" className="rounded-xl bg-segnale/12 px-4 py-3 text-sm text-segnale">{errore}</p> : null}
+      <AvvisiPersonali testo="Ti avvisiamo sul telefono quando un centro conferma, non accetta o annulla una tua prenotazione." />
       <section className="flex flex-col gap-3" aria-labelledby="t-prossime">
         <h2 id="t-prossime" className="text-[19px] font-semibold tracking-tight">In arrivo</h2>
         {prossime.length ? (

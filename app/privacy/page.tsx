@@ -34,6 +34,8 @@ Il titolare ha sede a Malta, nell'Unione europea: la regola di riferimento è il
 
 **Notifiche.** Se le accendi salviamo l'indirizzo tecnico che il tuo telefono ci dà per riceverle, le notifiche scelte (Bollettino, Weekend) e il giorno dell'ultimo invio. Se sei entrato con l'SMR ID colleghiamo l'iscrizione al tuo account. Spegnendo entrambi gli interruttori l'iscrizione viene cancellata.
 
+**Avvisi personali.** Se li accendi con l'SMR ID salviamo l'indirizzo tecnico del telefono collegato al tuo account e, per ogni avviso, il titolo, il testo, il link e quando è partito: per esempio «Prenotazione confermata» quando un centro risponde, o «Nuova richiesta di prenotazione» se gestisci una scheda. Li mandiamo solo per le cose tue. Spegnendoli il telefono non li riceve più; gli avvisi in coda valgono un giorno.
+
 **Titolari di attività e associazioni.** Se chiedi di gestire la scheda della tua attività o della tua associazione, o ne proponi una nuova, salviamo chi sei e che ruolo hai, un telefono per la verifica e la nota che scrivi: li vede solo la redazione di 739 e il telefono non compare nella scheda. Quello che scrivi nella scheda (descrizione, contatti, orari, foto) invece è pubblico.
 
 **Offerte di lavoro.** Le offerte sono pubbliche e contengono i contatti per candidarsi scelti dall'attività. Per sapere chi le ha pubblicate le colleghiamo all'SMR ID di chi gestisce la scheda; questo lo vede solo la redazione. Se ti candidi lo fai direttamente con l'attività (email, sito o telefono): 739 non riceve né conserva le candidature.
@@ -67,7 +69,7 @@ Meteo (Open-Meteo), articoli di Libertas e luoghi di OpenStreetMap li legge il n
 ## Per quanto tempo
 
 - Account, check-in, partite, metri, prenotazioni e richieste delle attività: finché tieni l'SMR ID. Se ci chiedi di cancellarlo, cancelliamo anche i dati collegati, tranne i totali anonimi dei castelli.
-- Iscrizioni alle notifiche: finché non le spegni o il telefono smette di accettarle.
+- Iscrizioni alle notifiche e agli avvisi personali: finché non le spegni o il telefono smette di accettarle; gli avvisi si mandano entro un giorno.
 - Impronte anti abuso: restano con la proposta o la segnalazione e contano solo nel giorno in cui sono create.
 
 ## Cookie e memoria del telefono
@@ -101,5 +103,5 @@ Se cambiamo questa pagina lo scriviamo qui in cima con la data. Per i cambiament
 `;
 
 export default function Privacy() {
-  return <PaginaLegale titolo="Privacy" aggiornata="16 ottobre 2026" testo={TESTO} />;
+  return <PaginaLegale titolo="Privacy" aggiornata="19 ottobre 2026" testo={TESTO} />;
 }

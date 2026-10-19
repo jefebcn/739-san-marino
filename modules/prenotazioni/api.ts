@@ -63,9 +63,16 @@ export async function disponibilita(luogo: string, giorno: string) {
   return { slot: (data ?? []) as Slot[], errore: messaggio(error) };
 }
 
+/** Avvisa l'altra parte sul telefono (avvisi personali, migrazione 0049); se non va, la prenotazione resta valida */
+async function avvisa(id: string) {
+  await db().rpc("avvisa_prenotazione", { p_id: id }).then(() => undefined, () => undefined);
+}
+
 export async function prenota(risorsa: string, inizio: string, telefono: string, nota: string) {
   const { data, error } = await db().rpc("prenota", { p_risorsa: risorsa, p_inizio: inizio, p_telefono: telefono || null, p_nota: nota || null });
-  return { esito: (data as { id: string; stato: StatoPrenotazione } | null) ?? null, errore: messaggio(error) };
+  const esito = (data as { id: string; stato: StatoPrenotazione } | null) ?? null;
+  if (esito) await avvisa(esito.id);
+  return { esito, errore: messaggio(error) };
 }
 
 export async function miePrenotazioni() {
@@ -75,6 +82,7 @@ export async function miePrenotazioni() {
 
 export async function annullaPrenotazione(id: string) {
   const { error } = await db().rpc("annulla_prenotazione", { p_id: id });
+  if (!error) await avvisa(id);
   return { errore: messaggio(error) };
 }
 
@@ -103,6 +111,7 @@ export async function prenotazioniCentro(luogo: string, da: string, giorni = 7) 
 
 export async function decidi(id: string, stato: "confermata" | "rifiutata" | "annullata" | "assente", nota = "") {
   const { error } = await db().rpc("decidi_prenotazione", { p_id: id, p_stato: stato, p_nota: nota || null });
+  if (!error && stato !== "assente") await avvisa(id);
   return { errore: messaggio(error) };
 }
 
