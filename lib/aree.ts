@@ -100,7 +100,7 @@ export const AREE: Area[] = [
       { slug: "associazioni", nome: "Associazioni", descrizione: "Culturali, di volontariato, sportive, circoli e associazioni di categoria.", icona: "gruppo", href: "/comunita/associazioni", categorie: ["associazione"], parole: "associazioni associazione club circolo circoli fondazione sindacati sindacato ordine" },
       { slug: "volontariato", nome: "Volontariato", descrizione: "Le associazioni dove dare una mano.", icona: "associazioni", href: "/comunita/volontariato", categorie: ["associazione"], tipi: ["volontariato"], parole: "volontariato volontari aiutare onlus" },
       { slug: "chiese", nome: "Chiese", descrizione: "Le chiese del territorio. Gli orari delle messe arriveranno dalle parrocchie.", icona: "chiese", href: "/comunita/chiese", categorie: ["chiesa"], parole: "chiese chiesa messe messa parrocchia basilica pieve santuario culto" },
-      { slug: "bacheca", nome: "Bacheca", descrizione: "Annunci e iniziative di chi vive qui.", icona: "bacheca", parole: "bacheca annunci" },
+      { slug: "bacheca", nome: "Bacheca", descrizione: "Annunci e iniziative di chi vive qui.", icona: "bacheca", href: "/comunita/bacheca", parole: "bacheca annunci cerco offro regalo perso trovato smarrito ritrovato chiavi passaggio iniziative raccolta" },
     ],
   },
   {

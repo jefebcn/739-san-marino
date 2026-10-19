@@ -19,6 +19,7 @@ import Notifiche from "@/components/Notifiche";
 import { conteggioBozze } from "@/modules/coda/api";
 import { conteggioRichieste, mieAttivita } from "@/modules/attivita/api";
 import { miePrenotazioni } from "@/modules/prenotazioni/api";
+import { conteggioBacheca, mieiAnnunci } from "@/modules/bacheca/api";
 import { mieiRuoli, NESSUN_RUOLO, type Ruoli } from "../ruoli";
 import { mieiMetri, type Movimento } from "@/modules/eventi/api";
 
@@ -187,6 +188,16 @@ export default function Profilo({ castelli }: { castelli: Castello[] }) {
       if (r.attivita.length) setAttivita({ gestite: r.attivita.filter((a) => a.stato === "approvata").length, totale: r.attivita.length });
     });
   }, [idUtente]);
+  // Bacheca (0048): il link compare a chi ha scritto annunci; alla redazione il numero da vedere
+  const [annunci, setAnnunci] = useState<number | null>(null);
+  const [bachecaDaVedere, setBachecaDaVedere] = useState<number | null>(null);
+  useEffect(() => {
+    if (!idUtente) return;
+    mieiAnnunci().then((r) => {
+      if (r.annunci.length) setAnnunci(r.annunci.filter((a) => a.stato === "pubblicato" || a.stato === "in_attesa").length);
+    });
+    conteggioBacheca().then(setBachecaDaVedere);
+  }, [idUtente]);
   // Prenotazioni con 739 (0046): il link compare a chi ne ha, con quante sono in arrivo
   const [prenotazioni, setPrenotazioni] = useState<number | null>(null);
   useEffect(() => {
@@ -224,7 +235,7 @@ export default function Profilo({ castelli }: { castelli: Castello[] }) {
   const posizione = castello ? classifica.findIndex((c) => c.id === castello.id) + 1 || null : null;
   const nomeCorrente = nome ?? profilo.nome ?? "";
   const primoNome = profilo.nome?.trim().split(/\s+/)[0];
-  const tueCose = prenotazioni !== null || !!attivita || ruoli.organizzatore || ruoli.redattore;
+  const tueCose = prenotazioni !== null || annunci !== null || !!attivita || ruoli.organizzatore || ruoli.redattore;
 
   const salvaNome = async () => {
     const pulito = nomeCorrente.trim().slice(0, 60) || null;
@@ -275,6 +286,7 @@ export default function Profilo({ castelli }: { castelli: Castello[] }) {
             <Titolo id="titolo-cose">Le tue cose</Titolo>
             <ul className="divide-y divide-linea overflow-hidden rounded-2xl bg-superficie">
               {prenotazioni !== null ? <Riga href="/profile/prenotazioni" icona="calendario" titolo="Le mie prenotazioni" nota={prenotazioni ? (prenotazioni === 1 ? "1 in arrivo" : `${prenotazioni} in arrivo`) : "Niente in arrivo"} /> : null}
+              {annunci !== null ? <Riga href="/profile/bacheca" icona="bacheca" titolo="I miei annunci" nota={annunci ? (annunci === 1 ? "1 attivo in bacheca" : `${annunci} attivi in bacheca`) : "Nessuno attivo"} /> : null}
               {attivita ? <Riga href="/profile/attivita" icona="negozi" titolo="Le mie attività" nota={attivita.gestite ? (attivita.gestite === 1 ? "1 scheda che gestisci" : `${attivita.gestite} schede che gestisci`) : "Richiesta in verifica"} /> : null}
               {ruoli.organizzatore || ruoli.redattore ? <Riga href="/profile/eventi" icona="eventi" titolo="I miei eventi" nota="Pubblica e modifica i tuoi eventi" /> : null}
             </ul>
@@ -324,6 +336,7 @@ export default function Profilo({ castelli }: { castelli: Castello[] }) {
             <ul className="divide-y divide-linea overflow-hidden rounded-2xl bg-superficie">
               <Riga href="/admin/coda" icona="coda" titolo="Coda delle bozze" nota="Bozze e segnalazioni" numero={daVedere} />
               <Riga href="/admin/attivita" icona="negozi" titolo="Attività" nota="Titolari, schede nuove, offerte di lavoro" numero={richieste} />
+              <Riga href="/admin/bacheca" icona="bacheca" titolo="Bacheca" nota="Annunci da leggere prima che escano" numero={bachecaDaVedere} />
               <Riga href="/admin/contenuti" icona="storie" titolo="Contenuti" nota="Bollettino, rubriche e storie" />
               <Riga href="/admin/scadenze" icona="calendario" titolo="Scadenze e bandi" nota="Sempre con la fonte ufficiale" />
               <Riga href="/admin/servizi" icona="trasporti" titolo="Orari e raccolta" nota="Corse di funivia e bus, raccolta dei rifiuti" />

@@ -21,6 +21,7 @@ export default async function Comunita() {
         giunte: giunte ? <>Sede e contatti delle <b className="font-mono font-medium text-testo">{giunte}</b> Giunte</> : "Sede e contatti in arrivo",
         associazioni: conta(associazioni.length, "associazione", "associazioni"),
         volontariato: conta(volontariato, "associazione di volontariato", "associazioni di volontariato"),
+        bacheca: "Cerco, offro, regalo, perso e trovato",
         chiese: chiese ? <><b className="font-mono font-medium text-testo">{chiese}</b> chiese e luoghi di culto</> : "Arrivano da OpenStreetMap",
       }}
     />
