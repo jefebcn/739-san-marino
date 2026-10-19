@@ -1,12 +1,13 @@
 import PaginaArea from "@/components/aree/PaginaArea";
 import { getClassifica, getLuoghi } from "@/lib/data";
+import { getChiamate } from "@/modules/volontari/dati";
 
 export const revalidate = 300;
 
 export const metadata = { title: "Comunità · 739 San Marino" };
 
 export default async function Comunita() {
-  const [classifica, luoghi] = await Promise.all([getClassifica(), getLuoghi()]);
+  const [classifica, luoghi, chiamate] = await Promise.all([getClassifica(), getLuoghi(), getChiamate()]);
   const vetta = classifica[0];
   const chiese = luoghi.filter((l) => l.categoria === "chiesa").length;
   const associazioni = luoghi.filter((l) => l.categoria === "associazione");
@@ -21,6 +22,7 @@ export default async function Comunita() {
         giunte: giunte ? <>Sede e contatti delle <b className="font-mono font-medium text-testo">{giunte}</b> Giunte</> : "Sede e contatti in arrivo",
         associazioni: conta(associazioni.length, "associazione", "associazioni"),
         volontariato: conta(volontariato, "associazione di volontariato", "associazioni di volontariato"),
+        volontari: chiamate.length ? <><b className="font-mono font-medium text-testo">{chiamate.length}</b> {chiamate.length === 1 ? "turno aperto" : "turni aperti"}</> : "Le chiamate arrivano dalle associazioni",
         bacheca: "Cerco, offro, regalo, perso e trovato",
         chiese: chiese ? <><b className="font-mono font-medium text-testo">{chiese}</b> chiese e luoghi di culto</> : "Arrivano da OpenStreetMap",
       }}

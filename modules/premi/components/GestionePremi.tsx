@@ -203,7 +203,7 @@ function ModuloPremio({ luogo, premio, onFine }: { luogo: string; premio: Premio
       <label className="flex flex-col gap-1.5 text-[14px] font-medium">Il premio
         <input required value={titolo} onChange={(e) => setTitolo(e.target.value)} minLength={3} maxLength={60} placeholder="Caffè offerto" className={`h-12 ${CAMPO}`} />
       </label>
-      <label className="flex flex-col gap-1.5 text-[14px] font-medium">Come funziona <span className="font-normal text-testo-2">(facoltativo)</span>
+      <label className="flex flex-col gap-1.5 text-[14px] font-medium"><span>Come funziona <span className="font-normal text-testo-2">(facoltativo)</span></span>
         <textarea value={descrizione} onChange={(e) => setDescrizione(e.target.value)} maxLength={240} rows={2} placeholder="Al banco, con qualsiasi consumazione" className={`py-3 ${CAMPO}`} />
       </label>
       <fieldset className="flex flex-col gap-2">
@@ -232,7 +232,7 @@ function ModuloPremio({ luogo, premio, onFine }: { luogo: string; premio: Premio
         <label className="flex flex-col gap-1.5 text-[14px] font-medium">Dal
           <input type="date" required value={dal} onChange={(e) => setDal(e.target.value)} className={`h-12 ${CAMPO}`} />
         </label>
-        <label className="flex flex-col gap-1.5 text-[14px] font-medium">Al <span className="font-normal text-testo-2">(facoltativo)</span>
+        <label className="flex flex-col gap-1.5 text-[14px] font-medium"><span>Al <span className="font-normal text-testo-2">(facoltativo)</span></span>
           <input type="date" value={al} min={dal} onChange={(e) => setAl(e.target.value)} className={`h-12 ${CAMPO}`} />
         </label>
       </div>

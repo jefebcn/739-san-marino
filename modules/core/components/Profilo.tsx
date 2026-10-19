@@ -338,7 +338,7 @@ export default function Profilo({ castelli }: { castelli: Castello[] }) {
         </section>
 
         <Notifiche />
-        <AvvisiPersonali testo="Avvisi solo per te, per esempio quando un centro risponde a una tua prenotazione. Non sono il Bollettino." />
+        <AvvisiPersonali testo="Avvisi solo per te: prenotazioni, premi ritirati, turni da volontario. Non sono il Bollettino." />
 
         {ruoli.redattore ? (
           <section className="flex flex-col gap-3" aria-labelledby="titolo-redazione">

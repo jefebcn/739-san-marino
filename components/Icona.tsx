@@ -55,6 +55,7 @@ const ICONE = {
   natura: "Tree",
   chiese: "Church",
   associazioni: "HandHeart",
+  volontari: "Handshake",
   gruppo: "UsersThree",
   animali: "PawPrint",
   coppa: "Trophy",

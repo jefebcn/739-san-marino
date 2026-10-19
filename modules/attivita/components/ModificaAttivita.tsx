@@ -196,6 +196,16 @@ export default function ModificaAttivita({ id }: { id: string }) {
       </span>
       <Icona nome="avanti" size={18} />
     </Link>
+    {luogo.categoria === "associazione" ? (
+      <Link href={`/profile/attivita/${id}/volontari`} className="flex items-center gap-3.5 rounded-2xl bg-superficie p-4 transition-colors hover:bg-superficie-2">
+        <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-fondo text-testo"><Icona nome="volontari" size={22} /></span>
+        <span className="flex min-w-0 flex-1 flex-col">
+          <span className="text-[16px] font-semibold">Volontari</span>
+          <span className="text-[13px] text-testo-2">Chiedi una mano per un turno: chi viene si iscrive con l&apos;SMR ID e riceve i metri.</span>
+        </span>
+        <Icona nome="avanti" size={18} />
+      </Link>
+    ) : null}
     <Link href={`/profile/attivita/${id}/premi`} className="flex items-center gap-3.5 rounded-2xl bg-superficie p-4 transition-colors hover:bg-superficie-2">
       <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-fondo text-testo"><Icona nome="coppa" size={22} /></span>
       <span className="flex min-w-0 flex-1 flex-col">
