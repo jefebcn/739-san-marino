@@ -44,18 +44,19 @@ export function fineGiornata(adesso: Date = new Date()) {
 }
 
 export type RubricaDelGiorno =
-  | { tipo: "castello_settimana" | "weekend" | "partite_settimana" }
+  | { tipo: "castello_settimana" | "come_si_fa" | "weekend" | "partite_settimana" }
   | { tipo: "vetta_mese"; giorno: string };
 
 /**
  * Le rubriche del piano editoriale che toccano oggi (ora di San Marino): lunedì il castello della settimana,
- * giovedì il weekend dalla vetta, domenica dalle 18 le partite della settimana, l'ultimo giorno del mese
+ * mercoledì come si fa, giovedì il weekend dalla vetta, domenica dalle 18 le partite della settimana, l'ultimo giorno del mese
  * e il primo del mese dopo la vetta del mese (`giorno` è un giorno del mese di cui parlare).
  */
 export function rubricheDelGiorno(adesso: Date = new Date()): RubricaDelGiorno[] {
   const { dow, minuti, data } = adessoSM(adesso);
   const r: RubricaDelGiorno[] = [];
   if (dow === 1) r.push({ tipo: "castello_settimana" });
+  if (dow === 3) r.push({ tipo: "come_si_fa" });
   if (dow === 4) r.push({ tipo: "weekend" });
   if (dow === 7 && minuti >= 18 * 60) r.push({ tipo: "partite_settimana" });
   if (piu(data, 1).endsWith("-01")) r.push({ tipo: "vetta_mese", giorno: data });

@@ -18,7 +18,7 @@ export default async function RubricheOggi({ castelli, adesso = new Date() }: { 
   const schede = (
     await Promise.all(
       rubricheDelGiorno(adesso).map(async (r): Promise<Scheda | null> => {
-        if (r.tipo === "castello_settimana" || r.tipo === "weekend") {
+        if (r.tipo === "castello_settimana" || r.tipo === "come_si_fa" || r.tipo === "weekend") {
           const c = await getUltimo(r.tipo, 1);
           if (!c?.pubblicato_il || chiaveGiorno(c.pubblicato_il) !== oggi) return null;
           return { chiave: r.tipo, rubrica: TIPI[r.tipo].nome, titolo: c.titolo, riga: c.sommario, href: `/storie/${c.slug}` };
