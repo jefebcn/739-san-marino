@@ -237,3 +237,92 @@ export function termineTrasmissione(d: Pick<Documento, "data" | "ddt">) {
   while (fine.getUTCDay() === 0 || fine.getUTCDay() === 6) fine.setUTCDate(fine.getUTCDate() + 1);
   return fine.toISOString().slice(0, 10);
 }
+
+/* ———— Fase 2: HUB-SM (migrazione 0053) ———— */
+
+export type HubStato = {
+  stato: "scollegato" | "da_verificare" | "ok" | "errore"; ambiente?: "test" | "produzione"; messaggio?: string | null;
+  scade?: string | null; verificato_il?: string | null; ultime_ricevute_il?: string | null; in_coda?: number;
+};
+export type VoceCoda = { id: number; azione: string; stato: "attesa" | "fatto" | "errore"; tentativi: number; prossimo: string; codice: number | null; messaggio: string | null; creato_il: string; fatto_il: string | null };
+export type RicevutaHub = { id: number; nome: string; tipo: "consegna" | "scarto" | "altro"; xml: string; ricevuta_il: string };
+export type FilePartito = { id: number; nome: string; ambiente: string; hash: string | null; inviato_il: string | null; creato_il: string };
+export type Passiva = {
+  id: string; ambiente: string; nome: string; xml: string | null; td: string | null; cedente: string | null; cedente_cod_oe: string | null;
+  numero: string | null; data: string | null; totale: number | null; confermata_il: string | null; stato: "nuova" | "vista" | "registrata" | "rettifica";
+  nota: string | null; scaricata_il: string;
+};
+
+export async function hubStato(azienda: string) {
+  const { data, error } = await db().rpc("neon_hub_stato", { p_azienda: azienda });
+  return { hub: (data as HubStato | null) ?? null, errore: error?.code === "PGRST202" ? null : messaggio(error), attivo: error?.code !== "PGRST202" };
+}
+
+export async function hubCollega(azienda: string, token: string, ambiente: "test" | "produzione") {
+  const { error } = await db().rpc("neon_hub_collega", { p_azienda: azienda, p_token: token, p_ambiente: ambiente });
+  return { errore: messaggio(error) };
+}
+
+export async function hubScollega(azienda: string) {
+  const { error } = await db().rpc("neon_hub_scollega", { p_azienda: azienda });
+  return { errore: messaggio(error) };
+}
+
+export async function hubInvia(documento: string, xml: string) {
+  const { error } = await db().rpc("neon_hub_invia", { p_documento: documento, p_xml: xml });
+  return { errore: messaggio(error) };
+}
+
+export async function hubControlla(documento: string) {
+  const { error } = await db().rpc("neon_hub_controlla", { p_documento: documento });
+  return { errore: messaggio(error) };
+}
+
+export async function hubCercaRicevute(azienda: string) {
+  const { error } = await db().rpc("neon_hub_cerca_ricevute", { p_azienda: azienda });
+  return { errore: messaggio(error) };
+}
+
+/** Le richieste all'HUB-SM di un documento, le più recenti prima */
+export async function codaDocumento(documento: string) {
+  const { data } = await db().from("neon_hub_coda").select("id, azione, stato, tentativi, prossimo, codice, messaggio, creato_il, fatto_il")
+    .eq("documento_id", documento).order("id", { ascending: false }).limit(20);
+  return (data ?? []) as VoceCoda[];
+}
+
+export async function ricevuteDocumento(documento: string) {
+  const { data } = await db().from("neon_hub_ricevute").select("id, nome, tipo, xml, ricevuta_il").eq("documento_id", documento).order("id", { ascending: false });
+  return (data ?? []) as RicevutaHub[];
+}
+
+export async function filePartiti(documento: string) {
+  const { data } = await db().from("neon_hub_file").select("id, nome, ambiente, hash, inviato_il, creato_il").eq("documento_id", documento).order("id", { ascending: false });
+  return (data ?? []) as FilePartito[];
+}
+
+export async function passive(azienda: string) {
+  const { data, error } = await db().from("neon_passive")
+    .select("id, ambiente, nome, xml, td, cedente, cedente_cod_oe, numero, data, totale, confermata_il, stato, nota, scaricata_il")
+    .eq("azienda_id", azienda).order("scaricata_il", { ascending: false }).limit(500);
+  return { passive: (data ?? []) as Passiva[], errore: error?.code === "42P01" ? null : messaggio(error) };
+}
+
+export async function passivaSegna(id: string, stato: Passiva["stato"], nota?: string) {
+  const { error } = await db().rpc("neon_passiva_segna", { p_id: id, p_stato: stato, p_nota: nota ?? null });
+  return { errore: messaggio(error) };
+}
+
+/** Fa scaricare un testo come file */
+export function scaricaTesto(nome: string, testo: string, tipo = "application/xml") {
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([testo], { type: tipo }));
+  a.download = nome;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+/** Dopo uno scarto: riprende i dati di azienda e cliente corretti nelle anagrafiche */
+export async function aggiornaScartata(documento: string) {
+  const { error } = await db().rpc("neon_aggiorna_scartata", { p_documento: documento });
+  return { errore: messaggio(error) };
+}

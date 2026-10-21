@@ -1,6 +1,7 @@
 "use client";
 
 import { puoGestire } from "../api";
+import CollegamentoHub from "./CollegamentoHub";
 import { ModuloAzienda, Persone } from "./DatiAzienda";
 import { useAzienda } from "./Guscio";
 
@@ -13,7 +14,10 @@ export default function PaginaDatiAzienda() {
         <h2 id="t-dati" className="text-[19px] font-semibold tracking-tight">I dati in fattura</h2>
         {puoGestire(az.ruolo) ? <ModuloAzienda id={az.id} onSalvata={() => undefined} /> : <p className="text-[15px] text-testo-2">Li cambiano il titolare e l&apos;amministrazione.</p>}
       </section>
-      <Persone azienda={az.id} ruolo={az.ruolo} />
+      <div className="flex flex-col gap-8">
+        <CollegamentoHub />
+        <Persone azienda={az.id} ruolo={az.ruolo} />
+      </div>
     </div>
   );
 }

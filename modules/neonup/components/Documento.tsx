@@ -7,13 +7,13 @@ import { Icona } from "@/components/Icona";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import { CAMPO } from "@/modules/attivita/components/stile";
 import {
-  FE_STATI, PAGAMENTI, TIPI, TIPI_MERCE, annulla, articoli as leggiArticoli, azienda as leggiAzienda, data, documento as leggi, documenti as leggiDocumenti,
-  emetti, esitoFattura, fileFattura, incasso, nuovoDocumento, oggiSM, perFe, puoVendere, salvaBozza, soggetti as leggiSoggetti, soldi,
-  termineTrasmissione, titoloDocumento, totaleRiga,
+  PAGAMENTI, TIPI, TIPI_MERCE, annulla, articoli as leggiArticoli, azienda as leggiAzienda, data, documento as leggi, documenti as leggiDocumenti,
+  emetti, incasso, nuovoDocumento, oggiSM, puoVendere, salvaBozza, soggetti as leggiSoggetti, soldi,
+  titoloDocumento, totaleRiga,
   type Articolo, type Azienda, type Ddt, type Documento as Doc, type Riga, type Soggetto, type TipoDocumento, type VoceDocumento,
 } from "../api";
-import { problemiFe, xmlFeRsm } from "../fe-rsm";
 import { Campo } from "./DatiAzienda";
+import PannelloFe from "./PannelloFe";
 import { ERRORE, useAzienda } from "./Guscio";
 
 const RIGA_VUOTA: Riga = { descrizione: "", quantita: 1, prezzo: 0, sconto: 0, tipo_merce: null };
@@ -285,7 +285,6 @@ function Emesso({ doc, onCambio }: { doc: Doc; onCambio: () => void }) {
   const router = useRouter();
   const [collegata, setCollegata] = useState<Doc | null>(null);
   const [errore, setErrore] = useState<string | null>(null);
-  const [nota, setNota] = useState("");
   const vende = puoVendere(az.ruolo);
   const fiscale = TIPI[doc.tipo].fiscale;
   const ced = doc.cedente!, ces = doc.cessionario!;
@@ -297,30 +296,6 @@ function Emesso({ doc, onCambio }: { doc: Doc; onCambio: () => void }) {
     for (const r of doc.righe) m.set(r.tipo_merce ?? null, Math.round(((m.get(r.tipo_merce ?? null) ?? 0) + Number(r.totale ?? 0)) * 100) / 100);
     return [...m];
   }, [doc.righe]);
-
-  async function scaricaXml() {
-    setErrore(null);
-    const f = await fileFattura(doc.id);
-    if (f.errore || !f.nome) return setErrore(f.errore ?? "Non è stato possibile preparare il file.");
-    const fe = perFe(doc, collegata);
-    if (!fe) return setErrore("Mancano dati del documento.");
-    const problemi = problemiFe(fe);
-    if (problemi.length) return setErrore(problemi.join(" "));
-    const blob = new Blob([xmlFeRsm(fe, f.nome)], { type: "application/xml" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = `${f.nome}.xml`;
-    a.click();
-    URL.revokeObjectURL(a.href);
-    onCambio();
-  }
-
-  async function esito(stato: string) {
-    const r = await esitoFattura(doc.id, stato, stato === "scartata" ? nota : null);
-    if (r.errore) return setErrore(r.errore);
-    setNota("");
-    onCambio();
-  }
 
   async function segnaIncasso(si: boolean) {
     const r = await incasso(doc.id, si ? oggiSM() : null);
@@ -345,7 +320,6 @@ function Emesso({ doc, onCambio }: { doc: Doc; onCambio: () => void }) {
     onCambio();
   }
 
-  const termine = doc.elettronica ? termineTrasmissione(doc) : null;
   return (
     <div className="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
       {/* Il foglio: quello che si stampa */}
@@ -414,34 +388,7 @@ function Emesso({ doc, onCambio }: { doc: Doc; onCambio: () => void }) {
       <aside className="no-stampa flex flex-col gap-4">
         <PrimaryButton variante="secondario" onClick={() => window.print()} icona={<Icona nome="stampa" />}>Stampa o salva in PDF</PrimaryButton>
 
-        {doc.elettronica ? (
-          <section className="flex flex-col gap-3 rounded-2xl bg-[#09090B] p-5 text-white" aria-labelledby="t-fe">
-            <h3 id="t-fe" className="text-[17px] font-semibold">Fattura elettronica</h3>
-            <p className="text-[14px] text-zinc-300">{FE_STATI[doc.fe_stato]}{doc.fe_file ? <>, file <span className="font-mono">{doc.fe_file}.xml</span></> : null}</p>
-            {doc.fe_nota ? <p className="text-[13px] text-[#F28B74]">{doc.fe_nota}</p> : null}
-            {termine && doc.fe_stato !== "consegnata" ? <p className="text-[13px] text-zinc-400">Da trasmettere entro il {data(termine)} circa (fine del secondo mese dopo {doc.ddt.length ? "il DDT" : "la fattura"}; se è festivo, il primo giorno lavorativo dopo).</p> : null}
-            {vende && doc.fe_stato !== "consegnata" ? (
-              <>
-                <button type="button" onClick={scaricaXml} className="taglio-piccolo flex h-11 w-fit items-center gap-1.5 bg-white px-4 text-[14px] font-semibold text-[#09090B]">
-                  <Icona nome="scarica" size={16} /> {doc.fe_stato === "scartata" ? "Prepara un file nuovo" : "Scarica il file XML"}
-                </button>
-                <p className="text-[13px] leading-relaxed text-zinc-400">Caricalo su TribWEB, «Upload File FE-RSM». L&apos;invio diretto all&apos;HUB-SM da NeonUp arriverà con il tuo TokenFE.</p>
-                {doc.fe_file ? (
-                  <div className="flex flex-col gap-2">
-                    <div className="flex flex-wrap gap-2">
-                      {doc.fe_stato !== "inviata" ? <button type="button" onClick={() => esito("inviata")} className="h-9 rounded-xl bg-white/10 px-3 text-[13px] font-medium hover:bg-white/15">L&apos;ho caricata</button> : null}
-                      <button type="button" onClick={() => esito("consegnata")} className="h-9 rounded-xl bg-white/10 px-3 text-[13px] font-medium hover:bg-white/15">Consegnata</button>
-                    </div>
-                    <div className="flex gap-2">
-                      <input value={nota} onChange={(e) => setNota(e.target.value)} maxLength={500} placeholder="Motivo dello scarto" aria-label="Motivo dello scarto" className="h-9 min-w-0 flex-1 rounded-xl bg-white/10 px-3 text-[13px] text-white placeholder:text-zinc-500" />
-                      <button type="button" onClick={() => esito("scartata")} className="h-9 rounded-xl bg-white/10 px-3 text-[13px] font-medium text-[#F28B74] hover:bg-white/15">Scartata</button>
-                    </div>
-                  </div>
-                ) : null}
-              </>
-            ) : null}
-          </section>
-        ) : null}
+        {doc.elettronica ? <PannelloFe doc={doc} collegata={collegata} onCambio={onCambio} /> : null}
 
         {vende && (doc.tipo === "fattura" || doc.tipo === "acconto" || doc.tipo === "nota_debito") ? (
           <section className="flex flex-col gap-2 rounded-2xl bg-superficie p-4">

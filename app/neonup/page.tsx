@@ -6,7 +6,7 @@ import Ingresso from "@/modules/neonup/components/Ingresso";
 
 export const metadata = metadatiCondivisione({
   titolo: "NeonUp, il gestionale per le aziende di San Marino",
-  descrizione: "Clienti, articoli, preventivi, ordini, DDT, fatture e note di credito, con il file XML della fattura elettronica interna di San Marino (FE-RSM) pronto per TribWEB. Dentro 739, con l'SMR ID.",
+  descrizione: "Clienti, articoli, preventivi, ordini, DDT, fatture e note di credito, con la fattura elettronica interna di San Marino (FE-RSM) mandata all'HUB-SM e le fatture dei fornitori ricevute. Dentro 739, con l'SMR ID.",
   percorso: "/neonup",
 });
 
@@ -14,13 +14,13 @@ const OGGI = [
   { titolo: "Documenti di vendita", testo: "Preventivi, ordini, DDT, fatture, acconti, note di credito e di debito, numerati per anno. Un preventivo diventa ordine, DDT o fattura con un tocco." },
   { titolo: "Fattura elettronica interna", testo: "Il file XML secondo le regole dell'Ufficio Tributario: tipo merce su ogni riga, DDT, natura N4, nome del file giusto, un nome nuovo dopo uno scarto. Controllato sullo schema ufficiale." },
   { titolo: "Clienti, fornitori e articoli", testo: "Con il codice operatore economico, il pagamento di solito, il prezzo e il tipo merce: le righe si riempiono da sole." },
+  { titolo: "Collegata all'HUB-SM", testo: "Con il TokenFE dell'azienda la fattura parte da NeonUp, l'esito e le ricevute arrivano da soli, e le fatture dei fornitori sammarinesi si scaricano ogni 3 ore. Si prova prima nell'ambiente di test." },
   { titolo: "Incassi e scadenze", testo: "Cosa è da incassare, cosa è scaduto, le fatture elettroniche ancora da inviare con il termine indicativo." },
   { titolo: "Chi ci lavora", testo: "Titolare, amministrazione, vendite, solo lettura: ognuno entra con il suo SMR ID." },
   { titolo: "Stampa e PDF", testo: "Ogni documento si stampa o si salva in PDF, anche le fatture su carta per chi non ha ancora la fattura elettronica." },
 ];
 
 const DOPO = [
-  "Invio diretto all'HUB-SM e ricezione delle fatture dei fornitori, con il tuo TokenFE",
   "Magazzino: giacenze, carichi e scarichi dai documenti",
   "Contabilità: prima nota e scadenzario",
   "Vendita al banco dal tablet",
@@ -56,8 +56,8 @@ export default function PaginaNeonUp() {
             <ol className="flex list-decimal flex-col gap-2 pl-5 text-[15px] leading-relaxed text-zinc-300">
               <li>Nei dati dell&apos;azienda scrivi il codice operatore economico e la data di inizio fissata su TribWEB.</li>
               <li>Emetti la fattura a un cliente sammarinese con il suo codice operatore.</li>
-              <li>Scarica il file XML e caricalo su TribWEB, «Upload File FE-RSM».</li>
-              <li>Segna l&apos;esito: consegnata, o scartata con il motivo (NeonUp prepara un file con un nome nuovo).</li>
+              <li>Se l&apos;azienda è collegata all&apos;HUB-SM con il TokenFE, tocca «Manda all&apos;HUB-SM»: l&apos;esito e la ricevuta arrivano da soli.</li>
+              <li>Se non è collegata, scarica il file XML, caricalo su TribWEB («Upload File FE-RSM») e segna l&apos;esito a mano. Dopo uno scarto NeonUp prepara un file con un nome nuovo.</li>
             </ol>
             <p className="text-[13px] leading-relaxed text-zinc-400">Regole prese dal Documento A e dal Documento B dell&apos;Ufficio Tributario (8 settembre 2026) e dal Decreto Delegato 133/2026. <Link href="/lavorare/fattura-elettronica" className="font-semibold text-white underline underline-offset-2">Chi è obbligato e da quando</Link>.</p>
           </div>

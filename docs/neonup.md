@@ -30,21 +30,31 @@ Sono tutte sulla pagina «Fatturazione elettronica interna» di finanze.sm:
 | Fase | Cosa | Stato |
 |---|---|---|
 | 1 | Azienda e persone (titolare, amministrazione, vendite, lettura), clienti e fornitori, articoli, documenti di vendita con numerazione ed emissione, stampa e PDF, file XML FE-RSM da caricare su TribWEB, esito segnato a mano, incassi, cruscotto | **Fatta il 21/10/2026** (migrazione 0052) |
-| 2 | Invio diretto all'HUB-SM con il TokenFE dell'azienda: invio, esito, ricevute, fatture ricevute dai fornitori, richiesta di rettifica | Da decidere con Alex (vedi sotto) |
+| 2 | Invio diretto all'HUB-SM con il TokenFE dell'azienda: invio, esito, ricevute, fatture ricevute dai fornitori, richiesta di rettifica | **Fatta il 21/10/2026** (migrazione 0053, vedi sotto) |
 | 3 | Magazzino: depositi, giacenze, carichi e scarichi dai DDT e dalle fatture, varianti, lotti | Da fare |
 | 4 | Ciclo passivo e contabilità: fatture dei fornitori, prima nota, scadenzario, riconciliazione | Da fare, con un commercialista che controlli |
 | 5 | Vendita al banco dal tablet, statistiche, app degli agenti, «chiedi ai tuoi dati» in sola lettura | Da fare |
 | 6 | Fatture verso l'Italia (interscambio con lo SdI tramite l'HUB-SM) | Da fare: regole diverse (IVA, codice destinatario) |
 
-## Prima della fase 2 servono decisioni di Alex
+## Fase 2: come funziona il collegamento con l'HUB-SM
 
-- **Dove tenere il TokenFE.** È una credenziale fiscale dell'azienda. Va cifrato con una chiave che sta solo sul server (una variabile d'ambiente su Vercel o il vault di Supabase) e mandato all'HUB-SM solo da una route server. La chiave nuova la imposta Alex.
-- **Chi può invocare il web service.** Dalla sessione cloud `pa.sm` va provato; da Vercel (Francoforte) dovrebbe rispondere. L'ambiente di TEST si attiva da TribWEB.
-- **Prezzo di NeonUp** e se resta a parte o dentro il Pro.
+Scelta di Alex del 21/10/2026: il TokenFE nel Vault di Supabase, niente variabili d'ambiente nuove su Vercel.
+
+- **Il token.** Lo mette solo il titolare, da «Azienda», «Collegamento con l'HUB-SM», scegliendo Test o Reale. `neon_hub_collega` lo salva cifrato con `vault.create_secret` (o `update_secret` se cambia) e in `neon_hub` resta solo l'id del segreto. Lo legge soltanto `neon_hub_token`, chiamata dalle funzioni che parlano con l'HUB-SM; al browser non torna mai. «Scollega» sovrascrive il segreto con `scollegato`.
+- **Le chiamate.** Partono dal database con l'estensione `http` (`neon_ws(ambiente, metodo, corpo)`): SOAP 1.1 document/literal, namespace `http://api.tribfews.ciscoop.sm/`, produzione `https://www.pa.sm/tribfews/tribfews`, test `https://www.pa.sm/tribfewstest/tribfews`. Il database li raggiunge entrambi.
+- **La coda.** `neon_hub_coda` (verifica, invia, esito, ricevute, rettifica) la lavora pg_cron `neonup-hub` ogni minuto con `neon_hub_lavora()`, al massimo 12 chiamate per passata. La verifica del token usa `listFERSMTempFiles`. Dopo l'invio l'esito si chiede dopo 10 minuti e poi ogni 30 (codici -540 e -542: non ancora pronto), fino a 150 tentativi. Le fatture ricevute si cercano da sole ogni 3 ore per chi è collegato (al massimo 20 file per passata; dai `.p7m` si estrae l'XML).
+- **L'invio.** Il file XML lo scrive il browser con `fe-rsm.ts` (lo stesso della fase 1) e lo manda a `neon_hub_invia`, che controlla che corrisponda al documento (numero, data, codice operatore, progressivo), salva la copia esatta in `neon_hub_file` con l'impronta e mette in coda `putFERSMFile`. Un documento non si manda due volte; se l'HUB-SM rifiuta subito il caricamento il documento resta «da inviare» con il motivo.
+- **Esiti e ricevute.** `getFERSMRicevuta` porta RicevutaConsegna o RicevutaScarto (con i codici di errore): il documento passa a consegnata o scartata e la ricevuta resta in `neon_hub_ricevute`. Dopo uno scarto `neon_aggiorna_scartata` riprende i dati corretti di cedente e cessionario e il file nuovo ha un nome nuovo.
+- **Fatture ricevute** (`neon_passive`, pagina «Fatture ricevute»): `listFERSMFilesIn` e `getFERSMFileIn`; `neon_leggi_fattura` ricava fornitore, numero, data e totale. Si segnano come viste o registrate; «Chiedi una rettifica» con il motivo usa `richiediRettificaFERSMFileIn`.
+- **Codici utili:** -1 token non valido, -540 non ancora acquisito, -542 riprovare tra 30 minuti, -252 rifiutato o scartato, -201 data di inizio FE, -230 diritti mancanti.
+
+**Da provare con un token vero:** le prove del 21/10/2026 hanno usato il servizio di test con un token finto (risposta «Token non decrittabile», codice -1, gestita). Il primo giro completo va fatto con un TokenFE generato su TribWEB di TEST, scegliendo «Test»; solo dopo si passa a «Reale».
+
+**Ancora da decidere con Alex:** il prezzo di NeonUp e se resta a parte o dentro il Pro.
 
 ## Cosa NeonUp non fa (ancora)
 
-- Non manda niente all'HUB-SM: l'XML si scarica e si carica su TribWEB.
+- Le fatture ricevute non diventano ancora movimenti di contabilità o di magazzino (fasi 3 e 4).
 - Non calcola i festivi nei termini di trasmissione: il termine è indicativo.
 - Non fa la conservazione a norma: i file restano in NeonUp finché l'azienda lo usa.
 - Le fatture verso clienti non sammarinesi o senza codice operatore sono solo su carta.
