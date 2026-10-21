@@ -18,7 +18,7 @@ Prima il residente e il giovane (aprono ogni giorno, portano i metri al castello
   - **Uscire**: eventi, mangiare e bere, dormire, musei e cultura, natura e sentieri, negozi e outlet, itinerari.
   - **Sport**: partite aperte, squadre e rating, classifiche, impianti, società sportive, tornei di castello.
   - **Comunità**: i 9 castelli, Giunte, associazioni, volontariato, chiese e messe, bacheca.
-  - **Lavorare**: aziende, professionisti, artigiani, offerte di lavoro, fiere e convegni, bandi.
+  - **Lavorare**: aziende, professionisti, artigiani, offerte di lavoro, fiere e convegni, bandi, NeonUp (il gestionale).
 - **Base comune**: SMR ID, metri e castelli, mappa, ricerca unica, motore dati.
 - Ogni cosa nuova entra in una delle cinque aree, o non entra.
 - Barra in basso proposta: **Oggi · Mappa · + · Sport · Esplora** (Esplora apre le cinque aree; Eventi vive in Uscire e in Oggi). SMR ID resta in alto a destra. Food e Business smettono di essere moduli a parte: diventano Mangiare e bere (Uscire) e Aziende (Lavorare).
@@ -39,6 +39,8 @@ Qualunque cosa abbia un posto (ufficio, ristorante, parcheggio, impianto) ha la 
 | 4 | Campionato sammarinese (solo con accordo FSGC), feed ufficiali degli enti |
 
 Fuori per ora: dati clinici, pagamenti in app, politica, campionato senza accordo.
+
+NeonUp, il gestionale per le aziende (scelta di Alex del 21/10/2026, dopo l'analisi di Atlantis Evo in `docs/neonup-analisi.md`): dentro Lavorare, con l'SMR ID, documenti di vendita e fattura elettronica interna di San Marino; fasi e regole in `docs/neonup.md`. Niente pagamenti nell'app; per ora gratis, come prova, prezzo da decidere.
 
 Prenotazioni con 739 (scelta di Alex del 16/10/2026, prima erano fuori): i centri senza un sistema loro (campi, sale, servizi) aprono le prenotazioni dalla scheda che gestiscono; orari e regole li sceglie il centro, si paga sul posto, 739 non incassa niente. Chi ha già un sistema resta col link «Prenota» del Pro. Prezzo da decidere: per ora gratis, come prova.
 

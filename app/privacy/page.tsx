@@ -46,6 +46,8 @@ Il titolare ha sede a Malta, nell'Unione europea: la regola di riferimento è il
 
 **Volontari.** Se ti iscrivi a un turno da volontario salviamo il turno, quando ti sei iscritto, il telefono e la nota se li scrivi, e se c'eri. L'associazione che ha pubblicato il turno vede il tuo nome, l'email del tuo SMR ID, il telefono e la nota, solo per organizzare quel turno. Li teniamo finché tieni l'SMR ID; l'elenco nell'app mostra i turni degli ultimi 60 giorni.
 
+**NeonUp (il gestionale per le aziende).** Se usi NeonUp salviamo i dati della tua azienda, chi ci lavora e con quale ruolo, e i documenti che prepari. Dentro ci sono anche i dati dei tuoi clienti e fornitori (ragione sociale, indirizzo, codice operatore, partita IVA, email, telefono): per questi il titolare del trattamento è la tua azienda, e noi li trattiamo per suo conto (GDPR art. 28) solo per farti usare NeonUp, senza guardarli né usarli per altro. Li vedono soltanto le persone che il titolare ha aggiunto all'azienda. Restano finché l'azienda usa NeonUp; per toglierli scrivici. Il file XML della fattura lo scarichi tu e lo carichi su TribWEB: a 739 non arriva il tuo TokenFE.
+
 **Prenotazioni.** Se prenoti un campo, una sala o un servizio con 739 salviamo il centro, cosa e quando, lo stato (richiesta, confermata, annullata, non presentato), il telefono e la nota se li scrivi, e la risposta del centro. Chi gestisce il centro vede il tuo nome, l'email del tuo SMR ID e il telefono, solo per le prenotazioni fatte da lui e solo per gestirle; gli altri vedono soltanto che quell'orario è occupato. Teniamo le prenotazioni finché tieni l'SMR ID; l'elenco nell'app mostra le ultime di 30 giorni.
 
 **Schede da fonti aperte.** Molte schede di negozi, locali, aziende, studi, veterinari e associazioni arrivano da OpenStreetMap e da Overture Maps: sono dati pubblici delle attività e delle associazioni (nome, indirizzo, telefono e sito), con la fonte scritta nella scheda. Se una scheda riguarda te o la tua attività e vuoi correggerla o toglierla, usa «Segnala un errore» o scrivici: lo facciamo.
@@ -56,7 +58,7 @@ Il titolare ha sede a Malta, nell'Unione europea: la regola di riferimento è il
 
 ## Su quale base
 
-- **Per darti il servizio che chiedi** (GDPR art. 6.1.b): account SMR ID, check-in e metri, partite e tornei, eventi proposti, schede delle attività, prenotazioni, premi dei metri, turni da volontario, annunci in bacheca.
+- **Per darti il servizio che chiedi** (GDPR art. 6.1.b): account SMR ID, check-in e metri, partite e tornei, eventi proposti, schede delle attività, prenotazioni, premi dei metri, turni da volontario, annunci in bacheca, il gestionale NeonUp.
 - **Con il tuo consenso** (art. 6.1.a), che puoi togliere quando vuoi: notifiche e posizione del telefono.
 - **Per un nostro interesse legittimo** (art. 6.1.f), con il minimo dei dati: limiti anti abuso con l'impronta cifrata, conteggi anonimi delle visite e delle schede delle attività, sicurezza del servizio.
 
@@ -107,5 +109,5 @@ Se cambiamo questa pagina lo scriviamo qui in cima con la data. Per i cambiament
 `;
 
 export default function Privacy() {
-  return <PaginaLegale titolo="Privacy" aggiornata="19 ottobre 2026" testo={TESTO} />;
+  return <PaginaLegale titolo="Privacy" aggiornata="21 ottobre 2026" testo={TESTO} />;
 }

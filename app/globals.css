@@ -460,3 +460,10 @@ html[data-utente="tornato"] .per-nuovi { display: none !important; }
 
 /* Mappa grande: il punto di un indirizzo trovato con la ricerca (fuori dai layer, come gli altri elementi di MapLibre) */
 .segno-indirizzo { width: 22px; height: 22px; border-radius: 999px 999px 999px 0; rotate: -45deg; background: var(--testo); border: 3px solid var(--sfondo); box-shadow: 0 2px 8px rgba(11, 31, 46, 0.45); }
+
+/* Stampa (NeonUp: documenti stampati o salvati in PDF): solo il contenuto della pagina, su bianco */
+@media print {
+  header.top, nav, footer, .barra, .no-stampa { display: none !important; }
+  body, .main { background: #fff !important; padding: 0 !important; margin: 0 !important; }
+  .main { max-width: none !important; }
+}
