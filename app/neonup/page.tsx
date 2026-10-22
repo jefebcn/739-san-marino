@@ -6,7 +6,7 @@ import Ingresso from "@/modules/neonup/components/Ingresso";
 
 export const metadata = metadatiCondivisione({
   titolo: "NeonUp, il gestionale per le aziende di San Marino",
-  descrizione: "Clienti, articoli, preventivi, ordini, DDT, fatture e note di credito, con la fattura elettronica interna di San Marino (FE-RSM) mandata all'HUB-SM e le fatture dei fornitori ricevute. Dentro 739, con l'SMR ID.",
+  descrizione: "Clienti, articoli, magazzino, preventivi, ordini, DDT, fatture e note di credito, con la fattura elettronica interna di San Marino (FE-RSM) mandata all'HUB-SM e le fatture dei fornitori ricevute. Dentro 739, con l'SMR ID.",
   percorso: "/neonup",
 });
 
@@ -15,13 +15,13 @@ const OGGI = [
   { titolo: "Fattura elettronica interna", testo: "Il file XML secondo le regole dell'Ufficio Tributario: tipo merce su ogni riga, DDT, natura N4, nome del file giusto, un nome nuovo dopo uno scarto. Controllato sullo schema ufficiale." },
   { titolo: "Clienti, fornitori e articoli", testo: "Con il codice operatore economico, il pagamento di solito, il prezzo e il tipo merce: le righe si riempiono da sole." },
   { titolo: "Collegata all'HUB-SM", testo: "Con il TokenFE dell'azienda la fattura parte da NeonUp, l'esito e le ricevute arrivano da soli, e le fatture dei fornitori sammarinesi si scaricano ogni 3 ore. Si prova prima nell'ambiente di test." },
+  { titolo: "Magazzino", testo: "Giacenze per deposito, varianti (taglie, colori) e lotti con la scadenza. DDT e fatture scaricano da soli, le note di credito ricaricano i resi; carichi anche dalle fatture dei fornitori, trasferimenti e inventario." },
   { titolo: "Incassi e scadenze", testo: "Cosa è da incassare, cosa è scaduto, le fatture elettroniche ancora da inviare con il termine indicativo." },
   { titolo: "Chi ci lavora", testo: "Titolare, amministrazione, vendite, solo lettura: ognuno entra con il suo SMR ID." },
   { titolo: "Stampa e PDF", testo: "Ogni documento si stampa o si salva in PDF, anche le fatture su carta per chi non ha ancora la fattura elettronica." },
 ];
 
 const DOPO = [
-  "Magazzino: giacenze, carichi e scarichi dai documenti",
   "Contabilità: prima nota e scadenzario",
   "Vendita al banco dal tablet",
   "Statistiche del venduto",
@@ -33,7 +33,7 @@ export default function PaginaNeonUp() {
   return (
     <>
       <TestaPagina href="/lavorare" verso="Lavorare" titolo="NeonUp">
-        <p className="sottotitolo">Il gestionale di 739 per le aziende di San Marino: documenti, fattura elettronica interna, clienti e incassi in un posto solo, dal telefono o dal computer.</p>
+        <p className="sottotitolo">Il gestionale di 739 per le aziende di San Marino: documenti, fattura elettronica interna, magazzino, clienti e incassi in un posto solo, dal telefono o dal computer.</p>
       </TestaPagina>
       <div className="larga flex flex-col gap-10">
         <Ingresso />

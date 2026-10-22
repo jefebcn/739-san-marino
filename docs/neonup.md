@@ -31,7 +31,7 @@ Sono tutte sulla pagina «Fatturazione elettronica interna» di finanze.sm:
 |---|---|---|
 | 1 | Azienda e persone (titolare, amministrazione, vendite, lettura), clienti e fornitori, articoli, documenti di vendita con numerazione ed emissione, stampa e PDF, file XML FE-RSM da caricare su TribWEB, esito segnato a mano, incassi, cruscotto | **Fatta il 21/10/2026** (migrazione 0052) |
 | 2 | Invio diretto all'HUB-SM con il TokenFE dell'azienda: invio, esito, ricevute, fatture ricevute dai fornitori, richiesta di rettifica | **Fatta il 21/10/2026** (migrazione 0053, vedi sotto) |
-| 3 | Magazzino: depositi, giacenze, carichi e scarichi dai DDT e dalle fatture, varianti, lotti | Da fare |
+| 3 | Magazzino: depositi, giacenze, carichi e scarichi dai DDT e dalle fatture, varianti, lotti | **Fatta il 22/10/2026** (migrazione 0054, vedi sotto) |
 | 4 | Ciclo passivo e contabilità: fatture dei fornitori, prima nota, scadenzario, riconciliazione | Da fare, con un commercialista che controlli |
 | 5 | Vendita al banco dal tablet, statistiche, app degli agenti, «chiedi ai tuoi dati» in sola lettura | Da fare |
 | 6 | Fatture verso l'Italia (interscambio con lo SdI tramite l'HUB-SM) | Da fare: regole diverse (IVA, codice destinatario) |
@@ -52,9 +52,21 @@ Scelta di Alex del 21/10/2026: il TokenFE nel Vault di Supabase, niente variabil
 
 **Ancora da decidere con Alex:** il prezzo di NeonUp e se resta a parte o dentro il Pro.
 
+## Fase 3: come funziona il magazzino
+
+- **Articoli a magazzino.** Un articolo entra a magazzino con il primo carico o con «Gestito a magazzino» negli Articoli (`neon_mag_articoli`): scorta minima, varianti (es. S, M, L: una variante già movimentata non si toglie), lotti con la scadenza. Gli articoli non gestiti e le righe scritte a mano non muovono niente.
+- **Depositi** (`neon_depositi`): il primo, «Magazzino», nasce da solo ed è il predefinito; titolare e amministrazione ne aggiungono fino a 20, cambiano il predefinito, li disattivano.
+- **Operazioni e movimenti** (`neon_mag_operazioni`, `neon_mag_movimenti`): ogni operazione ha i suoi movimenti con la quantità col segno. A mano: carico (fornitore, riferimento, costo unitario), scarico, rettifica (+ o −), trasferimento tra depositi (con i lotti), inventario (le differenze tra contato e risultante diventano rettifiche; solo titolare e amministrazione). Niente cancellazioni: «Storna» scrive i movimenti opposti.
+- **Dai documenti, da soli** (`neon_mag_da_documento`, chiamata da `neon_emetti`): il DDT scarica; la fattura scarica le righe che nessun DDT di NeonUp indicato nella fattura ha già scaricato (stesso numero e data); la nota di credito ricarica le righe segnate «Rientra in magazzino». Annullare un DDT storna il suo scarico (`neon_annulla`). Senza la variante giusta il documento non si emette.
+- **Lotti:** in uscita, se il lotto non è scelto, si scarica prima quello che scade prima; quello che manca resta «senza lotto» in negativo. La giacenza può andare sotto zero (la pagina lo segnala in rosso).
+- **Valore:** giacenza per costo medio ponderato dei carichi non stornati (`neon_mag_costi`); è un'indicazione, non una valutazione fiscale del magazzino.
+- **Dalle fatture ricevute:** «Carica in magazzino» apre un carico con fornitore (per codice operatore), riferimento e righe lette dall'XML, abbinate al catalogo per codice o descrizione; le righe senza abbinamento vanno scelte a mano.
+- Prova del 22/10/2026 in una transazione annullata: 20 controlli passati (FEFO, fattura del DDT che non riscarica, reso, storno del DDT annullato, trasferimento con i lotti, inventario, permessi).
+
 ## Cosa NeonUp non fa (ancora)
 
-- Le fatture ricevute non diventano ancora movimenti di contabilità o di magazzino (fasi 3 e 4).
+- Le fatture ricevute non diventano ancora movimenti di contabilità (fase 4); in magazzino entrano con «Carica in magazzino».
+- Il magazzino non tiene gli impegni degli ordini dei clienti né gli ordini ai fornitori.
 - Non calcola i festivi nei termini di trasmissione: il termine è indicativo.
 - Non fa la conservazione a norma: i file restano in NeonUp finché l'azienda lo usa.
 - Le fatture verso clienti non sammarinesi o senza codice operatore sono solo su carta.

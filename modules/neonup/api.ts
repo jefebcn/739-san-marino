@@ -66,6 +66,8 @@ export type Articolo = {
 export type Riga = {
   codice?: string | null; descrizione: string; quantita: number | string; unita_misura?: string | null; prezzo: number | string;
   sconto?: number | string; tipo_merce?: number | null; nonrimb?: boolean; articolo_id?: string | null; totale?: number; n?: number;
+  /** Magazzino (0054): variante e lotto dell'articolo, deposito da cui esce, reso che rientra (note di credito) */
+  variante?: string | null; lotto?: string | null; deposito_id?: string | null; rientra?: boolean;
 };
 export type Ddt = { numero: string; data: string; righe?: number[] };
 export type Documento = {
@@ -325,4 +327,127 @@ export function scaricaTesto(nome: string, testo: string, tipo = "application/xm
 export async function aggiornaScartata(documento: string) {
   const { error } = await db().rpc("neon_aggiorna_scartata", { p_documento: documento });
   return { errore: messaggio(error) };
+}
+
+/* ———— Fase 3: magazzino (migrazione 0054) ———— */
+
+export type Deposito = { id: string; azienda_id: string; nome: string; predefinito: boolean; attivo: boolean };
+export type MagArticolo = { articolo_id: string; gestito: boolean; scorta_minima: number | null; varianti: string[]; lotti: boolean };
+export type Giacenza = { articolo_id: string; deposito_id: string; variante: string; lotto: string; scadenza: string | null; quantita: number };
+export type CostoArticolo = { articolo_id: string; costo_medio: number | null; ultimo: string | null };
+export type TipoOperazione = "carico" | "scarico" | "rettifica" | "trasferimento" | "inventario" | "vendita" | "reso" | "storno";
+export const OPERAZIONI: Record<TipoOperazione, string> = {
+  carico: "Carico", scarico: "Scarico", rettifica: "Rettifica", trasferimento: "Trasferimento", inventario: "Inventario",
+  vendita: "Uscita per vendita", reso: "Reso del cliente", storno: "Storno",
+};
+export type Operazione = {
+  id: string; tipo: TipoOperazione; data: string; soggetto_id: string | null; riferimento: string | null; documento_id: string | null;
+  passiva_id: string | null; storno_di: string | null; stornata: boolean; nota: string | null; creato_il: string;
+};
+export type Movimento = {
+  id: number; operazione_id: string; deposito_id: string; articolo_id: string; variante: string; lotto: string; scadenza: string | null;
+  quantita: number; costo: number | null; riga: number | null;
+};
+export type RigaMagazzino = { articolo_id: string; variante?: string; lotto?: string; scadenza?: string; quantita: number; costo?: number | null };
+
+/** Crea il deposito predefinito se manca (serve a chi può vendere) */
+export async function magAvvia(azienda: string) {
+  const { error } = await db().rpc("neon_mag_avvia", { p_azienda: azienda });
+  return { errore: messaggio(error) };
+}
+
+export async function depositi(azienda: string) {
+  const { data, error } = await db().from("neon_depositi").select("id, azienda_id, nome, predefinito, attivo").eq("azienda_id", azienda)
+    .order("predefinito", { ascending: false }).order("nome");
+  return { depositi: (data ?? []) as Deposito[], errore: messaggio(error), attivo: error?.code !== "42P01" };
+}
+
+export async function salvaDeposito(azienda: string, id: string | null, nome: string, predefinito: boolean, attivo: boolean) {
+  const { error } = await db().rpc("neon_salva_deposito", { p_azienda: azienda, p_id: id, p_nome: nome, p_predefinito: predefinito, p_attivo: attivo });
+  return { errore: messaggio(error) };
+}
+
+export async function magArticoli(azienda: string) {
+  const { data, error } = await db().from("neon_mag_articoli").select("articolo_id, gestito, scorta_minima, varianti, lotti").eq("azienda_id", azienda).limit(5000);
+  return { impostazioni: (data ?? []) as MagArticolo[], errore: error?.code === "42P01" ? null : messaggio(error) };
+}
+
+export async function salvaMagArticolo(articolo: string, m: Omit<MagArticolo, "articolo_id">) {
+  const { error } = await db().rpc("neon_salva_mag_articolo", { p_articolo: articolo, p: m });
+  return { errore: messaggio(error) };
+}
+
+export async function giacenze(azienda: string) {
+  const { data, error } = await db().rpc("neon_mag_giacenze", { p_azienda: azienda });
+  return { giacenze: ((data ?? []) as Giacenza[]).map((g) => ({ ...g, quantita: Number(g.quantita) })), errore: error?.code === "PGRST202" ? null : messaggio(error) };
+}
+
+export async function costi(azienda: string) {
+  const { data } = await db().rpc("neon_mag_costi", { p_azienda: azienda });
+  return (data ?? []) as CostoArticolo[];
+}
+
+export async function operazioni(azienda: string, limite = 200) {
+  const { data, error } = await db().from("neon_mag_operazioni")
+    .select("id, tipo, data, soggetto_id, riferimento, documento_id, passiva_id, storno_di, stornata, nota, creato_il")
+    .eq("azienda_id", azienda).order("data", { ascending: false }).order("creato_il", { ascending: false }).limit(limite);
+  return { operazioni: (data ?? []) as Operazione[], errore: messaggio(error) };
+}
+
+export async function movimenti(operazioni: string[]) {
+  if (!operazioni.length) return [] as Movimento[];
+  const { data } = await db().from("neon_mag_movimenti")
+    .select("id, operazione_id, deposito_id, articolo_id, variante, lotto, scadenza, quantita, costo, riga")
+    .in("operazione_id", operazioni).order("id").limit(5000);
+  return ((data ?? []) as Movimento[]).map((m) => ({ ...m, quantita: Number(m.quantita) }));
+}
+
+export async function operazioniDocumento(documento: string) {
+  const { data } = await db().from("neon_mag_operazioni").select("id, tipo, data, soggetto_id, riferimento, documento_id, passiva_id, storno_di, stornata, nota, creato_il")
+    .eq("documento_id", documento).order("creato_il");
+  return (data ?? []) as Operazione[];
+}
+
+/** Le fatture ricevute già caricate in magazzino (carichi non stornati) */
+export async function passiveCaricate(azienda: string) {
+  const { data } = await db().from("neon_mag_operazioni").select("passiva_id, data").eq("azienda_id", azienda).not("passiva_id", "is", null).eq("stornata", false);
+  return new Map(((data ?? []) as { passiva_id: string; data: string }[]).map((x) => [x.passiva_id, x.data]));
+}
+
+export async function registraMagazzino(azienda: string, p: {
+  tipo: "carico" | "scarico" | "rettifica" | "trasferimento"; data?: string | null; deposito_id?: string | null; deposito_a?: string | null;
+  soggetto_id?: string | null; riferimento?: string | null; passiva_id?: string | null; nota?: string | null; righe: RigaMagazzino[];
+}) {
+  const { data, error } = await db().rpc("neon_mag_registra", { p_azienda: azienda, p });
+  return { id: data as string | null, errore: messaggio(error) };
+}
+
+export async function inventario(azienda: string, deposito: string, righe: { articolo_id: string; variante: string; lotto: string; contati: number }[], nota?: string) {
+  const { data, error } = await db().rpc("neon_mag_inventario", { p_azienda: azienda, p_deposito: deposito, p_righe: righe, p_nota: nota ?? null });
+  return { differenze: data as number | null, errore: messaggio(error) };
+}
+
+export async function storna(operazione: string, nota?: string) {
+  const { error } = await db().rpc("neon_mag_storna", { p_operazione: operazione, p_nota: nota ?? null });
+  return { errore: messaggio(error) };
+}
+
+const qta = new Intl.NumberFormat("it-IT", { maximumFractionDigits: 3 });
+/** «12», «2,5 kg» */
+export const quantita = (n: number | null | undefined, um?: string | null) => `${qta.format(Number(n ?? 0))}${um ? ` ${um}` : ""}`;
+
+/** Le righe di una fattura ricevuta (XML FPR12), per prepararne il carico: codice, descrizione, quantità, prezzo unitario */
+export function righeFattura(xml: string) {
+  const doc = new DOMParser().parseFromString(xml, "application/xml");
+  const figlio = (el: Element, nome: string) => [...el.children].find((c) => c.localName === nome)?.textContent?.trim() ?? "";
+  return [...doc.getElementsByTagNameNS("*", "DettaglioLinee")].map((l) => {
+    const cod = [...l.children].find((c) => c.localName === "CodiceArticolo");
+    return {
+      codice: cod ? figlio(cod, "CodiceValore") : "",
+      descrizione: figlio(l, "Descrizione"),
+      quantita: Number(figlio(l, "Quantita") || 1),
+      prezzo: Number(figlio(l, "PrezzoUnitario") || 0),
+      unita: figlio(l, "UnitaMisura"),
+    };
+  }).filter((r) => r.descrizione);
 }

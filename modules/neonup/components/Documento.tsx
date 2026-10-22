@@ -7,10 +7,11 @@ import { Icona } from "@/components/Icona";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import { CAMPO } from "@/modules/attivita/components/stile";
 import {
-  PAGAMENTI, TIPI, TIPI_MERCE, annulla, articoli as leggiArticoli, azienda as leggiAzienda, data, documento as leggi, documenti as leggiDocumenti,
-  emetti, incasso, nuovoDocumento, oggiSM, puoVendere, salvaBozza, soggetti as leggiSoggetti, soldi,
-  titoloDocumento, totaleRiga,
-  type Articolo, type Azienda, type Ddt, type Documento as Doc, type Riga, type Soggetto, type TipoDocumento, type VoceDocumento,
+  OPERAZIONI, PAGAMENTI, TIPI, TIPI_MERCE, annulla, articoli as leggiArticoli, azienda as leggiAzienda, data, depositi as leggiDepositi,
+  documento as leggi, documenti as leggiDocumenti, emetti, giacenze as leggiGiacenze, incasso, magArticoli, nuovoDocumento, oggiSM,
+  operazioniDocumento, puoVendere, quantita, salvaBozza, soggetti as leggiSoggetti, soldi, titoloDocumento, totaleRiga,
+  type Articolo, type Azienda, type Ddt, type Deposito, type Documento as Doc, type Giacenza, type MagArticolo, type Operazione, type Riga,
+  type Soggetto, type TipoDocumento, type VoceDocumento,
 } from "../api";
 import { Campo } from "./DatiAzienda";
 import PannelloFe from "./PannelloFe";
@@ -43,6 +44,9 @@ function Bozza({ iniziale, onEmesso }: { iniziale: Doc; onEmesso: () => void }) 
   const [catalogo, setCatalogo] = useState<Articolo[]>([]);
   const [azienda, setAzienda] = useState<Azienda | null>(null);
   const [fatture, setFatture] = useState<VoceDocumento[]>([]);
+  const [mag, setMag] = useState<Map<string, MagArticolo>>(new Map());
+  const [depositi, setDepositi] = useState<Deposito[]>([]);
+  const [giacenze, setGiacenze] = useState<Giacenza[]>([]);
   const [errore, setErrore] = useState<string | null>(null);
   const [salvato, setSalvato] = useState(true);
   const [invio, setInvio] = useState(false);
@@ -55,6 +59,9 @@ function Bozza({ iniziale, onEmesso }: { iniziale: Doc; onEmesso: () => void }) 
     leggiArticoli(az.id).then((r) => setCatalogo(r.articoli.filter((a) => a.attivo)));
     leggiAzienda(az.id).then((r) => setAzienda(r.azienda));
     leggiDocumenti(az.id).then((r) => setFatture(r.documenti.filter((x) => x.stato === "emesso" && (x.tipo === "fattura" || x.tipo === "acconto"))));
+    magArticoli(az.id).then((r) => setMag(new Map(r.impostazioni.map((x) => [x.articolo_id, x]))));
+    leggiDepositi(az.id).then((r) => setDepositi(r.depositi.filter((x) => x.attivo)));
+    leggiGiacenze(az.id).then((r) => setGiacenze(r.giacenze));
   }, [az.id]);
 
   const cliente = clienti.find((c) => c.id === d.soggetto_id) ?? null;
@@ -62,6 +69,14 @@ function Bozza({ iniziale, onEmesso }: { iniziale: Doc; onEmesso: () => void }) 
   const totale = useMemo(() => d.righe.reduce((t, r) => t + totaleRiga(r), 0), [d.righe]);
   const tms = new Set(d.righe.map((r) => r.tipo_merce).filter(Boolean));
   const serveDdt = elettronica && [...tms].some((t) => t === 1 || t === 2 || t === 4 || t === 7);
+  // Magazzino: DDT e fatture scaricano, le note di credito ricaricano le righe che rientrano
+  const muove = d.tipo === "ddt" || d.tipo === "fattura" || d.tipo === "nota_credito";
+  const gestito = (r: Riga) => (r.articolo_id ? mag.get(r.articolo_id) : undefined)?.gestito ? mag.get(r.articolo_id!) : undefined;
+  const conMagazzino = muove && d.righe.some((r) => gestito(r));
+  const deposito = d.righe.find((r) => r.deposito_id)?.deposito_id ?? depositi.find((x) => x.predefinito)?.id ?? "";
+  const disponibili = (r: Riga) => giacenze
+    .filter((g) => g.articolo_id === r.articolo_id && (!deposito || g.deposito_id === deposito) && (!r.variante || g.variante === r.variante) && (!r.lotto || g.lotto === r.lotto))
+    .reduce((t, g) => t + g.quantita, 0);
 
   const cambia = (modifica: Partial<Doc>) => { setD((x) => ({ ...x, ...modifica })); setSalvato(false); };
   const cambiaRiga = (i: number, modifica: Partial<Riga>) => cambia({ righe: d.righe.map((r, j) => (j === i ? { ...r, ...modifica } : r)) });
@@ -74,8 +89,8 @@ function Bozza({ iniziale, onEmesso }: { iniziale: Doc; onEmesso: () => void }) 
 
   function scegliArticolo(i: number, testo: string) {
     const a = catalogo.find((x) => `${x.codice ? `${x.codice} ` : ""}${x.descrizione}` === testo);
-    if (!a) return cambiaRiga(i, { descrizione: testo, articolo_id: null });
-    cambiaRiga(i, { descrizione: a.descrizione, codice: a.codice, prezzo: a.prezzo, unita_misura: a.unita_misura, tipo_merce: a.tipo_merce ?? d.righe[i].tipo_merce, articolo_id: a.id });
+    if (!a) return cambiaRiga(i, { descrizione: testo, articolo_id: null, variante: null, lotto: null });
+    cambiaRiga(i, { descrizione: a.descrizione, codice: a.codice, prezzo: a.prezzo, unita_misura: a.unita_misura, tipo_merce: a.tipo_merce ?? d.righe[i].tipo_merce, articolo_id: a.id, variante: null, lotto: null });
   }
 
   const pulito = (): Partial<Doc> => ({
@@ -84,6 +99,7 @@ function Bozza({ iniziale, onEmesso }: { iniziale: Doc; onEmesso: () => void }) 
       codice: r.codice?.trim() || null, descrizione: r.descrizione.trim(), quantita: Number(String(r.quantita).replace(",", ".")) || 1,
       unita_misura: r.unita_misura?.trim() || null, prezzo: Number(String(r.prezzo).replace(",", ".")) || 0, sconto: Number(String(r.sconto ?? 0).replace(",", ".")) || 0,
       tipo_merce: r.tipo_merce ? Number(r.tipo_merce) : null, nonrimb: !!r.nonrimb, articolo_id: r.articolo_id ?? null,
+      variante: r.variante || null, lotto: r.lotto?.trim() || null, deposito_id: r.deposito_id || null, rientra: d.tipo === "nota_credito" ? !!r.rientra : undefined,
     })),
     ddt: d.ddt.filter((x) => x.numero.trim() || x.data),
   });
@@ -179,6 +195,37 @@ function Bozza({ iniziale, onEmesso }: { iniziale: Doc; onEmesso: () => void }) 
                   {TIPI_MERCE.map((t) => <option key={t.n} value={t.n}>{t.n}: {t.breve}</option>)}
                 </select></label>
               </div>
+              {muove && gestito(r) ? (() => {
+                const cfg = gestito(r)!;
+                const esce = d.tipo !== "nota_credito";
+                const lotti = [...new Set(giacenze.filter((g) => g.articolo_id === r.articolo_id && g.lotto && g.quantita > 0 && (!r.variante || g.variante === r.variante)).map((g) => g.lotto))];
+                const disp = disponibili(r);
+                return (
+                  <div className="flex flex-wrap items-end gap-2 pl-8">
+                    {cfg.varianti.length ? (
+                      <label className="flex flex-col gap-1"><span className="text-[12px] text-testo-2">Variante</span>
+                        <select disabled={!modificabile} value={r.variante ?? ""} onChange={(e) => cambiaRiga(i, { variante: e.target.value || null })}
+                          className={`${CAMPO} h-10 w-32 bg-fondo ${!r.variante ? "border-segnale" : ""}`}>
+                          <option value="">Scegli</option>
+                          {cfg.varianti.map((v) => <option key={v} value={v}>{v}</option>)}
+                        </select></label>
+                    ) : null}
+                    {cfg.lotti ? (
+                      <label className="flex flex-col gap-1"><span className="text-[12px] text-testo-2">Lotto</span>
+                        <input list={`doc-lotti-${i}`} disabled={!modificabile} maxLength={40} value={r.lotto ?? ""} onChange={(e) => cambiaRiga(i, { lotto: e.target.value })}
+                          placeholder={esce ? "Il primo a scadere" : "Facoltativo"} className={`${CAMPO} h-10 w-44 bg-fondo`} />
+                        <datalist id={`doc-lotti-${i}`}>{lotti.map((l) => <option key={l} value={l} />)}</datalist></label>
+                    ) : null}
+                    {esce ? (
+                      <span className={`pb-2.5 text-[13px] ${Number(r.quantita || 1) > disp ? "text-segnale" : "text-testo-2"}`}>A magazzino {quantita(disp, r.unita_misura)}</span>
+                    ) : (
+                      <label className="flex items-center gap-2 pb-2.5 text-[13px]">
+                        <input type="checkbox" disabled={!modificabile} checked={!!r.rientra} onChange={(e) => cambiaRiga(i, { rientra: e.target.checked })} className="size-4 accent-[#09090B]" /> Rientra in magazzino
+                      </label>
+                    )}
+                  </div>
+                );
+              })() : null}
               <div className="flex items-center justify-between gap-3 pl-8 text-[13px]">
                 <label className="flex items-center gap-2 text-testo-2">
                   <input type="checkbox" disabled={!modificabile} checked={!!r.nonrimb} onChange={(e) => cambiaRiga(i, { nonrimb: e.target.checked })} className="size-4 accent-[#09090B]" /> Non rimborsabile (monofase)
@@ -194,6 +241,21 @@ function Bozza({ iniziale, onEmesso }: { iniziale: Doc; onEmesso: () => void }) 
           </button>
         ) : null}
         <p className="flex items-baseline justify-end gap-3 text-[15px]">Totale <b className="voce-logo text-[28px]">{soldi(totale)}</b></p>
+        {conMagazzino ? (
+          <div className="flex flex-col gap-2 rounded-xl bg-superficie px-4 py-3 text-[14px] leading-relaxed">
+            <p>
+              {d.tipo === "nota_credito" ? "All'emissione rientrano in magazzino le righe segnate." : d.tipo === "ddt" ? "All'emissione il DDT scarica il magazzino." : "All'emissione la fattura scarica il magazzino, tranne le righe di un DDT di NeonUp indicato qui sotto (le ha già scaricate il DDT)."}
+            </p>
+            {depositi.length > 1 ? (
+              <label className="flex flex-wrap items-center gap-2">
+                <span>{d.tipo === "nota_credito" ? "Rientrano in" : "Escono da"}</span>
+                <select disabled={!modificabile} value={deposito} onChange={(e) => cambia({ righe: d.righe.map((r) => ({ ...r, deposito_id: e.target.value })) })} className={`${CAMPO.replace("w-full ", "")} h-10 bg-fondo`}>
+                  {depositi.map((x) => <option key={x.id} value={x.id}>{x.nome}</option>)}
+                </select>
+              </label>
+            ) : null}
+          </div>
+        ) : null}
       </section>
 
       {fiscale || d.tipo === "ddt" ? (
@@ -284,12 +346,14 @@ function Emesso({ doc, onCambio }: { doc: Doc; onCambio: () => void }) {
   const az = useAzienda();
   const router = useRouter();
   const [collegata, setCollegata] = useState<Doc | null>(null);
+  const [magazzino, setMagazzino] = useState<Operazione[]>([]);
   const [errore, setErrore] = useState<string | null>(null);
   const vende = puoVendere(az.ruolo);
   const fiscale = TIPI[doc.tipo].fiscale;
   const ced = doc.cedente!, ces = doc.cessionario!;
 
   useEffect(() => { if (doc.collegato_id) leggi(doc.collegato_id).then((r) => setCollegata(r.documento)); }, [doc.collegato_id]);
+  useEffect(() => { operazioniDocumento(doc.id).then(setMagazzino); }, [doc.id, doc.stato]);
 
   const riepilogo = useMemo(() => {
     const m = new Map<number | null, number>();
@@ -314,7 +378,7 @@ function Emesso({ doc, onCambio }: { doc: Doc; onCambio: () => void }) {
   }
 
   async function annullaDoc() {
-    if (!confirm("Annullare questo documento?")) return;
+    if (!confirm(doc.tipo === "ddt" && magazzino.length ? "Annullare questo DDT? Le merci che ha scaricato tornano in magazzino." : "Annullare questo documento?")) return;
     const r = await annulla(doc.id);
     if (r.errore) return setErrore(r.errore);
     onCambio();
@@ -362,7 +426,10 @@ function Emesso({ doc, onCambio }: { doc: Doc; onCambio: () => void }) {
             <tbody className="divide-y divide-linea">
               {doc.righe.map((r) => (
                 <tr key={r.n} className="align-top">
-                  <td className="py-2 pr-2">{r.codice ? <span className="mr-1.5 font-mono text-[12px] text-testo-2">{r.codice}</span> : null}{r.descrizione}</td>
+                  <td className="py-2 pr-2">
+                    {r.codice ? <span className="mr-1.5 font-mono text-[12px] text-testo-2">{r.codice}</span> : null}{r.descrizione}
+                    {r.variante || r.lotto ? <span className="block text-[12px] text-testo-2">{[r.variante, r.lotto ? `Lotto ${r.lotto}` : ""].filter(Boolean).join(", ")}</span> : null}
+                  </td>
                   <td className="py-2 pr-2 text-right font-mono">{Number(r.quantita).toLocaleString("it-IT")}{r.unita_misura ? ` ${r.unita_misura}` : ""}</td>
                   <td className="py-2 pr-2 text-right font-mono">{soldi(Number(r.prezzo))}</td>
                   <td className="py-2 pr-2 text-right font-mono">{Number(r.sconto) ? `${Number(r.sconto).toLocaleString("it-IT")}%` : ""}</td>
@@ -401,6 +468,16 @@ function Emesso({ doc, onCambio }: { doc: Doc; onCambio: () => void }) {
                 <PrimaryButton dimensione="sm" variante="interno" onClick={() => segnaIncasso(true)}>Segna come incassata oggi</PrimaryButton>
               </>
             )}
+          </section>
+        ) : null}
+
+        {magazzino.length ? (
+          <section className="flex flex-col gap-2 rounded-2xl bg-superficie p-4">
+            <h3 className="text-[15px] font-semibold">Magazzino</h3>
+            <ul className="flex flex-col gap-1 text-[14px]">
+              {magazzino.map((o) => <li key={o.id}>{OPERAZIONI[o.tipo]} del {data(o.data)}{o.stornata ? ", stornata" : ""}{o.nota ? `: ${o.nota.toLowerCase()}` : ""}</li>)}
+            </ul>
+            <Link href={`/neonup/${az.id}/magazzino?vista=movimenti`} className="text-[14px] font-semibold text-accento">Apri il magazzino</Link>
           </section>
         ) : null}
 

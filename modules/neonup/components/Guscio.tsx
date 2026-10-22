@@ -13,11 +13,12 @@ const Contesto = createContext<MiaAzienda | null>(null);
 /** L'azienda aperta e il mio ruolo, dentro le pagine di NeonUp */
 export const useAzienda = () => useContext(Contesto) as MiaAzienda;
 
-export type Sezione = "cruscotto" | "documenti" | "ricevute" | "clienti" | "articoli" | "azienda";
+export type Sezione = "cruscotto" | "documenti" | "ricevute" | "magazzino" | "clienti" | "articoli" | "azienda";
 const VOCI: { sezione: Sezione; nome: string; href: string }[] = [
   { sezione: "cruscotto", nome: "Cruscotto", href: "" },
   { sezione: "documenti", nome: "Documenti", href: "/documenti" },
   { sezione: "ricevute", nome: "Fatture ricevute", href: "/ricevute" },
+  { sezione: "magazzino", nome: "Magazzino", href: "/magazzino" },
   { sezione: "clienti", nome: "Clienti e fornitori", href: "/clienti" },
   { sezione: "articoli", nome: "Articoli", href: "/articoli" },
   { sezione: "azienda", nome: "Azienda", href: "/azienda" },

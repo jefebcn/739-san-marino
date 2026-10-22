@@ -4,7 +4,10 @@ import { useEffect, useMemo, useState } from "react";
 import { Icona } from "@/components/Icona";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import { CAMPO } from "@/modules/attivita/components/stile";
-import { TIPI_MERCE, articoli as leggi, puoVendere, salvaArticolo, soldi, type Articolo } from "../api";
+import {
+  TIPI_MERCE, articoli as leggi, giacenze as leggiGiacenze, magArticoli, puoVendere, quantita, salvaArticolo, salvaMagArticolo, soldi,
+  type Articolo, type MagArticolo,
+} from "../api";
 import { Campo } from "./DatiAzienda";
 import { ERRORE, useAzienda } from "./Guscio";
 
@@ -18,7 +21,17 @@ export default function Articoli() {
   const [errore, setErrore] = useState<string | null>(null);
   const [cerca, setCerca] = useState("");
   const [aperto, setAperto] = useState<Partial<Articolo> | null>(null);
-  const carica = () => leggi(az.id).then((r) => { setElenco(r.articoli); setErrore(r.errore); });
+  const [mag, setMag] = useState<Map<string, MagArticolo>>(new Map());
+  const [qta, setQta] = useState<Map<string, number>>(new Map());
+  const carica = () => {
+    leggi(az.id).then((r) => { setElenco(r.articoli); setErrore(r.errore); });
+    magArticoli(az.id).then((r) => setMag(new Map(r.impostazioni.map((x) => [x.articolo_id, x]))));
+    leggiGiacenze(az.id).then((r) => {
+      const m = new Map<string, number>();
+      for (const g of r.giacenze) m.set(g.articolo_id, (m.get(g.articolo_id) ?? 0) + g.quantita);
+      setQta(m);
+    });
+  };
   useEffect(() => { carica(); }, [az.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const visti = useMemo(() => {
@@ -38,7 +51,7 @@ export default function Articoli() {
         ) : null}
       </div>
       {errore ? <p role="alert" className={ERRORE}>{errore}</p> : null}
-      {aperto ? <Scheda a={aperto} onFine={(ok) => { setAperto(null); if (ok) carica(); }} /> : null}
+      {aperto ? <Scheda key={aperto.id ?? "nuovo"} a={aperto} mag={aperto.id ? mag.get(aperto.id) : undefined} onFine={(ok) => { setAperto(null); if (ok) carica(); }} /> : null}
       {visti.length ? (
         <ul className="divide-y divide-linea overflow-hidden rounded-2xl bg-superficie">
           {visti.map((a) => (
@@ -48,7 +61,10 @@ export default function Articoli() {
                 {a.codice ? <span className="w-20 shrink-0 truncate font-mono text-[13px] text-testo-2">{a.codice}</span> : null}
                 <span className="flex min-w-0 flex-1 flex-col">
                   <span className="truncate text-[15px] font-medium">{a.descrizione}</span>
-                  <span className="text-[13px] text-testo-2">{nomeTm(a.tipo_merce) ?? "Tipo merce da scegliere"}{a.attivo ? "" : ", non attivo"}</span>
+                  <span className="text-[13px] text-testo-2">
+                    {nomeTm(a.tipo_merce) ?? "Tipo merce da scegliere"}{a.attivo ? "" : ", non attivo"}
+                    {mag.get(a.id)?.gestito ? <span className={(qta.get(a.id) ?? 0) < Number(mag.get(a.id)?.scorta_minima ?? -Infinity) || (qta.get(a.id) ?? 0) < 0 ? "font-medium text-segnale" : ""}>, {quantita(qta.get(a.id) ?? 0, a.unita_misura)} a magazzino</span> : null}
+                  </span>
                 </span>
                 <span className="shrink-0 font-mono text-[14px] font-medium">{soldi(a.prezzo)}{a.unita_misura ? <span className="text-testo-2">/{a.unita_misura}</span> : null}</span>
               </button>
@@ -62,9 +78,10 @@ export default function Articoli() {
   );
 }
 
-function Scheda({ a: iniziale, onFine }: { a: Partial<Articolo>; onFine: (ok: boolean) => void }) {
+function Scheda({ a: iniziale, mag, onFine }: { a: Partial<Articolo>; mag?: MagArticolo; onFine: (ok: boolean) => void }) {
   const az = useAzienda();
   const [a, setA] = useState(iniziale);
+  const [m, setM] = useState({ gestito: mag?.gestito ?? false, scorta: mag?.scorta_minima != null ? String(mag.scorta_minima) : "", varianti: (mag?.varianti ?? []).join(", "), lotti: mag?.lotti ?? false });
   const [errore, setErrore] = useState<string | null>(null);
   const [invio, setInvio] = useState(false);
   const cambia = (k: keyof Articolo) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => setA({ ...a, [k]: e.target.value });
@@ -77,8 +94,15 @@ function Scheda({ a: iniziale, onFine }: { a: Partial<Articolo>; onFine: (ok: bo
       prezzo: Number(String(a.prezzo ?? 0).replace(",", ".")) || 0, tipo_merce: a.tipo_merce ? Number(a.tipo_merce) : null,
       nomenclatura: a.nomenclatura?.trim() || null, attivo: a.attivo !== false,
     });
+    if (r.errore || !r.id) { setInvio(false); return setErrore(r.errore ?? "Non è stato possibile salvare."); }
+    if (m.gestito || mag) {
+      const rm = await salvaMagArticolo(r.id, {
+        gestito: m.gestito, scorta_minima: m.scorta.trim() ? Number(m.scorta.replace(",", ".")) : null,
+        varianti: m.varianti.split(",").map((v) => v.trim()).filter(Boolean), lotti: m.lotti,
+      });
+      if (rm.errore) { setInvio(false); setA({ ...a, id: r.id }); return setErrore(`Articolo salvato, ma il magazzino no: ${rm.errore}`); }
+    }
     setInvio(false);
-    if (r.errore) return setErrore(r.errore);
     onFine(true);
   }
 
@@ -102,6 +126,28 @@ function Scheda({ a: iniziale, onFine }: { a: Partial<Articolo>; onFine: (ok: bo
           {TIPI_MERCE.map((t) => <option key={t.n} value={t.n}>{t.n}: {t.nome}</option>)}
         </select>
       </Campo>
+      <fieldset className="flex flex-col gap-3 rounded-xl bg-superficie p-4">
+        <legend className="sr-only">Magazzino</legend>
+        <label className="flex items-center gap-2 text-[15px] font-medium">
+          <input type="checkbox" checked={m.gestito} onChange={(e) => setM({ ...m, gestito: e.target.checked })} className="size-5 accent-[#09090B]" /> Gestito a magazzino
+        </label>
+        {m.gestito ? (
+          <>
+            <p className="text-[13px] leading-snug text-testo-2">DDT e fatture lo scaricano da soli; i carichi si registrano in Magazzino.</p>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <Campo etichetta="Scorta minima" aiuto="Sotto questa quantità l'articolo è segnalato.">
+                <input inputMode="decimal" value={m.scorta} onChange={(e) => setM({ ...m, scorta: e.target.value })} className={`${CAMPO} h-12 bg-fondo font-mono`} />
+              </Campo>
+              <Campo etichetta="Varianti" aiuto="Separate da virgole, es. S, M, L. Una variante già movimentata non si toglie.">
+                <input value={m.varianti} onChange={(e) => setM({ ...m, varianti: e.target.value })} placeholder="Nessuna" className={`${CAMPO} h-12 bg-fondo`} />
+              </Campo>
+            </div>
+            <label className="flex items-center gap-2 text-[15px]">
+              <input type="checkbox" checked={m.lotti} onChange={(e) => setM({ ...m, lotti: e.target.checked })} className="size-5 accent-[#09090B]" /> A lotti, con la scadenza
+            </label>
+          </>
+        ) : null}
+      </fieldset>
       {a.id ? (
         <label className="flex items-center gap-2 text-[15px]">
           <input type="checkbox" checked={a.attivo !== false} onChange={(e) => setA({ ...a, attivo: e.target.checked })} className="size-5 accent-[#09090B]" /> Attivo

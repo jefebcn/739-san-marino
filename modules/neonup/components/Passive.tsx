@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { CAMPO } from "@/modules/attivita/components/stile";
-import { data, hubCercaRicevute, hubStato, passivaSegna, passive as leggi, puoVendere, scaricaTesto, soldi, type HubStato, type Passiva } from "../api";
+import { data, hubCercaRicevute, hubStato, passivaSegna, passiveCaricate, passive as leggi, puoVendere, scaricaTesto, soldi, type HubStato, type Passiva } from "../api";
 import { ERRORE, useAzienda } from "./Guscio";
 
 const ora = new Intl.DateTimeFormat("it-IT", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", timeZone: "Europe/San_Marino" });
@@ -19,10 +19,11 @@ export default function Passive() {
   const [aperta, setAperta] = useState<string | null>(null);
   const [motivo, setMotivo] = useState("");
   const [cerca, setCerca] = useState(false);
+  const [caricate, setCaricate] = useState<Map<string, string>>(new Map());
 
   const carica = useCallback(async () => {
-    const [p, h] = await Promise.all([leggi(az.id), hubStato(az.id)]);
-    setElenco(p.passive); setHub(h.hub); setErrore(p.errore ?? h.errore);
+    const [p, h, c] = await Promise.all([leggi(az.id), hubStato(az.id), passiveCaricate(az.id)]);
+    setElenco(p.passive); setHub(h.hub); setErrore(p.errore ?? h.errore); setCaricate(c);
   }, [az.id]);
   useEffect(() => { carica(); }, [carica]);
   useEffect(() => {
@@ -90,6 +91,8 @@ export default function Passive() {
                   {p.nota ? <p className="text-[13px]">{p.nota}</p> : null}
                   <div className="flex flex-wrap gap-2">
                     {p.xml ? <button type="button" onClick={() => scaricaTesto(p.nome.endsWith(".xml") ? p.nome : `${p.nome}.xml`, p.xml!)} className="h-9 rounded-xl bg-fondo px-3 text-[13px] font-medium">Scarica il file XML</button> : <span className="text-[13px] text-testo-2">File firmato: si apre da TribWEB.</span>}
+                    {caricate.has(p.id) ? <span className="flex h-9 items-center text-[13px] text-testo-2">Caricata in magazzino il {data(caricate.get(p.id))}</span>
+                      : puoVendere(az.ruolo) && p.td !== "TD04" && p.td !== "TD29" ? <Link href={`/neonup/${az.id}/magazzino?carico=${p.id}`} className="flex h-9 items-center rounded-xl bg-fondo px-3 text-[13px] font-medium">Carica in magazzino</Link> : null}
                     {puoVendere(az.ruolo) && p.stato !== "registrata" ? <button type="button" onClick={() => segna(p, "registrata")} className="h-9 rounded-xl bg-fondo px-3 text-[13px] font-medium">Segna come registrata</button> : null}
                   </div>
                   {puoVendere(az.ruolo) && p.stato !== "rettifica" && p.td !== "TD29" ? (
