@@ -39,7 +39,10 @@ export default function PaginaNeonUp() {
         <Ingresso />
 
         <section className="flex flex-col gap-4" aria-labelledby="t-oggi">
-          <h2 id="t-oggi" className="text-[22px] font-semibold tracking-tight">Cosa fa oggi</h2>
+          <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+            <h2 id="t-oggi" className="text-[22px] font-semibold tracking-tight">Cosa fa oggi</h2>
+            <Link href="/neonup/guida" className="text-[15px] font-semibold text-accento">Come funziona, sezione per sezione</Link>
+          </div>
           <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {OGGI.map((x) => (
               <li key={x.titolo} className="flex flex-col gap-1.5 rounded-2xl bg-superficie p-5">

@@ -55,6 +55,7 @@ export default function Guscio({ azienda, sezione, children }: { azienda: string
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
             <Link href="/neonup" className="flex items-center gap-1 text-[14px] font-medium text-testo-2 hover:text-testo"><Icona nome="freccia" size={16} /> NeonUp</Link>
             <h1 className="titolo !m-0 min-w-0 truncate text-[24px] lg:text-[30px]">{mia.denominazione}</h1>
+            <Link href="/neonup/guida" className="ml-auto text-[14px] font-semibold text-testo-2 hover:text-testo">Come funziona</Link>
           </div>
           <nav aria-label="Sezioni dell'azienda" className="-mx-1 flex gap-1 overflow-x-auto pb-1">
             {VOCI.filter((v) => v.sezione !== "contabilita" || vedeConti(mia.ruolo)).map((v) => (

@@ -7,6 +7,7 @@ import { TRACCIATI } from "./icone-tracciati";
 // Stile scelto da Alex sui set di riferimento: icone piene con angoli arrotondati (peso "fill").
 const ICONE = {
   home: "House",
+  spunta: "Check",
   mappa: "MapTrifold",
   eventi: "CalendarDots",
   castelli: "Trophy",
@@ -109,7 +110,7 @@ const ICONE = {
 export type NomeIcona = keyof typeof ICONE;
 
 // Frecce, "+" e lente sono segni a linea: piene diventerebbero triangoli o macchie, quindi restano a tratto spesso
-const LINEARI = new Set<NomeIcona>(["freccia", "avanti", "vai", "piu", "cerca", "chiudi"]);
+const LINEARI = new Set<NomeIcona>(["freccia", "avanti", "vai", "piu", "cerca", "chiudi", "spunta"]);
 
 // Icone piatte disegnate per Alex (ottobre 2026) per quattro aree e la mappa: prendono il posto di Phosphor.
 // Due maschere in public/icone (node scripts/icone-aree.mjs): la base prende il colore del testo, l'accento resta blu.

@@ -10,6 +10,7 @@ import {
   type TipoDocumento, type VoceDocumento,
 } from "../api";
 import { ERRORE, useAzienda } from "./Guscio";
+import PrimiPassi from "./PrimiPassi";
 
 const FILTRI: { chiave: string; nome: string; tipi: TipoDocumento[] | null }[] = [
   { chiave: "tutti", nome: "Tutti", tipi: null },
@@ -153,6 +154,8 @@ export function CruscottoAzienda() {
         <Cella titolo="Fatture elettroniche da inviare" valore={fe.length} nota={termini[0] ? `Termine più vicino: ${data(termini[0])} (indicativo)` : "Nessuna in attesa"} avviso={fe.length > 0} />
         <Cella href={`/neonup/${az.id}/documenti`} titolo="Bozze" valore={bozze.length} nota="Documenti non ancora emessi" />
       </Cruscotto>
+
+      <PrimiPassi documenti={tutte} />
 
       <div className="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
         <section className="flex flex-col gap-3" aria-labelledby="t-fare">
