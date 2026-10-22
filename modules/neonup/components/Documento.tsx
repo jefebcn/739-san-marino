@@ -8,12 +8,13 @@ import PrimaryButton from "@/components/ui/PrimaryButton";
 import { CAMPO } from "@/modules/attivita/components/stile";
 import {
   OPERAZIONI, PAGAMENTI, TIPI, TIPI_MERCE, annulla, articoli as leggiArticoli, azienda as leggiAzienda, data, depositi as leggiDepositi,
-  documento as leggi, documenti as leggiDocumenti, emetti, giacenze as leggiGiacenze, incasso, magArticoli, nuovoDocumento, oggiSM,
+  documento as leggi, documenti as leggiDocumenti, emetti, giacenze as leggiGiacenze, magArticoli, nuovoDocumento, oggiSM,
   operazioniDocumento, puoVendere, quantita, salvaBozza, soggetti as leggiSoggetti, soldi, titoloDocumento, totaleRiga,
   type Articolo, type Azienda, type Ddt, type Deposito, type Documento as Doc, type Giacenza, type MagArticolo, type Operazione, type Riga,
   type Soggetto, type TipoDocumento, type VoceDocumento,
 } from "../api";
 import { Campo } from "./DatiAzienda";
+import Incasso from "./Incasso";
 import PannelloFe from "./PannelloFe";
 import { ERRORE, useAzienda } from "./Guscio";
 
@@ -361,12 +362,6 @@ function Emesso({ doc, onCambio }: { doc: Doc; onCambio: () => void }) {
     return [...m];
   }, [doc.righe]);
 
-  async function segnaIncasso(si: boolean) {
-    const r = await incasso(doc.id, si ? oggiSM() : null);
-    if (r.errore) return setErrore(r.errore);
-    onCambio();
-  }
-
   async function copia(tipo: TipoDocumento, collega: boolean) {
     const r = await nuovoDocumento(az.id, {
       tipo, soggetto_id: doc.soggetto_id, righe: doc.righe.map((x) => ({ ...x, totale: undefined, n: undefined })),
@@ -457,19 +452,7 @@ function Emesso({ doc, onCambio }: { doc: Doc; onCambio: () => void }) {
 
         {doc.elettronica ? <PannelloFe doc={doc} collegata={collegata} onCambio={onCambio} /> : null}
 
-        {vende && (doc.tipo === "fattura" || doc.tipo === "acconto" || doc.tipo === "nota_debito") ? (
-          <section className="flex flex-col gap-2 rounded-2xl bg-superficie p-4">
-            <h3 className="text-[15px] font-semibold">Incasso</h3>
-            {doc.incassato_il ? (
-              <p className="text-[14px]">Incassata il {data(doc.incassato_il)}. <button type="button" onClick={() => segnaIncasso(false)} className="font-semibold text-accento">Togli</button></p>
-            ) : (
-              <>
-                <p className="text-[14px] text-testo-2">{doc.pagamento?.scadenza ? `Scade il ${data(doc.pagamento.scadenza)}.` : "Senza scadenza."}</p>
-                <PrimaryButton dimensione="sm" variante="interno" onClick={() => segnaIncasso(true)}>Segna come incassata oggi</PrimaryButton>
-              </>
-            )}
-          </section>
-        ) : null}
+        {vende && (doc.tipo === "fattura" || doc.tipo === "acconto" || doc.tipo === "nota_debito") ? <Incasso doc={doc} onCambio={onCambio} /> : null}
 
         {magazzino.length ? (
           <section className="flex flex-col gap-2 rounded-2xl bg-superficie p-4">

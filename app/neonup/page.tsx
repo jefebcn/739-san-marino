@@ -6,7 +6,7 @@ import Ingresso from "@/modules/neonup/components/Ingresso";
 
 export const metadata = metadatiCondivisione({
   titolo: "NeonUp, il gestionale per le aziende di San Marino",
-  descrizione: "Clienti, articoli, magazzino, preventivi, ordini, DDT, fatture e note di credito, con la fattura elettronica interna di San Marino (FE-RSM) mandata all'HUB-SM e le fatture dei fornitori ricevute. Dentro 739, con l'SMR ID.",
+  descrizione: "Clienti, articoli, magazzino, conti, preventivi, ordini, DDT, fatture e note di credito, con la fattura elettronica interna di San Marino (FE-RSM) mandata all'HUB-SM e le fatture dei fornitori ricevute. Dentro 739, con l'SMR ID.",
   percorso: "/neonup",
 });
 
@@ -16,13 +16,13 @@ const OGGI = [
   { titolo: "Clienti, fornitori e articoli", testo: "Con il codice operatore economico, il pagamento di solito, il prezzo e il tipo merce: le righe si riempiono da sole." },
   { titolo: "Collegata all'HUB-SM", testo: "Con il TokenFE dell'azienda la fattura parte da NeonUp, l'esito e le ricevute arrivano da soli, e le fatture dei fornitori sammarinesi si scaricano ogni 3 ore. Si prova prima nell'ambiente di test." },
   { titolo: "Magazzino", testo: "Giacenze per deposito, varianti (taglie, colori) e lotti con la scadenza. DDT e fatture scaricano da soli, le note di credito ricaricano i resi; carichi anche dalle fatture dei fornitori, trasferimenti e inventario." },
+  { titolo: "Conti e scadenze", testo: "Cassa e banca con il saldo, prima nota, fatture dei fornitori, scadenzario di incassi e pagamenti, estratto conto riconciliato e i file per il commercialista. Non sostituisce la contabilità obbligatoria." },
   { titolo: "Incassi e scadenze", testo: "Cosa è da incassare, cosa è scaduto, le fatture elettroniche ancora da inviare con il termine indicativo." },
   { titolo: "Chi ci lavora", testo: "Titolare, amministrazione, vendite, solo lettura: ognuno entra con il suo SMR ID." },
   { titolo: "Stampa e PDF", testo: "Ogni documento si stampa o si salva in PDF, anche le fatture su carta per chi non ha ancora la fattura elettronica." },
 ];
 
 const DOPO = [
-  "Contabilità: prima nota e scadenzario",
   "Vendita al banco dal tablet",
   "Statistiche del venduto",
   "Fatture verso l'Italia (interscambio)",

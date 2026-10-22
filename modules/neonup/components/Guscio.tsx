@@ -5,7 +5,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { Icona } from "@/components/Icona";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import { useSessione } from "@/modules/core/store";
-import { mieAziende, type MiaAzienda } from "../api";
+import { mieAziende, vedeConti, type MiaAzienda } from "../api";
 
 export const ERRORE = "rounded-xl bg-segnale/12 px-4 py-3 text-sm text-segnale";
 
@@ -13,12 +13,13 @@ const Contesto = createContext<MiaAzienda | null>(null);
 /** L'azienda aperta e il mio ruolo, dentro le pagine di NeonUp */
 export const useAzienda = () => useContext(Contesto) as MiaAzienda;
 
-export type Sezione = "cruscotto" | "documenti" | "ricevute" | "magazzino" | "clienti" | "articoli" | "azienda";
+export type Sezione = "cruscotto" | "documenti" | "ricevute" | "magazzino" | "contabilita" | "clienti" | "articoli" | "azienda";
 const VOCI: { sezione: Sezione; nome: string; href: string }[] = [
   { sezione: "cruscotto", nome: "Cruscotto", href: "" },
   { sezione: "documenti", nome: "Documenti", href: "/documenti" },
   { sezione: "ricevute", nome: "Fatture ricevute", href: "/ricevute" },
   { sezione: "magazzino", nome: "Magazzino", href: "/magazzino" },
+  { sezione: "contabilita", nome: "Contabilità", href: "/contabilita" },
   { sezione: "clienti", nome: "Clienti e fornitori", href: "/clienti" },
   { sezione: "articoli", nome: "Articoli", href: "/articoli" },
   { sezione: "azienda", nome: "Azienda", href: "/azienda" },
@@ -56,7 +57,7 @@ export default function Guscio({ azienda, sezione, children }: { azienda: string
             <h1 className="titolo !m-0 min-w-0 truncate text-[24px] lg:text-[30px]">{mia.denominazione}</h1>
           </div>
           <nav aria-label="Sezioni dell'azienda" className="-mx-1 flex gap-1 overflow-x-auto pb-1">
-            {VOCI.map((v) => (
+            {VOCI.filter((v) => v.sezione !== "contabilita" || vedeConti(mia.ruolo)).map((v) => (
               <Link key={v.sezione} href={`/neonup/${azienda}${v.href}`} aria-current={v.sezione === sezione ? "page" : undefined}
                 className={`shrink-0 rounded-xl px-3.5 py-2 text-[14px] font-medium transition-colors ${v.sezione === sezione ? "bg-[#09090B] text-white" : "bg-superficie text-testo hover:bg-superficie-2"}`}>
                 {v.nome}

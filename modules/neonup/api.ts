@@ -451,3 +451,194 @@ export function righeFattura(xml: string) {
     };
   }).filter((r) => r.descrizione);
 }
+
+/* ———— Fase 4: contabilità di gestione (migrazione 0055) ———— */
+
+/** Vedono i conti titolare, amministrazione e «lettura» (il commercialista); scrivono titolare e amministrazione */
+export const vedeConti = (r: Ruolo | null | undefined) => r === "titolare" || r === "amministrazione" || r === "lettura";
+
+export type TipoConto = "cassa" | "banca" | "carta" | "altro";
+export const TIPI_CONTO: Record<TipoConto, string> = { cassa: "Cassa", banca: "Conto in banca", carta: "Carta", altro: "Altro" };
+export type Conto = { id: string; nome: string; tipo: TipoConto; iban: string | null; saldo_iniziale: number; saldo_dal: string; attivo: boolean };
+export type Saldo = { conto_id: string; saldo: number; ultimo: string | null; movimenti: number };
+export type MovimentoPN = {
+  id: string; conto_id: string; data: string; importo: number; descrizione: string; categoria: string | null; soggetto_id: string | null;
+  documento_id: string | null; acquisto_id: string | null; giroconto: string | null; annullato_il: string | null; creato_il: string;
+};
+export type TipoAcquisto = "fattura" | "nota_credito" | "ricevuta";
+export const TIPI_ACQUISTO: Record<TipoAcquisto, string> = { fattura: "Fattura", nota_credito: "Nota di credito", ricevuta: "Ricevuta o spesa" };
+export type Acquisto = {
+  id: string; tipo: TipoAcquisto; soggetto_id: string | null; fornitore: string | null; passiva_id: string | null; collegato_id: string | null;
+  numero: string | null; data: string; descrizione: string | null; categoria: string | null; totale: number; scadenza: string | null;
+  saldato_il: string | null; annullato_il: string | null;
+};
+export type Scadenza = {
+  lato: "incasso" | "pagamento"; documento_id: string | null; acquisto_id: string | null; soggetto_id: string | null; soggetto: string | null;
+  riferimento: string; data: string; scadenza: string | null; totale: number; pagato: number; residuo: number;
+};
+export type Estratto = { id: string; conto_id: string; data: string; importo: number; descrizione: string | null; movimento_id: string | null; ignorato: boolean };
+
+/** Categorie suggerite per la prima nota e gli acquisti (si può scriverne un'altra) */
+export const CATEGORIE = [
+  "Vendite e incassi", "Acquisti di merce", "Servizi e consulenze", "Affitto", "Utenze", "Stipendi e compensi", "Contributi ISS",
+  "Imposte e tasse", "Banca e commissioni", "Carburante e trasporti", "Attrezzature", "Pubblicità", "Versamenti e prelievi del titolare", "Altro",
+];
+
+const numeri = <T extends object>(righe: T[], campi: (keyof T)[]) => righe.map((r) => ({ ...r, ...Object.fromEntries(campi.map((c) => [c, r[c] == null ? r[c] : Number(r[c])])) }));
+
+export async function conti(azienda: string) {
+  const { data, error } = await db().from("neon_conti").select("id, nome, tipo, iban, saldo_iniziale, saldo_dal, attivo").eq("azienda_id", azienda).order("nome");
+  return { conti: numeri((data ?? []) as Conto[], ["saldo_iniziale"]), errore: error?.code === "42P01" ? null : messaggio(error), attivo: error?.code !== "42P01" };
+}
+
+export async function salvaConto(azienda: string, id: string | null, c: Partial<Conto>) {
+  const { error } = await db().rpc("neon_salva_conto", { p_azienda: azienda, p_id: id, p: c });
+  return { errore: messaggio(error) };
+}
+
+export async function saldi(azienda: string) {
+  const { data } = await db().rpc("neon_saldi", { p_azienda: azienda });
+  return numeri((data ?? []) as Saldo[], ["saldo", "movimenti"]);
+}
+
+export async function primaNota(azienda: string, dal: string, al: string) {
+  const { data, error } = await db().from("neon_prima_nota")
+    .select("id, conto_id, data, importo, descrizione, categoria, soggetto_id, documento_id, acquisto_id, giroconto, annullato_il, creato_il")
+    .eq("azienda_id", azienda).gte("data", dal).lte("data", al).order("data", { ascending: false }).order("creato_il", { ascending: false }).limit(3000);
+  return { movimenti: numeri((data ?? []) as MovimentoPN[], ["importo"]), errore: messaggio(error) };
+}
+
+export async function movimentiCollegati(campo: "documento_id" | "acquisto_id", id: string) {
+  const { data } = await db().from("neon_prima_nota").select("id, conto_id, data, importo, descrizione, categoria, soggetto_id, documento_id, acquisto_id, giroconto, annullato_il, creato_il")
+    .eq(campo, id).order("data");
+  return numeri((data ?? []) as MovimentoPN[], ["importo"]);
+}
+
+export async function registraMovimento(azienda: string, m: { conto_id: string; data: string; importo: number; descrizione: string; categoria?: string | null;
+  soggetto_id?: string | null; documento_id?: string | null; acquisto_id?: string | null }) {
+  const { error } = await db().rpc("neon_movimento", { p_azienda: azienda, p: m });
+  return { errore: messaggio(error) };
+}
+
+export async function giroconto(azienda: string, da: string, a: string, data: string, importo: number, descrizione: string) {
+  const { error } = await db().rpc("neon_giroconto", { p_azienda: azienda, p_da: da, p_a: a, p_data: data, p_importo: importo, p_descrizione: descrizione });
+  return { errore: messaggio(error) };
+}
+
+export async function annullaMovimento(id: string) {
+  const { error } = await db().rpc("neon_annulla_movimento", { p_id: id });
+  return { errore: messaggio(error) };
+}
+
+export async function acquisti(azienda: string) {
+  const { data, error } = await db().from("neon_acquisti")
+    .select("id, tipo, soggetto_id, fornitore, passiva_id, collegato_id, numero, data, descrizione, categoria, totale, scadenza, saldato_il, annullato_il")
+    .eq("azienda_id", azienda).order("data", { ascending: false }).limit(3000);
+  return { acquisti: numeri((data ?? []) as Acquisto[], ["totale"]), errore: messaggio(error) };
+}
+
+/** Le fatture ricevute già registrate tra gli acquisti (solo per chi vede i conti) */
+export async function passiveRegistrate(azienda: string) {
+  const { data } = await db().from("neon_acquisti").select("passiva_id").eq("azienda_id", azienda).not("passiva_id", "is", null).is("annullato_il", null);
+  return new Set(((data ?? []) as { passiva_id: string }[]).map((x) => x.passiva_id));
+}
+
+export async function salvaAcquisto(azienda: string, id: string | null, a: Partial<Acquisto>) {
+  const { data, error } = await db().rpc("neon_salva_acquisto", { p_azienda: azienda, p_id: id, p: a });
+  return { id: data as string | null, errore: messaggio(error) };
+}
+
+export async function annullaAcquisto(id: string) {
+  const { error } = await db().rpc("neon_annulla_acquisto", { p_id: id });
+  return { errore: messaggio(error) };
+}
+
+export async function saldoAcquisto(id: string, data: string | null) {
+  const { error } = await db().rpc("neon_saldo_acquisto", { p_id: id, p_data: data });
+  return { errore: messaggio(error) };
+}
+
+export async function scadenzario(azienda: string) {
+  const { data, error } = await db().rpc("neon_scadenzario", { p_azienda: azienda });
+  return { scadenze: numeri((data ?? []) as Scadenza[], ["totale", "pagato", "residuo"]), errore: error?.code === "PGRST202" ? null : messaggio(error) };
+}
+
+export async function estratti(conto: string) {
+  const { data } = await db().from("neon_estratti").select("id, conto_id, data, importo, descrizione, movimento_id, ignorato")
+    .eq("conto_id", conto).order("data", { ascending: false }).limit(2000);
+  return numeri((data ?? []) as Estratto[], ["importo"]);
+}
+
+export async function importaEstratto(conto: string, righe: { data: string; importo: number; descrizione: string }[]) {
+  const { data, error } = await db().rpc("neon_importa_estratto", { p_conto: conto, p_righe: righe });
+  return { esito: data as { righe: number; nuove: number } | null, errore: messaggio(error) };
+}
+
+export async function abbina(estratto: string, movimento: string | null) {
+  const { error } = await db().rpc("neon_abbina", { p_estratto: estratto, p_movimento: movimento });
+  return { errore: messaggio(error) };
+}
+
+export async function movimentoDaEstratto(estratto: string, p: { descrizione?: string; categoria?: string | null; soggetto_id?: string | null; documento_id?: string | null; acquisto_id?: string | null }) {
+  const { error } = await db().rpc("neon_movimento_da_estratto", { p_estratto: estratto, p });
+  return { errore: messaggio(error) };
+}
+
+export async function ignoraEstratto(estratto: string, ignora: boolean) {
+  const { error } = await db().rpc("neon_ignora_estratto", { p_estratto: estratto, p_ignora: ignora });
+  return { errore: messaggio(error) };
+}
+
+/** Un numero scritto all'italiana o all'inglese: «1.234,56», «-1234.56», «1 234,56 €» */
+export function leggiNumero(s: string) {
+  let t = s.replace(/[^\d,.\-+]/g, "");
+  if (t.includes(",") && t.includes(".")) t = t.lastIndexOf(",") > t.lastIndexOf(".") ? t.replace(/\./g, "").replace(",", ".") : t.replace(/,/g, "");
+  else if (t.includes(",")) t = t.replace(",", ".");
+  const n = Number(t);
+  return Number.isFinite(n) ? n : NaN;
+}
+
+/** Una data «22/10/2026», «22-10-26», «2026-10-22» in AAAA-MM-GG */
+export function leggiData(s: string) {
+  const t = s.trim();
+  let m = t.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+  if (m) return `${m[1]}-${m[2].padStart(2, "0")}-${m[3].padStart(2, "0")}`;
+  m = t.match(/^(\d{1,2})[/.-](\d{1,2})[/.-](\d{2,4})/);
+  if (m) return `${m[3].length === 2 ? `20${m[3]}` : m[3]}-${m[2].padStart(2, "0")}-${m[1].padStart(2, "0")}`;
+  return null;
+}
+
+/** Legge un file CSV (separatore ; , o tab, campi tra virgolette) */
+export function leggiCsv(testo: string) {
+  const prima = testo.split(/\r?\n/).find((r) => r.trim()) ?? "";
+  const sep = [";", "\t", ","].map((s) => [s, prima.split(s).length] as const).sort((a, b) => b[1] - a[1])[0][0];
+  const righe: string[][] = [];
+  let campo = "", riga: string[] = [], dentro = false;
+  for (let i = 0; i < testo.length; i++) {
+    const c = testo[i];
+    if (dentro) {
+      if (c === '"' && testo[i + 1] === '"') { campo += '"'; i++; } else if (c === '"') dentro = false; else campo += c;
+    } else if (c === '"') dentro = true;
+    else if (c === sep) { riga.push(campo); campo = ""; }
+    else if (c === "\n" || c === "\r") { if (c === "\r" && testo[i + 1] === "\n") i++; riga.push(campo); if (riga.some((x) => x.trim())) righe.push(riga); riga = []; campo = ""; }
+    else campo += c;
+  }
+  riga.push(campo);
+  if (riga.some((x) => x.trim())) righe.push(riga);
+  return righe.map((r) => r.map((x) => x.trim()));
+}
+
+/** Scrive un CSV per il commercialista (separatore ;, numeri con la virgola, con il BOM per Excel) */
+export function scriviCsv(intestazione: string[], righe: (string | number | null | undefined)[][]) {
+  const cella = (v: string | number | null | undefined) => {
+    const s = typeof v === "number" ? v.toFixed(2).replace(".", ",") : String(v ?? "");
+    return /[;"\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+  };
+  return "﻿" + [intestazione, ...righe].map((r) => r.map(cella).join(";")).join("\r\n");
+}
+
+/** La scadenza di pagamento scritta in una fattura ricevuta (DataScadenzaPagamento) */
+export function scadenzaFattura(xml: string) {
+  const doc = new DOMParser().parseFromString(xml, "application/xml");
+  return [...doc.getElementsByTagNameNS("*", "DataScadenzaPagamento")].map((x) => x.textContent?.trim() ?? "").filter(Boolean).sort()[0] ?? null;
+}
