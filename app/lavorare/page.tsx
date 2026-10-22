@@ -2,6 +2,7 @@ import Link from "next/link";
 import PaginaArea from "@/components/aree/PaginaArea";
 import { Cella, Cruscotto } from "@/components/Cruscotto";
 import { Icona } from "@/components/Icona";
+import { MarchioNeonUp, TesseraNeonUp } from "@/components/MarchioNeonUp";
 import { getEventiPerChi, getLuoghi } from "@/lib/data";
 import { PER_LAVORO } from "@/modules/lavorare/fiere";
 import { getOfferteLavoro } from "@/modules/lavorare/offerte";
@@ -44,6 +45,15 @@ export default async function Lavorare() {
             <Cella href="/lavorare/bandi" titolo="Bandi" valore={bandi} unita={bandi === 1 ? "aperto" : "aperti"} nota={bandi ? undefined : "Li aggiunge la redazione"} />
             <Cella href="/lavorare/fornitori" titolo="Fornitori" valore={fornitori} unita="nel catalogo" nota="Aziende, artigiani e studi" />
           </Cruscotto>
+          {/* NeonUp, il gestionale di 739: il progetto di punta per le aziende */}
+          <Link href="/neonup" className="flex flex-col gap-4 rounded-2xl bg-[#09090B] p-5 text-white transition-colors hover:bg-zinc-900 sm:flex-row sm:items-center lg:p-6">
+            <TesseraNeonUp lato={64} className="ring-1 ring-white/15" />
+            <span className="flex min-w-0 flex-1 flex-col gap-1.5">
+              <MarchioNeonUp altezza={26} chiaro />
+              <span className="text-[14px] leading-relaxed text-zinc-300">Il gestionale di 739 per la tua azienda: documenti e fattura elettronica all&apos;HUB-SM, magazzino, conti e scadenze. Per ora gratis, come prova.</span>
+            </span>
+            <span className="taglio-piccolo inline-flex w-fit shrink-0 items-center gap-1.5 bg-white px-4 py-2 text-sm font-semibold text-[#09090B]">Apri NeonUp <Icona nome="vai" size={16} /></span>
+          </Link>
         </section>
       }
       stato={{

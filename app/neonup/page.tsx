@@ -1,5 +1,5 @@
 import Link from "next/link";
-import TestaPagina from "@/components/Indietro";
+import { MarchioNeonUp, TesseraNeonUp } from "@/components/MarchioNeonUp";
 import { Icona } from "@/components/Icona";
 import { metadatiCondivisione } from "@/lib/condivisione";
 import Ingresso from "@/modules/neonup/components/Ingresso";
@@ -32,11 +32,23 @@ const DOPO = [
 export default function PaginaNeonUp() {
   return (
     <>
-      <TestaPagina href="/lavorare" verso="Lavorare" titolo="NeonUp">
-        <p className="sottotitolo">Il gestionale di 739 per le aziende di San Marino: documenti, fattura elettronica interna, magazzino, clienti e incassi in un posto solo, dal telefono o dal computer.</p>
-      </TestaPagina>
+      <section className="intro">
+        <Link href="/lavorare" className="indietro scuro" style={{ marginBottom: 6 }}><Icona nome="freccia" size={18} /> Lavorare</Link>
+        <div className="larga flex flex-col gap-5 rounded-2xl bg-[#09090B] p-6 text-white lg:flex-row lg:items-center lg:gap-10 lg:p-10">
+          <TesseraNeonUp lato={96} className="hidden ring-1 ring-white/15 lg:inline-flex" />
+          <div className="flex flex-col gap-3">
+            <h1 className="!m-0"><MarchioNeonUp altezza={48} chiaro /></h1>
+            <p className="max-w-[60ch] text-[16px] leading-relaxed text-zinc-300">Il gestionale di 739 per le aziende di San Marino: documenti, fattura elettronica all&apos;HUB-SM, magazzino, conti e scadenze in un posto solo, dal telefono o dal computer.</p>
+            <p className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[14px]">
+              <a href="#inizia" className="taglio-piccolo inline-flex h-10 items-center bg-white px-4 font-semibold text-[#09090B]">Inizia</a>
+              <Link href="/neonup/guida" className="font-semibold text-white underline underline-offset-4">Come funziona</Link>
+              <span className="text-zinc-400">Per ora gratis, come prova</span>
+            </p>
+          </div>
+        </div>
+      </section>
       <div className="larga flex flex-col gap-10">
-        <Ingresso />
+        <div id="inizia" className="scroll-mt-24"><Ingresso /></div>
 
         <section className="flex flex-col gap-4" aria-labelledby="t-oggi">
           <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">

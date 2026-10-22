@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { createContext, useContext, useEffect, useState } from "react";
 import { Icona } from "@/components/Icona";
+import { TesseraNeonUp } from "@/components/MarchioNeonUp";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import { useSessione } from "@/modules/core/store";
 import { mieAziende, vedeConti, type MiaAzienda } from "../api";
@@ -53,7 +54,7 @@ export default function Guscio({ azienda, sezione, children }: { azienda: string
       <div className="larga flex flex-col gap-6">
         <div className="flex flex-col gap-3 print:hidden">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-            <Link href="/neonup" className="flex items-center gap-1 text-[14px] font-medium text-testo-2 hover:text-testo"><Icona nome="freccia" size={16} /> NeonUp</Link>
+            <Link href="/neonup" className="flex items-center gap-1.5 text-[14px] font-medium text-testo-2 hover:text-testo"><Icona nome="freccia" size={16} /> <TesseraNeonUp lato={22} /> NeonUp</Link>
             <h1 className="titolo !m-0 min-w-0 truncate text-[24px] lg:text-[30px]">{mia.denominazione}</h1>
             <Link href="/neonup/guida" className="ml-auto text-[14px] font-semibold text-testo-2 hover:text-testo">Come funziona</Link>
           </div>

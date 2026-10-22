@@ -8,6 +8,7 @@ import { TRACCIATI } from "./icone-tracciati";
 const ICONE = {
   home: "House",
   spunta: "Check",
+  neonup: "Briefcase",
   mappa: "MapTrifold",
   eventi: "CalendarDots",
   castelli: "Trophy",
@@ -144,6 +145,8 @@ const COLORE: Partial<Record<NomeIcona, string>> = {
   stampa: "giornale",
   numeri: "numeri",
   coda: "coda",
+  // Il marchio di NeonUp (components/MarchioNeonUp.tsx): la tessera nera, non un disegno 3D
+  neonup: "neonup",
 };
 
 /** `piatta`: sempre l'icona Phosphor, anche dove c'è quella disegnata (segnaposto della mappa) */

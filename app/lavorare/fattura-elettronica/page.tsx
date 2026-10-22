@@ -2,6 +2,7 @@ import Link from "next/link";
 import TestaPagina from "@/components/Indietro";
 import { Cella, Cruscotto } from "@/components/Cruscotto";
 import { Icona } from "@/components/Icona";
+import { MarchioNeonUp } from "@/components/MarchioNeonUp";
 import { TITOLARE } from "@/lib/legale";
 import { metadatiCondivisione } from "@/lib/condivisione";
 import TiRiguarda from "@/modules/lavorare/components/TiRiguarda";
@@ -72,8 +73,8 @@ export default function PaginaFatturaElettronica() {
             <section className="flex flex-col gap-3" aria-labelledby="t-gestionali">
               <h2 id="t-gestionali" className="text-[19px] font-semibold tracking-tight">Un gestionale per farla</h2>
               <Link href="/neonup" className="flex flex-col gap-1.5 rounded-2xl bg-[#09090B] p-5 text-white transition-colors hover:bg-zinc-900">
-                <span className="flex items-baseline justify-between gap-3"><span className="text-[17px] font-semibold">NeonUp</span><span className="text-[12px] text-zinc-400">Di 739</span></span>
-                <span className="text-[14px] leading-relaxed text-zinc-200">Il gestionale di 739: fatture, DDT e il file XML della fattura elettronica interna da caricare su TribWEB. Per ora gratis, come prova.</span>
+                <span className="flex items-center justify-between gap-3"><MarchioNeonUp altezza={22} chiaro /><span className="text-[12px] text-zinc-400">Di 739</span></span>
+                <span className="text-[14px] leading-relaxed text-zinc-200">Il gestionale di 739: fatture, DDT e la fattura elettronica interna mandata all'HUB-SM, con magazzino e conti. Per ora gratis, come prova.</span>
                 <span className="mt-1 inline-flex items-center gap-1.5 text-[14px] font-semibold">Apri NeonUp <Icona nome="vai" size={16} /></span>
               </Link>
               {GESTIONALI.length ? (
